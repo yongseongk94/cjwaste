@@ -135,7 +135,7 @@ function setPending(type,message){
   document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
 }
 function renderSchedule(district){
-  document.getElementById('selectedDistrict').textContent=`청원구 · ${district||'행정동 확인 불가'}`;
+  const districtPill=document.getElementById('selectedDistrict'); districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}`;
 
   const food=findRegionEntry('food',district);
   if(food&&food.status==='verified'){
@@ -163,7 +163,10 @@ function resolveDistrict(lat,lng,done){
   geocoder.coord2RegionCode(lng,lat,(result,status)=>{
     if(status!==kakao.maps.services.Status.OK||!result.length){currentDistrict='';renderSchedule('');done&&done();return}
     const h=result.find(x=>x.region_type==='H')||result[0];
-    if(h.region_2depth_name!=='청원구'){
+    const district2 = (h.region_2depth_name || '').replace(/\s+/g,' ').trim();
+    // 카카오 API는 충북 지역에서 2단계 행정구역을 '청주시 청원구'처럼 반환할 수 있습니다.
+    // 따라서 '청원구' 완전일치가 아니라 포함 여부로 판정합니다.
+    if(!district2.includes('청원구')){
       currentDistrict='';document.getElementById('selectedDistrict').textContent=`${h.region_1depth_name} ${h.region_2depth_name} · 서비스 대상 아님`;
       ['general','food','recycle'].forEach(t=>setPending(t,'현재 1차 서비스는 청주시 청원구만 지원합니다.'));
       updateMapBadge('청원구 밖 주소입니다.');done&&done();return;
@@ -198,5 +201,8 @@ document.querySelectorAll('.layer-btn').forEach(btn=>btn.addEventListener('click
 document.querySelectorAll('.card').forEach(card=>card.addEventListener('click',()=>setLayer(card.dataset.layer)));
 loadSdk();
 </script>
+</body>
+</html>
+
 </body>
 </html>
