@@ -59,7 +59,7 @@
       </article>
 
       <article id="card-food" class="card food" data-layer="food">
-        <div class="card-head"><div><h3>🍚 음식물쓰레기</h3><p>분류배출 구역 기준 · 공동주택은 제외지역에서도 분류배출 의무</p></div><span id="foodBadge" class="badge">확인 중</span></div>
+        <div class="card-head"><div><h3>🍚 음식물쓰레기</h3><p>분류배출 구역 기준</p></div><span id="foodBadge" class="badge">확인 중</span></div>
         <div id="foodDays" class="days"></div>
         <div id="foodDetail" class="detail"></div>
       </article>
@@ -116,7 +116,7 @@ const DISTRICT_ALIASES={
 };
 
 // 음식물류 폐기물 분류배출 "시행(수거) 리" 목록.
-// 아래 목록에 없는 리는 분류배출 제외지역으로 판정합니다(공동주택은 제외지역 안에서도 분류배출 의무).
+// 아래 목록에 없는 리는 분류배출 제외지역으로 판정합니다.
 // 상세 목록은 2025 음식물 자체처리기 지원사업 공고가 인용한 청주시 고시 제2022-566호 기준입니다.
 const FOOD_INCLUDED_RI={
   '내수읍':new Set(['마산리','내수리','학평리','도원리','풍정리','덕암리','초정리','원통리','은곡리']),
@@ -173,7 +173,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
     foodBadge.textContent='분류배출 제외';
     foodBadge.classList.add('excluded');
     renderDays('foodDays',[]);
-    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.<br><strong>주의:</strong> 공동주택은 제외지역 안에서도 모두 분류배출 의무 구역입니다. 주소만으로 공동주택 여부는 자동 확정하지 않습니다.</div>`;
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
   }else if(food&&food.status==='verified'){
     foodBadge.textContent=food.days.join('·');renderDays('foodDays',food.days);
     const extra=exclusion.excluded===null?'<br><strong>안내:</strong> 리 단위 제외지역 판정은 상세 주소로 다시 확인해 주세요.':'';
@@ -191,8 +191,11 @@ function renderSchedule(district,legalEmd='',legalRi=''){
   if(recycles.length){
     document.getElementById('recycleBadge').textContent='요일 확인 필요';renderDays('recycleDays',[]);
     const rows=recycles.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
-    document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>주소만으로 주택유형은 판정하지 않습니다. 세부 수거요일은 추가 확인이 필요합니다.</div>`;
-  }else setPending('recycle','현재 공개자료만으로는 이 지역의 재활용쓰레기 세부 수거요일을 확정할 수 없습니다.');
+    document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>주소만으로 주택유형은 판정하지 않습니다. 세부 수거요일은 추가 확인이 필요합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+  }else{
+    setPending('recycle','현재 공개자료만으로는 이 지역의 재활용쓰레기 세부 수거요일을 확정할 수 없습니다.');
+    document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+  }
 
   updateMapBadge();
 }
@@ -244,7 +247,7 @@ function updateMapBadge(custom){
   const labels={general:'생활쓰레기',food:'음식물쓰레기',recycle:'재활용쓰레기'};
   const items=zonePolygons[activeLayer]||[];
   if(activeLayer==='food' && (items.length||zonePolygons.foodExclusion.length)){
-    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'배출요일 위에 분류배출 제외지역을 빨간색으로 겹쳐 표시합니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
+    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'배출요일은 은은한 색면으로, 분류배출 제외지역은 붉은 색면으로 표시합니다. 마우스를 올리면 경계가 강조됩니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
     return;
   }
   el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span class="${items.length?'':'warn'}">${custom|| (items.length?'현재 수거구역 경계를 표시하고 있습니다.':'이 레이어는 아직 세부 수거구역 경계자료를 연결하지 않았습니다.')}</span>`;
@@ -289,19 +292,19 @@ function addFoodGeometry(feature,district){
     const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
     const polygon=new kakao.maps.Polygon({
       path: paths.length===1?paths[0]:paths,
-      strokeWeight:2, strokeColor:style.stroke, strokeOpacity:.9,
-      fillColor:style.fill, fillOpacity:.36
+      strokeWeight:1, strokeColor:style.stroke, strokeOpacity:.28,
+      fillColor:style.fill, fillOpacity:.22
     });
     polygon.setMap(activeLayer==='food'?map:null);
     kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
-      polygon.setOptions({fillOpacity:.55,strokeWeight:3});
+      polygon.setOptions({fillOpacity:.34,strokeOpacity:.82,strokeWeight:2});
       const e=findRegionEntry('food',district);
       const detail=e&&e.status==='verified'?`음식물 · ${e.days.join('·')} 배출 · ${e.pickup}`:'음식물 · 일정 추가 확인 필요';
       showZoneTooltip(mouseEvent.latLng,district,detail,'읍·면·동');
     });
     kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
-      polygon.setOptions({fillOpacity:.36,strokeWeight:2});
+      polygon.setOptions({fillOpacity:.22,strokeOpacity:.28,strokeWeight:1});
       hideZoneTooltip();
     });
     kakao.maps.event.addListener(polygon,'click',()=>{
@@ -320,21 +323,21 @@ function addExcludedRiGeometry(feature,parentDistrict,riName){
     const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
     const polygon=new kakao.maps.Polygon({
       path:paths.length===1?paths[0]:paths,
-      strokeWeight:2,strokeColor:'#7f1d1d',strokeOpacity:.95,
-      fillColor:'#991b1b',fillOpacity:.48
+      strokeWeight:1,strokeColor:'#7f1d1d',strokeOpacity:.55,
+      fillColor:'#991b1b',fillOpacity:.34
     });
     polygon.setMap(activeLayer==='food'?map:null);
     kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
-      polygon.setOptions({fillOpacity:.64,strokeWeight:3});
+      polygon.setOptions({fillOpacity:.48,strokeOpacity:.9,strokeWeight:2});
       showZoneTooltip(mouseEvent.latLng,`${parentDistrict} ${riName}`,'음식물 · 분류배출 제외지역','법정리');
     });
     kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
-      polygon.setOptions({fillOpacity:.48,strokeWeight:2});
+      polygon.setOptions({fillOpacity:.34,strokeOpacity:.55,strokeWeight:1});
       hideZoneTooltip();
     });
     kakao.maps.event.addListener(polygon,'click',()=>{
-      updateMapBadge(`${parentDistrict} ${riName} · 음식물류 폐기물 분류배출 제외지역 · 공동주택은 분류배출 의무`);
+      updateMapBadge(`${parentDistrict} ${riName} · 음식물류 폐기물 분류배출 제외지역`);
     });
     zonePolygons.foodExclusion.push({polygon,district:parentDistrict,ri:riName,excluded:true});
   });
