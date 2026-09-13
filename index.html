@@ -527,7 +527,7 @@
       return mapLibPromise;
     }
 
-    function createNgiiBaseSource() {
+    function buildNgiiSource(matrixSetName = 'korean') {
       const projection = ol.proj.get('EPSG:5179');
       const resolutions = [2088.96, 1044.48, 522.24, 261.12, 130.56, 65.28, 32.64, 16.32, 8.16, 4.08, 2.04, 1.02, 0.51, 0.255];
       const matrixIds = ['L05','L06','L07','L08','L09','L10','L11','L12','L13','L14','L15','L16','L17','L18'];
@@ -537,34 +537,54 @@
         matrixIds
       });
 
-      const source = new ol.source.WMTS({
+      return new ol.source.WMTS({
         url: `https://map.ngii.go.kr/openapi/Gettile.do?apikey=${encodeURIComponent(NGII_API_KEY)}`,
         layer: 'korean_map',
-        matrixSet: 'EPSG:5179',
+        matrixSet: matrixSetName,
         format: 'image/png',
         projection,
         tileGrid,
         style: 'korean',
         wrapX: false,
-        crossOrigin: 'anonymous',
         attributions: '국토지리정보원'
       });
+    }
 
+    function createNgiiBaseSource() {
+      const primary = buildNgiiSource('korean');
       let loaded = false;
       let errors = 0;
-      source.on('tileloadend', () => {
+      let fallbackTried = false;
+
+      const markLoaded = () => {
         if (!loaded) {
           loaded = true;
+          mapStatus.classList.remove('error');
           mapStatus.textContent = '국토지리정보원 배경지도';
         }
-      });
-      source.on('tileloaderror', () => {
+      };
+
+      primary.on('tileloadend', markLoaded);
+      primary.on('tileloaderror', () => {
         errors += 1;
-        if (errors >= 2 && !loaded) {
-          mapStatus.textContent = 'NGII 지도 타일을 받지 못했습니다. 인증키의 서비스 승인 상태를 확인해주세요.';
+        if (!loaded && errors >= 3 && !fallbackTried && baseLayer) {
+          fallbackTried = true;
+          mapStatus.classList.remove('error');
+          mapStatus.textContent = 'NGII 지도 연결 방식을 자동으로 다시 시도하는 중…';
+          const fallback = buildNgiiSource('EPSG:5179');
+          let fallbackErrors = 0;
+          fallback.on('tileloadend', markLoaded);
+          fallback.on('tileloaderror', () => {
+            fallbackErrors += 1;
+            if (!loaded && fallbackErrors >= 3) {
+              mapStatus.classList.add('error');
+              mapStatus.innerHTML = 'NGII 지도 타일이 거부되고 있습니다.<br><strong>국토지리정보원 OpenAPI 활용 URL을 https://yongseongk94.github.io/cjwaste/ 로 등록했는지 확인해주세요.</strong>';
+            }
+          });
+          baseLayer.setSource(fallback);
         }
       });
-      return source;
+      return primary;
     }
 
     async function initNgiiMap() {
@@ -620,7 +640,7 @@
 
       setTimeout(() => {
         if (mapStatus.textContent.includes('불러오는 중')) {
-          mapStatus.textContent = '지도 타일 응답 대기 중… 오래 지속되면 NGII 인증키 승인 상태를 확인해주세요.';
+          mapStatus.textContent = '지도 타일 응답 대기 중… 계속되면 NGII 인증키의 활용 URL을 확인해주세요.';
         }
       }, 8000);
     }
