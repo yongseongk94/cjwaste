@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>쓰레기 수거일 안내</title>
+  <style>
+    :root{
+      --bg:#f4f6f8;
+      --panel:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --soft:#f9fafb;
+      --green:#146c43;
+      --green-soft:#ecf7f1;
+      --blue:#315ea8;
+      --blue-soft:#edf3ff;
+      --shadow:0 14px 35px rgba(15,23,42,.08);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--bg)}
+    button,input{font:inherit}
+    button{cursor:pointer}
+
+    .app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+    .topbar{
+      height:68px;display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);
+      position:relative;z-index:10;
+    }
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.04em}
+    .brand-mark{width:34px;height:34px;border-radius:10px;background:#111827;color:white;display:grid;place-items:center;font-size:17px}
+    .brand-sub{font-size:12px;color:var(--muted);font-weight:600;margin-left:2px}
+
+    .layout{flex:1;display:grid;grid-template-columns:minmax(350px,42%) 1fr;min-height:calc(100vh - 68px);min-height:calc(100dvh - 68px)}
+
+    .sidebar{
+      background:var(--panel);padding:34px 30px 30px;border-right:1px solid var(--line);overflow:auto;
+      display:flex;flex-direction:column;gap:24px;
+    }
+    .eyebrow{font-size:13px;color:var(--green);font-weight:800;margin-bottom:8px}
+    h1{font-size:34px;line-height:1.22;letter-spacing:-.055em;margin:0 0 10px}
+    .lead{font-size:15px;line-height:1.65;color:var(--muted);margin:0}
+
+    .search-wrap{display:flex;gap:9px;margin-top:3px}
+    .searchbox{
+      flex:1;height:52px;border:1.5px solid #d1d5db;border-radius:14px;background:white;
+      display:flex;align-items:center;padding:0 14px;transition:.15s ease;
+    }
+    .searchbox:focus-within{border-color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.06)}
+    .searchbox input{width:100%;border:0;outline:0;font-size:15px;color:var(--text);background:transparent}
+    .searchbox input::placeholder{color:#9ca3af}
+    .search-btn{height:52px;border:0;border-radius:14px;background:#111827;color:white;font-weight:800;padding:0 18px;white-space:nowrap}
+    .search-btn:hover{background:#232b38}
+
+    .status{min-height:22px;font-size:13px;color:var(--muted);margin-top:-13px}
+    .status.error{color:#b42318}
+
+    .location-card{
+      border:1px solid var(--line);border-radius:18px;background:var(--soft);padding:17px 18px;
+    }
+    .location-label{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:7px}
+    .address{font-size:17px;font-weight:800;letter-spacing:-.025em;line-height:1.45}
+    .coords{font-size:12px;color:#9ca3af;margin-top:5px}
+
+    .section-title{font-size:14px;font-weight:900;letter-spacing:-.02em;margin-bottom:11px}
+    .cards{display:grid;gap:12px}
+    .schedule-card{border:1px solid var(--line);border-radius:18px;padding:18px;background:white}
+    .schedule-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+    .schedule-name{font-size:18px;font-weight:900;letter-spacing:-.035em;display:flex;align-items:center;gap:8px}
+    .schedule-desc{font-size:13px;color:var(--muted);margin-top:4px}
+    .badge{font-size:11px;font-weight:900;padding:6px 9px;border-radius:999px;white-space:nowrap}
+    .general .badge{background:var(--green-soft);color:var(--green)}
+    .recycle .badge{background:var(--blue-soft);color:var(--blue)}
+
+    .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .day{height:38px;border-radius:10px;background:#f3f4f6;display:grid;place-items:center;font-size:12px;font-weight:900;color:#374151}
+    .general .day{background:var(--green-soft);color:var(--green)}
+    .recycle .day{background:var(--blue-soft);color:var(--blue)}
+
+    .today-note{margin-top:12px;font-size:13px;font-weight:800}
+    .general .today-note{color:var(--green)}
+    .recycle .today-note{color:var(--blue)}
+
+    .notice{margin-top:auto;padding-top:4px;font-size:12px;line-height:1.55;color:#9ca3af}
+
+    .map-panel{position:relative;min-width:0;background:#dfe5e8}
+    #map{position:absolute;inset:0;width:100%;height:100%}
+
+    .map-floating{
+      position:absolute;right:18px;top:18px;z-index:4;background:rgba(255,255,255,.96);
+      border:1px solid rgba(229,231,235,.95);border-radius:14px;padding:8px;box-shadow:var(--shadow);
+      display:flex;gap:6px;
+    }
+    .map-floating button{border:0;background:white;height:34px;border-radius:9px;padding:0 11px;font-size:12px;font-weight:800;color:#374151}
+    .map-floating button:hover{background:#f3f4f6}
+
+    .map-loading,.map-no-key{
+      position:absolute;inset:0;z-index:3;display:none;align-items:center;justify-content:center;text-align:center;
+      padding:30px;background:linear-gradient(145deg,#eaf0f1,#dfe7e9);color:#4b5563;
+    }
+    .map-no-key.show,.map-loading.show{display:flex}
+    .placeholder-card{max-width:430px;background:rgba(255,255,255,.94);border:1px solid white;border-radius:24px;padding:26px;box-shadow:var(--shadow)}
+    .placeholder-icon{width:56px;height:56px;border-radius:18px;background:#111827;color:white;display:grid;place-items:center;margin:0 auto 15px;font-size:24px}
+    .placeholder-card strong{display:block;font-size:20px;color:#111827;margin-bottom:8px;letter-spacing:-.03em}
+    .placeholder-card p{font-size:14px;line-height:1.65;margin:0;color:#6b7280}
+    .placeholder-card code{display:inline-block;margin-top:12px;background:#f3f4f6;border-radius:8px;padding:7px 9px;color:#374151;font-size:12px}
+
+    @media(max-width:900px){
+      .topbar{height:60px;padding:0 16px}
+      .brand-sub{display:none}
+      .layout{display:flex;flex-direction:column;min-height:calc(100dvh - 60px)}
+      .sidebar{border-right:0;border-bottom:1px solid var(--line);padding:25px 18px 22px;overflow:visible}
+      h1{font-size:29px}
+      .map-panel{height:52vh;min-height:430px}
+      .notice{margin-top:4px}
+    }
+
+    @media(max-width:520px){
+      .search-wrap{display:grid;grid-template-columns:1fr}
+      .search-btn{width:100%}
+      .days{gap:4px}
+      .day{height:35px;border-radius:8px;font-size:11px}
+      .map-panel{height:48vh;min-height:370px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">W</div>
+      <div>Waste Day <span class="brand-sub">쓰레기 수거일 안내</span></div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="sidebar">
+      <div>
+        <div class="eyebrow">주소로 바로 확인</div>
+        <h1>우리 동네 쓰레기,<br>언제 수거할까?</h1>
+        <p class="lead">주소를 입력하면 해당 위치를 지도에 표시하고 일반쓰레기와 재활용품 수거일정을 알려드립니다.</p>
+      </div>
+
+      <form class="search-wrap" id="searchForm">
+        <label class="searchbox" aria-label="주소 입력">
+          <input id="addressInput" type="text" autocomplete="street-address" placeholder="예: 청주시 청원구 상당로 314" />
+        </label>
+        <button class="search-btn" type="submit">주소 검색</button>
+      </form>
+      <div id="status" class="status">주소를 입력해 검색해보세요.</div>
+
+      <div class="location-card">
+        <div class="location-label">선택된 위치</div>
+        <div id="selectedAddress" class="address">충북 청주시 청원구 상당로 314</div>
+        <div id="selectedCoords" class="coords">초기 위치 · 청원구청 인근</div>
+      </div>
+
+      <div>
+        <div class="section-title">수거 일정</div>
+        <div class="cards">
+          <article class="schedule-card general">
+            <div class="schedule-head">
+              <div>
+                <div class="schedule-name">🗑️ 일반쓰레기</div>
+                <div class="schedule-desc">종량제 봉투 등</div>
+              </div>
+              <span class="badge">매일 수거</span>
+            </div>
+            <div class="days" aria-label="일반쓰레기 수거요일">
+              <div class="day">월</div><div class="day">화</div><div class="day">수</div><div class="day">목</div><div class="day">금</div><div class="day">토</div><div class="day">일</div>
+            </div>
+            <div class="today-note">오늘도 수거하는 날입니다.</div>
+          </article>
+
+          <article class="schedule-card recycle">
+            <div class="schedule-head">
+              <div>
+                <div class="schedule-name">♻️ 재활용품</div>
+                <div class="schedule-desc">종이·플라스틱·캔·병 등</div>
+              </div>
+              <span class="badge">매일 수거</span>
+            </div>
+            <div class="days" aria-label="재활용품 수거요일">
+              <div class="day">월</div><div class="day">화</div><div class="day">수</div><div class="day">목</div><div class="day">금</div><div class="day">토</div><div class="day">일</div>
+            </div>
+            <div class="today-note">오늘도 수거하는 날입니다.</div>
+          </article>
+        </div>
+      </div>
+
+      <div class="notice">※ 현재는 화면 동작 확인을 위한 시범 버전으로, 모든 요일을 수거일로 표시합니다. 실제 운영 시 지역별 수거일정 데이터로 교체할 수 있습니다.</div>
+    </section>
+
+    <section class="map-panel">
+      <div id="map"></div>
+      <div class="map-floating">
+        <button id="zoomIn" type="button">＋ 확대</button>
+        <button id="zoomOut" type="button">－ 축소</button>
+      </div>
+      <div id="mapNoKey" class="map-no-key">
+        <div class="placeholder-card">
+          <div class="placeholder-icon">⌖</div>
+          <strong>카카오맵을 불러오는 중입니다.</strong>
+          <p>지도가 표시되지 않으면 카카오 Developers에서 현재 접속 도메인이 허용되어 있는지 확인하세요.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  // 재난안전지도에서 사용하던 카카오 JavaScript 키입니다.
+  // 카카오 Developers에서 실제 접속할 GitHub Pages/독립 도메인을 허용해야 합니다.
+  const KAKAO_JAVASCRIPT_KEY = 'a103b2ec4ae35a508696bd61dabc0d65';
+
+  const DEFAULT = {
+    lat: 36.6516,
+    lng: 127.4864,
+    address: '충북 청주시 청원구 상당로 314'
+  };
+
+  const $ = (selector) => document.querySelector(selector);
+  const statusEl = $('#status');
+  const addressEl = $('#selectedAddress');
+  const coordsEl = $('#selectedCoords');
+  const noKeyEl = $('#mapNoKey');
+
+  let map = null;
+  let marker = null;
+  let geocoder = null;
+  let places = null;
+
+  function setStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle('error', isError);
+  }
+
+  function updateSelectedLocation(address, lat, lng) {
+    addressEl.textContent = address || '선택한 위치';
+    coordsEl.textContent = `${Number(lat).toFixed(6)}, ${Number(lng).toFixed(6)}`;
+  }
+
+  function moveTo(lat, lng, address) {
+    if (!map || !window.kakao?.maps) return;
+    const pos = new kakao.maps.LatLng(lat, lng);
+    marker.setPosition(pos);
+    map.panTo(pos);
+    map.setLevel(3);
+    updateSelectedLocation(address, lat, lng);
+  }
+
+  function reverseGeocode(lat, lng) {
+    if (!geocoder) return;
+    geocoder.coord2Address(lng, lat, function(result, status) {
+      if (status !== kakao.maps.services.Status.OK || !result.length) {
+        updateSelectedLocation('지도에서 선택한 위치', lat, lng);
+        return;
+      }
+      const item = result[0];
+      const address = item.road_address?.address_name || item.address?.address_name || '지도에서 선택한 위치';
+      updateSelectedLocation(address, lat, lng);
+      $('#addressInput').value = address;
+      setStatus('지도에서 위치를 선택했습니다.');
+    });
+  }
+
+  function searchAddress(query) {
+    if (!map || !geocoder || !places) {
+      setStatus('카카오맵 API 키를 먼저 설정해주세요.', true);
+      return;
+    }
+    const keyword = query.trim();
+    if (!keyword) {
+      setStatus('검색할 주소를 입력해주세요.', true);
+      $('#addressInput').focus();
+      return;
+    }
+
+    setStatus('주소를 찾는 중입니다…');
+    geocoder.addressSearch(keyword, function(result, status) {
+      if (status === kakao.maps.services.Status.OK && result.length) {
+        const first = result[0];
+        const lat = Number(first.y);
+        const lng = Number(first.x);
+        const address = first.road_address?.address_name || first.address_name || keyword;
+        moveTo(lat, lng, address);
+        $('#addressInput').value = address;
+        setStatus('주소를 찾았습니다.');
+        return;
+      }
+
+      // 완전한 주소가 아니면 카카오 장소검색으로 한 번 더 시도합니다.
+      places.keywordSearch(keyword, function(placeResult, placeStatus) {
+        if (placeStatus === kakao.maps.services.Status.OK && placeResult.length) {
+          const first = placeResult[0];
+          const lat = Number(first.y);
+          const lng = Number(first.x);
+          const address = first.road_address_name || first.address_name || first.place_name || keyword;
+          moveTo(lat, lng, address);
+          $('#addressInput').value = address;
+          setStatus(`“${first.place_name || keyword}” 위치를 표시했습니다.`);
+        } else {
+          setStatus('주소를 찾지 못했습니다. 도로명 주소나 건물명을 조금 더 자세히 입력해주세요.', true);
+        }
+      });
+    });
+  }
+
+  function initKakaoMap() {
+    const container = $('#map');
+    map = new kakao.maps.Map(container, {
+      center: new kakao.maps.LatLng(DEFAULT.lat, DEFAULT.lng),
+      level: 4
+    });
+
+    marker = new kakao.maps.Marker({
+      map,
+      position: new kakao.maps.LatLng(DEFAULT.lat, DEFAULT.lng)
+    });
+
+    geocoder = new kakao.maps.services.Geocoder();
+    places = new kakao.maps.services.Places();
+
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+      const latlng = mouseEvent.latLng;
+      marker.setPosition(latlng);
+      reverseGeocode(latlng.getLat(), latlng.getLng());
+    });
+
+    setStatus('주소를 입력하거나 지도에서 위치를 클릭해보세요.');
+    updateSelectedLocation(DEFAULT.address, DEFAULT.lat, DEFAULT.lng);
+  }
+
+  function loadKakaoSdk() {
+    if (!KAKAO_JAVASCRIPT_KEY || KAKAO_JAVASCRIPT_KEY.includes('YOUR_')) {
+      noKeyEl.classList.add('show');
+      setStatus('카카오 JavaScript API 키를 입력하면 주소 검색과 지도가 동작합니다.');
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${encodeURIComponent(KAKAO_JAVASCRIPT_KEY)}&libraries=services&autoload=false`;
+    script.onload = () => {
+      kakao.maps.load(() => {
+        noKeyEl.classList.remove('show');
+        initKakaoMap();
+      });
+    };
+    script.onerror = () => {
+      noKeyEl.classList.add('show');
+      setStatus('카카오맵 SDK를 불러오지 못했습니다. API 키와 등록 도메인을 확인해주세요.', true);
+    };
+    document.head.appendChild(script);
+  }
+
+  $('#searchForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    searchAddress($('#addressInput').value);
+  });
+
+  $('#zoomIn').addEventListener('click', () => {
+    if (map) map.setLevel(Math.max(1, map.getLevel() - 1));
+  });
+
+  $('#zoomOut').addEventListener('click', () => {
+    if (map) map.setLevel(map.getLevel() + 1);
+  });
+
+  loadKakaoSdk();
+</script>
+</body>
+</html>
