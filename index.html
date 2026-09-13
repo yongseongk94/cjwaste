@@ -21,6 +21,7 @@
 .source-note{font-size:11px;color:#9ca3af;line-height:1.55;border-top:1px solid var(--line);padding-top:15px}
 .map-wrap{position:relative;min-width:0}.map{position:absolute;inset:0}.map-tools{position:absolute;top:15px;right:15px;z-index:5;display:flex;gap:5px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 5px 16px rgba(0,0,0,.07)}.map-tools button{border:0;background:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:850;cursor:pointer}
 .layer-control{position:absolute;left:15px;top:15px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:15px;padding:8px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:flex;gap:5px}.layer-btn{border:0;background:#f3f4f6;color:#6b7280;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:900;cursor:pointer}.layer-btn.active{background:#111827;color:#fff}
+.zone-tooltip{pointer-events:none;background:rgba(17,24,39,.94);color:#fff;border-radius:11px;padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:12px;line-height:1.45;white-space:nowrap;transform:translate(0,-10px)}.zone-tooltip strong{display:block;font-size:13px;margin-bottom:2px}.zone-tooltip .basis{color:#d1d5db;font-size:10px;margin-top:2px}
 .map-badge{position:absolute;left:15px;bottom:15px;z-index:5;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:12px;box-shadow:0 5px 16px rgba(0,0,0,.07);max-width:300px}.map-badge strong{display:block;margin-bottom:4px}.map-badge span{color:var(--muted);line-height:1.5}.map-badge .warn{color:var(--warn)}
 .food-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#4b5563}.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}.legend-mwf{background:#ef8a62}.legend-tts{background:#67a9cf}.legend-excluded{background:#7f1d1d}.legend-pending{background:#b8b8b8}.excluded-note{margin-top:12px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.65}.food .badge.excluded{background:#7f1d1d;color:#fff}
 @media(max-width:900px){#app{display:flex;flex-direction:column;height:auto;min-height:100%}.side{border-right:0;border-bottom:1px solid var(--line);padding:20px}.map-wrap{height:52vh;min-height:420px}.address{font-size:21px}}@media(max-width:560px){.search{display:grid}.search button{width:100%}.hero{text-align:left}.brand{text-align:center}.hero h1{font-size:42px}.hero p{font-size:15px}.layer-control{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}}
@@ -123,6 +124,7 @@ const FOOD_INCLUDED_RI={
 };
 
 let map,marker,geocoder,places,currentDistrict='',currentLegalEmd='',currentLegalRi='',currentFoodExclusion=null,activeLayer='food';
+let zoneTooltipOverlay=null;
 const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[]};
 
 function norm(s){return String(s||'').replace(/[\s·.]/g,'')}
@@ -218,6 +220,7 @@ function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('
 function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
 
 function setLayer(layer){
+  hideZoneTooltip();
   activeLayer=layer;
   document.querySelectorAll('.layer-btn').forEach(b=>b.classList.toggle('active',b.dataset.layer===layer));
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('active',c.dataset.layer===layer));
@@ -241,10 +244,31 @@ function updateMapBadge(custom){
   const labels={general:'생활쓰레기',food:'음식물쓰레기',recycle:'재활용쓰레기'};
   const items=zonePolygons[activeLayer]||[];
   if(activeLayer==='food' && (items.length||zonePolygons.foodExclusion.length)){
-    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'배출요일과 분류배출 제외지역을 함께 표시합니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
+    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'배출요일 위에 분류배출 제외지역을 빨간색으로 겹쳐 표시합니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
     return;
   }
   el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span class="${items.length?'':'warn'}">${custom|| (items.length?'현재 수거구역 경계를 표시하고 있습니다.':'이 레이어는 아직 세부 수거구역 경계자료를 연결하지 않았습니다.')}</span>`;
+}
+
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function ensureZoneTooltip(){
+  if(zoneTooltipOverlay || !window.kakao?.maps)return;
+  zoneTooltipOverlay=new kakao.maps.CustomOverlay({zIndex:30,yAnchor:1.15});
+}
+function showZoneTooltip(latLng,title,detail,basis){
+  ensureZoneTooltip();
+  if(!zoneTooltipOverlay || !map || !latLng)return;
+  zoneTooltipOverlay.setContent(`<div class="zone-tooltip"><strong>${escapeHtml(title)}</strong><div>${escapeHtml(detail)}</div><div class="basis">구분 기준 · ${escapeHtml(basis)}</div></div>`);
+  zoneTooltipOverlay.setPosition(latLng);
+  zoneTooltipOverlay.setMap(map);
+}
+function moveZoneTooltip(latLng){
+  if(zoneTooltipOverlay && latLng)zoneTooltipOverlay.setPosition(latLng);
+}
+function hideZoneTooltip(){
+  if(zoneTooltipOverlay)zoneTooltipOverlay.setMap(null);
 }
 
 function foodStyle(district){
@@ -269,8 +293,17 @@ function addFoodGeometry(feature,district){
       fillColor:style.fill, fillOpacity:.36
     });
     polygon.setMap(activeLayer==='food'?map:null);
-    kakao.maps.event.addListener(polygon,'mouseover',()=>polygon.setOptions({fillOpacity:.55,strokeWeight:3}));
-    kakao.maps.event.addListener(polygon,'mouseout',()=>polygon.setOptions({fillOpacity:.36,strokeWeight:2}));
+    kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
+      polygon.setOptions({fillOpacity:.55,strokeWeight:3});
+      const e=findRegionEntry('food',district);
+      const detail=e&&e.status==='verified'?`음식물 · ${e.days.join('·')} 배출 · ${e.pickup}`:'음식물 · 일정 추가 확인 필요';
+      showZoneTooltip(mouseEvent.latLng,district,detail,'읍·면·동');
+    });
+    kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
+    kakao.maps.event.addListener(polygon,'mouseout',()=>{
+      polygon.setOptions({fillOpacity:.36,strokeWeight:2});
+      hideZoneTooltip();
+    });
     kakao.maps.event.addListener(polygon,'click',()=>{
       const e=findRegionEntry('food',district);
       const info=e&&e.status==='verified'?`${district} · ${e.days.join('·')} 배출 · ${e.pickup}`:`${district} · 음식물 일정 추가 확인 필요`;
@@ -291,60 +324,79 @@ function addExcludedRiGeometry(feature,parentDistrict,riName){
       fillColor:'#991b1b',fillOpacity:.48
     });
     polygon.setMap(activeLayer==='food'?map:null);
-    kakao.maps.event.addListener(polygon,'mouseover',()=>polygon.setOptions({fillOpacity:.64,strokeWeight:3}));
-    kakao.maps.event.addListener(polygon,'mouseout',()=>polygon.setOptions({fillOpacity:.48,strokeWeight:2}));
+    kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
+      polygon.setOptions({fillOpacity:.64,strokeWeight:3});
+      showZoneTooltip(mouseEvent.latLng,`${parentDistrict} ${riName}`,'음식물 · 분류배출 제외지역','법정리');
+    });
+    kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
+    kakao.maps.event.addListener(polygon,'mouseout',()=>{
+      polygon.setOptions({fillOpacity:.48,strokeWeight:2});
+      hideZoneTooltip();
+    });
     kakao.maps.event.addListener(polygon,'click',()=>{
       updateMapBadge(`${parentDistrict} ${riName} · 음식물류 폐기물 분류배출 제외지역 · 공동주택은 분류배출 의무`);
     });
     zonePolygons.foodExclusion.push({polygon,district:parentDistrict,ri:riName,excluded:true});
   });
 }
-async function buildFoodExclusionPolygons(parentCodes){
-  try{
-    // 행정안전부 법정리 경계(충북 43), mapcn-kr 가공본. CC BY 4.0.
-    const url='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json';
-    const res=await fetch(url,{cache:'force-cache'});
-    if(!res.ok) throw new Error(`리 경계 HTTP ${res.status}`);
-    const fc=await res.json();
-    const codeToDistrict=new Map(Object.entries(parentCodes).map(([district,code])=>[String(code||''),district]));
-    (fc.features||[]).forEach(f=>{
-      const p=f.properties||{};
-      const parentCode=String(p.emd_adm||p.emd_cd||p.emdcd||p.parent_code||'');
-      const district=codeToDistrict.get(parentCode);
-      if(!district)return;
-      const riName=normalizeRi(p.li_nm||p.ri_nm||p.name||p.adm_nm||'');
-      if(!riName)return;
-      const ex=getFoodExclusion(district,riName);
-      if(ex.excluded===true)addExcludedRiGeometry(f,district,riName);
-    });
-  }catch(err){
-    console.error('법정리 제외지역 경계 로딩 실패',err);
-    // 주소 검색 판정은 카카오 법정동/리 정보로 계속 동작합니다.
-  }
+async function fetchGeoJson(url,label){
+  const res=await fetch(url,{cache:'force-cache'});
+  if(!res.ok) throw new Error(`${label} HTTP ${res.status}`);
+  return res.json();
 }
+
 async function buildZonePolygons(){
-  updateMapBadge('음식물 행정동·제외지역 경계를 불러오는 중입니다…');
+  updateMapBadge('음식물 수거요일·분류배출 제외지역 경계를 불러오는 중입니다…');
   try{
-    const adk=await import('https://cdn.jsdelivr.net/npm/admdongkor/+esm');
-    const fc=await adk.get('20260401','emd');
+    // 읍·면·동과 리 경계를 같은 mapcn-kr 데이터셋에서 사용합니다.
+    // 이렇게 해야 adm_cd2(읍면동) ↔ emd_adm(리)의 코드가 정확히 일치합니다.
+    const base='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data';
+    const [emdFc,riFc]=await Promise.all([
+      fetchGeoJson(`${base}/emd.json`,'읍면동 경계'),
+      fetchGeoJson(`${base}/ri/43.json`,'충북 리 경계')
+    ]);
+
     const targets=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
-    const parentCodes={};
-    fc.features.forEach(f=>{
+    const codeToDistrict=new Map();
+
+    (emdFc.features||[]).forEach(f=>{
       const p=f.properties||{};
-      if(!String(p.sggnm||'').includes('청원구'))return;
-      const district=canonicalDistrict(p.emdnm||p.dong||p.adm_nm||'');
-      if(!targets.has(district))return;
+      if(!String(p.sggnm||'').includes('청원구')) return;
+      const district=canonicalDistrict(p.dong||p.emdnm||p.adm_nm||'');
+      if(!targets.has(district)) return;
       addFoodGeometry(f,district);
-      if(['내수읍','오창읍','북이면'].includes(district)){
-        parentCodes[district]=String(p.adm_cd2||p.adm_cd||'');
+      const code=String(p.adm_cd2||p.adm_cd||'');
+      if(code) codeToDistrict.set(code,district);
+    });
+
+    let exclusionRiCount=0;
+    (riFc.features||[]).forEach(f=>{
+      const p=f.properties||{};
+      const parentCode=String(p.emd_adm||'');
+      const district=codeToDistrict.get(parentCode);
+      if(!district || !['내수읍','오창읍','북이면'].includes(district)) return;
+      const riName=normalizeRi(p.li_nm||p.ri_nm||p.name||'');
+      if(!riName) return;
+      const ex=getFoodExclusion(district,riName);
+      if(ex.excluded===true){
+        addExcludedRiGeometry(f,district,riName);
+        exclusionRiCount++;
       }
     });
-    await buildFoodExclusionPolygons(parentCodes);
-    if(zonePolygons.food.length){setLayer(activeLayer);updateMapBadge();}
-    else updateMapBadge('청원구 행정동 경계를 찾지 못했습니다.');
+
+    if(zonePolygons.food.length){
+      setLayer(activeLayer);
+      if(activeLayer==='food'){
+        updateMapBadge(`음식물 레이어 · 분류배출 제외지역 ${exclusionRiCount}개 리 표시`);
+      }else{
+        updateMapBadge();
+      }
+    }else{
+      updateMapBadge('청원구 읍·면·동 경계를 찾지 못했습니다.');
+    }
   }catch(err){
-    console.error('행정동 경계 로딩 실패',err);
-    updateMapBadge('행정동 경계를 불러오지 못했습니다. 일정·제외지역 주소 판정 자체는 계속 사용할 수 있습니다.');
+    console.error('음식물 경계/제외지역 레이어 로딩 실패',err);
+    updateMapBadge('음식물 경계를 불러오지 못했습니다. 주소별 일정 판정은 계속 사용할 수 있습니다.');
   }
 }
 function init(){
