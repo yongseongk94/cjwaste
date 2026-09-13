@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#f7f7f4" />
   <title>청주 쓰레기 수거일 안내</title>
 
-  <!-- NGII official viewer dependencies -->
-  <link rel="stylesheet" href="https://www.ngii.go.kr/nlsc/emap/css/map/OpenLayers-6.4.3.css" type="text/css" />
+  <!-- OpenLayers: NGII 배경지도를 직접 WMTS로 호출 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@6.4.3/ol.css" type="text/css" />
 
   <style>
     :root {
@@ -441,10 +441,13 @@
 
     let kakaoGeocoder = null;
     let kakaoPlaces = null;
-    let ngiiMap = null;
-    let rawOlMap = null;
-    let locationOverlay = null;
+    let map = null;
+    let baseLayer = null;
+    let baseSource = null;
+    let markerLayer = null;
+    let markerFeature = null;
     let pendingLocation = null;
+    let mapLibPromise = null;
 
     function setSearchMessage(text, error = false) {
       searchMessage.textContent = text;
@@ -510,97 +513,126 @@
       });
     }
 
-    async function loadNgiiDependencies() {
-      // 첫 화면에서는 지도 라이브러리를 전혀 받지 않고, 주소 검색 성공 후에만 순차 로드합니다.
-      await loadScriptOnce('https://www.ngii.go.kr/nlsc/emap/js/jquery/jquery-2.1.1.min.js', () => !!window.jQuery);
-      await loadScriptOnce('https://www.ngii.go.kr/nlsc/emap/js/map/OpenLayers-6.4.3.js', () => !!window.ol);
-      await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js', () => !!window.proj4);
+    function loadMapLibraries() {
+      if (mapLibPromise) return mapLibPromise;
+      mapLibPromise = (async () => {
+        await loadScriptOnce('https://cdn.jsdelivr.net/npm/ol@6.4.3/dist/ol.js', () => !!window.ol);
+        await loadScriptOnce('https://cdn.jsdelivr.net/npm/proj4@2.9.2/dist/proj4.js', () => !!window.proj4);
+
+        proj4.defs('EPSG:5179', '+proj=tmerc +lat_0=38 +lon_0=127.5 +k=0.9996 +x_0=1000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs');
+        ol.proj.proj4.register(proj4);
+        const p5179 = ol.proj.get('EPSG:5179');
+        p5179.setExtent([-200000.0, -28024123.62, 31824123.62, 4000000.0]);
+      })();
+      return mapLibPromise;
     }
 
-    async function loadNgiiMap() {
-      await loadNgiiDependencies();
-      return new Promise((resolve, reject) => {
-        if (window.ngii_wmts?.map) {
-          initNgiiMap();
-          resolve();
-          return;
-        }
-
-        const script = document.createElement('script');
-        script.src = `https://map.ngii.go.kr/openapi/wmts_ngiiMap_v6.4.3.js?apikey=${encodeURIComponent(NGII_API_KEY)}`;
-        script.onload = () => {
-          try {
-            initNgiiMap();
-            resolve();
-          } catch (err) {
-            reject(err);
-          }
-        };
-        script.onerror = () => reject(new Error('국토지리정보원 지도 API 호출 실패'));
-        document.head.appendChild(script);
+    function createNgiiBaseSource() {
+      const projection = ol.proj.get('EPSG:5179');
+      const resolutions = [2088.96, 1044.48, 522.24, 261.12, 130.56, 65.28, 32.64, 16.32, 8.16, 4.08, 2.04, 1.02, 0.51, 0.255];
+      const matrixIds = ['L05','L06','L07','L08','L09','L10','L11','L12','L13','L14','L15','L16','L17','L18'];
+      const tileGrid = new ol.tilegrid.WMTS({
+        origin: [-200000.0, 4000000.0],
+        resolutions,
+        matrixIds
       });
+
+      const source = new ol.source.WMTS({
+        url: `https://map.ngii.go.kr/openapi/Gettile.do?apikey=${encodeURIComponent(NGII_API_KEY)}`,
+        layer: 'korean_map',
+        matrixSet: 'EPSG:5179',
+        format: 'image/png',
+        projection,
+        tileGrid,
+        style: 'korean',
+        wrapX: false,
+        crossOrigin: 'anonymous',
+        attributions: '국토지리정보원'
+      });
+
+      let loaded = false;
+      let errors = 0;
+      source.on('tileloadend', () => {
+        if (!loaded) {
+          loaded = true;
+          mapStatus.textContent = '국토지리정보원 배경지도';
+        }
+      });
+      source.on('tileloaderror', () => {
+        errors += 1;
+        if (errors >= 2 && !loaded) {
+          mapStatus.textContent = 'NGII 지도 타일을 받지 못했습니다. 인증키의 서비스 승인 상태를 확인해주세요.';
+        }
+      });
+      return source;
     }
 
-    function initNgiiMap() {
-      if (ngiiMap || !window.ngii_wmts?.map) return;
-      // 일반지도(0)로 바로 생성합니다.
-      ngiiMap = new ngii_wmts.map('map', { mapMode: 0 });
-      rawOlMap = ngiiMap._getMap();
+    async function initNgiiMap() {
+      if (map) return;
+      await loadMapLibraries();
 
-      // NGII 영상지도 SDK 일부 버전은 항공사진 프록시를 http://로 지정합니다.
-      // GitHub Pages(HTTPS)의 mixed-content 차단을 피하도록 HTTPS 프록시로 교정합니다.
-      try {
-        const air = window.ngii_wmts?.properties?.airWMTSLayerOptions;
-        if (air) {
-          air.attributions = ['<span style=\"font-size:11px\">국토지리정보원</span>'];
-          air.tileLoadFunction = function(imageTile, src) {
-            imageTile.getImage().src = `https://map.ngii.go.kr/openapi/proxy/proxyTile.jsp?apikey=${encodeURIComponent(NGII_API_KEY)}&URL=${encodeURIComponent(src)}`;
-          };
-        }
-      } catch (e) {}
+      baseSource = createNgiiBaseSource();
+      baseLayer = new ol.layer.Tile({ source: baseSource });
 
-      const pin = document.createElement('div');
-      pin.className = 'pin';
-      pin.setAttribute('aria-label', '검색 위치');
-      locationOverlay = new ol.Overlay({
-        element: pin,
-        positioning: 'bottom-center',
-        stopEvent: false,
-        offset: [0, -3]
+      markerFeature = new ol.Feature({ geometry: new ol.geom.Point([998784, 1850409]) });
+      markerFeature.setStyle(new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 8,
+          fill: new ol.style.Fill({ color: '#171816' }),
+          stroke: new ol.style.Stroke({ color: '#ffffff', width: 3 })
+        })
+      }));
+      markerLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({ features: [markerFeature] })
       });
-      rawOlMap.addOverlay(locationOverlay);
-      mapStatus.textContent = '국토지리정보원 일반지도';
 
-      if (pendingLocation) {
-        moveNgiiMap(pendingLocation.lat, pendingLocation.lng);
-      }
+      map = new ol.Map({
+        target: 'map',
+        layers: [baseLayer, markerLayer],
+        view: new ol.View({
+          projection: 'EPSG:5179',
+          center: [998784, 1850409],
+          zoom: 13,
+          minZoom: 5,
+          maxZoom: 18,
+          constrainResolution: true
+        }),
+        controls: ol.control.defaults({ attributionOptions: { collapsible: true } })
+      });
+
+      // 영상지도는 NGII 원본 AIRPHOTO가 HTTP 전용이라 GitHub Pages(HTTPS)에서 직접 로드할 수 없습니다.
+      airMapBtn.addEventListener('click', () => {
+        normalMapBtn.classList.add('active');
+        airMapBtn.classList.remove('active');
+        normalMapBtn.setAttribute('aria-pressed', 'true');
+        airMapBtn.setAttribute('aria-pressed', 'false');
+        mapStatus.textContent = 'NGII 영상지도는 HTTPS에서 직접 제공되지 않습니다. 배경지도를 표시합니다.';
+      });
+      normalMapBtn.addEventListener('click', () => {
+        normalMapBtn.classList.add('active');
+        airMapBtn.classList.remove('active');
+        normalMapBtn.setAttribute('aria-pressed', 'true');
+        airMapBtn.setAttribute('aria-pressed', 'false');
+        mapStatus.textContent = '국토지리정보원 배경지도';
+      });
+
+      if (pendingLocation) moveNgiiMap(pendingLocation.lat, pendingLocation.lng);
+
+      setTimeout(() => {
+        if (mapStatus.textContent.includes('불러오는 중')) {
+          mapStatus.textContent = '지도 타일 응답 대기 중… 오래 지속되면 NGII 인증키 승인 상태를 확인해주세요.';
+        }
+      }, 8000);
     }
 
     function moveNgiiMap(lat, lng) {
       pendingLocation = { lat, lng };
-      if (!rawOlMap || !window.ol) return;
-
-      const xy5179 = ol.proj.transform([Number(lng), Number(lat)], 'EPSG:4326', 'EPSG:5179');
-      const view = rawOlMap.getView();
-      view.setCenter(xy5179);
-      view.setZoom(16);
-      locationOverlay?.setPosition(xy5179);
-      setTimeout(() => rawOlMap.updateSize(), 50);
-    }
-
-    function setMapMode(mode) {
-      if (!ngiiMap) return;
-      const isAir = mode === 9;
-      try {
-        ngiiMap._setMapMode(String(mode));
-        normalMapBtn.classList.toggle('active', !isAir);
-        airMapBtn.classList.toggle('active', isAir);
-        normalMapBtn.setAttribute('aria-pressed', String(!isAir));
-        airMapBtn.setAttribute('aria-pressed', String(isAir));
-        mapStatus.textContent = isAir ? '국토지리정보원 영상지도' : '국토지리정보원 일반지도';
-      } catch (err) {
-        mapStatus.textContent = '지도 전환에 실패했습니다. API 허용 설정을 확인해주세요.';
-      }
+      if (!map || !window.ol) return;
+      const xy = ol.proj.transform([Number(lng), Number(lat)], 'EPSG:4326', 'EPSG:5179');
+      markerFeature?.getGeometry().setCoordinates(xy);
+      map.getView().setCenter(xy);
+      map.getView().setZoom(16);
+      setTimeout(() => map.updateSize(), 50);
     }
 
     async function showResult(address, lat, lng) {
@@ -611,18 +643,18 @@
       window.scrollTo(0, 0);
       pendingLocation = { lat, lng };
 
-      mapStatus.textContent = ngiiMap ? '국토지리정보원 일반지도' : '국토지리정보원 지도 불러오는 중…';
-      if (!ngiiMap) {
+      mapStatus.textContent = map ? '국토지리정보원 배경지도' : '국토지리정보원 지도 불러오는 중…';
+      if (!map) {
         try {
-          await loadNgiiMap();
+          await initNgiiMap();
         } catch (err) {
           console.error(err);
-          mapStatus.textContent = '지도를 불러오지 못했습니다. NGII API 키·활용 URL 또는 HTTPS 연결을 확인해주세요.';
+          mapStatus.textContent = '지도를 초기화하지 못했습니다. 브라우저 개발자도구 Console을 확인해주세요.';
           return;
         }
       }
       moveNgiiMap(lat, lng);
-      setTimeout(() => rawOlMap?.updateSize(), 120);
+      setTimeout(() => map?.updateSize(), 120);
     }
 
     function searchAddress(query) {
@@ -675,8 +707,6 @@
       }, 30);
     });
 
-    normalMapBtn.addEventListener('click', () => setMapMode(0));
-    airMapBtn.addEventListener('click', () => setMapMode(9));
 
     buildDayRows();
 
