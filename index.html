@@ -23,7 +23,7 @@
 .layer-control{position:absolute;left:15px;top:15px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:15px;padding:8px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:flex;gap:5px}.layer-btn{border:0;background:#f3f4f6;color:#6b7280;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:900;cursor:pointer}.layer-btn.active{background:#111827;color:#fff}
 .zone-tooltip{pointer-events:none;background:rgba(17,24,39,.94);color:#fff;border-radius:11px;padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:12px;line-height:1.45;white-space:nowrap;transform:translate(0,-10px)}.zone-tooltip strong{display:block;font-size:13px;margin-bottom:2px}.zone-tooltip .basis{color:#d1d5db;font-size:10px;margin-top:2px}
 .map-badge{position:absolute;left:15px;bottom:15px;z-index:5;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:12px;box-shadow:0 5px 16px rgba(0,0,0,.07);max-width:300px}.map-badge strong{display:block;margin-bottom:4px}.map-badge span{color:var(--muted);line-height:1.5}.map-badge .warn{color:var(--warn)}
-.food-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#4b5563}.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}.legend-mwf{background:#ef8a62}.legend-tts{background:#67a9cf}.legend-excluded{background:#7f1d1d}.legend-pending{background:#b8b8b8}.excluded-note{margin-top:12px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.65}.food .badge.excluded{background:#7f1d1d;color:#fff}
+.food-legend,.route-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#4b5563}.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}.legend-mwf{background:#ef8a62}.legend-tts{background:#67a9cf}.legend-excluded{background:#7f1d1d}.legend-pending{background:#b8b8b8}.legend-general-direct{background:#17745a}.legend-recycle-direct{background:#315ea8}.excluded-note{margin-top:12px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.65}.food .badge.excluded{background:#7f1d1d;color:#fff}
 @media(max-width:900px){#app{display:flex;flex-direction:column;height:auto;min-height:100%}.side{border-right:0;border-bottom:1px solid var(--line);padding:20px}.map-wrap{height:52vh;min-height:420px}.address{font-size:21px}}@media(max-width:560px){.search{display:grid}.search button{width:100%}.hero{text-align:left}.brand{text-align:center}.hero h1{font-size:42px}.hero p{font-size:15px}.layer-control{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}}
 </style>
 </head>
@@ -70,7 +70,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>경계 출처: 행정동은 admdongkor ver20260701(원출처 통계청 SGIS), 리 경계는 mapcn-kr의 행정안전부 기반 자료. 직영 생활·재활용 코스는 도로·리 단위 텍스트 자료이므로 경계를 임의 추정하지 않고 검색주소와 구간명을 매칭해 표시합니다.</div>
+    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>경계 출처: 행정동은 admdongkor ver20260701(원출처 통계청 SGIS), 리 경계는 mapcn-kr의 행정안전부 기반 자료. 직영 생활·재활용 코스는 도로·리 단위 텍스트 자료이므로 읍·면·동 레이어는 “직영 코스 포함 지역” 참고용으로만 표시하고, 실제 차량·요일·세부 구간은 검색주소와 코스명을 매칭해 판정합니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -191,6 +191,13 @@ function districtHasDirectCoverage(type,district){
   const hints=DIRECT_AREA_HINTS[district]||[];
   if(!hints.length)return false;
   return (DIRECT_ROUTES[type]||[]).some(r=>hints.some(h=>routeNorm(r.area).includes(routeNorm(h))));
+}
+function directVehiclesForDistrict(type,district){
+  const hints=DIRECT_AREA_HINTS[district]||[];
+  if(!hints.length)return [];
+  return (DIRECT_ROUTES[type]||[])
+    .filter(r=>hints.some(h=>routeNorm(r.area).includes(routeNorm(h))))
+    .map(r=>r.vehicle);
 }
 function applicableSecondaryDays(matches,ctx){
   const out=new Set();
@@ -378,10 +385,15 @@ function updateMapBadge(custom){
     el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'읍·면·동별 실제 행정경계를 기준으로 구분합니다. 분류배출 제외지역은 같은 기준의 리를 내부선 없이 묶어 붉은 색면으로 표시합니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
     return;
   }
+  if((activeLayer==='general'||activeLayer==='recycle') && items.length){
+    const dotClass=activeLayer==='general'?'legend-general-direct':'legend-recycle-direct';
+    el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span>${custom||'청원구 직영 코스가 포함된 읍·면·동을 표시합니다. 색칠된 행정구역 전체가 직영이라는 뜻은 아니며, 실제 차량·요일·세부 구간은 주소를 검색해 확인합니다.'}</span><div class="route-legend"><span class="legend-item"><i class="legend-dot ${dotClass}"></i>직영 코스 포함 지역</span></div>`;
+    return;
+  }
   const routeMsg=(activeLayer==='general'||activeLayer==='recycle')
-    ? '2026년 6월 직영 코스는 도로·리·시설명 단위 자료라 정확한 경계가 없는 구간을 임의 폴리곤으로 만들지 않았습니다. 주소검색 시 해당 직영 차량·요일을 자동 매칭합니다.'
+    ? '직영 코스 포함 지역 경계를 불러오는 중이거나 해당 레이어 데이터가 없습니다.'
     : '이 레이어는 아직 세부 수거구역 경계자료를 연결하지 않았습니다.';
-  el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span class="${items.length?'':'warn'}">${custom|| (items.length?'현재 수거구역 경계를 표시하고 있습니다.':routeMsg)}</span>`;
+  el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span class="warn">${custom||routeMsg}</span>`;
 }
 
 function escapeHtml(value){
@@ -403,6 +415,41 @@ function moveZoneTooltip(latLng){
 }
 function hideZoneTooltip(){
   if(zoneTooltipOverlay)zoneTooltipOverlay.setMap(null);
+}
+
+function addDirectCoverageGeometry(feature,district,type){
+  if(!districtHasDirectCoverage(type,district)) return;
+  const g=feature.geometry;if(!g)return;
+  const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+  const isGeneral=type==='general';
+  const fill=isGeneral?'#17745a':'#315ea8';
+  const stroke=isGeneral?'#0f5d47':'#254a86';
+  const label=isGeneral?'생활쓰레기':'재활용쓰레기';
+  const vehicles=directVehiclesForDistrict(type,district);
+  multi.forEach(polyCoords=>{
+    if(!polyCoords.length)return;
+    const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
+    const polygon=new kakao.maps.Polygon({
+      path:paths.length===1?paths[0]:paths,
+      strokeWeight:1.5,strokeColor:'#ffffff',strokeOpacity:.95,
+      fillColor:fill,fillOpacity:.18
+    });
+    polygon.setMap(activeLayer===type?map:null);
+    kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
+      polygon.setOptions({fillOpacity:.32,strokeColor:stroke,strokeOpacity:1,strokeWeight:2.2});
+      const detail=`${label} · 청원구 직영 코스 포함 · 차량 ${vehicles.join(', ')||'확인 중'}`;
+      showZoneTooltip(mouseEvent.latLng,district,detail,'읍·면·동 경계(직영 일부구간 포함)');
+    });
+    kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
+    kakao.maps.event.addListener(polygon,'mouseout',()=>{
+      polygon.setOptions({fillOpacity:.18,strokeColor:'#ffffff',strokeOpacity:.95,strokeWeight:1.5});
+      hideZoneTooltip();
+    });
+    kakao.maps.event.addListener(polygon,'click',()=>{
+      updateMapBadge(`${district} · ${label} 직영 코스 포함 · 차량 ${vehicles.join(', ')||'확인 중'} · 세부 구간은 주소검색으로 확인`);
+    });
+    zonePolygons[type].push({polygon,district,vehicles,coverage:'partial'});
+  });
 }
 
 function foodStyle(district){
@@ -512,9 +559,9 @@ async function fetchGeoJson(url,label){
 async function buildZonePolygons(){
   updateMapBadge('정밀 읍·면·동 경계와 분류배출 제외지역을 불러오는 중입니다…');
   try{
-    // 기존 3% 단순화 emd.json 대신 admdongkor 원본 행정동 경계를 직접 사용합니다.
-    // 파일은 크지만 청원구 8개 읍면동만 골라 카카오맵에 그립니다.
-    const emdUrl='https://raw.githubusercontent.com/vuski/admdongkor/master/ver20260701/HangJeongDong_ver20260701.geojson';
+    // 10MB가 넘는 원본 대신 mapcn-kr의 웹용 행정동 경계(약 1.6MB)를 사용합니다.
+    // GitHub Pages에서 초기 레이어 로딩이 훨씬 빠르고 안정적입니다.
+    const emdUrl='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/emd.json';
     const riUrl='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json';
     const [emdFc,riFc]=await Promise.all([
       fetchGeoJson(emdUrl,'정밀 행정동 경계'),
@@ -527,14 +574,16 @@ async function buildZonePolygons(){
 
     (emdFc.features||[]).forEach(f=>{
       const p=f.properties||{};
-      const fullName=String(p.adm_nm||p.ADM_NM||'');
-      if(!fullName.includes('청주시 청원구')) return;
-      const rawDistrict=fullName.trim().split(/\s+/).pop();
-      const district=canonicalDistrict(rawDistrict);
+      // mapcn-kr emd.json 속성: sggnm, dong, adm_cd2
+      const sggName=String(p.sggnm||p.SGGNM||'');
+      if(!sggName.includes('청주시 청원구')) return;
+      const district=canonicalDistrict(String(p.dong||p.DONG||''));
       if(!targets.has(district)) return;
       districtFeatures.set(district,f);
       addFoodGeometry(f,district);
-      const code=String(p.adm_cd2||p.ADM_CD2||p.adm_cd||'');
+      addDirectCoverageGeometry(f,district,'general');
+      addDirectCoverageGeometry(f,district,'recycle');
+      const code=String(p.adm_cd2||p.ADM_CD2||'');
       if(code) codeToDistrict.set(code,district);
     });
 
@@ -562,7 +611,7 @@ async function buildZonePolygons(){
     if(zonePolygons.food.length){
       setLayer(activeLayer);
       if(activeLayer==='food'){
-        updateMapBadge(`음식물 레이어 · 청원구 8개 읍·면·동 정밀경계 · 제외지역 ${exclusionGroups.size}개 권역 표시`);
+        updateMapBadge(`음식물 레이어 · 청원구 8개 읍·면·동 경계 · 제외지역 ${exclusionGroups.size}개 권역 표시`);
       }else updateMapBadge();
     }else{
       updateMapBadge('청원구 8개 읍·면·동 정밀경계를 찾지 못했습니다.');
