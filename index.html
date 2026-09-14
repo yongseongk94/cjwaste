@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내</title>
+<!-- layer fix v17: Cheongwon-gu filter + resilient GeoJSON loading -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -556,69 +557,115 @@ async function fetchGeoJson(url,label){
   return res.json();
 }
 
-async function buildZonePolygons(){
-  updateMapBadge('정밀 읍·면·동 경계와 분류배출 제외지역을 불러오는 중입니다…');
-  try{
-    // 10MB가 넘는 원본 대신 mapcn-kr의 웹용 행정동 경계(약 1.6MB)를 사용합니다.
-    // GitHub Pages에서 초기 레이어 로딩이 훨씬 빠르고 안정적입니다.
-    const emdUrl='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/emd.json';
-    const riUrl='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json';
-    const [emdFc,riFc]=await Promise.all([
-      fetchGeoJson(emdUrl,'정밀 행정동 경계'),
-      fetchGeoJson(riUrl,'충북 리 경계')
-    ]);
+async function fetchGeoJsonAny(urls,label){
+  let lastErr=null;
+  for(const url of urls){
+    try{
+      const res=await fetch(url,{cache:'force-cache'});
+      if(!res.ok) throw new Error(`${label} HTTP ${res.status}`);
+      return await res.json();
+    }catch(err){
+      lastErr=err;
+      console.warn(`${label} 로딩 실패:`,url,err);
+    }
+  }
+  throw lastErr||new Error(`${label} 로딩 실패`);
+}
 
-    const targets=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
-    const codeToDistrict=new Map();
-    const districtFeatures=new Map();
+async function buildZonePolygons(){
+  updateMapBadge('청원구 읍·면·동 경계를 불러오는 중입니다…');
+
+  const emdUrls=[
+    'https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/emd.json',
+    'https://raw.githubusercontent.com/DevMinGeonPark/mapcn-kr/main/data/emd.json'
+  ];
+  const riUrls=[
+    'https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json',
+    'https://raw.githubusercontent.com/DevMinGeonPark/mapcn-kr/main/data/ri/43.json'
+  ];
+
+  const targets=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
+  const codeToDistrict=new Map();
+  const districtFeatures=new Map();
+
+  // 1) 읍·면·동 경계는 독립적으로 먼저 그립니다.
+  //    리 경계 로딩이 실패하더라도 생활/음식물/재활용 기본 레이어는 유지됩니다.
+  try{
+    const emdFc=await fetchGeoJsonAny(emdUrls,'청원구 읍·면·동 경계');
+    let matched=0;
 
     (emdFc.features||[]).forEach(f=>{
       const p=f.properties||{};
-      // mapcn-kr emd.json 속성: sggnm, dong, adm_cd2
-      const sggName=String(p.sggnm||p.SGGNM||'');
-      if(!sggName.includes('청주시 청원구')) return;
-      const district=canonicalDistrict(String(p.dong||p.DONG||''));
+      // mapcn-kr emd.json: sggnm은 보통 '청원구'처럼 구 이름만 들어옵니다.
+      const sggName=String(p.sggnm||p.SGGNM||'').trim();
+      if(!sggName.includes('청원구')) return;
+
+      const district=canonicalDistrict(String(p.dong||p.DONG||'').trim());
       if(!targets.has(district)) return;
+
+      matched++;
       districtFeatures.set(district,f);
       addFoodGeometry(f,district);
       addDirectCoverageGeometry(f,district,'general');
       addDirectCoverageGeometry(f,district,'recycle');
-      const code=String(p.adm_cd2||p.ADM_CD2||'');
+
+      const code=String(p.adm_cd2||p.ADM_CD2||'').trim();
       if(code) codeToDistrict.set(code,district);
     });
 
-    // 북이면은 전 지역 제외이므로 리 단위로 쪼개지 않고 행정경계 하나를 그대로 사용합니다.
+    console.info('청원구 읍면동 레이어 매칭:',matched,[...districtFeatures.keys()]);
+
+    if(!matched){
+      updateMapBadge('청원구 읍·면·동 경계를 찾지 못했습니다. 경계 데이터 형식을 확인해주세요.');
+      return;
+    }
+
+    // 북이면은 음식물 분류배출 제외 전 지역이므로 행정경계 하나로 표시합니다.
     const bugi=districtFeatures.get('북이면');
     if(bugi) addWholeDistrictExclusion(bugi,'북이면');
 
+    setLayer(activeLayer);
+    updateMapBadge(`청원구 읍·면·동 ${matched}개 경계를 불러왔습니다.`);
+  }catch(err){
+    console.error('읍·면·동 레이어 로딩 실패',err);
+    updateMapBadge('읍·면·동 경계를 불러오지 못했습니다. 주소별 일정 판정은 계속 사용할 수 있습니다.');
+    return;
+  }
+
+  // 2) 내수읍·오창읍 음식물 분류배출 제외 리 경계는 별도로 추가합니다.
+  //    여기서 실패해도 위에서 생성한 기본 레이어는 사라지지 않습니다.
+  try{
+    const riFc=await fetchGeoJsonAny(riUrls,'충북 리 경계');
     const exclusionGroups=new Set();
+
     (riFc.features||[]).forEach(f=>{
       const p=f.properties||{};
-      const parentCode=String(p.emd_adm||'');
+      const parentCode=String(p.emd_adm||p.EMD_ADM||'').trim();
       const district=codeToDistrict.get(parentCode);
       if(!district || !['내수읍','오창읍'].includes(district)) return;
-      const riName=normalizeRi(p.li_nm||p.ri_nm||p.name||'');
+
+      const riName=normalizeRi(p.li_nm||p.LI_NM||p.ri_nm||p.name||'');
       if(!riName) return;
+
       const ex=getFoodExclusion(district,riName);
       if(ex.excluded===true){
-        // 내부 경계선이 없기 때문에 붙어 있는 리들은 지도에서 하나의 덩어리처럼 보입니다.
         addExcludedRiGeometry(f,district,riName);
         exclusionGroups.add(district);
       }
     });
-    if(bugi) exclusionGroups.add('북이면');
 
-    if(zonePolygons.food.length){
-      setLayer(activeLayer);
-      if(activeLayer==='food'){
-        updateMapBadge(`음식물 레이어 · 청원구 8개 읍·면·동 경계 · 제외지역 ${exclusionGroups.size}개 권역 표시`);
-      }else updateMapBadge();
-    }else{
-      updateMapBadge('청원구 8개 읍·면·동 정밀경계를 찾지 못했습니다.');
+    if(districtFeatures.has('북이면')) exclusionGroups.add('북이면');
+    setLayer(activeLayer);
+
+    if(activeLayer==='food'){
+      updateMapBadge(`음식물 레이어 · 청원구 ${zonePolygons.food.length}개 폴리곤 · 제외지역 ${exclusionGroups.size}개 권역 표시`);
     }
   }catch(err){
-    console.error('정밀 음식물 경계/제외지역 레이어 로딩 실패',err);
-    updateMapBadge('정밀 경계를 불러오지 못했습니다. 주소별 일정 판정은 계속 사용할 수 있습니다.');
+    console.warn('리 제외지역 레이어 로딩 실패 - 읍면동 기본 레이어는 유지',err);
+    setLayer(activeLayer);
+    if(activeLayer==='food'){
+      updateMapBadge('읍·면·동 음식물 레이어는 표시 중입니다. 내수·오창의 리 단위 제외지역 경계만 불러오지 못했습니다.');
+    }
   }
 }
 function init(){
