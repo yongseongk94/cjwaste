@@ -119,6 +119,8 @@
 
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
+// Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
+const ROUTE_PROXY_URL='/route'; // Cloudflare Pages Function (functions/route.js)
 const DEFAULT={lat:36.6515,lng:127.4866};
 const DAYS=['월','화','수','목','금','토','일'];
 
@@ -896,6 +898,38 @@ function routeTermsForMap(raw){
   // 원본 코스표의 모든 항목을 순서대로 사용합니다. v32의 24개 제한 때문에 뒷부분 노선이 잘리던 문제를 제거했습니다.
   return routeTerms(raw).filter(t=>!/(전\s*코스|일원$)/.test(t));
 }
+function routeProxyConfigured(){
+  const u=String(ROUTE_PROXY_URL||'').trim();
+  return (u.startsWith('/') || /^https:\/\//i.test(u)) && !/YOUR|계정|example/i.test(u);
+}
+async function fetchRoadFollowingPath(points){
+  if(!routeProxyConfigured()||!Array.isArray(points)||points.length<2)return null;
+  const payload={
+    points:points.map(p=>({x:+p.lng,y:+p.lat,name:String(p.term||p.name||'').slice(0,80)})),
+    priority:'RECOMMEND'
+  };
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),25000);
+  try{
+    const res=await fetch(ROUTE_PROXY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+      signal:controller.signal
+    });
+    if(!res.ok)throw new Error(`route proxy ${res.status}`);
+    const data=await res.json();
+    const path=(data?.path||[]).map(p=>({lng:+p[0],lat:+p[1]})).filter(p=>Number.isFinite(p.lng)&&Number.isFinite(p.lat));
+    if(path.length<2)throw new Error('empty road path');
+    return {path,distance:+data.distance||0,duration:+data.duration||0,chunks:+data.chunks||1};
+  }catch(err){
+    console.warn('도로망 수거노선 생성 실패, 확인지점 직선 연결로 대체합니다.',err);
+    return null;
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
 async function buildDongRouteOverlay(spec){
   const key=`${spec.type}|${spec.vehicle}|${spec.day}`;
   if(dongRouteBuiltKeys.has(key))return;
@@ -940,17 +974,25 @@ async function buildDongRouteOverlay(spec){
   if(points.length<2)return;
 
   const districtLabel=touchedDistricts.length?touchedDistricts.join('·'):spec.districts.join('·');
+  // 확인된 코스 지점을 Kakao Mobility 길찾기 프록시에 보내 실제 도로망을 따라 연결합니다.
+  // 프록시가 아직 설정되지 않았거나 호출이 실패하면 기존 확인지점 직선 연결을 안전한 대체표현으로 사용합니다.
+  const roadResult=await fetchRoadFollowingPath(points);
+  const drawPoints=roadResult?.path||points;
+  const roadMatched=!!roadResult;
   const polyline=new kakao.maps.Polyline({
-    path:points.map(p=>new kakao.maps.LatLng(p.lat,p.lng)),
+    path:drawPoints.map(p=>new kakao.maps.LatLng(p.lat,p.lng)),
     strokeWeight:5,
     strokeColor:DAY_COLORS[spec.day]||'#334155',
-    strokeOpacity:.8,
-    strokeStyle:'shortdash'
+    strokeOpacity:.82,
+    strokeStyle:roadMatched?'solid':'shortdash'
   });
   polyline.setMap(null);
   kakao.maps.event.addListener(polyline,'mouseover',(e)=>{
     polyline.setOptions({strokeWeight:7,strokeOpacity:.96});
-    showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 직영 수거노선 참고선`,`코스표 ${points.length}개 확인지점을 순서대로 연결 · 정밀 GPS 주행경로 아님`);
+    const basis=roadMatched
+      ? `코스표 ${points.length}개 확인지점을 실제 도로망 길찾기로 연결 · GPS 실주행 기록은 아님`
+      : `코스표 ${points.length}개 확인지점 직선 연결 · 도로망 프록시 미설정/실패`;
+    showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 직영 수거노선`,basis);
   });
   kakao.maps.event.addListener(polyline,'mousemove',e=>moveZoneTooltip(e.latLng));
   kakao.maps.event.addListener(polyline,'mouseout',()=>{
@@ -958,9 +1000,12 @@ async function buildDongRouteOverlay(spec){
   });
   kakao.maps.event.addListener(polyline,'click',()=>{
     const text=String(spec.raw||'').replace(/\s+/g,' ').trim();
-    updateMapBadge(`${districtLabel} · ${spec.vehicle}호 · ${spec.day}요일 · 확인지점 ${points.length}개 · 직영 코스표: ${escapeHtml(text)}`);
+    const routeNote=roadMatched
+      ? `도로망 경로 적용${roadResult?.distance?` · 약 ${(roadResult.distance/1000).toFixed(1)}km`:''}`
+      : `직선 참고선(도로망 프록시 미적용)`;
+    updateMapBadge(`${districtLabel} · ${spec.vehicle}호 · ${spec.day}요일 · 확인지점 ${points.length}개 · ${routeNote} · 직영 코스표: ${escapeHtml(text)}`);
   });
-  dongRouteOverlays[spec.type].push({...spec,district:districtLabel,points,polyline});
+  dongRouteOverlays[spec.type].push({...spec,district:districtLabel,points,roadMatched,roadResult,polyline});
 }
 function syncDongRouteVisibility(type){
   Object.values(dongRouteOverlays).flat().forEach(item=>item?.polyline?.setMap(null));
@@ -1060,7 +1105,7 @@ function updateMapBadge(custom){
   const dayLabel=activeDay==='전체'?'전체 일정':`${activeDay}요일`;
   const providerLabel=provider==='전체'?'전체 수거노선':(provider==='제일환경'?'제일환경 위탁':`${provider}호 직영`);
   el.innerHTML=`<strong>${labels[activeLayer]} 수거노선 레이어 · ${providerLabel} · ${dayLabel}</strong>
-    <span>${custom||'읍·면은 법정리 기준 면색으로 표시하고, 동지역 직영수거는 행정동 전체를 칠하지 않고 차량·요일별 코스표의 확인 가능한 도로·학교·시설 위치를 연결한 참고 수거노선으로 표시합니다. 참고선은 실제 정밀 주행궤적이 아닙니다. 전체차량·전체요일 상태에서는 혼잡을 막기 위해 동지역 참고선을 숨기고 차량 또는 요일 선택 시 표시합니다. 확인된 위탁업체 노선은 별도 수거주체로 함께 표시합니다.'}</span>
+    <span>${custom||'읍·면은 법정리 기준 면색으로 표시하고, 동지역 직영수거는 행정동 전체를 칠하지 않고 차량·요일별 코스표의 확인 가능한 도로·학교·시설 위치를 경유점으로 삼아, 길찾기 프록시가 설정된 경우 실제 도로망을 따라 수거노선을 표시합니다. GPS 실주행 기록은 아니며 프록시 미설정 시에는 확인지점 직선 참고선으로 대체됩니다. 전체차량·전체요일 상태에서는 혼잡을 막기 위해 동지역 참고선을 숨기고 차량 또는 요일 선택 시 표시합니다. 확인된 위탁업체 노선은 별도 수거주체로 함께 표시합니다.'}</span>
     ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>행정동 참고:</strong> ${regionText}</div>`:''}
     <div class="route-legend">${legend}</div>`;
 }
@@ -1491,4 +1536,5 @@ loadSdk();
 </script>
 </body>
 </html>
+
 
