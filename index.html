@@ -541,8 +541,21 @@ const DIRECT_AREA_HINTS={
 };
 
 function routeNorm(s){return String(s||'').toLowerCase().replace(/\s+/g,'').replace(/[·.()@-]/g,'')}
+// 코스표의 축약 도로명을 실제 도로명 단위로 풀어냅니다.
+// 예) 공항로70,64,58,52번길 → 공항로70번길, 공항로64번길, ...
+//     밀레니엄1,2,3,4로 → 밀레니엄1로, 밀레니엄2로, ...
+function expandRouteShorthand(text){
+  let src=String(text||'');
+  src=src.replace(/([가-힣A-Za-z0-9]+(?:대로|로|길))(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)+)번길/g,(m,base,nums)=>
+    nums.split(',').map(n=>`${base}${n}번길`).join(',')
+  );
+  src=src.replace(/([가-힣A-Za-z]+)(\d+(?:,\d+)+)로(?=\s*(?:일대|간선|,|\n|$))/g,(m,base,nums)=>
+    nums.split(',').map(n=>`${base}${n}로`).join(',')
+  );
+  return src;
+}
 function routeTerms(text){
-  const src=String(text||'');
+  const src=expandRouteShorthand(text);
   const terms=[];
   const parens=[...src.matchAll(/\(([^)]+)\)/g)].map(m=>m[1]);
   src.split(/[,\n]/).concat(parens).forEach(part=>{
@@ -850,7 +863,7 @@ function searchRouteTermPlaces(term){
   if(!key)return Promise.resolve([]);
   if(routePlaceSearchCache.has(key))return routePlaceSearchCache.get(key);
   const promise=new Promise(resolve=>{
-    const query=`청주시 청원구 ${key}`;
+    const query=`청주시 청원구 ${normalizedRouteSearchTerm(key)}`;
     const found=[];
     const add=(p)=>{
       if(!p||!Number.isFinite(+p.lat)||!Number.isFinite(+p.lng))return;
@@ -880,6 +893,79 @@ function searchRouteTermPlaces(term){
   });
   routePlaceSearchCache.set(key,promise);
   return promise;
+}
+function isRoadRouteTerm(term){
+  const t=String(term||'').replace(/\s+/g,'').trim();
+  return /(?:대로|로|길)$/.test(t) || /(?:대로|로)\d+(?:-\d+)?번길$/.test(t);
+}
+function normalizedRouteSearchTerm(term){
+  let t=String(term||'').trim();
+  // '율봉로95', '공항로229', '2순환로278-1'처럼 코스표에 붙여 쓴 건물번호를 주소검색 형식으로 보정합니다.
+  t=t.replace(/^(.+(?:대로|로|길))(\d+(?:-\d+)?)$/,'$1 $2');
+  return t;
+}
+function addressSearchPromise(query){
+  return new Promise(resolve=>{
+    geocoder.addressSearch(query,(results,status)=>resolve(status===kakao.maps.services.Status.OK?(results||[]):[]));
+  });
+}
+const roadAnchorSearchCache=new Map();
+async function searchRoadAnchorPlaces(term){
+  const key=String(term||'').trim();
+  if(!isRoadRouteTerm(key))return [];
+  if(roadAnchorSearchCache.has(key))return roadAnchorSearchCache.get(key);
+  const promise=(async()=>{
+    const numbers=/번길$/.test(key)
+      ? [1,5,10,20,30,40,50,70,100,150]
+      : [1,25,50,75,100,125,150,175,200,250,300,350,400,500];
+    const batches=[];
+    for(const n of numbers){
+      batches.push(addressSearchPromise(`청주시 청원구 ${key} ${n}`));
+    }
+    const found=[];
+    const add=(r,n)=>{
+      const lat=+r.y,lng=+r.x;
+      if(!Number.isFinite(lat)||!Number.isFinite(lng))return;
+      const roadName=String(r.road_address?.road_name||'');
+      if(roadName && routeNorm(roadName)!==routeNorm(key))return;
+      if(found.some(x=>Math.abs(x.lat-lat)<1e-6&&Math.abs(x.lng-lng)<1e-6))return;
+      found.push({lat,lng,name:key,address:r.road_address?.address_name||r.address_name||'',source:'road-sample',sampleNo:n});
+    };
+    const results=await Promise.all(batches);
+    results.forEach((rows,i)=>(rows||[]).forEach(r=>add(r,numbers[i])));
+    return found;
+  })();
+  roadAnchorSearchCache.set(key,promise);
+  return promise;
+}
+function candidateMinDistance(point,candidates){
+  if(!point||!candidates?.length)return Infinity;
+  let best=Infinity;
+  for(const c of candidates)best=Math.min(best,routePointDistance(point,c));
+  return best;
+}
+function chooseRoadAnchors(candidates,prev,nextCandidates){
+  if(!candidates.length)return [];
+  const pool=[...candidates];
+  let entry=prev
+    ? pool.reduce((best,c)=>routePointDistance(prev,c)<routePointDistance(prev,best)?c:best,pool[0])
+    : (nextCandidates?.length
+      ? pool.reduce((best,c)=>candidateMinDistance(c,nextCandidates)<candidateMinDistance(best,nextCandidates)?c:best,pool[0])
+      : pool[0]);
+  let remain=pool.filter(c=>c!==entry);
+  if(!remain.length)return [entry];
+  let exit;
+  if(nextCandidates?.length){
+    exit=remain.reduce((best,c)=>candidateMinDistance(c,nextCandidates)<candidateMinDistance(best,nextCandidates)?c:best,remain[0]);
+    // 진입·이탈점이 지나치게 붙으면 도로 구간이 사라지므로, 충분히 떨어진 실제 도로점이 있으면 보강합니다.
+    if(routePointDistance(entry,exit)<0.18){
+      const far=remain.reduce((best,c)=>routePointDistance(entry,c)>routePointDistance(entry,best)?c:best,remain[0]);
+      if(routePointDistance(entry,far)>0.18)exit=far;
+    }
+  }else{
+    exit=remain.reduce((best,c)=>routePointDistance(entry,c)>routePointDistance(entry,best)?c:best,remain[0]);
+  }
+  return routePointDistance(entry,exit)>0.08?[entry,exit]:[entry];
 }
 function routePointDistrict(point,candidates){
   for(const district of candidates){
@@ -940,35 +1026,59 @@ async function buildDongRouteOverlay(spec){
   const points=[];
   const touchedDistricts=[];
   let prev=null;
-  for(const term of routeTermsForMap(spec.raw)){
-    const results=await searchRouteTermPlaces(term);
-    const candidates=[];
-    for(const point of results){
-      const district=routePointDistrict(point,spec.districts);
-      if(district)candidates.push({...point,district});
-    }
-    if(!candidates.length)continue;
+  const terms=routeTermsForMap(spec.raw);
+  const entries=[];
 
-    // 같은 이름의 장소가 여러 곳이면 직전 코스 지점과 가까운 결과를 우선해 노선의 연속성을 높입니다.
-    candidates.sort((a,b)=>{
-      if(!prev){
-        const aAddr=routeNorm(a.address).includes(routeNorm(term))?0:1;
-        const bAddr=routeNorm(b.address).includes(routeNorm(term))?0:1;
-        return aAddr-bAddr;
-      }
-      return routePointDistance(prev,a)-routePointDistance(prev,b);
-    });
-    const chosen=candidates[0];
-    if(prev&&routePointDistance(prev,chosen)>12){
-      // 동지역 코스에서 같은 이름의 먼 장소가 잘못 선택된 경우는 연결하지 않습니다.
-      // 단, 첫 지점이나 실제 인접 코스는 계속 반영합니다.
-      const sameDistrict=prev.district===chosen.district;
-      if(!sameDistrict)continue;
+  // 먼저 모든 코스 항목을 해석합니다. 도로명은 대표점 1개가 아니라 도로 위 여러 실제 주소점을 수집합니다.
+  for(const term of terms){
+    const generic=await searchRouteTermPlaces(term);
+    const roadSamples=isRoadRouteTerm(term)?await searchRoadAnchorPlaces(term):[];
+    const merged=[...roadSamples,...generic];
+    const candidates=[];
+    for(const point of merged){
+      const district=routePointDistrict(point,spec.districts);
+      if(!district)continue;
+      if(candidates.some(x=>Math.abs(x.lat-point.lat)<1e-6&&Math.abs(x.lng-point.lng)<1e-6))continue;
+      candidates.push({...point,district});
     }
-    if(!prev||Math.abs(prev.lat-chosen.lat)>1e-6||Math.abs(prev.lng-chosen.lng)>1e-6){
-      points.push({...chosen,term});
-      if(!touchedDistricts.includes(chosen.district))touchedDistricts.push(chosen.district);
-      prev=chosen;
+    entries.push({term,isRoad:isRoadRouteTerm(term),candidates});
+  }
+
+  for(let i=0;i<entries.length;i++){
+    const entry=entries[i];
+    if(!entry.candidates.length)continue;
+    let nextCandidates=[];
+    for(let j=i+1;j<entries.length;j++){
+      if(entries[j].candidates.length){nextCandidates=entries[j].candidates;break;}
+    }
+
+    let chosenPoints=[];
+    if(entry.isRoad){
+      const sampled=entry.candidates.filter(x=>x.source==='road-sample');
+      chosenPoints=chooseRoadAnchors(sampled.length?sampled:entry.candidates,prev,nextCandidates);
+    }else{
+      const candidates=[...entry.candidates];
+      candidates.sort((a,b)=>{
+        if(!prev){
+          const aAddr=routeNorm(a.address).includes(routeNorm(entry.term))?0:1;
+          const bAddr=routeNorm(b.address).includes(routeNorm(entry.term))?0:1;
+          return aAddr-bAddr;
+        }
+        return routePointDistance(prev,a)-routePointDistance(prev,b);
+      });
+      chosenPoints=[candidates[0]];
+    }
+
+    for(const chosen of chosenPoints){
+      if(prev&&routePointDistance(prev,chosen)>12){
+        const sameDistrict=prev.district===chosen.district;
+        if(!sameDistrict)continue;
+      }
+      if(!prev||Math.abs(prev.lat-chosen.lat)>1e-6||Math.abs(prev.lng-chosen.lng)>1e-6){
+        points.push({...chosen,term:entry.term});
+        if(!touchedDistricts.includes(chosen.district))touchedDistricts.push(chosen.district);
+        prev=chosen;
+      }
     }
   }
   if(points.length<2)return;
@@ -990,7 +1100,7 @@ async function buildDongRouteOverlay(spec){
   kakao.maps.event.addListener(polyline,'mouseover',(e)=>{
     polyline.setOptions({strokeWeight:7,strokeOpacity:.96});
     const basis=roadMatched
-      ? `코스표 ${points.length}개 확인지점을 실제 도로망 길찾기로 연결 · GPS 실주행 기록은 아님`
+      ? `코스표 ${points.length}개 확인지점(도로명 구간 앵커 포함)을 실제 도로망 길찾기로 연결 · GPS 실주행 기록은 아님`
       : `코스표 ${points.length}개 확인지점 직선 연결 · 도로망 프록시 미설정/실패`;
     showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 직영 수거노선`,basis);
   });
