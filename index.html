@@ -120,7 +120,7 @@
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
-const ROUTE_PROXY_URL='/route'; // Cloudflare Pages Function (functions/route.js)
+const ROUTE_PROXY_URL='https://cjwaste-route.yseong22.workers.dev/route'; // Kakao Mobility route proxy Worker
 const DEFAULT={lat:36.6515,lng:127.4866};
 const DAYS=['월','화','수','목','금','토','일'];
 
@@ -1536,5 +1536,3 @@ loadSdk();
 </script>
 </body>
 </html>
-
-
