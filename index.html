@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
-<!-- v32: eup/myeon use area polygons; urban dong direct collection uses vehicle/day route reference lines; contractor routes retained -->
+<!-- v33: fuller urban dong route references; all course terms, address+place geocoding, continuous cross-dong lines -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -93,7 +93,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>읍·면 지역의 법정리(里)를 기본 단위</strong>로 사용하고, 코스표의 리 명칭뿐 아니라 <strong>시설명·학교·사업장·마을명·도로명 주소를 실제 위치와 대조해 법정리로 환산한 검증 규칙</strong>을 함께 적용합니다. 수거일정 조합이 같은 인접 리는 같은 색상·무경계로 표시해 한 권역처럼 보이게 합니다. <strong>수거일정이 확정되지 않은 리는 지도 레이어에서 표시하지 않습니다.</strong> 여러 리를 길게 통과하는 ‘간선/도로 일대’처럼 범위가 불명확한 표현도 임의로 확장하지 않습니다. 동 지역의 생활·재활용은 행정동 전체를 면으로 칠하지 않고, 코스표의 도로·학교·시설 위치를 실제 지도에서 확인해 차량·요일별 <strong>직영 수거노선 참고선</strong>으로 표시합니다. 이 선은 코스표 기재 순서를 연결한 참고선이며 실제 차량의 정밀 주행궤적을 의미하지 않습니다. 오창과학산업단지 주거권역과 <strong>공항로 남측 오창읍 창리·주성리</strong>는 <strong>제일환경(043-286-0997) · 월·수·금</strong> 위탁수거로 표시하며, 생활·재활용 지도에서도 <strong>직영과 구분된 위탁업체 수거노선</strong>으로 함께 표시합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 생활·재활용 직영 코스와 음식물 분류배출 제외지역에 사용합니다.</div>
+    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>읍·면 지역의 법정리(里)를 기본 단위</strong>로 사용하고, 코스표의 리 명칭뿐 아니라 <strong>시설명·학교·사업장·마을명·도로명 주소를 실제 위치와 대조해 법정리로 환산한 검증 규칙</strong>을 함께 적용합니다. 수거일정 조합이 같은 인접 리는 같은 색상·무경계로 표시해 한 권역처럼 보이게 합니다. <strong>수거일정이 확정되지 않은 리는 지도 레이어에서 표시하지 않습니다.</strong> 여러 리를 길게 통과하는 ‘간선/도로 일대’처럼 범위가 불명확한 표현도 임의로 확장하지 않습니다. 동 지역의 생활·재활용은 행정동 전체를 면으로 칠하지 않고, 코스표의 모든 도로·학교·시설 항목을 주소검색과 장소검색으로 확인해 차량·요일별 <strong>직영 수거노선 참고선</strong>으로 표시합니다. 행정동 경계에서 선을 끊지 않고 코스표 순서대로 연속 연결하며, 실제 차량의 정밀 GPS 주행궤적을 의미하지는 않습니다. 오창과학산업단지 주거권역과 <strong>공항로 남측 오창읍 창리·주성리</strong>는 <strong>제일환경(043-286-0997) · 월·수·금</strong> 위탁수거로 표시하며, 생활·재활용 지도에서도 <strong>직영과 구분된 위탁업체 수거노선</strong>으로 함께 표시합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 생활·재활용 직영 코스와 음식물 분류배출 제외지역에 사용합니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -849,9 +849,31 @@ function searchRouteTermPlaces(term){
   if(routePlaceSearchCache.has(key))return routePlaceSearchCache.get(key);
   const promise=new Promise(resolve=>{
     const query=`청주시 청원구 ${key}`;
-    places.keywordSearch(query,(results,status)=>{
-      if(status!==kakao.maps.services.Status.OK||!results?.length){resolve([]);return}
-      resolve(results.map(r=>({lat:+r.y,lng:+r.x,name:r.place_name||key,address:r.road_address_name||r.address_name||''})).filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lng)));
+    const found=[];
+    const add=(p)=>{
+      if(!p||!Number.isFinite(+p.lat)||!Number.isFinite(+p.lng))return;
+      const lat=+p.lat,lng=+p.lng;
+      if(found.some(x=>Math.abs(x.lat-lat)<1e-6&&Math.abs(x.lng-lng)<1e-6))return;
+      found.push({...p,lat,lng});
+    };
+    // 도로명·번길은 장소검색만으로 누락되는 경우가 많아 주소검색을 먼저 함께 사용합니다.
+    geocoder.addressSearch(query,(addrResults,addrStatus)=>{
+      if(addrStatus===kakao.maps.services.Status.OK){
+        (addrResults||[]).forEach(r=>add({lat:r.y,lng:r.x,name:key,address:r.road_address?.address_name||r.address_name||query,source:'address'}));
+      }
+      places.keywordSearch(query,(placeResults,placeStatus)=>{
+        if(placeStatus===kakao.maps.services.Status.OK){
+          (placeResults||[]).forEach(r=>add({lat:r.y,lng:r.x,name:r.place_name||key,address:r.road_address_name||r.address_name||'',source:'place'}));
+        }
+        // 청원구를 붙였을 때 검색결과가 없으면 원문 키워드로 한 번 더 찾습니다.
+        if(found.length){resolve(found);return}
+        places.keywordSearch(key,(fallbackResults,fallbackStatus)=>{
+          if(fallbackStatus===kakao.maps.services.Status.OK){
+            (fallbackResults||[]).forEach(r=>add({lat:r.y,lng:r.x,name:r.place_name||key,address:r.road_address_name||r.address_name||'',source:'fallback'}));
+          }
+          resolve(found);
+        });
+      });
     });
   });
   routePlaceSearchCache.set(key,promise);
@@ -864,54 +886,81 @@ function routePointDistrict(point,candidates){
   }
   return '';
 }
+function routePointDistance(a,b){
+  if(!a||!b)return Infinity;
+  const dy=(a.lat-b.lat)*111;
+  const dx=(a.lng-b.lng)*88;
+  return Math.hypot(dx,dy);
+}
 function routeTermsForMap(raw){
-  // 원본 코스표 순서를 보존하되 '전코스' 같은 설명 문구는 제외합니다.
-  return routeTerms(raw).filter(t=>!/(전\s*코스|일원$)/.test(t)).slice(0,24);
+  // 원본 코스표의 모든 항목을 순서대로 사용합니다. v32의 24개 제한 때문에 뒷부분 노선이 잘리던 문제를 제거했습니다.
+  return routeTerms(raw).filter(t=>!/(전\s*코스|일원$)/.test(t));
 }
 async function buildDongRouteOverlay(spec){
   const key=`${spec.type}|${spec.vehicle}|${spec.day}`;
   if(dongRouteBuiltKeys.has(key))return;
   dongRouteBuiltKeys.add(key);
-  const grouped=new Map();
+
+  // 행정동별로 선을 쪼개지 않고 원본 코스표 순서대로 하나의 연속 노선으로 연결합니다.
+  // v32는 동 경계마다 노선을 분할하여 실제보다 짧은 조각선처럼 보이는 문제가 있었습니다.
+  const points=[];
+  const touchedDistricts=[];
+  let prev=null;
   for(const term of routeTermsForMap(spec.raw)){
     const results=await searchRouteTermPlaces(term);
-    let chosen=null,chosenDistrict='';
+    const candidates=[];
     for(const point of results){
       const district=routePointDistrict(point,spec.districts);
-      if(district){chosen=point;chosenDistrict=district;break}
+      if(district)candidates.push({...point,district});
     }
-    if(!chosen)continue;
-    if(!grouped.has(chosenDistrict))grouped.set(chosenDistrict,[]);
-    const arr=grouped.get(chosenDistrict);
-    const prev=arr[arr.length-1];
+    if(!candidates.length)continue;
+
+    // 같은 이름의 장소가 여러 곳이면 직전 코스 지점과 가까운 결과를 우선해 노선의 연속성을 높입니다.
+    candidates.sort((a,b)=>{
+      if(!prev){
+        const aAddr=routeNorm(a.address).includes(routeNorm(term))?0:1;
+        const bAddr=routeNorm(b.address).includes(routeNorm(term))?0:1;
+        return aAddr-bAddr;
+      }
+      return routePointDistance(prev,a)-routePointDistance(prev,b);
+    });
+    const chosen=candidates[0];
+    if(prev&&routePointDistance(prev,chosen)>12){
+      // 동지역 코스에서 같은 이름의 먼 장소가 잘못 선택된 경우는 연결하지 않습니다.
+      // 단, 첫 지점이나 실제 인접 코스는 계속 반영합니다.
+      const sameDistrict=prev.district===chosen.district;
+      if(!sameDistrict)continue;
+    }
     if(!prev||Math.abs(prev.lat-chosen.lat)>1e-6||Math.abs(prev.lng-chosen.lng)>1e-6){
-      arr.push({...chosen,term});
+      points.push({...chosen,term});
+      if(!touchedDistricts.includes(chosen.district))touchedDistricts.push(chosen.district);
+      prev=chosen;
     }
   }
-  for(const [district,points] of grouped){
-    if(points.length<2)continue;
-    const polyline=new kakao.maps.Polyline({
-      path:points.map(p=>new kakao.maps.LatLng(p.lat,p.lng)),
-      strokeWeight:5,
-      strokeColor:DAY_COLORS[spec.day]||'#334155',
-      strokeOpacity:.78,
-      strokeStyle:'shortdash'
-    });
-    polyline.setMap(null);
-    kakao.maps.event.addListener(polyline,'mouseover',(e)=>{
-      polyline.setOptions({strokeWeight:7,strokeOpacity:.95});
-      showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${district} 직영 수거노선 참고선`,'코스표 기재 지점의 실제 위치를 순서대로 연결 · 정밀 주행경로 아님');
-    });
-    kakao.maps.event.addListener(polyline,'mousemove',e=>moveZoneTooltip(e.latLng));
-    kakao.maps.event.addListener(polyline,'mouseout',()=>{
-      polyline.setOptions({strokeWeight:5,strokeOpacity:.78});hideZoneTooltip();
-    });
-    kakao.maps.event.addListener(polyline,'click',()=>{
-      const text=String(spec.raw||'').replace(/\s+/g,' ').trim();
-      updateMapBadge(`${district} · ${spec.vehicle}호 · ${spec.day}요일 직영 코스표: ${escapeHtml(text)}`);
-    });
-    dongRouteOverlays[spec.type].push({...spec,district,points,polyline});
-  }
+  if(points.length<2)return;
+
+  const districtLabel=touchedDistricts.length?touchedDistricts.join('·'):spec.districts.join('·');
+  const polyline=new kakao.maps.Polyline({
+    path:points.map(p=>new kakao.maps.LatLng(p.lat,p.lng)),
+    strokeWeight:5,
+    strokeColor:DAY_COLORS[spec.day]||'#334155',
+    strokeOpacity:.8,
+    strokeStyle:'shortdash'
+  });
+  polyline.setMap(null);
+  kakao.maps.event.addListener(polyline,'mouseover',(e)=>{
+    polyline.setOptions({strokeWeight:7,strokeOpacity:.96});
+    showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 직영 수거노선 참고선`,`코스표 ${points.length}개 확인지점을 순서대로 연결 · 정밀 GPS 주행경로 아님`);
+  });
+  kakao.maps.event.addListener(polyline,'mousemove',e=>moveZoneTooltip(e.latLng));
+  kakao.maps.event.addListener(polyline,'mouseout',()=>{
+    polyline.setOptions({strokeWeight:5,strokeOpacity:.8});hideZoneTooltip();
+  });
+  kakao.maps.event.addListener(polyline,'click',()=>{
+    const text=String(spec.raw||'').replace(/\s+/g,' ').trim();
+    updateMapBadge(`${districtLabel} · ${spec.vehicle}호 · ${spec.day}요일 · 확인지점 ${points.length}개 · 직영 코스표: ${escapeHtml(text)}`);
+  });
+  dongRouteOverlays[spec.type].push({...spec,district:districtLabel,points,polyline});
 }
 function syncDongRouteVisibility(type){
   Object.values(dongRouteOverlays).flat().forEach(item=>item?.polyline?.setMap(null));
