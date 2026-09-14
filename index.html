@@ -187,6 +187,36 @@ function vehicleList(type){
 function directRiInfo(type,day,key){
   return (DIRECT_RI_DAYS[type]?.[day]||[]).find(x=>x.key===key)||null;
 }
+
+// 법정리별로 확정된 직영 일정이 있으면 원문 문자열 매칭보다 우선 사용합니다.
+// 이 표에는 사용자 요청에 따른 오창읍 일정 보정도 포함됩니다.
+function directRiMatches(type,ctx){
+  const emd=canonicalDistrict(ctx.legalEmd||ctx.district||'');
+  const ri=normalizeRi(ctx.legalRi||'');
+  if(!emd||!ri)return [];
+  const key=`${emd}|${ri}`;
+  const byVehicle=new Map();
+  DAYS.forEach(day=>{
+    const info=directRiInfo(type,day,key);
+    if(!info)return;
+    (info.vehicles||[]).forEach(vehicle=>{
+      if(!byVehicle.has(vehicle))byVehicle.set(vehicle,new Set());
+      byVehicle.get(vehicle).add(day);
+    });
+  });
+  return [...byVehicle.entries()].map(([vehicle,daySet])=>{
+    const route=(DIRECT_ROUTES[type]||[]).find(r=>r.vehicle===vehicle);
+    return {
+      vehicle,
+      area:route?.area||emd,
+      days:DAYS.filter(d=>daySet.has(d)),
+      terms:[ri],
+      secondary:route?.secondary||{},
+      score:150,
+      exactRi:true
+    };
+  });
+}
 function directDaySummary(type,day,vehicle='전체'){
   const map=new Map();
   Object.entries(DIRECT_INFERRED_REGIONS[type]||{}).forEach(([v,byDay])=>{
@@ -246,6 +276,11 @@ function routeMatchScore(text,ctx){
   return {score:best,matched:[...new Set(matched)]};
 }
 function findDirectMatches(type,ctx){
+  // 리 단위 확정 일정이 있으면 그것을 최우선으로 사용합니다.
+  // 예: 오창읍 주성리=창리, 양청리·구룡리=각리 일정 보정.
+  const exactRi=directRiMatches(type,ctx);
+  if(exactRi.length)return exactRi;
+
   const results=[];
   for(const route of (DIRECT_ROUTES[type]||[])){
     const days=[];
@@ -308,8 +343,11 @@ function renderDirectSchedule(type,matches,ctx){
   const apartmentNotice=type==='recycle'
     ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
     : '';
+  const exactRiNote=matches.some(m=>m.exactRi)
+    ? '<br><span style="color:#315ea8"><strong>법정리 일정 우선 적용:</strong> 확정된 리별 일정표를 사용했습니다.</span>'
+    : '';
   document.getElementById(type+'Detail').innerHTML=
-    `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br>${rows}${secondary}<br><span style="color:#6b7280">※ 2026년 6월 직영 코스표의 도로명·법정동·리 명칭과 검색주소를 자동 매칭한 결과입니다.</span>${apartmentNotice}</div>`;
+    `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br>${rows}${secondary}${exactRiNote}<br><span style="color:#6b7280">※ 2026년 6월 직영 코스표의 도로명·법정동·리 명칭과 검색주소를 자동 매칭한 결과입니다.</span>${apartmentNotice}</div>`;
 }
 
 let map,marker,geocoder,places,currentDistrict='',currentLegalEmd='',currentLegalRi='',currentAddress='',currentFoodExclusion=null,activeLayer='food',activeDay='전체';
