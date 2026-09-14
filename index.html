@@ -163,6 +163,56 @@ const DIRECT_ROUTES={"general":[{"vehicle":"3344","area":"오창,북이일부","
 
 const DAY_COLORS={'월':'#2563eb','화':'#f59e0b','수':'#16a34a','목':'#7c3aed','금':'#dc2626'};
 
+// 청원구청 공식 법정리 목록. 리 GeoJSON의 상위 코드가 맞지 않더라도
+// 공식 목록 + 공간포함관계로 부모 읍·면을 다시 판정해 레이어 누락을 방지합니다.
+const OFFICIAL_RIS={
+  '내수읍':new Set(['내수리','마산리','풍정리','덕암리','도원리','형동리','세교리','비상리','저곡리','우산리','초정리','비중리','구성리','국동리','묵방리','은곡리','원통리','신안리','입동리','입상리','학평리']),
+  '오창읍':new Set(['여천리','화산리','유리','일신리','모정리','학소리','원리','복현리','장대리','양지리','창리','주성리','송대리','도암리','괴정리','가곡리','석우리','상평리','기암리','탑리','농소리','신평리','중신리','각리','양청리','구룡리','성산리','후기리','용두리','가좌리','두릉리','성재리','백현리']),
+  '북이면':new Set(['신기리','신대리','현암리','서당리','대길리','석화리','영하리','선암리','호명리','부연리','토성리','장재리','금암리','광암리','금대리','옥수리','내추리','추학리','장양리','용계리','대율리','석성리','내둔리','화상리','화하리','송정리'])
+};
+const OFFICIAL_RI_EXPECTED_COUNTS={'내수읍':21,'오창읍':34,'북이면':26};
+function officialRiAllowed(district,riName){return !!OFFICIAL_RIS[district]?.has(riName)}
+function outerRingsOfFeature(feature){
+  const g=feature?.geometry;if(!g)return [];
+  if(g.type==='Polygon')return g.coordinates?.length?[g.coordinates[0]]:[];
+  if(g.type==='MultiPolygon')return (g.coordinates||[]).map(p=>p?.[0]).filter(Boolean);
+  return [];
+}
+function averagePointOfRing(ring){
+  if(!ring?.length)return null;
+  let sx=0,sy=0,n=0;const step=Math.max(1,Math.floor(ring.length/120));
+  for(let i=0;i<ring.length;i+=step){const p=ring[i];if(!Array.isArray(p)||p.length<2)continue;sx+=+p[0];sy+=+p[1];n++;}
+  return n?[sx/n,sy/n]:null;
+}
+function pointInRing(pt,ring){
+  if(!pt||!ring?.length)return false;const [x,y]=pt;let inside=false;
+  for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+    const xi=+ring[i][0],yi=+ring[i][1],xj=+ring[j][0],yj=+ring[j][1];
+    const hit=((yi>y)!==(yj>y))&&(x < (xj-xi)*(y-yi)/((yj-yi)||1e-14)+xi);
+    if(hit)inside=!inside;
+  }
+  return inside;
+}
+function pointInGeoFeature(pt,feature){
+  const g=feature?.geometry;if(!g)return false;
+  const polys=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+  return polys.some(poly=>{
+    if(!poly?.length||!pointInRing(pt,poly[0]))return false;
+    // hole 안쪽이면 제외
+    for(let i=1;i<poly.length;i++)if(pointInRing(pt,poly[i]))return false;
+    return true;
+  });
+}
+function inferRiDistrictByGeometry(feature,districtFeatures,riName){
+  const candidateDistricts=Object.keys(OFFICIAL_RIS).filter(d=>officialRiAllowed(d,riName));
+  if(!candidateDistricts.length)return '';
+  const samples=outerRingsOfFeature(feature).map(averagePointOfRing).filter(Boolean);
+  for(const district of candidateDistricts){
+    const df=districtFeatures.get(district);if(!df)continue;
+    if(samples.some(pt=>pointInGeoFeature(pt,df)))return district;
+  }
+  return '';
+}
 const RI_LAYER_DISTRICTS=new Set(['내수읍','오창읍','북이면']);
 const SCHEDULE_GROUP_COLORS={
   '월':'#2563eb','화':'#f59e0b','수':'#16a34a','목':'#7c3aed','금':'#dc2626',
@@ -229,6 +279,18 @@ const VERIFIED_ROUTE_RI_RULES=[
   {district:'북이면',ri:'대길리',terms:['대길2리경로당']},
 ];
 
+// 코스표에 '리' 없이 적힌 법정리 약칭 예외.
+// 일반화하면 내수로/원리 등과 오탐 가능성이 있어 확인된 항목만 명시합니다.
+const RI_TEXT_ALIASES={
+  '내수읍|입상리':['입상']
+};
+// 사용자가 지정한 동일 수거일정 상속 규칙.
+const RI_SCHEDULE_INHERIT={
+  '북이면|화하리':'내둔리'
+};
+function extraRiTextAliases(district,riName){
+  return (RI_TEXT_ALIASES[`${district}|${riName}`]||[]).map(routeNorm);
+}
 function normalizedRiTextCandidates(riName,riCode=''){
   // 오창의 두 화산리는 한글 이름만 같고 서로 다른 법정리이므로
   // 일반 '화산리' 문자열로 매칭하지 않고 별칭+법정리 코드로 구분한다.
@@ -293,7 +355,7 @@ function riScheduleFromSources(type,district,riName,riCode=''){
       // 검증된 시설/학교/마을 주소는 기존 행정동 추정표가 빠져 있어도 실제 법정리로 반영한다.
       const verifiedHit=verifiedRuleMatches(raw,district,riName,riCode).length>0;
       if(!regionHint&&!verifiedHit)continue;
-      const directTextHit=regionHint&&normalizedRiTextCandidates(riName,riCode).some(x=>x&&nraw.includes(x));
+      const directTextHit=regionHint&&normalizedRiTextCandidates(riName,riCode).concat(extraRiTextAliases(district,riName)).some(x=>x&&nraw.includes(x));
       if(directTextHit||verifiedHit)addProviderToSchedule(byDay,day,route.vehicle);
     }
   }
@@ -303,6 +365,12 @@ function riScheduleFromSources(type,district,riName,riCode=''){
   // 장대·창리는 직영 코스와 혼동하지 않도록 주소검색에서 세부 판정한다.
   if(type && district==='오창읍'&&OCHANG_SCIENCE_CORE_RIS.has(riName)){
     OCHANG_SCIENCE_SCHEDULE.forEach(day=>addProviderToSchedule(byDay,day,'제일환경'));
+  }
+  // 4) 동일 일정 상속: 화하리는 내둔리와 생활·재활용 일정을 동일하게 적용합니다.
+  const inheritSource=RI_SCHEDULE_INHERIT[`${district}|${riName}`];
+  if(inheritSource){
+    const inherited=riScheduleFromSources(type,district,inheritSource,'');
+    DAYS.forEach(day=>(inherited[day]||[]).forEach(x=>addProviderToSchedule(byDay,day,x.key)));
   }
   DAYS.forEach(day=>{if(byDay[day])byDay[day].sort((a,b)=>a.key.localeCompare(b.key,'ko'))});
   return byDay;
@@ -767,7 +835,7 @@ function updateMapBadge(custom){
   const dayLabel=activeDay==='전체'?'전체 일정':`${activeDay}요일`;
   const providerLabel=provider==='전체'?'전체 담당':provider==='제일환경'?'제일환경':`${provider}호`;
   el.innerHTML=`<strong>${labels[activeLayer]} 리별 일정 레이어 · ${providerLabel} · ${dayLabel}</strong>
-    <span>${custom||'읍·면은 법정리별 수거일정을 적용하고, 수거일정 조합이 같은 리는 같은 색과 무경계 방식으로 묶어 표시합니다. 서로 붙어 있는 같은 일정의 리는 한 덩어리처럼 보입니다. 동 지역은 행정동 단위입니다.'}</span>
+    <span>${custom||'읍·면은 청원구 공식 법정리 전체를 먼저 표시한 뒤 리별 수거일정을 적용합니다. 일정이 같은 인접 리는 같은 색과 무경계 방식으로 한 덩어리처럼 보이며, 일정 미확정 리도 회색으로 빠짐없이 표시합니다. 동 지역은 행정동 단위입니다.'}</span>
     ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>행정동 참고:</strong> ${regionText}</div>`:''}
     <div class="route-legend">${legend}</div>`;
 }
@@ -821,7 +889,7 @@ function addRiServiceGeometry(feature,district,riName,type,scheduleByDay,riCode=
       const detail=unassigned
         ? `${label} · 코스표에서 리 단위 일정 미확정`
         : `${label} · ${visibleDays.join('·')}요일 · ${providers.join(' + ')}`;
-      showZoneTooltip(mouseEvent.latLng,`${district} ${displayRi}`,detail,'법정리 · 작업구간 주소대조 + 같은 수거일정 통합');
+      showZoneTooltip(mouseEvent.latLng,`${district} ${displayRi}`,detail,'법정리 · 작업구간 주소대조 + 공식 법정리 전체표시 + 같은 수거일정 통합');
     });
     kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
@@ -833,7 +901,7 @@ function addRiServiceGeometry(feature,district,riName,type,scheduleByDay,riCode=
     kakao.maps.event.addListener(polygon,'click',()=>{
       const allDays=scheduleDays(scheduleByDay,'전체');
       const rows=allDays.map(d=>`${d}:${(scheduleByDay[d]||[]).map(x=>x.label).join('+')}`).join(' / ');
-      updateMapBadge(`${district} ${displayRi} · ${unassigned?'작업구간 위치대조 후에도 일정 미확정':rows}`);
+      updateMapBadge(`${district} ${displayRi} · ${unassigned?'일정 미확정(레이어는 공식 법정리 경계로 표시)':rows}`);
     });
     zonePolygons[type].push({polygon,district,ri:riName,riCode,displayRi,scheduleByDay,kind:'ri',unassigned});
   });
@@ -1070,14 +1138,21 @@ async function buildZonePolygons(){
   try{
     const riFc=await fetchGeoJsonAny(riUrls,'충북 법정리 경계');
     const exclusionGroups=new Set();
+    const seenOfficialRi={'내수읍':new Set(),'오창읍':new Set(),'북이면':new Set()};
     (riFc.features||[]).forEach(f=>{
       const p=f.properties||{};
       const parentCode=String(p.emd_adm||p.EMD_ADM||'').trim();
-      const district=codeToDistrict.get(parentCode);
-      if(!district||!['내수읍','오창읍','북이면'].includes(district))return;
       const riName=normalizeRi(p.li_nm||p.ri_nm||p.name||'');
       const riCode=String(p.li_cd||p.LI_CD||p.licd||'').trim();
       if(!riName)return;
+      let district=codeToDistrict.get(parentCode)||'';
+      // 상위 코드가 누락·불일치하거나 공식 법정리 목록과 맞지 않으면 실제 공간위치로 재판정합니다.
+      if(!district||!officialRiAllowed(district,riName)){
+        district=inferRiDistrictByGeometry(f,districtFeatures,riName);
+      }
+      if(!district||!RI_LAYER_DISTRICTS.has(district)||!officialRiAllowed(district,riName))return;
+      // 오창읍 화산리는 동명이리 2개이므로 법정리코드까지 키에 포함합니다.
+      seenOfficialRi[district].add(district==='오창읍'&&riName==='화산리'?`${riName}|${riCode}`:riName);
 
       // 생활·재활용: 법정리별 일정표 + 시설/도로명 실제 주소대조 규칙을 붙여 생성.
       // 오창의 동명이리 화산리는 li_cd로 꽃화산/빛화산을 구분합니다.
@@ -1095,7 +1170,16 @@ async function buildZonePolygons(){
       }
     });
 
+    // 공식 법정리 수와 실제 생성 수를 점검합니다. 일정이 없어도 회색 레이어로 생성됩니다.
+    const riCounts={
+      '내수읍':seenOfficialRi['내수읍'].size,
+      '오창읍':seenOfficialRi['오창읍'].size,
+      '북이면':seenOfficialRi['북이면'].size
+    };
+    const missingSummary=Object.entries(OFFICIAL_RI_EXPECTED_COUNTS)
+      .filter(([d,c])=>riCounts[d]!==c).map(([d,c])=>`${d} ${riCounts[d]}/${c}`).join(' · ');
     setLayer(activeLayer);
+    if(missingSummary)console.warn('법정리 경계 일부 누락:',missingSummary);
   }catch(err){
     console.warn('법정리 레이어 로딩 실패',err);
     // 리 데이터가 실패하면 읍·면 생활·재활용 리별 레이어와 음식물 제외지역 표시가 제한됩니다.
