@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v26</title>
-<!-- v20: vehicle x weekday direct collection zones; no ri-based direct splitting -->
+<title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
+<!-- v29: food layer uses exact legal-ri service/exclusion areas; no overlapping district underlay -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -24,7 +24,7 @@
 .layer-control{position:absolute;left:15px;top:15px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:15px;padding:8px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:flex;gap:5px}.layer-btn{border:0;background:#f3f4f6;color:#6b7280;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:900;cursor:pointer}.layer-btn.active{background:#111827;color:#fff}
 .zone-tooltip{pointer-events:none;background:rgba(17,24,39,.94);color:#fff;border-radius:11px;padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:12px;line-height:1.45;white-space:nowrap;transform:translate(0,-10px)}.zone-tooltip strong{display:block;font-size:13px;margin-bottom:2px}.zone-tooltip .basis{color:#d1d5db;font-size:10px;margin-top:2px}
 .map-badge{position:absolute;left:15px;bottom:15px;z-index:5;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:12px;box-shadow:0 5px 16px rgba(0,0,0,.07);max-width:300px}.map-badge strong{display:block;margin-bottom:4px}.map-badge span{color:var(--muted);line-height:1.5}.map-badge .warn{color:var(--warn)}
-.food-legend,.route-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#4b5563}.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}.legend-mwf{background:#ef8a62}.legend-tts{background:#67a9cf}.legend-excluded{background:#7f1d1d}.legend-pending{background:#b8b8b8}.legend-general-direct{background:#17745a}.legend-recycle-direct{background:#315ea8}.excluded-note{margin-top:12px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.65}.food .badge.excluded{background:#7f1d1d;color:#fff}
+.food-legend,.route-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#4b5563}.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}.legend-mwf{background:#ef8a62}.legend-tts{background:#67a9cf}.legend-excluded{background:#991b1b;box-shadow:0 0 0 1px #7f1d1d inset}.legend-pending{background:#b8b8b8}.legend-general-direct{background:#17745a}.legend-recycle-direct{background:#315ea8}.excluded-note{margin-top:12px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.65}.food .badge.excluded{background:#7f1d1d;color:#fff}
 
 .day-filter{position:absolute;left:15px;top:116px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:none;gap:4px;align-items:center}
 .day-filter.show{display:flex}
@@ -93,7 +93,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>읍·면 지역의 법정리(里)를 기본 단위</strong>로 사용하고, 코스표의 리 명칭뿐 아니라 <strong>시설명·학교·사업장·마을명·도로명 주소를 실제 위치와 대조해 법정리로 환산한 검증 규칙</strong>을 함께 적용합니다. 수거일정 조합이 같은 인접 리는 같은 색상·무경계로 표시해 한 권역처럼 보이게 합니다. <strong>수거일정이 확정되지 않은 리는 지도 레이어에서 표시하지 않습니다.</strong> 여러 리를 길게 통과하는 ‘간선/도로 일대’처럼 범위가 불명확한 표현도 임의로 확장하지 않습니다. 동 지역은 행정동 경계를 사용합니다. 오창과학산업단지 주거권역은 <strong>제일환경(043-286-0997) · 월·수·금</strong> 일정을 반영합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 생활·재활용 직영 코스와 음식물 분류배출 제외지역에 사용합니다.</div>
+    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>읍·면 지역의 법정리(里)를 기본 단위</strong>로 사용하고, 코스표의 리 명칭뿐 아니라 <strong>시설명·학교·사업장·마을명·도로명 주소를 실제 위치와 대조해 법정리로 환산한 검증 규칙</strong>을 함께 적용합니다. 수거일정 조합이 같은 인접 리는 같은 색상·무경계로 표시해 한 권역처럼 보이게 합니다. <strong>수거일정이 확정되지 않은 리는 지도 레이어에서 표시하지 않습니다.</strong> 여러 리를 길게 통과하는 ‘간선/도로 일대’처럼 범위가 불명확한 표현도 임의로 확장하지 않습니다. 동 지역은 행정동 경계를 사용합니다. 오창과학산업단지 주거권역과 <strong>공항로 남측 오창읍 창리·주성리</strong>는 주소검색 결과에서 <strong>제일환경(043-286-0997) · 월·수·금</strong> 대행일정을 우선 안내하며, <strong>생활·재활용 직영 지도 레이어에서는 제외</strong>합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 생활·재활용 직영 코스와 음식물 분류배출 제외지역에 사용합니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -122,7 +122,7 @@ const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 const DEFAULT={lat:36.6515,lng:127.4866};
 const DAYS=['월','화','수','목','금','토','일'];
 
-// v26: 2026년 6월 직영 코스의 시설/도로/마을 위치를 법정리로 대조 보강
+// v28: 대행구역은 생활·재활용 직영 레이어에서 제외, 공항로 남측 창리·주성리 대행 판정 보강
 // 2025~2026 청주시 공식 공개자료를 토대로 정리한 청원구 1차 데이터
 const WASTE_DATA={
   food:[
@@ -402,12 +402,8 @@ function riScheduleFromSources(type,district,riName,riCode=''){
     (providers||[]).forEach(provider=>addProviderToSchedule(byDay,day,provider));
   });
 
-  // 4) 오창과학산업단지 주거지역 대행수거.
-  // 사용자가 지정한 주성~각리 일대 핵심 주거권역만 레이어에 대행일정을 넣고,
-  // 장대·창리는 직영 코스와 혼동하지 않도록 주소검색에서 세부 판정한다.
-  if(type && district==='오창읍'&&OCHANG_SCIENCE_CORE_RIS.has(riName)){
-    OCHANG_SCIENCE_SCHEDULE.forEach(day=>addProviderToSchedule(byDay,day,'제일환경'));
-  }
+  // 4) 대행수거 일정은 주소검색 카드에서만 안내합니다.
+  // 생활·재활용 지도는 '직영 레이어'이므로 대행업체 일정은 여기서 추가하지 않습니다.
   // 5) 동일 일정 상속: 화하리는 내둔리와 생활·재활용 일정을 동일하게 적용합니다.
   const inheritSource=RI_SCHEDULE_INHERIT[`${district}|${riName}`];
   if(inheritSource){
@@ -426,13 +422,29 @@ const OCHANG_SCIENCE_OPERATOR={name:'제일환경',phone:'043-286-0997'};
 const OCHANG_SCIENCE_SCHEDULE_RIS=new Set(['장대리','창리','주성리','송대리','양청리','각리','구룡리']);
 // 사용자가 지정한 '주성리~각리 일대 주거단지'를 핵심 대행권역으로 우선 판정합니다.
 const OCHANG_SCIENCE_CORE_RIS=new Set(['주성리','송대리','양청리','구룡리','각리']);
-const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로','중심상업','양청택지','구룡택지','오창공원','호수공원','각리1길','각리2길'];
+// 사용자 확인사항: 공항로 남측의 오창읍 창리·주성리도 제일환경 위탁대행구간.
+// 현재 직영 지도는 법정리(里) 단위이므로 해당 리는 직영 폴리곤에서 제외하고,
+// 주소검색에서도 직영 코스 문자열보다 대행 판정을 우선합니다.
+const OCHANG_AIRPORT_SOUTH_CONTRACT_RIS=new Set(['창리','주성리']);
+const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로','중심상업','양청택지','구룡택지','오창공원','호수공원','각리1길','각리2길','공항로'];
+
+// 지도 생활·재활용 레이어는 '직영만' 표시합니다.
+// 오창과학산업단지 대행구역(장대·창·주성·송대·양청·각·구룡리)은
+// 주소검색 결과 안내와 별개로 법정리 단위 직영 폴리곤에서는 완전히 제외합니다.
+function isDirectLayerExcludedRi(district,riName){
+  return canonicalDistrict(district)==='오창읍' && OCHANG_SCIENCE_SCHEDULE_RIS.has(normalizeRi(riName));
+}
 
 function isOchangScienceContractArea(ctx,directMatches=[]){
   const emd=canonicalDistrict(ctx.legalEmd||ctx.district);
   const riName=normalizeRi(ctx.legalRi||'');
   if(emd!=='오창읍'||!OCHANG_SCIENCE_SCHEDULE_RIS.has(riName))return false;
   const addr=routeNorm(ctx.address||'');
+
+  // 공항로 남측 창리·주성리는 사용자 확인 대행구간으로 직영 문자열 매칭보다 우선합니다.
+  // 법정리 단위 서비스 특성상 해당 리 검색은 제일환경 대행 안내를 우선 적용합니다.
+  if(OCHANG_AIRPORT_SOUTH_CONTRACT_RIS.has(riName))return true;
+
   if(OCHANG_SCIENCE_ROAD_HINTS.some(h=>addr.includes(routeNorm(h))))return true;
   // 핵심 주거권역은 단순 '리 이름' 일치만으로 직영차량을 배정하지 않습니다.
   // 코스표의 구체적인 도로·시설이 주소와 직접 맞는 경우만 직영 판정을 유지합니다.
@@ -448,12 +460,13 @@ function renderOchangScienceContract(type,ctx){
   const badge=document.getElementById(type+'Badge');
   badge.textContent=`대행 · ${days.join('·')}`;
   renderDays(type+'Days',days);
-  selectedVehicle[type]='제일환경';
+  // 대행 안내는 카드에만 표시하고 지도 필터는 직영 전체 차량 상태를 유지합니다.
+  selectedVehicle[type]='전체';
   const riLabel=escapeHtml(ctx.legalRi||'오창과학산업단지');
   if(type==='general'){
-    document.getElementById('generalDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>수거일:</strong> ${days.join(' · ')}<br><strong>배출시간:</strong> 수거일 전날 일몰 후부터 자정 전<br><span style="color:#6b7280">※ 오창과학산업단지 주거지역(${riLabel})은 청주시 대행구역·지역별 수거일 안내를 우선 적용합니다.</span></div>`;
+    document.getElementById('generalDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>수거일:</strong> ${days.join(' · ')}<br><strong>배출시간:</strong> 수거일 전날 일몰 후부터 자정 전<br><span style="color:#6b7280">※ 오창과학산업단지 및 공항로 남측 창리·주성리 대행구역(${riLabel})은 제일환경 위탁수거 안내를 우선 적용합니다.</span></div>`;
   }else{
-    document.getElementById('recycleDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>단독주택·상가·50세대 미만 수거일:</strong> ${days.join(' · ')}<br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 자체 위탁계약에 따라 처리합니다.<br><span style="color:#6b7280">※ 오창과학산업단지 주거지역(${riLabel})에 적용합니다.</span></div>`;
+    document.getElementById('recycleDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>단독주택·상가·50세대 미만 수거일:</strong> ${days.join(' · ')}<br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 자체 위탁계약에 따라 처리합니다.<br><span style="color:#6b7280">※ 오창과학산업단지 및 공항로 남측 창리·주성리 대행구역(${riLabel})에 적용합니다.</span></div>`;
   }
 }
 
@@ -481,10 +494,8 @@ function vehicleList(type){
   return [...new Set((DIRECT_ROUTES[type]||[]).map(r=>r.vehicle))];
 }
 function providerList(type){
-  // 직영 차량 + 오창과학산업단지 대행업체를 동일한 "담당" 필터에서 조회합니다.
-  const list=[...vehicleList(type)];
-  if(!list.includes('제일환경')) list.push('제일환경');
-  return list;
+  // 지도 레이어는 직영 전용이므로 직영 차량만 필터에 표시합니다.
+  return [...vehicleList(type)];
 }
 function providerDisplay(key){
   return key==='제일환경'?'제일환경(오창과학산업단지)':`${key}호 직영`;
@@ -500,9 +511,7 @@ function groupedScheduleForDistrict(type,district){
       if((regions||[]).includes(district)) add(day,vehicle);
     });
   });
-  // 오창과학산업단지 주거지역: 생활·재활용 모두 제일환경 월·수·금.
-  // 폴리곤은 오창읍 통합 코스권역으로 표시하되 툴팁에서 과학산업단지 한정임을 명시합니다.
-  if(district==='오창읍') OCHANG_SCIENCE_SCHEDULE.forEach(day=>add(day,'제일환경'));
+  // 대행구역은 직영 레이어 요약에도 포함하지 않습니다.
   DAYS.forEach(day=>{if(byDay[day])byDay[day].sort((a,b)=>a.key.localeCompare(b.key,'ko'))});
   return byDay;
 }
@@ -715,7 +724,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
   }else{
     const directGeneral=findDirectMatches('general',ctx);
     const scienceGeneral=isOchangScienceContractArea(ctx,directGeneral);
-    selectedVehicle.general=scienceGeneral?'제일환경':(directGeneral.length?directGeneral[0].vehicle:'전체');
+    selectedVehicle.general=scienceGeneral?'전체':(directGeneral.length?directGeneral[0].vehicle:'전체');
     if(scienceGeneral){
       renderOchangScienceContract('general',ctx);
     }else if(directGeneral.length){
@@ -743,7 +752,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
   }else{
     const directRecycle=findDirectMatches('recycle',ctx);
     const scienceRecycle=isOchangScienceContractArea(ctx,directRecycle);
-    selectedVehicle.recycle=scienceRecycle?'제일환경':(directRecycle.length?directRecycle[0].vehicle:'전체');
+    selectedVehicle.recycle=scienceRecycle?'전체':(directRecycle.length?directRecycle[0].vehicle:'전체');
     if(scienceRecycle){
       renderOchangScienceContract('recycle',ctx);
     }else if(directRecycle.length){
@@ -799,7 +808,7 @@ function renderVehicleFilter(){
   if(!direct){el.innerHTML='';return}
   const current=selectedVehicle[activeLayer]||'전체';
   const buttons=['전체',...providerList(activeLayer)];
-  el.innerHTML=`<span class="vehicle-label">담당</span>`+buttons.map(v=>`<button type="button" data-vehicle="${escapeHtml(v)}" class="${v===current?'active':''}">${v==='전체'?'전체 담당':v==='제일환경'?'제일환경':v+'호'}</button>`).join('');
+  el.innerHTML=`<span class="vehicle-label">직영차량</span>`+buttons.map(v=>`<button type="button" data-vehicle="${escapeHtml(v)}" class="${v===current?'active':''}">${v==='전체'?'전체 차량':v+'호'}</button>`).join('');
   el.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>setVehicle(btn.dataset.vehicle)));
 }
 function setVehicle(vehicle){
@@ -862,7 +871,7 @@ function updateMapBadge(custom){
   const el=document.getElementById('mapBadge');
   const labels={general:'생활쓰레기',food:'음식물쓰레기',recycle:'재활용쓰레기'};
   if(activeLayer==='food'){
-    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'읍·면·동 실제 행정경계를 기준으로 표시하고, 분류배출 제외지역은 리 경계로 덧씌웁니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span></div>`;
+    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'동 지역은 행정동 경계, 내수읍·오창읍은 법정리 경계로 분류배출 시행지역과 제외지역을 서로 겹치지 않게 구분합니다. 북이면은 전 지역 제외지역입니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>시행지역 · 월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>시행지역 · 화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외지역</span></div>`;
     return;
   }
   const provider=selectedVehicle[activeLayer]||'전체';
@@ -885,9 +894,9 @@ function updateMapBadge(custom){
     return `${escapeHtml(x.district)} [${rows}]`;
   }).join(' · ');
   const dayLabel=activeDay==='전체'?'전체 일정':`${activeDay}요일`;
-  const providerLabel=provider==='전체'?'전체 담당':provider==='제일환경'?'제일환경':`${provider}호`;
+  const providerLabel=provider==='전체'?'전체 직영차량':`${provider}호`;
   el.innerHTML=`<strong>${labels[activeLayer]} 리별 일정 레이어 · ${providerLabel} · ${dayLabel}</strong>
-    <span>${custom||'읍·면은 법정리별로 확정된 수거일정만 표시합니다. 법정리코드로 읍·면을 우선 판정해 경계 누락을 방지하고, 일정이 같은 인접 리는 같은 색과 무경계 방식으로 한 덩어리처럼 보입니다. 일정 미확정 리는 지도에서 제외합니다.'}</span>
+    <span>${custom||'읍·면은 법정리별로 확정된 직영 수거일정만 표시합니다. 대행구역은 직영 레이어에서 제외하며, 법정리코드로 읍·면을 우선 판정해 경계 누락을 방지합니다. 일정이 같은 인접 리는 같은 색과 무경계 방식으로 한 덩어리처럼 보이고, 일정 미확정 리도 지도에서 제외합니다.'}</span>
     ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>행정동 참고:</strong> ${regionText}</div>`:''}
     <div class="route-legend">${legend}</div>`;
 }
@@ -1017,6 +1026,45 @@ function foodStyle(district){
   if(key==='월수금') return {fill:'#ef8a62',stroke:'#b24f31',label:'월·수·금'};
   return {fill:'#67a9cf',stroke:'#2e6f95',label:'화·목·일'};
 }
+function addFoodIncludedRiGeometry(feature,district,riName,riCode=''){
+  const g=feature.geometry;if(!g)return;
+  const style=foodStyle(district);
+  const displayRi=verifiedRiDisplayName(district,riName,riCode);
+  const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+  multi.forEach(polyCoords=>{
+    if(!polyCoords.length)return;
+    const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
+    const polygon=new kakao.maps.Polygon({
+      path:paths.length===1?paths[0]:paths,
+      // 시행지역끼리는 내부 경계를 숨겨 같은 일정 권역이 한 덩어리처럼 보이게 합니다.
+      strokeWeight:0,strokeOpacity:0,
+      fillColor:style.fill,fillOpacity:.31
+    });
+    polygon.setMap(activeLayer==='food'?map:null);
+    kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
+      polygon.setOptions({fillOpacity:.45,strokeColor:style.stroke,strokeOpacity:.9,strokeWeight:1.8});
+      const e=findRegionEntry('food',district);
+      const detail=e&&e.status==='verified'
+        ? `음식물 · 분류배출 시행 · ${e.days.join('·')} 배출 · ${e.pickup}`
+        : '음식물 · 분류배출 시행지역';
+      showZoneTooltip(mouseEvent.latLng,`${district} ${displayRi}`,detail,'법정리 경계 · 분류배출 시행지역');
+    });
+    kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
+    kakao.maps.event.addListener(polygon,'mouseout',()=>{
+      polygon.setOptions({fillOpacity:.31,strokeWeight:0,strokeOpacity:0});
+      hideZoneTooltip();
+    });
+    kakao.maps.event.addListener(polygon,'click',()=>{
+      const e=findRegionEntry('food',district);
+      const info=e&&e.status==='verified'
+        ? `${district} ${displayRi} · 분류배출 시행지역 · ${e.days.join('·')} 배출 · ${e.pickup}`
+        : `${district} ${displayRi} · 분류배출 시행지역`;
+      updateMapBadge(info);
+    });
+    zonePolygons.food.push({polygon,district,ri:riName,riCode,displayRi,schedule:style.label,kind:'ri'});
+  });
+}
+
 function addFoodGeometry(feature,district){
   const g=feature.geometry; if(!g)return;
   const style=foodStyle(district);
@@ -1051,8 +1099,8 @@ function addFoodGeometry(feature,district){
   });
 }
 
-// 분류배출 제외지역은 리별 내부선을 그리지 않습니다.
-// 같은 읍면 안의 여러 제외 리가 붙어 있으면 하나의 색면처럼 보입니다.
+// 분류배출 제외지역은 시행지역과 겹치지 않는 독립 법정리 폴리곤으로 표시합니다.
+// 진한 적색과 외곽선을 사용해 시행지역과 명확히 구분합니다.
 function addExcludedRiGeometry(feature,parentDistrict,riName){
   const g=feature.geometry;if(!g)return;
   const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
@@ -1061,21 +1109,22 @@ function addExcludedRiGeometry(feature,parentDistrict,riName){
     const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
     const polygon=new kakao.maps.Polygon({
       path:paths.length===1?paths[0]:paths,
-      strokeWeight:0, strokeOpacity:0,
-      fillColor:'#991b1b',fillOpacity:.38
+      // 제외지역은 시행지역과 확실히 구분되도록 진한 적색 면 + 외곽선을 사용합니다.
+      strokeWeight:1.15,strokeColor:'#7f1d1d',strokeOpacity:.76,
+      fillColor:'#991b1b',fillOpacity:.40
     });
     polygon.setMap(activeLayer==='food'?map:null);
     kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
-      polygon.setOptions({fillOpacity:.52});
-      showZoneTooltip(mouseEvent.latLng,`${parentDistrict} 분류배출 제외지역`,'음식물 · 제외지역 통합 표시','동일 제외기준 지역');
+      polygon.setOptions({fillOpacity:.55,strokeOpacity:1,strokeWeight:2});
+      showZoneTooltip(mouseEvent.latLng,`${parentDistrict} ${riName}`,'음식물 · 분류배출 제외지역','법정리 경계 · 분류배출 제외지역');
     });
     kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
-      polygon.setOptions({fillOpacity:.38});
+      polygon.setOptions({fillOpacity:.40,strokeOpacity:.76,strokeWeight:1.15});
       hideZoneTooltip();
     });
     kakao.maps.event.addListener(polygon,'click',()=>{
-      updateMapBadge(`${parentDistrict} · 음식물류 폐기물 분류배출 제외지역`);
+      updateMapBadge(`${parentDistrict} ${riName} · 음식물류 폐기물 분류배출 제외지역`);
     });
     zonePolygons.foodExclusion.push({polygon,district:parentDistrict,ri:riName,excluded:true});
   });
@@ -1163,7 +1212,8 @@ async function buildZonePolygons(){
 
       matched++;
       districtFeatures.set(district,f);
-      addFoodGeometry(f,district);
+      // 음식물: 동 지역은 행정동 경계, 읍·면은 아래 법정리 단계에서 정확한 시행/제외 범위를 생성합니다.
+      if(!RI_LAYER_DISTRICTS.has(district))addFoodGeometry(f,district);
       // 읍·면(내수·오창·북이)은 아래 법정리 경계 단계에서 리별 일정으로 생성합니다.
       // 동 지역만 행정동 단위 직영 레이어를 유지합니다.
       if(!RI_LAYER_DISTRICTS.has(district)){
@@ -1214,6 +1264,8 @@ async function buildZonePolygons(){
       // 생활·재활용: 법정리별 일정표 + 시설/도로명 실제 주소대조 규칙을 붙여 생성.
       // 오창의 동명이리 화산리는 li_cd로 꽃화산/빛화산을 구분합니다.
       for(const type of ['general','recycle']){
+        // 대행 핵심권역은 직영 코스표에 일부 지명이 겹쳐도 지도 직영 레이어에서는 제외합니다.
+        if(isDirectLayerExcludedRi(district,riName))continue;
         const scheduleByDay=riScheduleFromSources(type,district,riName,riCode);
         addRiServiceGeometry(f,district,riName,type,scheduleByDay,riCode);
       }
@@ -1223,6 +1275,8 @@ async function buildZonePolygons(){
         if(ex.excluded===true){
           addExcludedRiGeometry(f,district,riName);
           exclusionGroups.add(district);
+        }else if(ex.excluded===false){
+          addFoodIncludedRiGeometry(f,district,riName,riCode);
         }
       }
     });
