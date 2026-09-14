@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
-<!-- v40: persistent precomputed urban route cache; background warm-up for instant vehicle/day switching -->
+<!-- v41: source-audited urban routes; ordered parenthetical roads, district-safe routing, source-type separation -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -546,6 +546,9 @@ function routeNorm(s){return String(s||'').toLowerCase().replace(/\s+/g,'').repl
 //     밀레니엄1,2,3,4로 → 밀레니엄1로, 밀레니엄2로, ...
 function expandRouteShorthand(text){
   let src=String(text||'');
+  // 원본 특수 약칭을 먼저 풀어 순서가 깨지지 않게 합니다.
+  src=src.replace(/정상8,9통/g,'정상8통,정상9통');
+  src=src.replace(/오창중,고/g,'오창중,오창고');
   src=src.replace(/([가-힣A-Za-z0-9]+(?:대로|로|길))(\d+(?:-\d+)?(?:,\d+(?:-\d+)?)+)번길/g,(m,base,nums)=>
     nums.split(',').map(n=>`${base}${n}번길`).join(',')
   );
@@ -554,33 +557,35 @@ function expandRouteShorthand(text){
   );
   return src;
 }
+function cleanRouteTerm(raw){
+  let t=String(raw||'')
+    .replace(/^(가연|재활용|불연|대\.?형)\s*-/,'')
+    .replace(/\b(전\s*코스\s*수거|전코스\s*수거)\b/g,'')
+    .replace(/(일대|일원|간선|수거)$/g,'')
+    .trim();
+  if(!t || /^\d+$/.test(t) || t.length<2)return '';
+  if(/^(원룸지역|상가지역|주거지역|공동주택|단독주택|주요간선도로|주요간선|원룸|상가)$/.test(t))return '';
+  return t;
+}
 function routeTerms(text){
   const src=expandRouteShorthand(text);
   const terms=[];
-  const parens=[...src.matchAll(/\(([^)]+)\)/g)].map(m=>m[1]);
-  src.split(/[,\n]/).concat(parens).forEach(part=>{
-    const outer=String(part||'').replace(/\([^)]*\)/g,' ');
-    [outer].join('').split(/\s*및\s*|\s*\/\s*/).forEach(unit=>{
-      let t=String(unit||'')
-        .replace(/^(가연|재활용|불연|대\.?형)\s*-/,'')
-        .replace(/\b(전\s*코스\s*수거|전코스\s*수거)\b/g,'')
-        .replace(/(일대|일원|간선|수거)$/g,'')
-        .trim();
-      if(!t || /^\d+$/.test(t) || t.length<2) return;
-      const generic=/^(원룸지역|상가지역|주거지역|공동주택|단독주택|주요간선도로|주요간선|원룸|상가|일대|일원|간선)$/;
-      if(generic.test(t)) return;
-      terms.push(t);
+  // 괄호 속 도로명을 문장 끝에 몰아넣지 않고 원문 위치 바로 뒤에 삽입합니다.
+  // 예: 대신의원(율천북로) → 대신의원 → 율천북로
+  src.split(/[,\n]/).forEach(part=>{
+    String(part||'').split(/\s*및\s*|\s*\/\s*/).forEach(unit=>{
+      const u=String(unit||'').trim();
+      const parens=[...u.matchAll(/\(([^)]+)\)/g)].map(m=>m[1].trim()).filter(Boolean);
+      const outer=cleanRouteTerm(u.replace(/\([^)]*\)/g,' '));
+      if(outer)terms.push(outer);
+      for(const inside of parens){
+        const pt=cleanRouteTerm(inside);
+        if(pt)terms.push(pt);
+      }
     });
   });
-  const out=[];
-  const seen=new Set();
-  for(const t of terms){
-    const k=routeNorm(t);
-    if(!k||seen.has(k))continue;
-    seen.add(k);
-    out.push(t);
-  }
-  return out;
+  // 실제 코스 순서를 보존하기 위해 전역 중복제거는 하지 않고 연속 중복만 제거합니다.
+  return terms.filter((t,i)=>i===0||routeNorm(t)!==routeNorm(terms[i-1]));
 }
 function routeMatchScore(text,ctx){
   const raw=routeNorm(text);
@@ -696,7 +701,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v40';
+const DONG_ROUTE_CACHE_VERSION='v41';
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -771,6 +776,36 @@ const VERIFIED_DONG_ROUTE_ANCHORS={
 };
 function verifiedDongRouteAnchors(term){
   return (VERIFIED_DONG_ROUTE_ANCHORS[String(term||'').trim()]||[]).map(x=>({...x}));
+}
+
+// 원본 코스표의 축약·현장표기를 카카오 검색에 잘 걸리는 명칭으로 보정합니다.
+// 화면에는 원문을 유지하고 검색어에만 적용합니다.
+const ROUTE_SEARCH_ALIASES={
+  '청대사거리':'청주대학교 사거리',
+  '현대미술관':'국립현대미술관 청주',
+  '임시청사':'청주시청 임시청사',
+  '문화산업단지':'청주문화산업단지',
+  '내덕초':'내덕초등학교','주성중':'주성중학교','중앙초':'청주중앙초등학교','중앙초등학교':'청주중앙초등학교',
+  '청여고':'청주여자고등학교','청여고후문':'청주여자고등학교 후문','율량중':'율량중학교',
+  '주중초':'주중초등학교','주중초후문':'주중초등학교 후문','덕성초후문':'덕성초등학교 후문',
+  '사천초':'사천초등학교','율량초':'율량초등학교','새터초':'새터초등학교','북일초':'북일초등학교',
+  '오창초':'오창초등학교','오창중':'오창중학교','오창고':'오창고등학교','중앙여중':'청주중앙여자중학교',
+  '사천동 천주교':'사천동성당','내덕동 천주교':'내덕동성당',
+  '율량사천동사무소':'율량사천동 행정복지센터','율량사천주민센터':'율량사천동 행정복지센터',
+  '오근장동주민센터':'오근장동 행정복지센터','내덕2동주민센터':'내덕2동 행정복지센터',
+  '오창읍사무소':'오창읍 행정복지센터','내수읍사무소':'내수읍 행정복지센터','북이면사무소':'북이면 행정복지센터',
+  '경찰청':'충청북도경찰청','충북경찰청':'충청북도경찰청',
+  '엔포드상가':'엔포드호텔','엔포드호텔 상가지역':'엔포드호텔',
+  '성모사거리':'청주성모병원 사거리','성모병원사거리':'청주성모병원 사거리',
+  '외남':'외남동','외하':'외하동','정상':'정상동','정북':'정북동','정하':'정하동','주중':'주중동',
+  '입상':'입상리','은곡':'은곡리','원통':'원통리'
+};
+function routeSearchAlias(term){
+  let t=String(term||'').trim();
+  if(ROUTE_SEARCH_ALIASES[t])return ROUTE_SEARCH_ALIASES[t];
+  // 코스표의 @는 아파트 약칭으로 사용되었습니다.
+  t=t.replace(/@뒤$/,'아파트 뒤').replace(/@$/,'아파트');
+  return ROUTE_SEARCH_ALIASES[t]||t;
 }
 
 function norm(s){return String(s||'').replace(/[\s·.]/g,'')}
@@ -962,9 +997,9 @@ function simplifyRoutePlaceTerm(term){
     .replace(/(?:주요간선도로|주요간선)$/,'')
     .replace(/(?:일대|일원|간선)$/,'')
     .trim();
-  if(!t && parenTerms.length)return parenTerms[0];
-  if(parenTerms.length && !/(?:대로|로|길)$/.test(t)) return `${t} ${parenTerms[0]}`.trim();
-  return t;
+  if(!t && parenTerms.length)t=parenTerms[0];
+  if(parenTerms.length && !/(?:대로|로|길)$/.test(t))t=`${t} ${parenTerms[0]}`.trim();
+  return routeSearchAlias(t);
 }
 function searchRouteTermPlaces(term){
   const key=String(term||'').trim();
@@ -1094,6 +1129,16 @@ function routePointDistrict(point,candidates){
   }
   return '';
 }
+function routePointAnyDistrict(point){
+  for(const [district,feature] of districtFeatureMap.entries()){
+    if(feature&&pointInGeoFeature([point.lng,point.lat],feature))return district;
+  }
+  const addr=routeNorm(point?.address||'');
+  for(const district of districtFeatureMap.keys()){
+    if(addr.includes(routeNorm(district)))return district;
+  }
+  return '';
+}
 function routePointDistance(a,b){
   if(!a||!b)return Infinity;
   const dy=(a.lat-b.lat)*111;
@@ -1146,6 +1191,9 @@ function createDongRouteOverlay(spec,data){
   const termsCount=Number(data.termsCount)||routeTermsForMap(spec.raw).length;
   const pointsCount=Number(data.pointsCount)||0;
   const missingTerms=Array.isArray(data.missingTerms)?data.missingTerms:[];
+  const outsideTerms=Array.isArray(data.outsideTerms)?data.outsideTerms:[];
+  const secondaryText=String(data.secondaryText||'').trim();
+  const secondaryKind=String(data.secondaryKind|| (spec.type==='general'?'불연성':'대형폐기물'));
   const districtLabel=String(data.districtLabel||spec.districts.join('·'));
   const roadMatched=data.roadMatched!==false;
   const distance=Number(data.distance)||0;
@@ -1153,48 +1201,33 @@ function createDongRouteOverlay(spec,data){
 
   const polyline=new kakao.maps.Polyline({
     path:path.map(p=>new kakao.maps.LatLng(+p.lat,+p.lng)),
-    strokeWeight:5,
-    strokeColor:DAY_COLORS[spec.day]||'#334155',
-    strokeOpacity:.88,
-    strokeStyle:'solid'
+    strokeWeight:5,strokeColor:DAY_COLORS[spec.day]||'#334155',strokeOpacity:.88,strokeStyle:'solid'
   });
   polyline.setMap(null);
 
   kakao.maps.event.addListener(polyline,'mouseover',(e)=>{
     polyline.setOptions({strokeWeight:7,strokeOpacity:.96});
+    const outsideNote=outsideTerms.length?` · 읍·면 면레이어 ${outsideTerms.length}개`:'';
     const basis=roadMatched
-      ? `코스표 ${termsCount}개 항목 · ${pointsCount}개 확인지점 · 실제 도로망 연결${fromCache?' · 저장노선 즉시표시':''} · 미반영 ${missingTerms.length}개`
-      : `코스표 ${termsCount}개 항목 · ${pointsCount}개 확인지점 · 실선 참고경로 · 미반영 ${missingTerms.length}개`;
+      ? `주 수거코스 ${termsCount}개 항목 · ${pointsCount}개 동지역 확인지점 · 실제 도로망${fromCache?' · 저장노선':''}${outsideNote} · 미해결 ${missingTerms.length}개`
+      : `주 수거코스 ${termsCount}개 항목 · ${pointsCount}개 동지역 확인지점 · 실선 참고경로${outsideNote} · 미해결 ${missingTerms.length}개`;
     showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 직영 수거노선`,basis);
   });
   kakao.maps.event.addListener(polyline,'mousemove',e=>moveZoneTooltip(e.latLng));
-  kakao.maps.event.addListener(polyline,'mouseout',()=>{
-    polyline.setOptions({strokeWeight:5,strokeOpacity:.88});hideZoneTooltip();
-  });
+  kakao.maps.event.addListener(polyline,'mouseout',()=>{polyline.setOptions({strokeWeight:5,strokeOpacity:.88});hideZoneTooltip()});
   kakao.maps.event.addListener(polyline,'click',()=>{
     const original=String(spec.raw||'').replace(/\s+/g,' ').trim();
-    const routeNote=roadMatched
-      ? `${fromCache?'저장된 도로망 노선':'도로망 경로 적용'}${distance?` · 약 ${(distance/1000).toFixed(1)}km`:''}`
-      : `실선 참고경로(도로망 프록시 미적용)`;
-    const missingNote=missingTerms.length?` · 미반영 항목: ${escapeHtml(missingTerms.join(', '))}`:'';
-    updateMapBadge(`${districtLabel} · ${spec.vehicle}호 · ${spec.day}요일 · 코스표 ${termsCount}개 항목 · ${pointsCount}개 확인지점 · ${routeNote}${missingNote} · 직영 코스표: ${escapeHtml(original)}`);
+    const routeNote=roadMatched?`${fromCache?'저장된 도로망 노선':'도로망 경로 적용'}${distance?` · 약 ${(distance/1000).toFixed(1)}km`:''}`:'실선 참고경로';
+    const outsideNote=outsideTerms.length?` · 읍·면 구간(면레이어 처리): ${escapeHtml(outsideTerms.join(', '))}`:'';
+    const missingNote=missingTerms.length?` · 미해결 항목: ${escapeHtml(missingTerms.join(', '))}`:'';
+    const secondaryNote=secondaryText?` · ${secondaryKind}: ${escapeHtml(secondaryText)} ※ 이 실선은 ${secondaryKind} 노선이 아니라 ${spec.type==='general'?'가연 생활폐기물':'재활용'} 주 수거코스입니다.`:'';
+    updateMapBadge(`${districtLabel} · ${spec.vehicle}호 · ${spec.day}요일 · 주 수거코스 ${termsCount}개 항목 · ${pointsCount}개 동지역 확인지점 · ${routeNote}${outsideNote}${missingNote}${secondaryNote} · 원본 주 수거코스: ${escapeHtml(original)}`);
   });
 
-  const item={
-    ...spec,
-    district:districtLabel,
-    pointsCount,
-    termsCount,
-    roadMatched,
-    roadResult:{distance},
-    missingTerms,
-    cached:fromCache,
-    polyline
-  };
+  const item={...spec,district:districtLabel,pointsCount,termsCount,roadMatched,roadResult:{distance},missingTerms,outsideTerms,secondaryText,secondaryKind,cached:fromCache,polyline};
   dongRouteOverlays[spec.type].push(item);
   return item;
 }
-
 async function buildDongRouteOverlay(spec){
   const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}`;
 
@@ -1203,13 +1236,11 @@ async function buildDongRouteOverlay(spec){
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
 
   const task=(async()=>{
-    // 1) 이미 한 번 계산한 노선이 있으면 지오코딩/API 호출 없이 즉시 복원합니다.
     const cached=await getCachedDongRoute(spec);
     if(cached?.path?.length>=2){
       return createDongRouteOverlay(spec,{...cached,fromCache:true});
     }
 
-    // 2) 캐시가 없을 때만 코스표 → 장소/도로 좌표 → 실제 도로망 경로를 계산합니다.
     const points=[];
     const touchedDistricts=[];
     const terms=routeTermsForMap(spec.raw);
@@ -1217,24 +1248,37 @@ async function buildDongRouteOverlay(spec){
 
     for(const term of terms){
       const generic=await searchRouteTermPlaces(term);
-      const roadSamples=isRoadRouteTerm(term)?await searchRoadAnchorPlaces(term):[];
+      const roadSamples=isRoadRouteTerm(term)?await searchRoadAnchorPlaces(routeSearchAlias(term)):[];
       const merged=[...roadSamples,...generic];
       const candidates=[];
+      const outside=[];
       for(const point of merged){
-        const district=routePointDistrict(point,spec.districts) || spec.districts.find(d=>routeNorm(point.address||'').includes(routeNorm(d))) || '';
-        if(spec.districts.length && district && !spec.districts.includes(district))continue;
-        if(candidates.some(x=>Math.abs(x.lat-point.lat)<1e-6&&Math.abs(x.lng-point.lng)<1e-6))continue;
-        candidates.push({...point,district:district||spec.districts[0]||''});
+        const actualDistrict=routePointAnyDistrict(point);
+        if(actualDistrict && !spec.districts.includes(actualDistrict)){
+          outside.push({...point,district:actualDistrict});
+          continue;
+        }
+        // 행정구역을 판별하지 못한 검색결과는 엉뚱한 장거리 우회를 막기 위해
+        // 주소에 담당 동이 명시되거나 기존 확인지점과 충분히 가까운 경우에만 후보로 둡니다.
+        const addr=routeNorm(point.address||'');
+        const hinted=spec.districts.some(d=>addr.includes(routeNorm(d)));
+        if(!actualDistrict && !hinted && points.length){
+          const near=points.some(p=>routePointDistance(p,point)<4.5);
+          if(!near)continue;
+        }
+        candidates.push({...point,district:actualDistrict||spec.districts[0]||''});
       }
-      entries.push({term,isRoad:isRoadRouteTerm(term),candidates});
+      entries.push({term,isRoad:isRoadRouteTerm(routeSearchAlias(term)),candidates,outside});
     }
 
     let prev=null;
     const missingTerms=[];
+    const outsideTerms=[];
     for(let i=0;i<entries.length;i++){
       const entry=entries[i];
       if(!entry.candidates.length){
-        missingTerms.push(entry.term);
+        if(entry.outside.length)outsideTerms.push(entry.term);
+        else missingTerms.push(entry.term);
         continue;
       }
       let nextCandidates=[];
@@ -1251,14 +1295,16 @@ async function buildDongRouteOverlay(spec){
         candidates.sort((a,b)=>{
           const aScore=(prev?routePointDistance(prev,a):0)+(nextCandidates.length?candidateMinDistance(a,nextCandidates):0);
           const bScore=(prev?routePointDistance(prev,b):0)+(nextCandidates.length?candidateMinDistance(b,nextCandidates):0);
-          const aAddr=routeNorm(a.address).includes(routeNorm(entry.term))?0:1;
-          const bAddr=routeNorm(b.address).includes(routeNorm(entry.term))?0:1;
+          const aAddr=routeNorm(a.address).includes(routeNorm(routeSearchAlias(entry.term)))?0:1;
+          const bAddr=routeNorm(b.address).includes(routeNorm(routeSearchAlias(entry.term)))?0:1;
           return aScore-bScore || aAddr-bAddr;
         });
         chosenPoints=[candidates[0]];
       }
 
       for(const chosen of chosenPoints){
+        // 같은 동지역 노선 안에서도 비정상적으로 먼 검색 오탐은 버립니다.
+        if(prev&&routePointDistance(prev,chosen)>9)continue;
         if(!prev||Math.abs(prev.lat-chosen.lat)>1e-6||Math.abs(prev.lng-chosen.lng)>1e-6){
           points.push({...chosen,term:entry.term});
           if(chosen.district && !touchedDistricts.includes(chosen.district))touchedDistricts.push(chosen.district);
@@ -1272,6 +1318,9 @@ async function buildDongRouteOverlay(spec){
     const roadResult=await fetchRoadFollowingPath(points);
     const drawPoints=roadResult?.path||points;
     const roadMatched=!!roadResult;
+    const routeObj=(DIRECT_ROUTES[spec.type]||[]).find(r=>r.vehicle===spec.vehicle);
+    const secondaryText=String(routeObj?.secondary?.[spec.day]||'').trim();
+    const secondaryKind=spec.type==='general'?'불연성':'대형폐기물';
 
     const data={
       path:drawPoints.map(p=>({lat:+p.lat,lng:+p.lng})),
@@ -1279,24 +1328,21 @@ async function buildDongRouteOverlay(spec){
       pointsCount:points.length,
       termsCount:terms.length,
       missingTerms,
+      outsideTerms,
+      secondaryText,
+      secondaryKind,
       roadMatched,
       distance:+roadResult?.distance||0,
       duration:+roadResult?.duration||0
     };
 
-    // 도로망 길찾기에 성공한 노선만 영구 저장합니다.
-    // 일시적인 API 오류로 나온 직선 대체선은 다음 접속 때 다시 계산하도록 저장하지 않습니다.
     if(roadMatched)await putCachedDongRoute(spec,data);
-
     return createDongRouteOverlay(spec,{...data,fromCache:false});
   })();
 
   dongRouteBuildPromises.set(buildKey,task);
-  try{
-    return await task;
-  }finally{
-    dongRouteBuildPromises.delete(buildKey);
-  }
+  try{return await task}
+  finally{dongRouteBuildPromises.delete(buildKey)}
 }
 function syncDongRouteVisibility(type){
   Object.values(dongRouteOverlays).flat().forEach(item=>item?.polyline?.setMap(null));
@@ -1447,7 +1493,7 @@ function updateMapBadge(custom){
   const dayLabel=activeDay==='전체'?'전체 일정':`${activeDay}요일`;
   const providerLabel=provider==='전체'?'전체 수거노선':(provider==='제일환경'?'제일환경 위탁':`${provider}호 직영`);
   el.innerHTML=`<strong>${labels[activeLayer]} 수거노선 레이어 · ${providerLabel} · ${dayLabel}</strong>
-    <span>${custom||'읍·면은 법정리 기준 면색으로 표시하고, 동지역 직영수거는 행정동 전체를 칠하지 않고 차량·요일별 코스표의 확인 가능한 도로·학교·시설 위치를 경유점으로 삼아, 길찾기 프록시가 설정된 경우 실제 도로망을 따라 수거노선을 표시합니다. GPS 실주행 기록은 아니며 프록시 미설정 시에는 확인지점 직선 참고선으로 대체됩니다. 전체차량·전체요일 상태에서는 혼잡을 막기 위해 동지역 참고선을 숨기고 차량 또는 요일 선택 시 표시합니다. 확인된 위탁업체 노선은 별도 수거주체로 함께 표시합니다.'}</span>
+    <span>${custom||'읍·면은 법정리 기준 면색으로 표시하고, 동지역은 원본 코스표의 주 수거구간(생활=가연, 재활용=재활용)을 원문 순서대로 해석해 실제 도로망을 따라 실선으로 표시합니다. 괄호 속 도로명도 원문 위치에 맞춰 경유하며, 다른 읍·면에 속하는 코스는 동지역 실선에 억지로 연결하지 않고 면레이어에서 처리합니다. 불연성·대형폐기물은 원본의 별도 작업정보로 구분해 안내하며 주 수거 실선에 섞지 않습니다. GPS 실주행 기록은 아닙니다.'}</span>
     ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>행정동 참고:</strong> ${regionText}</div>`:''}
     <div class="route-legend">${legend}</div>`;
 }
