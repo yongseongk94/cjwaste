@@ -93,7 +93,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>같은 행정구역 + 같은 수거요일</strong>이면 직영 청소차량과 대행업체를 하나의 폴리곤으로 통합해 표시합니다. 한 지역에 여러 직영차량이 들어가거나 오창과학산업단지처럼 대행수거가 함께 있는 경우 툴팁에 담당 주체를 함께 표시합니다. 오창과학산업단지 주거지역은 청주시 생활폐기물 대행구역 기준 <strong>제일환경(043-286-0997)</strong>을 반영하고, 청주시 지역별 수거일 안내의 <strong>월·수·금</strong> 일정을 적용합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 리 경계는 음식물 분류배출 제외지역 표시에만 사용합니다.</div>
+    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>읍·면 지역은 법정리(里)를 기본 수거구역</strong>으로 사용합니다. 각 리에 직영 코스표와 대행수거 일정을 연결한 뒤, <strong>수거일정 조합이 같은 리는 같은 색상으로 표시하고 내부 경계선을 없애</strong> 서로 붙어 있으면 하나의 폴리곤처럼 보이게 구성합니다. 일정이 다른 리에서만 색상이 달라집니다. 동 지역은 리가 없으므로 행정동 경계를 사용합니다. 오창과학산업단지 주거지역은 <strong>제일환경(043-286-0997) · 월·수·금</strong> 일정을 반영합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 생활·재활용 직영 코스와 음식물 분류배출 제외지역 모두에 사용합니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -161,6 +161,60 @@ const DIRECT_ROUTES={"general":[{"vehicle":"3344","area":"오창,북이일부","
 
 
 const DAY_COLORS={'월':'#2563eb','화':'#f59e0b','수':'#16a34a','목':'#7c3aed','금':'#dc2626'};
+
+const RI_LAYER_DISTRICTS=new Set(['내수읍','오창읍','북이면']);
+const SCHEDULE_GROUP_COLORS={
+  '월':'#2563eb','화':'#f59e0b','수':'#16a34a','목':'#7c3aed','금':'#dc2626',
+  '월·수·금':'#2563eb','화·목':'#ea580c','월·목':'#7c3aed','수·금':'#0f766e',
+  '월·화·수·목·금':'#475569','월·수':'#0284c7','월·금':'#4f46e5','화·목·금':'#c2410c',
+  '수·목':'#059669','목·금':'#9333ea','월·화':'#0891b2','화·수':'#65a30d'
+};
+const SCHEDULE_FALLBACK_COLORS=['#0369a1','#0f766e','#4338ca','#a16207','#be123c','#6d28d9','#15803d','#b45309','#334155'];
+function scheduleDays(scheduleByDay,provider='전체'){
+  return DAYS.filter(day=>{
+    const rows=scheduleByDay?.[day]||[];
+    return provider==='전체'?rows.length:rows.some(x=>x.key===provider);
+  });
+}
+function scheduleSignature(scheduleByDay,provider='전체'){
+  return scheduleDays(scheduleByDay,provider).join('·');
+}
+function scheduleGroupColor(scheduleByDay,provider='전체',type='general'){
+  const sig=scheduleSignature(scheduleByDay,provider);
+  if(SCHEDULE_GROUP_COLORS[sig])return SCHEDULE_GROUP_COLORS[sig];
+  if(!sig)return '#cbd5e1';
+  let hash=0;for(const ch of sig)hash=(hash*31+ch.charCodeAt(0))>>>0;
+  return SCHEDULE_FALLBACK_COLORS[hash%SCHEDULE_FALLBACK_COLORS.length];
+}
+function addProviderToSchedule(byDay,day,key){
+  if(!byDay[day])byDay[day]=[];
+  if(!byDay[day].some(x=>x.key===key))byDay[day].push({key,label:providerDisplay(key)});
+}
+function riScheduleFromSources(type,district,riName){
+  const byDay={};
+  const riKey=`${district}|${riName}`;
+  // 1) 코스표에서 이미 법정리로 확정해 둔 항목을 우선 반영
+  DAYS.forEach(day=>{
+    const hit=(DIRECT_RI_DAYS[type]?.[day]||[]).find(x=>x.key===riKey);
+    (hit?.vehicles||[]).forEach(v=>addProviderToSchedule(byDay,day,v));
+  });
+  // 2) 원본 코스 문자열을 다시 검사해 수동 추출에서 빠진 리를 보완
+  for(const route of (DIRECT_ROUTES[type]||[])){
+    for(const [day,raw] of Object.entries(route.days||{})){
+      if(!inferredRegionsFor(type,route.vehicle,day).includes(district))continue;
+      const nraw=routeNorm(raw), nri=routeNorm(riName);
+      const wholeDistrict=nraw.includes(routeNorm(`${district} 일원`));
+      if((nri&&nraw.includes(nri))||wholeDistrict)addProviderToSchedule(byDay,day,route.vehicle);
+    }
+  }
+  // 3) 오창과학산업단지 주거지역 대행수거
+  if(type && district==='오창읍'&&OCHANG_SCIENCE_SCHEDULE_RIS.has(riName)){
+    OCHANG_SCIENCE_SCHEDULE.forEach(day=>addProviderToSchedule(byDay,day,'제일환경'));
+  }
+  DAYS.forEach(day=>{if(byDay[day])byDay[day].sort((a,b)=>a.key.localeCompare(b.key,'ko'))});
+  return byDay;
+}
+
 
 // 오창과학산업단지 주거지역 대행수거 예외.
 // 청주시 생활폐기물 대행구역(2025~2026): 제일환경 6구역 = 오창과학단지.
@@ -568,17 +622,24 @@ function setLayer(layer){
     const provider=selectedVehicle[layer]||'전체';
     const items=zonePolygons[layer]||[];
     items.forEach(item=>{
+      if(item.unassigned){
+        if(provider!=='전체'||activeDay!=='전체')return;
+        item.polygon.setOptions({fillColor:'#d1d5db',fillOpacity:.16,strokeColor:'#ffffff',strokeOpacity:.45,strokeWeight:.6});
+        item.polygon.setMap(map);return;
+      }
       if(!providerMatches(item.scheduleByDay,activeDay,provider))return;
       if(activeDay!=='전체'&&!(item.scheduleByDay?.[activeDay]||[]).length)return;
+      const isRi=item.kind==='ri';
       const color=activeDay==='전체'
-        ? (layer==='general'?'#17745a':'#315ea8')
+        ? scheduleGroupColor(item.scheduleByDay,provider,layer)
         : (DAY_COLORS[activeDay]||'#64748b');
       item.polygon.setOptions({
         fillColor:color,
-        fillOpacity:activeDay==='전체'?.16:.30,
-        strokeColor:activeDay==='전체'?'#ffffff':color,
-        strokeOpacity:activeDay==='전체'?.92:1,
-        strokeWeight:activeDay==='전체'?1.4:2.1
+        fillOpacity:activeDay==='전체'?.30:.34,
+        // 리 단위는 내부선을 없애서 같은 일정의 인접 리가 한 덩어리로 보이게 합니다.
+        strokeColor:isRi?color:'#ffffff',
+        strokeOpacity:isRi?0:.85,
+        strokeWeight:isRi?0:1.2
       });
       item.polygon.setMap(map);
     });
@@ -594,17 +655,29 @@ function updateMapBadge(custom){
   }
   const provider=selectedVehicle[activeLayer]||'전체';
   const summary=groupedDaySummary(activeLayer,activeDay,provider);
-  const dayLegend=Object.entries(DAY_COLORS).map(([d,c])=>`<span class="day-chip"><i class="day-swatch" style="background:${c}"></i>${d}</span>`).join('');
+  let legend='';
+  if(activeDay==='전체'){
+    const groups=new Map();
+    (zonePolygons[activeLayer]||[]).forEach(item=>{
+      if(item.unassigned||!providerMatches(item.scheduleByDay,'전체',provider))return;
+      const sig=scheduleSignature(item.scheduleByDay,provider);if(!sig)return;
+      if(!groups.has(sig))groups.set(sig,{color:scheduleGroupColor(item.scheduleByDay,provider,activeLayer),count:0});
+      groups.get(sig).count++;
+    });
+    legend=[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0],'ko')).map(([sig,g])=>`<span class="day-chip"><i class="day-swatch" style="background:${g.color}"></i>${sig}</span>`).join('');
+  }else{
+    legend=`<span class="day-chip"><i class="day-swatch" style="background:${DAY_COLORS[activeDay]||'#64748b'}"></i>${activeDay}요일</span>`;
+  }
   const regionText=summary.map(x=>{
     const rows=x.rows.map(r=>`${r.day}:${r.providers.map(p=>escapeHtml(p.label)).join('+')}`).join(' / ');
     return `${escapeHtml(x.district)} [${rows}]`;
   }).join(' · ');
-  const dayLabel=activeDay==='전체'?'전체 요일':`${activeDay}요일`;
+  const dayLabel=activeDay==='전체'?'전체 일정':`${activeDay}요일`;
   const providerLabel=provider==='전체'?'전체 담당':provider==='제일환경'?'제일환경':`${provider}호`;
-  el.innerHTML=`<strong>${labels[activeLayer]} 통합 레이어 · ${providerLabel} · ${dayLabel}</strong>
-    <span>${custom||'같은 행정구역에서 같은 요일에 수거하는 직영 청소차량과 대행업체를 하나의 레이어로 묶어 표시합니다. 여러 담당이 겹치면 한 폴리곤의 툴팁에 함께 표시됩니다.'}</span>
-    ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>지역별 담당:</strong> ${regionText}</div>`:''}
-    <div class="route-legend">${dayLegend}</div>`;
+  el.innerHTML=`<strong>${labels[activeLayer]} 리별 일정 레이어 · ${providerLabel} · ${dayLabel}</strong>
+    <span>${custom||'읍·면은 법정리별 수거일정을 적용하고, 수거일정 조합이 같은 리는 같은 색과 무경계 방식으로 묶어 표시합니다. 서로 붙어 있는 같은 일정의 리는 한 덩어리처럼 보입니다. 동 지역은 행정동 단위입니다.'}</span>
+    ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>행정동 참고:</strong> ${regionText}</div>`:''}
+    <div class="route-legend">${legend}</div>`;
 }
 
 function escapeHtml(value){
@@ -628,6 +701,50 @@ function hideZoneTooltip(){
   if(zoneTooltipOverlay)zoneTooltipOverlay.setMap(null);
 }
 
+
+
+function addRiServiceGeometry(feature,district,riName,type,scheduleByDay){
+  const g=feature.geometry;if(!g)return;
+  const days=scheduleDays(scheduleByDay,'전체');
+  const unassigned=!days.length;
+  const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+  const label=type==='general'?'생활쓰레기':'재활용쓰레기';
+  multi.forEach(polyCoords=>{
+    if(!polyCoords.length)return;
+    const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
+    const baseColor=unassigned?'#d1d5db':scheduleGroupColor(scheduleByDay,'전체',type);
+    const polygon=new kakao.maps.Polygon({
+      path:paths.length===1?paths[0]:paths,
+      strokeWeight:unassigned?.6:0,strokeColor:unassigned?'#ffffff':baseColor,strokeOpacity:unassigned?.45:0,
+      fillColor:baseColor,fillOpacity:unassigned?.16:.30
+    });
+    polygon.setMap(null);
+    kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
+      const provider=selectedVehicle[type]||'전체';
+      const visibleDays=activeDay==='전체'?scheduleDays(scheduleByDay,provider):((scheduleByDay?.[activeDay]||[]).some(x=>provider==='전체'||x.key===provider)?[activeDay]:[]);
+      const providers=[...new Set(visibleDays.flatMap(d=>(scheduleByDay?.[d]||[]).filter(x=>provider==='전체'||x.key===provider).map(x=>x.label)))];
+      const color=activeDay==='전체'?scheduleGroupColor(scheduleByDay,provider,type):(DAY_COLORS[activeDay]||baseColor);
+      polygon.setOptions({fillOpacity:unassigned?.24:.45,strokeColor:color,strokeOpacity:1,strokeWeight:2.2});
+      const detail=unassigned
+        ? `${label} · 코스표에서 리 단위 일정 미확정`
+        : `${label} · ${visibleDays.join('·')}요일 · ${providers.join(' + ')}`;
+      showZoneTooltip(mouseEvent.latLng,`${district} ${riName}`,detail,'법정리 · 같은 수거일정끼리 통합');
+    });
+    kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
+    kakao.maps.event.addListener(polygon,'mouseout',()=>{
+      const provider=selectedVehicle[type]||'전체';
+      const color=activeDay==='전체'?scheduleGroupColor(scheduleByDay,provider,type):(DAY_COLORS[activeDay]||baseColor);
+      polygon.setOptions({fillOpacity:unassigned?.16:(activeDay==='전체'?.30:.34),strokeColor:unassigned?'#ffffff':color,strokeOpacity:unassigned?.45:0,strokeWeight:unassigned?.6:0});
+      hideZoneTooltip();
+    });
+    kakao.maps.event.addListener(polygon,'click',()=>{
+      const allDays=scheduleDays(scheduleByDay,'전체');
+      const rows=allDays.map(d=>`${d}:${(scheduleByDay[d]||[]).map(x=>x.label).join('+')}`).join(' / ');
+      updateMapBadge(`${district} ${riName} · ${unassigned?'리 단위 일정 미확정':rows}`);
+    });
+    zonePolygons[type].push({polygon,district,ri:riName,scheduleByDay,kind:'ri',unassigned});
+  });
+}
 
 function addGroupedServiceGeometry(feature,district,type,scheduleByDay){
   if(!scheduleByDay||!Object.keys(scheduleByDay).length)return;
@@ -659,13 +776,13 @@ function addGroupedServiceGeometry(feature,district,type,scheduleByDay){
         if(selected!=='전체')providers=providers.filter(x=>x.key===selected);
         if(providers.length)rows=[`${activeDay}요일 · ${providers.map(x=>x.label).join(' + ')}`];
       }
-      const color=activeDay==='전체'?(type==='general'?'#17745a':'#315ea8'):(DAY_COLORS[activeDay]||'#334155');
+      const color=activeDay==='전체'?scheduleGroupColor(scheduleByDay,selectedVehicle[type]||'전체',type):(DAY_COLORS[activeDay]||'#334155');
       polygon.setOptions({fillOpacity:.40,strokeColor:color,strokeOpacity:1,strokeWeight:2.5});
       showZoneTooltip(mouseEvent.latLng,district,`${label} · ${rows.join(' / ')}`,'같은 지역·요일 담당 통합');
     });
     kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
-      const color=activeDay==='전체'?(type==='general'?'#17745a':'#315ea8'):(DAY_COLORS[activeDay]||'#64748b');
+      const color=activeDay==='전체'?scheduleGroupColor(scheduleByDay,selectedVehicle[type]||'전체',type):(DAY_COLORS[activeDay]||'#64748b');
       polygon.setOptions({fillOpacity:activeDay==='전체'?.16:.30,strokeColor:activeDay==='전체'?'#ffffff':color,strokeOpacity:activeDay==='전체'?.92:1,strokeWeight:activeDay==='전체'?1.4:2.1});
       hideZoneTooltip();
     });
@@ -832,9 +949,13 @@ async function buildZonePolygons(){
       matched++;
       districtFeatures.set(district,f);
       addFoodGeometry(f,district);
-      for(const type of ['general','recycle']){
-        const scheduleByDay=groupedScheduleForDistrict(type,district);
-        addGroupedServiceGeometry(f,district,type,scheduleByDay);
+      // 읍·면(내수·오창·북이)은 아래 법정리 경계 단계에서 리별 일정으로 생성합니다.
+      // 동 지역만 행정동 단위 직영 레이어를 유지합니다.
+      if(!RI_LAYER_DISTRICTS.has(district)){
+        for(const type of ['general','recycle']){
+          const scheduleByDay=groupedScheduleForDistrict(type,district);
+          addGroupedServiceGeometry(f,district,type,scheduleByDay);
+        }
       }
 
       const code=String(p.adm_cd2||p.ADM_CD2||p.emdcd||'').trim();
@@ -864,6 +985,12 @@ async function buildZonePolygons(){
       const riName=normalizeRi(p.li_nm||p.ri_nm||p.name||'');
       if(!riName)return;
 
+      // 생활·재활용: 법정리별 실제 일정표를 붙이고 같은 일정끼리 같은 색/무경계로 묶어 표시
+      for(const type of ['general','recycle']){
+        const scheduleByDay=riScheduleFromSources(type,district,riName);
+        addRiServiceGeometry(f,district,riName,type,scheduleByDay);
+      }
+
       if(['내수읍','오창읍'].includes(district)){
         const ex=getFoodExclusion(district,riName);
         if(ex.excluded===true){
@@ -876,7 +1003,7 @@ async function buildZonePolygons(){
     setLayer(activeLayer);
   }catch(err){
     console.warn('법정리 레이어 로딩 실패',err);
-    // 리 데이터는 음식물 제외지역 표시에만 사용합니다. 직영 생활·재활용 레이어에는 영향이 없습니다.
+    // 리 데이터가 실패하면 읍·면 생활·재활용 리별 레이어와 음식물 제외지역 표시가 제한됩니다.
   }
 }
 function init(){
