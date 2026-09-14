@@ -70,7 +70,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했으며, 상세 리(里) 목록은 2025 음식물 자체처리기 지원사업에 명시된 청주시 고시 제2022-566호 기준을 적용했습니다. 현행 청주시 고시 제2025-558호의 상세 목록과 운영 전 최종 대조가 필요합니다.<br>경계 출처: 통계청 SGIS·행정안전부, 가공 admdongkor / mapcn-kr (CC BY 4.0).</div>
+    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>경계 출처: 행정동은 admdongkor ver20260701(원출처 통계청 SGIS), 리 경계는 mapcn-kr의 행정안전부 기반 자료. 직영 생활·재활용 코스는 도로·리 단위 텍스트 자료이므로 경계를 임의 추정하지 않고 검색주소와 구간명을 매칭해 표시합니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -123,7 +123,113 @@ const FOOD_INCLUDED_RI={
   '오창읍':new Set(['장대리','창리','주성리','송대리','양청리','각리','구룡리'])
 };
 
-let map,marker,geocoder,places,currentDistrict='',currentLegalEmd='',currentLegalRi='',currentFoodExclusion=null,activeLayer='food';
+// 2026년 6월 청원구 직영 생활·재활용 수거 코스(차량변경) 자료.
+// 공개 페이지에는 운전원 이름/전화번호를 포함하지 않고 차량번호·요일·구간만 사용합니다.
+const DIRECT_ROUTES={"general":[{"vehicle":"3344","area":"오창,북이일부","days":{"월":"창리,오창마트,장대리,오창초,복현리,오창읍사무소,원리,여천리,체리부로,각리,중신리,\n        신평리,지게바위,농소리,탑리","화":"팔결교,상평리,엘리트전원마을,한우마실,미래지한옥마을,꽃화산리,후기리","수":"탑리,기암리,석우리,가곡리,농업기술원,도암리,괴정리,양지리,모정리,학소리,일신리,\n        유리,빛화산리,여천리","목":"창리,오창마트,오창초,복현리,오창읍사무소,성산리,자모원,벨루아캠핑장,북이면 화상리,\n        화죽리,대율리,내둔리","금":"장미공원,한우마실,성산리,용두리,두릉리,백현리,성재리,가좌리,3산업단지,\n        자연어린이집,오창농협급식지원센터"},"secondary":{"화":"전코스 수거","금":"전코스 수거"}},{"vehicle":"3346","area":"율량일부,주중일부,내수일부","days":{"월":"대원1차상가(주성로279번길),주성중학교(율봉로261번길)일대,율봉로262번길 일대,엔포드상가 일대\n        율량로201번길 일대,중앙초등학교 일대,충청대로 간선,구성3리,거송갈비찜,반석산업,내수로8 일대","화":"대원1차상가(주성로279번길),엔포드상가 일대,율량로201번길 일대,이은학교,동청주세무서 일대,\n        상리18번길 일대,상리로,다담뜰뷔페일대,기림모터스,예비군훈련장,청우휴타운,해마루요양원,우양요양원\n        충북경찰청 일대,충청대로 간선","수":"대원1차상가(주성로279번길),율봉로262번길 일대,엔포드상가 일대,율량로201번길 일대,중앙초 일대","목":"대원1차상가(주성로279번길),주성중학교(율봉로261번길)일대,엔포드상가 일대,율량로201번길 일대\n        보람어린이집(내수로)일대,수정요양원,반석산업,구성1리,주성동 마을회관,메리다웨딩 일대,은곡리 일대\n        수성초분교 일대,묵방마을회관,국동리경로회관,묵방2길 일대","금":"대원1차상가(주성로279번길),율봉로262번길 일대,엔포드상가 일대,율량로201번길 일대,중앙초 일대\n        이은학교,동청주세무서 일대,상리 일대,다담뜰뷔페일대,해마루요양원,우양요양원,경찰청,충청대로 간선"},"secondary":{"수":"전코스 수거","금":"전코스 수거"}},{"vehicle":"6244","area":"사천동,주중일부,율량일부","days":{"월":"공항로 간선,율봉로 간선,덕성초후문 일대,공항로150번길 일대,율봉로201번길 일대,\n        율봉로152번길,율량사천동사무소 일대,동양일보 일대,율천북로(청풍명월) 간선","화":"율량지구대 일대,주중동LH 간선,주중초후문 일대,다나산부인과 일대,사천동 천주교\n        성심노인요양원,사천초,사천푸르지오 일대,청주예수사랑교회 일대,주성로132번길 일대","수":"공항로 간선,율봉로 간선,덕성초후문 일대,공항로150번길 일대,율봉로201번길 일대,\n        율봉로187번길 일대,솔미어린이공원 일대,율봉로175번길 일대,청주성민교회 일대\n        율봉로152번길,율량사천동사무소 일대,동양일보 일대,율천북로(청풍명월) 간선","목":"율량지구대 일대,주중동LH 간선,주중초후문 일대,다나산부인과 일대,사천동 천주교\n        성심노인요양원,사천초,사천푸르지오 일대,청주예수사랑교회 일대,주성로132번길 일대","금":"공항로 간선,율봉로 간선,덕성초후문 일대,공항로150번길 일대,율봉로201번길 일대,\n        율봉로152번길,율량사천동사무소 일대,동양일보 일대,율천북로(청풍명월) 간선"},"secondary":{"화":"전 코스 수거","목":"전 코스 수거"}},{"vehicle":"6224","area":"내수일부,북이일부,오근장,정상 외","days":{"월":"번영고철 일대,오근장 거점센터,팔결로117,충북경찰1기동대,팔결로97 일대,팔결로 간선\n        테크노빌주유소,밀레니엄1,2,3,4로 일대,사천로18번길 일대,대추나무골,아르떼웨딩홀\n        사천동 일대,무심동로 간선,새터성당,내수로 간선,화랑마트,충북산업용재유통단지","화":"오동육교,LS농기계부품,부길툴랜드,2순환로410번길 일대,정하동 일대,정상동 일대\n        양지마을,정상8,9통 일대,외남 일대,수름재 일대,반송마을,율량중,어반하우스,어웰휴\n        황금주유소,밭대,북일초,은혜의집","수":"번영고철 일대,외평동,팔결로 간선,새터초,입이즐거운만두 일대,사천동 일대,외하,입상\n        원통리,원통2리,휴먼케어요양원,신화동 일대,보람어린이집,나누리장애인센터,덕동 일대","목":"묵방골정원 일대,수름재 일대,화랑마트,청주교통,오동육교,오동동 일대,충북인터넷고\n        중앙여중,율량중,밀레니엄1,2,3,4로 일대","금":"주중동 일대,팔결로321 일대,공항사거리,대철자원 일대,오근장동주민센터,청주교통\n        한진택배,동신문짝,제2순환로 간선,입이즐거운만두 일대,새터성당,사천동 일대"},"secondary":{"화":"전 코스 수거","목":"전코스 수거"}},{"vehicle":"6138","area":"내수일부,북이일부","days":{"월":"진성레미컨,은곡리,마산리,학평리,내수읍사무소 일원,내수리,풍정리,덕암리,세교리\n        청주종합사격장,형동리,비상리,비중리,우산리,초정리,초정약수원탕","화":"충북도로사업소,풍정3길,정도안전산업,세교사거리,비중사거리,저곡리,초정어린이집\n        초정봉칼국수,영하1리버스정류장,영하보건소,전주밥상,청원약수딸기","수":"진성레미컨,은곡리,신안리,마산리,학평리,내수읍사무소 일원,북이면사무소,신대리\n        장양리,다모아산업,용계리,석성초,석성리,화상리,추학리,북이초","목":"풍정교차로,카우스토리,대길2리경로당,감사교회,서당리,대길리,부연리,선암리,신기리\n        초정구길,호명리,석화리,보람농원,현암리","금":"진성레미컨,은곡리,마산리,학평리,내수읍사무소 일원,내수리,장재교차로,장재문화마을\n        우진환경,장재리,토성리,금암리,금대리,송정리,가구대통령,옥수리,내추리,굿모닝요양원\n        다모아패키지"},"secondary":{"화":"내수읍 일원","목":"북이면 일원"}},{"vehicle":"6157","area":"내덕2동,대원4차","days":{"월":"청대사거리,현대미술관,임시청사,문화산업단지,덕벌로,덕벌로31번길,내덕초,\n        미래창조관,내덕2동주민센터,내덕2동주요간선도로,대진@,자연시장 일대,준할인마트,\n        충청대로37번길 일대,공항로70,64,58,52번길 일대","화":"대성고,임시청사,덕벌로,덕벌로31번길,내덕초,미래창조관,내덕2동주민센터,\n        율량대원4차@ 일대,율중로,율중로7,16,29,36,75,79번길 일대,금성계전@뒤,\n        충청대로58,62,42번길 일대,안덕벌로57,19,69,15,52,98,102번길 일대","수":"청대사거리,현대미술관,임시청사,문화산업단지,덕벌로,덕벌로31번길,내덕초,\n        미래창조관,내덕2동주민센터,내덕2동주요간선도로","목":"청대사거리,현대미술관,임시청사,문화산업단지,덕벌로,덕벌로31번길,내덕초,\n        미래창조관,내덕2동주민센터,내덕2동주요간선도로,대진@,자연시장 일대,준할인마트,\n        충청대로37번길 일대,공항로70,64,58,52번길 일대,금성계전@뒤,\n        충청대로58,62,42번길 일대,안덕벌로57,19,69,15,52,98,102번길 일대","금":"대성고,임시청사,덕벌로,덕벌로31번길,내덕초,미래창조관,내덕2동주민센터,\n        율량대원4차@ 일대,율중로,율중로7,16,29,36,75,79번길 일대"},"secondary":{"수":"전코스 수거","금":"전코스 수거"}}],"recycle":[{"vehicle":"6544","area":"내수일부,북이일부","days":{"월":"은곡리,마산리,신안리,내수읍 일원,신안리,내수리,학평리,풍정리,덕암리,도원리,세교리\n            청주종합사격장,형동리,초정리,비상리,우산리","화":"풍정교차로,풍정리,충북도로사업소,세교리,저곡리,우산리,초정,초정요양원,\n           영하보건소,영하리,은곡3구,수성초,신안리,내수생활체육공원,내수성당,도원리","수":"내수읍 일원,내수로,청암로,북이면사무소,신대리,대율리,내추리,장양리,용계리,석성초\n           석성리,화상리,장양2리,추학리,옥수리,내추리","목":"학평리,청주미트,감사교회,서당리,대길리,부연리,선암리,신기리,초정구길,호명리\n           석화리,현암리,보람농원","금":"은곡리,마산리,내수읍 일원,신안리,내수리,학평리,토성리,북이,장재리,금암리,금대리\n           송정리,가구대통령,옥수리,북이초,굿모닝요양원,다모아패키지"},"secondary":{"수":"전코스 수거","목":"전코스 수거"}},{"vehicle":"0263","area":"율량일부,주중일부","days":{"월":"성모병원사거리,율량농협사거리,인삼농협,청여고간선(율봉로),대신의원(율천북로),\n           홈마트,정도드림@,신한은행사거리,농협주유소,양지공업사,덕성교,덕성초후문\n           푸르지오상가,율량지구대 일대,주중초후문 일대,다나산부인과 일대,대농식자재마트","화":"성모병원사거리,율량농협사거리,조선게장,KT청주지사 일대,율량사천주민센터\n           롯데슈퍼,재원@,청주성민교회 일대,광천탕 일대,청여고 일대,청풍명월 일대","수":"사천성당,사천초,힐사이드@,성모사거리,주중초,인삼농협,청여고후문(율봉로)간선\n           율량초,대신의원,청풍명월(율천북로) 간선","목":"성모사거리,홈마트,정도드림@,신한은행사거리,율량농협사거리,농협주유소,양지공업사\n           덕성교,덕성초후문,푸르지오상가,율량지구대 일대,주중초후문 일대,다나산부인과 일대\n           대농식자재마트","금":"성모병원사거리,인삼농협사거리,청여고후문(율봉로)간선,대신의원,청풍명월 간선\n           조선게장,KT청주지사 일대,율량사천주민센터,롯데슈퍼,재원@,청주성민교회 일대\n           광천탕 일대,청여고 일대,청풍명월 일대"},"secondary":{"수":"율량KT,청여고 일대 수거","목":"율량.사천일부 주중초 원룸 일대 수거"}},{"vehicle":"0261","area":"내덕2동,대원4차일대","days":{"월":"청대사거리,대성고,임시청사,주중교회 간선(1순환로),율중로7번길,상리 스톤폴스 일대\n            율량힐타운,율중로16,29,36,75,79번길 일대,내덕동 천주교,공항로52번길 일대\n            준할인마트,1순환로225번길 일대,덕벌로,미래창조관,내덕초 일대","화":"공항로,대진@,1순환로211번길 일대,내덕자연시장 일대,새적굴공원,안덕벌로49번길\n           충청대로62,72번길 일대,영우예인촌@,내덕2동주민센터,안덕벌로15번길,임시청사","수":"청대사거리,대성고,임시청사,주중교회 간선(1순환로),율중로7번길,상리 스톤폴스 일대\n            율량힐타운,율중로16,29,36,75,79번길 일대,내덕동 천주교,공항로52번길 일대\n            준할인마트,1순환로225번길 일대,덕벌로,미래창조관,내덕초 일대","목":"공항로,대진@,1순환로211번길 일대,내덕자연시장 일대,새적굴공원,안덕벌로49번길\n           충청대로62,72번길 일대,영우예인촌@,내덕2동주민센터,안덕벌로15번길,임시청사","금":"청대사거리,대성고,임시청사,주중교회 간선(1순환로),율중로7번길,상리 스톤폴스 일대\n            율량힐타운,율중로16,29,36,75,79번길 일대,내덕동 천주교,공항로52번길 일대\n            준할인마트,1순환로225번길 일대,덕벌로,미래창조관,내덕초 일대"},"secondary":{"화":"전코스 수거","목":"전코스 수거"}},{"vehicle":"0262","area":"오창일부,북이일부","days":{"월":"창리사거리,창리,오창읍사무소,오창초,장대리,원리,팔결교,해든전원마을\n           (가곡길181-53)일대, 하나로마트,양지리,복현리","화":"모정리,학소리,일신리,유리,빛화산리,증평IC,여천리","수":"각리(각리2길),신평리,지게바위길 일대,중신리,농소리,혜성약품,양청농소길,탑리 일대\n           기암리,석우리,가곡리,충북농업기술원,괴정리,오창중,고","목":"창리사거리,창리,오창읍사무소,장대리,구룡택지1로 일대,구룡에너지 일대,번천마을\n           두릉유리로 일대,화상리,내둔리,대율리,화죽리,신대리,석성리","금":"꽃화산리,용두리,가좌리,미래지한옥마을,후기리,성산리,3산업단지,두릉리,성재리\n           백현리,자연어린이집"},"secondary":{"화":"전코스 수거","금":"전코스 수거"}},{"vehicle":"9090","area":"율량일부,주중일부,내수일부","days":{"월":"대원1차상가(주성로279번길) 및 원룸지역,주성중,율봉로261번길 일대,중앙초\n           엔포드호텔 상가지역,율봉로262번길 일대,율봉로286번길 일대","화":"대원1차상가(주성로279번길) 일대,율봉로261번길 일대,주성동 일대,내수로 일대\n           충북경찰청(2순환로160번길) 일대,구성새동네길 일대,2순환로 간선,충청대로 간선","수":"대원1차상가(주성로279번길) 및 원룸지역,엔포드호텔 상가지역,율봉로262번길 일대","목":"대원1차상가(주성로279번길)일대,엔포드호텔 상가지역,구성길 일대,내수로 일대\n           구성리,묵방리,국동리,은곡리 일부","금":"엔포드호텔 상가지역,율봉로262번길 일대,대원1차상가(주성로279번길) 및 원룸지역\n           율봉로261번길 일대,상리로8번길 일대,상리로45번길 일대"},"secondary":{"수":"전코스 수거","금":"전코스 수거"}},{"vehicle":"0264","area":"내수일부,북이일부,오근장,정상 외","days":{"월":"율봉로95 일대,한국마트,남광하우스토리 일대,무심동로 간선,새터초,주성로89 일대\n           새터성당,사뜸로61번길 일대,사뜸로49 일대,충북인터넷고,곰두리체육관,새터마을회관\n           공항로229 일대","화":"토성로48 일대,양지마을,대현펌프카,정상8.9통경로당,오동2동노인정,오근장역\n           오근장동주민센터,참나무골뷔페,내수로 간선,내수로199 일대,율량중,어웰휴빌리지\n           충청대로233 일대,주중11통마을회관,발산리 일대,세명이앤씨,솔뫼가든","수":"밀레니엄1,2,3,4로 일대,발산로6-9 일대,주중동13통경로당,북일초,은혜의집,외평동\n           청주소망의집","목":"율봉로95 일대,한국마트,남광하우스토리 일대,무심동로 간선,새터초,주성로89 일대\n           새터성당,사뜸로61번길 일대,신화동마을회관,충청대로233 일대,2순환로278-1 일대\n           충북산업용재유통단지,사뜸로49 일대,아쿠아랜드 일대,율천북로 간선","금":"팔결로 간선,팔결로188 일대,외남새마을경로당,팔결로342번길 일대,입상리,입동리\n           원통1구,원통2리,은곡천일빌리지,킹콩백화점,묵방골정원"},"secondary":{"수":"사천동,발산리,정상,정북,정하,오동동,오근장동 일원","금":"어웰휴빌리지,주중,외평,외남,외하,입상,입동,은곡,원통 일원"}}]};
+
+const DIRECT_AREA_HINTS={
+  '내수읍':['내수'],'오창읍':['오창'],'북이면':['북이'],'오근장동':['오근장','정상','정하','외평','외남','외하','오동','입상','입동'],
+  '율량사천동':['율량','사천','주중','주성'],'내덕2동':['내덕2','대원4차','내덕동']
+};
+
+function routeNorm(s){return String(s||'').toLowerCase().replace(/\s+/g,'').replace(/[·.()@-]/g,'')}
+function routeTerms(text){
+  const src=String(text||'');
+  const terms=[];
+  const parens=[...src.matchAll(/\(([^)]+)\)/g)].map(m=>m[1]);
+  src.split(/[,\n]/).concat(parens).forEach(part=>{
+    let t=String(part||'')
+      .replace(/^(가연|재활용|불연|대\.?형)\s*-/,'')
+      .replace(/\b(전\s*코스\s*수거|전코스\s*수거)\b/g,'')
+      .replace(/(일대|일원|간선|수거)$/g,'')
+      .trim();
+    if(!t || /^\d+$/.test(t) || t.length<2) return;
+    terms.push(t);
+  });
+  return [...new Set(terms)];
+}
+function routeMatchScore(text,ctx){
+  const raw=routeNorm(text);
+  const address=routeNorm(ctx.address);
+  const ri=routeNorm(ctx.legalRi);
+  const legal=routeNorm(ctx.legalEmd);
+  const district=routeNorm(ctx.district);
+  let best=0, matched=[];
+  for(const term of routeTerms(text)){
+    const n=routeNorm(term);
+    if(!n)continue;
+    let score=0;
+    if(ri && n===ri) score=115;
+    else if(ri && n.includes(ri) && ri.length>=2) score=105;
+    else if(legal && !ri && n===legal && legal.length>=2) score=92;
+    else if(address && ((n.length>=4)||(n.length>=3 && /(?:로|길)$/.test(n))) && address.includes(n)) score=96;
+    else if(address && n.length>=5 && n.includes(address)) score=88;
+    else if(district && !ri && n===district && district.length>=3) score=55;
+    if(score>0){ matched.push(term); best=Math.max(best,score); }
+  }
+  // 리/법정동 이름이 원문에 직접 포함된 경우를 보강합니다.
+  if(ri && raw.includes(ri)){best=Math.max(best,112);matched.push(ctx.legalRi)}
+  if(legal && !ri && routeTerms(text).some(t=>routeNorm(t)===legal)){best=Math.max(best,90);matched.push(ctx.legalEmd)}
+  return {score:best,matched:[...new Set(matched)]};
+}
+function findDirectMatches(type,ctx){
+  const results=[];
+  for(const route of (DIRECT_ROUTES[type]||[])){
+    const days=[];
+    const matchedTerms=new Set();
+    let best=0;
+    for(const [day,text] of Object.entries(route.days||{})){
+      const m=routeMatchScore(text,ctx);
+      if(m.score>=88){days.push(day);m.matched.forEach(x=>matchedTerms.add(x));best=Math.max(best,m.score)}
+    }
+    if(days.length) results.push({vehicle:route.vehicle,area:route.area,days:[...new Set(days)],terms:[...matchedTerms],secondary:route.secondary||{},score:best});
+  }
+  results.sort((a,b)=>b.score-a.score);
+  return results;
+}
+function districtHasDirectCoverage(type,district){
+  const hints=DIRECT_AREA_HINTS[district]||[];
+  if(!hints.length)return false;
+  return (DIRECT_ROUTES[type]||[]).some(r=>hints.some(h=>routeNorm(r.area).includes(routeNorm(h))));
+}
+function applicableSecondaryDays(matches,ctx){
+  const out=new Set();
+  for(const m of matches){
+    for(const [day,text] of Object.entries(m.secondary||{})){
+      const n=routeNorm(text);
+      if(n.includes('전코스')) out.add(day);
+      else if(ctx.district && n.includes(routeNorm(ctx.district))) out.add(day);
+      else if(ctx.legalEmd && n.includes(routeNorm(ctx.legalEmd))) out.add(day);
+      else if(ctx.legalRi && n.includes(routeNorm(ctx.legalRi))) out.add(day);
+    }
+  }
+  return DAYS.filter(d=>out.has(d));
+}
+function renderDirectSchedule(type,matches,ctx){
+  const isGeneral=type==='general';
+  const allDays=new Set();
+  matches.forEach(m=>m.days.forEach(d=>allDays.add(d)));
+  const orderedDays=DAYS.filter(d=>allDays.has(d));
+  const badge=document.getElementById(type+'Badge');
+  badge.textContent=`직영 · ${orderedDays.join('·')}`;
+  renderDays(type+'Days',orderedDays);
+  const rows=matches.map(m=>{
+    const terms=m.terms.slice(0,4).map(escapeHtml).join(', ');
+    return `<strong>${m.vehicle}호:</strong> ${m.days.join(' · ')}${terms?` <span style="color:#6b7280">(${terms})</span>`:''}`;
+  }).join('<br>');
+  let secondary='';
+  if(isGeneral){
+    const sec=applicableSecondaryDays(matches,ctx);
+    if(sec.length) secondary=`<br><strong>불연성:</strong> ${sec.join(' · ')}`;
+  }
+  const apartmentNotice=type==='recycle'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    : '';
+  document.getElementById(type+'Detail').innerHTML=
+    `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br>${rows}${secondary}<br><span style="color:#6b7280">※ 2026년 6월 직영 코스표의 도로명·법정동·리 명칭과 검색주소를 자동 매칭한 결과입니다.</span>${apartmentNotice}</div>`;
+}
+
+let map,marker,geocoder,places,currentDistrict='',currentLegalEmd='',currentLegalRi='',currentAddress='',currentFoodExclusion=null,activeLayer='food';
 let zoneTooltipOverlay=null;
 const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[]};
 
@@ -145,7 +251,7 @@ function getFoodExclusion(legalEmd,legalRi){
 function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
 function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
 function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
-function updateLocation(address,lat,lng){document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+function updateLocation(address,lat,lng){currentAddress=address||'';document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
 
 function renderDays(containerId,days){
   const box=document.getElementById(containerId);box.innerHTML='';
@@ -180,21 +286,43 @@ function renderSchedule(district,legalEmd='',legalRi=''){
     document.getElementById('foodDetail').innerHTML=`<div class="verified"><strong>단독주택 배출:</strong> ${food.days.join(' · ')}<br><strong>수거:</strong> ${food.pickup}<br><strong>수거업체:</strong> ${food.operator}${food.phone?' · '+food.phone:''}<br><strong>공동주택:</strong> 상시배출${extra}</div>`;
   }else setPending('food','해당 지역의 음식물 일정을 공식자료에서 확인하지 못했습니다.');
 
-  const generals=findRegionEntries('general',district);
-  if(generals.length){
-    document.getElementById('generalBadge').textContent='요일 확인 필요';renderDays('generalDays',[]);
-    const rows=generals.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
-    document.getElementById('generalDetail').innerHTML=`<div class="pending">${rows}<br><strong>배출시간:</strong> 일몰 후부터 자정 전<br>주소만으로 주택유형은 판정하지 않습니다. 세부 수거요일은 추가 확인이 필요합니다.</div>`;
-  }else setPending('general','현재 공개자료만으로는 이 지역의 생활쓰레기 세부 수거요일을 확정할 수 없습니다.');
+  const ctx={address:currentAddress,district,legalEmd,legalRi};
 
-  const recycles=findRegionEntries('recycle',district);
-  if(recycles.length){
-    document.getElementById('recycleBadge').textContent='요일 확인 필요';renderDays('recycleDays',[]);
-    const rows=recycles.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
-    document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>주소만으로 주택유형은 판정하지 않습니다. 세부 수거요일은 추가 확인이 필요합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+  // 생활쓰레기: 2026년 6월 직영 코스가 주소와 매칭되면 직영 차량·요일을 우선 표시합니다.
+  const directGeneral=findDirectMatches('general',ctx);
+  if(directGeneral.length){
+    renderDirectSchedule('general',directGeneral,ctx);
+  }else if(districtHasDirectCoverage('general',district)){
+    document.getElementById('generalBadge').textContent='직영 구간 확인';
+    renderDays('generalDays',[]);
+    document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>청원구 직영 수거구간이 포함된 지역입니다.</strong><br>다만 현재 검색주소가 코스표의 도로명·리 명칭과 자동 매칭되지 않았습니다. 같은 읍·동 안에서도 직영·대행 및 차량별 구간이 나뉘므로 임의로 요일을 표시하지 않습니다.</div>`;
   }else{
-    setPending('recycle','현재 공개자료만으로는 이 지역의 재활용쓰레기 세부 수거요일을 확정할 수 없습니다.');
-    document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+    const generals=findRegionEntries('general',district);
+    if(generals.length){
+      document.getElementById('generalBadge').textContent='요일 확인 필요';renderDays('generalDays',[]);
+      const rows=generals.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
+      document.getElementById('generalDetail').innerHTML=`<div class="pending">${rows}<br><strong>배출시간:</strong> 일몰 후부터 자정 전<br>주소만으로 주택유형은 판정하지 않습니다. 세부 수거요일은 추가 확인이 필요합니다.</div>`;
+    }else setPending('general','현재 확보한 직영 코스와 공개자료만으로는 이 지역의 생활쓰레기 세부 수거요일을 확정할 수 없습니다.');
+  }
+
+  // 재활용: 생활과 별도인 2026년 6월 직영 재활용 코스를 독립적으로 매칭합니다.
+  const directRecycle=findDirectMatches('recycle',ctx);
+  if(directRecycle.length){
+    renderDirectSchedule('recycle',directRecycle,ctx);
+  }else if(districtHasDirectCoverage('recycle',district)){
+    document.getElementById('recycleBadge').textContent='직영 구간 확인';
+    renderDays('recycleDays',[]);
+    document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>청원구 직영 재활용 수거구간이 포함된 지역입니다.</strong><br>현재 주소가 코스표의 도로명·리 명칭과 자동 매칭되지 않아 요일을 임의로 표시하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+  }else{
+    const recycles=findRegionEntries('recycle',district);
+    if(recycles.length){
+      document.getElementById('recycleBadge').textContent='요일 확인 필요';renderDays('recycleDays',[]);
+      const rows=recycles.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
+      document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>주소만으로 주택유형은 판정하지 않습니다. 세부 수거요일은 추가 확인이 필요합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+    }else{
+      setPending('recycle','현재 확보한 직영 코스와 공개자료만으로는 이 지역의 재활용쓰레기 세부 수거요일을 확정할 수 없습니다.');
+      document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+    }
   }
 
   updateMapBadge();
@@ -247,10 +375,13 @@ function updateMapBadge(custom){
   const labels={general:'생활쓰레기',food:'음식물쓰레기',recycle:'재활용쓰레기'};
   const items=zonePolygons[activeLayer]||[];
   if(activeLayer==='food' && (items.length||zonePolygons.foodExclusion.length)){
-    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'배출요일은 은은한 색면으로, 분류배출 제외지역은 붉은 색면으로 표시합니다. 마우스를 올리면 경계가 강조됩니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
+    el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'읍·면·동별 실제 행정경계를 기준으로 구분합니다. 분류배출 제외지역은 같은 기준의 리를 내부선 없이 묶어 붉은 색면으로 표시합니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span><span class="legend-item"><i class="legend-dot legend-pending"></i>확인 필요</span></div>`;
     return;
   }
-  el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span class="${items.length?'':'warn'}">${custom|| (items.length?'현재 수거구역 경계를 표시하고 있습니다.':'이 레이어는 아직 세부 수거구역 경계자료를 연결하지 않았습니다.')}</span>`;
+  const routeMsg=(activeLayer==='general'||activeLayer==='recycle')
+    ? '2026년 6월 직영 코스는 도로·리·시설명 단위 자료라 정확한 경계가 없는 구간을 임의 폴리곤으로 만들지 않았습니다. 주소검색 시 해당 직영 차량·요일을 자동 매칭합니다.'
+    : '이 레이어는 아직 세부 수거구역 경계자료를 연결하지 않았습니다.';
+  el.innerHTML=`<strong>${labels[activeLayer]} 레이어</strong><span class="${items.length?'':'warn'}">${custom|| (items.length?'현재 수거구역 경계를 표시하고 있습니다.':routeMsg)}</span>`;
 }
 
 function escapeHtml(value){
@@ -288,23 +419,23 @@ function addFoodGeometry(feature,district){
   const multi = g.type==='Polygon' ? [g.coordinates] : (g.type==='MultiPolygon' ? g.coordinates : []);
   multi.forEach(polyCoords=>{
     if(!polyCoords.length)return;
-    // 카카오 Polygon은 외곽링과 내부링 배열을 받을 수 있습니다.
     const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
     const polygon=new kakao.maps.Polygon({
       path: paths.length===1?paths[0]:paths,
-      strokeWeight:1, strokeColor:style.stroke, strokeOpacity:.28,
-      fillColor:style.fill, fillOpacity:.22
+      // 읍면동 경계는 얇은 흰 선으로 또렷하게 분리합니다.
+      strokeWeight:1.4, strokeColor:'#ffffff', strokeOpacity:.92,
+      fillColor:style.fill, fillOpacity:.25
     });
     polygon.setMap(activeLayer==='food'?map:null);
     kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
-      polygon.setOptions({fillOpacity:.34,strokeOpacity:.82,strokeWeight:2});
+      polygon.setOptions({fillOpacity:.38,strokeColor:style.stroke,strokeOpacity:.95,strokeWeight:2.2});
       const e=findRegionEntry('food',district);
       const detail=e&&e.status==='verified'?`음식물 · ${e.days.join('·')} 배출 · ${e.pickup}`:'음식물 · 일정 추가 확인 필요';
-      showZoneTooltip(mouseEvent.latLng,district,detail,'읍·면·동');
+      showZoneTooltip(mouseEvent.latLng,district,detail,'읍·면·동 실제 경계');
     });
     kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
-      polygon.setOptions({fillOpacity:.22,strokeOpacity:.28,strokeWeight:1});
+      polygon.setOptions({fillOpacity:.25,strokeColor:'#ffffff',strokeOpacity:.92,strokeWeight:1.4});
       hideZoneTooltip();
     });
     kakao.maps.event.addListener(polygon,'click',()=>{
@@ -315,6 +446,9 @@ function addFoodGeometry(feature,district){
     zonePolygons.food.push({polygon,district,schedule:style.label});
   });
 }
+
+// 분류배출 제외지역은 리별 내부선을 그리지 않습니다.
+// 같은 읍면 안의 여러 제외 리가 붙어 있으면 하나의 색면처럼 보입니다.
 function addExcludedRiGeometry(feature,parentDistrict,riName){
   const g=feature.geometry;if(!g)return;
   const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
@@ -323,23 +457,50 @@ function addExcludedRiGeometry(feature,parentDistrict,riName){
     const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
     const polygon=new kakao.maps.Polygon({
       path:paths.length===1?paths[0]:paths,
-      strokeWeight:1,strokeColor:'#7f1d1d',strokeOpacity:.55,
-      fillColor:'#991b1b',fillOpacity:.34
+      strokeWeight:0, strokeOpacity:0,
+      fillColor:'#991b1b',fillOpacity:.38
     });
     polygon.setMap(activeLayer==='food'?map:null);
     kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
-      polygon.setOptions({fillOpacity:.48,strokeOpacity:.9,strokeWeight:2});
-      showZoneTooltip(mouseEvent.latLng,`${parentDistrict} ${riName}`,'음식물 · 분류배출 제외지역','법정리');
+      polygon.setOptions({fillOpacity:.52});
+      showZoneTooltip(mouseEvent.latLng,`${parentDistrict} 분류배출 제외지역`,'음식물 · 제외지역 통합 표시','동일 제외기준 지역');
     });
     kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
-      polygon.setOptions({fillOpacity:.34,strokeOpacity:.55,strokeWeight:1});
+      polygon.setOptions({fillOpacity:.38});
       hideZoneTooltip();
     });
     kakao.maps.event.addListener(polygon,'click',()=>{
-      updateMapBadge(`${parentDistrict} ${riName} · 음식물류 폐기물 분류배출 제외지역`);
+      updateMapBadge(`${parentDistrict} · 음식물류 폐기물 분류배출 제외지역`);
     });
     zonePolygons.foodExclusion.push({polygon,district:parentDistrict,ri:riName,excluded:true});
+  });
+}
+
+// 북이면은 전 지역이 제외지역이므로 리를 나눠 칠하지 않고 북이면 행정경계 1개를 그대로 사용합니다.
+function addWholeDistrictExclusion(feature,district){
+  const g=feature.geometry;if(!g)return;
+  const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+  multi.forEach(polyCoords=>{
+    if(!polyCoords.length)return;
+    const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
+    const polygon=new kakao.maps.Polygon({
+      path:paths.length===1?paths[0]:paths,
+      strokeWeight:1.6,strokeColor:'#7f1d1d',strokeOpacity:.82,
+      fillColor:'#991b1b',fillOpacity:.4
+    });
+    polygon.setMap(activeLayer==='food'?map:null);
+    kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
+      polygon.setOptions({fillOpacity:.54,strokeWeight:2.3,strokeOpacity:1});
+      showZoneTooltip(mouseEvent.latLng,district,'음식물 · 전 지역 분류배출 제외','읍·면·동 전체');
+    });
+    kakao.maps.event.addListener(polygon,'mousemove',(mouseEvent)=>moveZoneTooltip(mouseEvent.latLng));
+    kakao.maps.event.addListener(polygon,'mouseout',()=>{
+      polygon.setOptions({fillOpacity:.4,strokeWeight:1.6,strokeOpacity:.82});
+      hideZoneTooltip();
+    });
+    kakao.maps.event.addListener(polygon,'click',()=>updateMapBadge(`${district} 전 지역 · 음식물류 폐기물 분류배출 제외지역`));
+    zonePolygons.foodExclusion.push({polygon,district,whole:true,excluded:true});
   });
 }
 async function fetchGeoJson(url,label){
@@ -349,57 +510,66 @@ async function fetchGeoJson(url,label){
 }
 
 async function buildZonePolygons(){
-  updateMapBadge('음식물 수거요일·분류배출 제외지역 경계를 불러오는 중입니다…');
+  updateMapBadge('정밀 읍·면·동 경계와 분류배출 제외지역을 불러오는 중입니다…');
   try{
-    // 읍·면·동과 리 경계를 같은 mapcn-kr 데이터셋에서 사용합니다.
-    // 이렇게 해야 adm_cd2(읍면동) ↔ emd_adm(리)의 코드가 정확히 일치합니다.
-    const base='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data';
+    // 기존 3% 단순화 emd.json 대신 admdongkor 원본 행정동 경계를 직접 사용합니다.
+    // 파일은 크지만 청원구 8개 읍면동만 골라 카카오맵에 그립니다.
+    const emdUrl='https://raw.githubusercontent.com/vuski/admdongkor/master/ver20260701/HangJeongDong_ver20260701.geojson';
+    const riUrl='https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json';
     const [emdFc,riFc]=await Promise.all([
-      fetchGeoJson(`${base}/emd.json`,'읍면동 경계'),
-      fetchGeoJson(`${base}/ri/43.json`,'충북 리 경계')
+      fetchGeoJson(emdUrl,'정밀 행정동 경계'),
+      fetchGeoJson(riUrl,'충북 리 경계')
     ]);
 
     const targets=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
     const codeToDistrict=new Map();
+    const districtFeatures=new Map();
 
     (emdFc.features||[]).forEach(f=>{
       const p=f.properties||{};
-      if(!String(p.sggnm||'').includes('청원구')) return;
-      const district=canonicalDistrict(p.dong||p.emdnm||p.adm_nm||'');
+      const fullName=String(p.adm_nm||p.ADM_NM||'');
+      if(!fullName.includes('청주시 청원구')) return;
+      const rawDistrict=fullName.trim().split(/\s+/).pop();
+      const district=canonicalDistrict(rawDistrict);
       if(!targets.has(district)) return;
+      districtFeatures.set(district,f);
       addFoodGeometry(f,district);
-      const code=String(p.adm_cd2||p.adm_cd||'');
+      const code=String(p.adm_cd2||p.ADM_CD2||p.adm_cd||'');
       if(code) codeToDistrict.set(code,district);
     });
 
-    let exclusionRiCount=0;
+    // 북이면은 전 지역 제외이므로 리 단위로 쪼개지 않고 행정경계 하나를 그대로 사용합니다.
+    const bugi=districtFeatures.get('북이면');
+    if(bugi) addWholeDistrictExclusion(bugi,'북이면');
+
+    const exclusionGroups=new Set();
     (riFc.features||[]).forEach(f=>{
       const p=f.properties||{};
       const parentCode=String(p.emd_adm||'');
       const district=codeToDistrict.get(parentCode);
-      if(!district || !['내수읍','오창읍','북이면'].includes(district)) return;
+      if(!district || !['내수읍','오창읍'].includes(district)) return;
       const riName=normalizeRi(p.li_nm||p.ri_nm||p.name||'');
       if(!riName) return;
       const ex=getFoodExclusion(district,riName);
       if(ex.excluded===true){
+        // 내부 경계선이 없기 때문에 붙어 있는 리들은 지도에서 하나의 덩어리처럼 보입니다.
         addExcludedRiGeometry(f,district,riName);
-        exclusionRiCount++;
+        exclusionGroups.add(district);
       }
     });
+    if(bugi) exclusionGroups.add('북이면');
 
     if(zonePolygons.food.length){
       setLayer(activeLayer);
       if(activeLayer==='food'){
-        updateMapBadge(`음식물 레이어 · 분류배출 제외지역 ${exclusionRiCount}개 리 표시`);
-      }else{
-        updateMapBadge();
-      }
+        updateMapBadge(`음식물 레이어 · 청원구 8개 읍·면·동 정밀경계 · 제외지역 ${exclusionGroups.size}개 권역 표시`);
+      }else updateMapBadge();
     }else{
-      updateMapBadge('청원구 읍·면·동 경계를 찾지 못했습니다.');
+      updateMapBadge('청원구 8개 읍·면·동 정밀경계를 찾지 못했습니다.');
     }
   }catch(err){
-    console.error('음식물 경계/제외지역 레이어 로딩 실패',err);
-    updateMapBadge('음식물 경계를 불러오지 못했습니다. 주소별 일정 판정은 계속 사용할 수 있습니다.');
+    console.error('정밀 음식물 경계/제외지역 레이어 로딩 실패',err);
+    updateMapBadge('정밀 경계를 불러오지 못했습니다. 주소별 일정 판정은 계속 사용할 수 있습니다.');
   }
 }
 function init(){
