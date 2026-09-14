@@ -93,7 +93,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>직영 생활·재활용 레이어는 엑셀의 실제 작업구간과 인접 행정구역을 다시 대조해 차량×수거요일 코스권역으로 표시합니다. 오창과학산업단지 주거지역은 청주시 생활폐기물 대행구역 기준 <strong>제일환경(043-286-0997)</strong>으로 별도 판정하고, 청주시 지역별 수거일 안내의 <strong>월·수·금</strong> 일정을 적용합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 리 경계는 음식물 분류배출 제외지역 표시에만 사용합니다.</div>
+    <div class="source-note">자료 기준: 청주시 2025~2026 공개자료 및 사용자가 제공한 <strong>2026년 6월 생활 수거 코스(차량변경)</strong>, <strong>2026년 6월 재활용 수거 코스(차량변경)</strong>. 직영 코스는 차량번호·요일·작업구간만 반영하며 운전원 개인정보는 홈페이지에 표시하지 않습니다. 음식물 분류배출 제외지역은 청주시 조례 제11조 및 고시 체계를 반영했습니다.<br>생활·재활용 레이어는 <strong>같은 행정구역 + 같은 수거요일</strong>이면 직영 청소차량과 대행업체를 하나의 폴리곤으로 통합해 표시합니다. 한 지역에 여러 직영차량이 들어가거나 오창과학산업단지처럼 대행수거가 함께 있는 경우 툴팁에 담당 주체를 함께 표시합니다. 오창과학산업단지 주거지역은 청주시 생활폐기물 대행구역 기준 <strong>제일환경(043-286-0997)</strong>을 반영하고, 청주시 지역별 수거일 안내의 <strong>월·수·금</strong> 일정을 적용합니다. 의무관리대상 공동주택의 재활용품은 자체 위탁계약 안내를 우선합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 리 경계는 음식물 분류배출 제외지역 표시에만 사용합니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -192,7 +192,7 @@ function renderOchangScienceContract(type,ctx){
   const badge=document.getElementById(type+'Badge');
   badge.textContent=`대행 · ${days.join('·')}`;
   renderDays(type+'Days',days);
-  selectedVehicle[type]='전체';
+  selectedVehicle[type]='제일환경';
   const riLabel=escapeHtml(ctx.legalRi||'오창과학산업단지');
   if(type==='general'){
     document.getElementById('generalDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>수거일:</strong> ${days.join(' · ')}<br><strong>배출시간:</strong> 수거일 전날 일몰 후부터 자정 전<br><span style="color:#6b7280">※ 오창과학산업단지 주거지역(${riLabel})은 청주시 대행구역·지역별 수거일 안내를 우선 적용합니다.</span></div>`;
@@ -224,20 +224,52 @@ function directRegionDays(type,district){
 function vehicleList(type){
   return [...new Set((DIRECT_ROUTES[type]||[]).map(r=>r.vehicle))];
 }
-function directRiInfo(type,day,key){
-  return (DIRECT_RI_DAYS[type]?.[day]||[]).find(x=>x.key===key)||null;
+function providerList(type){
+  // 직영 차량 + 오창과학산업단지 대행업체를 동일한 "담당" 필터에서 조회합니다.
+  const list=[...vehicleList(type)];
+  if(!list.includes('제일환경')) list.push('제일환경');
+  return list;
 }
-function directDaySummary(type,day,vehicle='전체'){
-  const map=new Map();
-  Object.entries(DIRECT_INFERRED_REGIONS[type]||{}).forEach(([v,byDay])=>{
-    if(vehicle!=='전체'&&v!==vehicle)return;
-    const days=day==='전체'?Object.keys(byDay||{}):[day];
-    days.forEach(d=>(byDay?.[d]||[]).forEach(region=>{
-      if(!map.has(region))map.set(region,new Set());
-      map.get(region).add(v);
-    }));
+function providerDisplay(key){
+  return key==='제일환경'?'제일환경(오창과학산업단지)':`${key}호 직영`;
+}
+function groupedScheduleForDistrict(type,district){
+  const byDay={};
+  const add=(day,key)=>{
+    if(!byDay[day])byDay[day]=[];
+    if(!byDay[day].some(x=>x.key===key))byDay[day].push({key,label:providerDisplay(key)});
+  };
+  Object.entries(DIRECT_INFERRED_REGIONS[type]||{}).forEach(([vehicle,dayMap])=>{
+    Object.entries(dayMap||{}).forEach(([day,regions])=>{
+      if((regions||[]).includes(district)) add(day,vehicle);
+    });
   });
-  return [...map.entries()].map(([region,vehicles])=>({region,vehicles:[...vehicles].sort()}));
+  // 오창과학산업단지 주거지역: 생활·재활용 모두 제일환경 월·수·금.
+  // 폴리곤은 오창읍 통합 코스권역으로 표시하되 툴팁에서 과학산업단지 한정임을 명시합니다.
+  if(district==='오창읍') OCHANG_SCIENCE_SCHEDULE.forEach(day=>add(day,'제일환경'));
+  DAYS.forEach(day=>{if(byDay[day])byDay[day].sort((a,b)=>a.key.localeCompare(b.key,'ko'))});
+  return byDay;
+}
+function providerMatches(scheduleByDay,day,provider){
+  if(provider==='전체')return true;
+  if(day==='전체')return Object.values(scheduleByDay||{}).some(arr=>(arr||[]).some(x=>x.key===provider));
+  return (scheduleByDay?.[day]||[]).some(x=>x.key===provider);
+}
+function groupedDaySummary(type,day='전체',provider='전체'){
+  const out=[];
+  const districts=['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동'];
+  districts.forEach(district=>{
+    const schedule=groupedScheduleForDistrict(type,district);
+    const days=day==='전체'?DAYS.filter(d=>schedule[d]?.length):[day];
+    const rows=[];
+    days.forEach(d=>{
+      let ps=schedule[d]||[];
+      if(provider!=='전체')ps=ps.filter(x=>x.key===provider);
+      if(ps.length)rows.push({day:d,providers:ps});
+    });
+    if(rows.length)out.push({district,rows});
+  });
+  return out;
 }
 
 const DIRECT_AREA_HINTS={
@@ -421,7 +453,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
   // 생활쓰레기: 2026년 6월 직영 코스가 주소와 매칭되면 직영 차량·요일을 우선 표시합니다.
   const directGeneral=findDirectMatches('general',ctx);
   const scienceGeneral=isOchangScienceContractArea(ctx,directGeneral);
-  selectedVehicle.general=scienceGeneral?'전체':(directGeneral.length?directGeneral[0].vehicle:'전체');
+  selectedVehicle.general=scienceGeneral?'제일환경':(directGeneral.length?directGeneral[0].vehicle:'전체');
   if(scienceGeneral){
     renderOchangScienceContract('general',ctx);
   }else if(directGeneral.length){
@@ -442,7 +474,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
   // 재활용: 생활과 별도인 2026년 6월 직영 재활용 코스를 독립적으로 매칭합니다.
   const directRecycle=findDirectMatches('recycle',ctx);
   const scienceRecycle=isOchangScienceContractArea(ctx,directRecycle);
-  selectedVehicle.recycle=scienceRecycle?'전체':(directRecycle.length?directRecycle[0].vehicle:'전체');
+  selectedVehicle.recycle=scienceRecycle?'제일환경':(directRecycle.length?directRecycle[0].vehicle:'전체');
   if(scienceRecycle){
     renderOchangScienceContract('recycle',ctx);
   }else if(directRecycle.length){
@@ -496,8 +528,8 @@ function renderVehicleFilter(){
   el.classList.toggle('show',direct);
   if(!direct){el.innerHTML='';return}
   const current=selectedVehicle[activeLayer]||'전체';
-  const buttons=['전체',...vehicleList(activeLayer)];
-  el.innerHTML=`<span class="vehicle-label">차량</span>`+buttons.map(v=>`<button type="button" data-vehicle="${escapeHtml(v)}" class="${v===current?'active':''}">${v==='전체'?'전체 차량':v+'호'}</button>`).join('');
+  const buttons=['전체',...providerList(activeLayer)];
+  el.innerHTML=`<span class="vehicle-label">담당</span>`+buttons.map(v=>`<button type="button" data-vehicle="${escapeHtml(v)}" class="${v===current?'active':''}">${v==='전체'?'전체 담당':v==='제일환경'?'제일환경':v+'호'}</button>`).join('');
   el.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>setVehicle(btn.dataset.vehicle)));
 }
 function setVehicle(vehicle){
@@ -506,6 +538,7 @@ function setVehicle(vehicle){
   renderVehicleFilter();
   setLayer(activeLayer);
 }
+
 function setDay(day){
   activeDay=day||'전체';
   document.querySelectorAll('#dayFilter button').forEach(b=>{
@@ -532,20 +565,20 @@ function setLayer(layer){
     zonePolygons.food.forEach(item=>item.polygon.setMap(map));
     zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
   }else{
-    const vehicle=selectedVehicle[layer]||'전체';
+    const provider=selectedVehicle[layer]||'전체';
     const items=zonePolygons[layer]||[];
     items.forEach(item=>{
-      if(vehicle!=='전체'&&item.vehicle!==vehicle)return;
-      if(activeDay!=='전체'&&!item.days.includes(activeDay))return;
+      if(!providerMatches(item.scheduleByDay,activeDay,provider))return;
+      if(activeDay!=='전체'&&!(item.scheduleByDay?.[activeDay]||[]).length)return;
       const color=activeDay==='전체'
         ? (layer==='general'?'#17745a':'#315ea8')
         : (DAY_COLORS[activeDay]||'#64748b');
       item.polygon.setOptions({
         fillColor:color,
-        fillOpacity:activeDay==='전체'?.16:.28,
+        fillOpacity:activeDay==='전체'?.16:.30,
         strokeColor:activeDay==='전체'?'#ffffff':color,
-        strokeOpacity:activeDay==='전체'?.9:1,
-        strokeWeight:activeDay==='전체'?1.3:2.0
+        strokeOpacity:activeDay==='전체'?.92:1,
+        strokeWeight:activeDay==='전체'?1.4:2.1
       });
       item.polygon.setMap(map);
     });
@@ -559,17 +592,21 @@ function updateMapBadge(custom){
     el.innerHTML=`<strong>음식물쓰레기 레이어</strong><span>${custom||'읍·면·동 실제 행정경계를 기준으로 표시하고, 분류배출 제외지역은 리 경계로 덧씌웁니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외</span></div>`;
     return;
   }
-  const vehicle=selectedVehicle[activeLayer]||'전체';
-  const summary=directDaySummary(activeLayer,activeDay,vehicle);
+  const provider=selectedVehicle[activeLayer]||'전체';
+  const summary=groupedDaySummary(activeLayer,activeDay,provider);
   const dayLegend=Object.entries(DAY_COLORS).map(([d,c])=>`<span class="day-chip"><i class="day-swatch" style="background:${c}"></i>${d}</span>`).join('');
-  const regions=summary.map(x=>`${escapeHtml(x.region)}(${x.vehicles.join(',')})`).join(' · ');
+  const regionText=summary.map(x=>{
+    const rows=x.rows.map(r=>`${r.day}:${r.providers.map(p=>escapeHtml(p.label)).join('+')}`).join(' / ');
+    return `${escapeHtml(x.district)} [${rows}]`;
+  }).join(' · ');
   const dayLabel=activeDay==='전체'?'전체 요일':`${activeDay}요일`;
-  const vehicleLabel=vehicle==='전체'?'전체 차량':`${vehicle}호`;
-  el.innerHTML=`<strong>${labels[activeLayer]} 직영 레이어 · ${vehicleLabel} · ${dayLabel}</strong>
-    <span>${custom||'선택한 청소차량의 직영 코스권역을 차량과 수거요일 기준으로 표시합니다. 코스표의 실제 작업지점이 인접 행정구역에 있는 경우도 함께 반영했습니다. 오창과학산업단지 주거지역은 주소검색 시 제일환경 대행수거(월·수·금)를 우선 판정합니다.'}</span>
-    ${regions?`<div style="margin-top:6px;font-size:11px;line-height:1.5"><strong>차량·요일 코스권역:</strong> ${regions}</div>`:''}
+  const providerLabel=provider==='전체'?'전체 담당':provider==='제일환경'?'제일환경':`${provider}호`;
+  el.innerHTML=`<strong>${labels[activeLayer]} 통합 레이어 · ${providerLabel} · ${dayLabel}</strong>
+    <span>${custom||'같은 행정구역에서 같은 요일에 수거하는 직영 청소차량과 대행업체를 하나의 레이어로 묶어 표시합니다. 여러 담당이 겹치면 한 폴리곤의 툴팁에 함께 표시됩니다.'}</span>
+    ${regionText?`<div style="margin-top:6px;font-size:11px;line-height:1.55"><strong>지역별 담당:</strong> ${regionText}</div>`:''}
     <div class="route-legend">${dayLegend}</div>`;
 }
+
 function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
@@ -592,8 +629,8 @@ function hideZoneTooltip(){
 }
 
 
-function addDirectVehicleGeometry(feature,district,type,vehicle,days){
-  if(!days||!days.length)return;
+function addGroupedServiceGeometry(feature,district,type,scheduleByDay){
+  if(!scheduleByDay||!Object.keys(scheduleByDay).length)return;
   const g=feature.geometry;if(!g)return;
   const multi=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
   const label=type==='general'?'생활쓰레기':'재활용쓰레기';
@@ -602,26 +639,44 @@ function addDirectVehicleGeometry(feature,district,type,vehicle,days){
     const paths=polyCoords.map(ring=>ring.map(([lng,lat])=>new kakao.maps.LatLng(lat,lng)));
     const polygon=new kakao.maps.Polygon({
       path:paths.length===1?paths[0]:paths,
-      strokeWeight:1.3,strokeColor:'#ffffff',strokeOpacity:.9,
+      strokeWeight:1.4,strokeColor:'#ffffff',strokeOpacity:.92,
       fillColor:type==='general'?'#17745a':'#315ea8',fillOpacity:.16
     });
     polygon.setMap(null);
     kakao.maps.event.addListener(polygon,'mouseover',(mouseEvent)=>{
-      const visibleDays=activeDay==='전체'?days:days.filter(d=>d===activeDay);
+      let rows=[];
+      if(activeDay==='전체'){
+        rows=DAYS.filter(d=>scheduleByDay[d]?.length).map(d=>{
+          let providers=scheduleByDay[d];
+          const selected=selectedVehicle[type]||'전체';
+          if(selected!=='전체')providers=providers.filter(x=>x.key===selected);
+          if(!providers.length)return null;
+          return `${d}요일 · ${providers.map(x=>x.label).join(' + ')}`;
+        }).filter(Boolean);
+      }else{
+        let providers=scheduleByDay[activeDay]||[];
+        const selected=selectedVehicle[type]||'전체';
+        if(selected!=='전체')providers=providers.filter(x=>x.key===selected);
+        if(providers.length)rows=[`${activeDay}요일 · ${providers.map(x=>x.label).join(' + ')}`];
+      }
       const color=activeDay==='전체'?(type==='general'?'#17745a':'#315ea8'):(DAY_COLORS[activeDay]||'#334155');
-      polygon.setOptions({fillOpacity:.38,strokeColor:color,strokeOpacity:1,strokeWeight:2.4});
-      showZoneTooltip(mouseEvent.latLng,`${vehicle}호 · ${district}`,`${label} · ${visibleDays.join('·')}요일 직영 코스`,'차량 × 수거요일 코스권역');
+      polygon.setOptions({fillOpacity:.40,strokeColor:color,strokeOpacity:1,strokeWeight:2.5});
+      showZoneTooltip(mouseEvent.latLng,district,`${label} · ${rows.join(' / ')}`,'같은 지역·요일 담당 통합');
     });
     kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
     kakao.maps.event.addListener(polygon,'mouseout',()=>{
       const color=activeDay==='전체'?(type==='general'?'#17745a':'#315ea8'):(DAY_COLORS[activeDay]||'#64748b');
-      polygon.setOptions({fillOpacity:activeDay==='전체'?.16:.28,strokeColor:activeDay==='전체'?'#ffffff':color,strokeOpacity:activeDay==='전체'?.9:1,strokeWeight:activeDay==='전체'?1.3:2.0});
+      polygon.setOptions({fillOpacity:activeDay==='전체'?.16:.30,strokeColor:activeDay==='전체'?'#ffffff':color,strokeOpacity:activeDay==='전체'?.92:1,strokeWeight:activeDay==='전체'?1.4:2.1});
       hideZoneTooltip();
     });
-    kakao.maps.event.addListener(polygon,'click',()=>updateMapBadge(`${vehicle}호 · ${district} · ${days.join('·')}요일 직영 코스권역`));
-    zonePolygons[type].push({polygon,district,vehicle,days});
+    kakao.maps.event.addListener(polygon,'click',()=>{
+      const days=DAYS.filter(d=>scheduleByDay[d]?.length).map(d=>`${d}:${scheduleByDay[d].map(x=>x.label).join('+')}`).join(' / ');
+      updateMapBadge(`${district} · ${label} · ${days}`);
+    });
+    zonePolygons[type].push({polygon,district,scheduleByDay});
   });
 }
+
 function foodStyle(district){
   if(district==='북이면') return {fill:'#ead4d8',stroke:'#9f6470',label:'분류배출 제외'};
   const entry=findRegionEntry('food',district);
@@ -778,8 +833,8 @@ async function buildZonePolygons(){
       districtFeatures.set(district,f);
       addFoodGeometry(f,district);
       for(const type of ['general','recycle']){
-        const vehicleDays=directVehicleDaysForDistrict(type,district);
-        Object.entries(vehicleDays).forEach(([vehicle,days])=>addDirectVehicleGeometry(f,district,type,vehicle,days));
+        const scheduleByDay=groupedScheduleForDistrict(type,district);
+        addGroupedServiceGeometry(f,district,type,scheduleByDay);
       }
 
       const code=String(p.adm_cd2||p.ADM_CD2||p.emdcd||'').trim();
