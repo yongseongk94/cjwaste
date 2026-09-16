@@ -1,0 +1,144 @@
+name: Live v71 confirmed-route priority verification
+
+on:
+  push:
+    paths:
+      - 'tools/live-v71-verify.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wait for deployed v71
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 120); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?v71wait=$RANDOM" -o /tmp/live.html && grep -q 'zone-v71-confirmed-route-excluded' /tmp/live.html; then
+              echo 'v71 deployed'
+              exit 0
+            fi
+            sleep 4
+          done
+          echo 'v71 deployment not visible' >&2
+          exit 1
+      - name: Test exact route priority and inferred zones live
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat > v71-test.js <<'NODE'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          (async()=>{
+            const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage();
+            await page.setViewport({width:1440,height:900});
+            const pageErrors=[];
+            page.on('pageerror',e=>pageErrors.push(e.message));
+            await page.goto('https://yongseongk94.github.io/cjwaste/?v71live='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
+            await page.waitForFunction(()=>typeof map!=='undefined'&&map&&typeof serviceZoneOverlays!=='undefined',{timeout:180000});
+            await page.waitForFunction(()=>Array.isArray(serviceZoneOverlays.general)&&serviceZoneOverlays.general.length>0,{timeout:180000});
+            await page.evaluate(()=>{serviceLayerState.zone=true;setLayer('general')});
+            await sleep(1500);
+
+            const structure=await page.evaluate(()=>{
+              const dongs=[...(serviceZoneOverlays.general||[])].filter(z=>DONG_ROUTE_DISTRICTS.has(z.district||''));
+              return {
+                all:(serviceZoneOverlays.general||[]).length,
+                dong:dongs.length,
+                allEstimated:dongs.length>0&&dongs.every(z=>!!z.estimated),
+                allExcluded:dongs.length>0&&dongs.every(z=>!!z.confirmedRouteExcluded),
+                visible:dongs.filter(z=>z.polygon&&z.polygon.getMap()===map).length,
+                nonBox:dongs.filter(z=>z.polygonized&&Array.isArray(z.rings)&&z.rings[0]?.length>4).length
+              };
+            });
+            if(!structure.allEstimated||!structure.allExcluded||structure.visible<=0)throw new Error('Dong inference metadata/visibility invalid: '+JSON.stringify(structure));
+
+            // Pick a real displayed route segment in a dong and test its midpoint.
+            const exact=await page.evaluate(async()=>{
+              const specs=allDongRouteSpecs().filter(s=>s.type==='general'&&(s.districts||[]).some(d=>DONG_ROUTE_DISTRICTS.has(d)));
+              for(const spec of specs){
+                const district=(spec.districts||[]).find(d=>DONG_ROUTE_DISTRICTS.has(d));
+                const items=await ensureDistrictRouteItems('general',district);
+                const item=items.find(x=>x.vehicle===spec.vehicle&&x.day===spec.day&&(x.segments||[]).some(seg=>seg.length>=2));
+                if(!item)continue;
+                const seg=(item.segments||[]).find(seg=>seg.length>=2);if(!seg)continue;
+                const a=seg[Math.floor((seg.length-1)/2)],b=seg[Math.floor((seg.length-1)/2)+1]||a;
+                const lat=(+a.lat+ +b.lat)/2,lng=(+a.lng+ +b.lng)/2;
+                const ctx={lat,lng,district,legalEmd:district,legalRi:'',address:''};
+                const near=await nearestRouteMatchesForAddress('general',ctx);
+                const zone=serviceZoneOverlayMatch('general',ctx);
+                await refreshNearbyRouteSchedules(ctx);
+                return {district,vehicle:spec.vehicle,day:spec.day,lat,lng,nearCount:near?.length||0,nearDistance:near?.[0]?.distanceKm??null,zoneHit:!!zone,badge:document.getElementById('generalBadge').textContent||''};
+              }
+              return null;
+            });
+            if(!exact)throw new Error('Could not find live dong route segment');
+            if(exact.nearCount<=0)throw new Error('Exact route midpoint did not match route: '+JSON.stringify(exact));
+            if(exact.zoneHit)throw new Error('Exact route midpoint still covered by inferred polygon: '+JSON.stringify(exact));
+            if(!/노선연동|대행노선/.test(exact.badge)||/추정/.test(exact.badge))throw new Error('Exact route did not win schedule priority: '+JSON.stringify(exact));
+
+            // Find a point inside an inferred polygon and confirm it stays inferred.
+            const inferred=await page.evaluate(async()=>{
+              const zones=(serviceZoneOverlays.general||[]).filter(z=>DONG_ROUTE_DISTRICTS.has(z.district||'')&&z.estimated&&z.confirmedRouteExcluded);
+              function interiorPoint(z){
+                const r=(z.hitRings?.[0]||z.rings?.[0]||z.points||[]);if(r.length<3)return null;
+                const minLat=Math.min(...r.map(p=>+p.lat)),maxLat=Math.max(...r.map(p=>+p.lat));
+                const minLng=Math.min(...r.map(p=>+p.lng)),maxLng=Math.max(...r.map(p=>+p.lng));
+                for(let yi=1;yi<10;yi++)for(let xi=1;xi<10;xi++){
+                  const lat=minLat+(maxLat-minLat)*yi/10,lng=minLng+(maxLng-minLng)*xi/10;
+                  if(pointInZonePolygon(lat,lng,z))return {lat,lng};
+                }
+                return null;
+              }
+              for(const z of zones){
+                const pt=interiorPoint(z);if(!pt)continue;
+                const ctx={...pt,district:z.district,legalEmd:z.district,legalRi:'',address:''};
+                const near=await nearestRouteMatchesForAddress('general',ctx);
+                if(near?.length)continue;
+                const zone=serviceZoneOverlayMatch('general',ctx);if(!zone?.estimated)continue;
+                await refreshNearbyRouteSchedules(ctx);
+                return {district:z.district,lat:pt.lat,lng:pt.lng,badge:document.getElementById('generalBadge').textContent||'',zoneEstimated:!!zone.estimated,nearCount:near?.length||0};
+              }
+              return null;
+            });
+            if(!inferred)throw new Error('Could not find a clean inferred-zone test point');
+            if(!inferred.zoneEstimated||inferred.nearCount!==0||!/추정/.test(inferred.badge))throw new Error('Inferred point not labeled estimated: '+JSON.stringify(inferred));
+
+            // Scroll/zoom persistence still holds after v71.
+            const beforeVisible=await page.evaluate(()=>serviceZoneOverlays.general.filter(z=>z.polygon&&z.polygon.getMap()===map).length);
+            await page.evaluate(()=>window.dispatchEvent(new Event('scroll')));await sleep(400);
+            await page.evaluate(()=>map.setLevel(Math.min(14,map.getLevel()+1)));await sleep(900);
+            const afterVisible=await page.evaluate(()=>serviceZoneOverlays.general.filter(z=>z.polygon&&z.polygon.getMap()===map).length);
+            if(beforeVisible<=0||afterVisible<=0)throw new Error('Inference layers disappeared on scroll/zoom');
+            if(pageErrors.length)throw new Error('Page errors: '+pageErrors.join(' | '));
+
+            const result={structure,exact,inferred,beforeVisible,afterVisible,pageErrors};
+            fs.writeFileSync('tools/v71_live_test.txt',JSON.stringify(result,null,2));
+            console.log('LIVE_V71',JSON.stringify(result));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node v71-test.js
+      - name: Commit verification result
+        shell: bash
+        run: |
+          rm -f tools/live-v71-verify.trigger v71-test.js package.json package-lock.json
+          git config user.name 'ChatGPT Verification Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/v71_live_test.txt tools/live-v71-verify.trigger
+          git commit -m 'Verify confirmed routes override inferred zones'
+          git push
