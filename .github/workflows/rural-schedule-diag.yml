@@ -15,30 +15,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Summarize contractor schedules
+      - name: Inspect automatic zone boundary logic
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import json,re
+          import re
           txt=Path('index.html').read_text(encoding='utf-8')
-          m=re.search(r'const CONTRACT_SOURCE_DATA=(\{.*?\});\nconst CONTRACT_ROUTES=',txt,re.S)
-          if not m: raise SystemExit('CONTRACT_SOURCE_DATA not found')
-          data=json.loads(m.group(1))
-          out=[]
-          for typ in ('general','recycle'):
-              out.append(f'[{typ}]')
-              for r in data.get('routes',{}).get(typ,[]):
-                  if r.get('housing')=='apartment': continue
-                  out.append(f"{r.get('provider')} | {r.get('plate')} | {','.join(r.get('districts',[]))} | {r.get('housing')} | zoneEligible={r.get('zoneEligible')} | days={','.join(r.get('days',{}).keys())}")
-          out.append('[special]')
-          for r in data.get('special',[]):
-              if r.get('housing')=='apartment': continue
-              out.append(f"{r.get('type')} | {r.get('provider')} | {r.get('district')} | {r.get('vehicle')} | {r.get('address')} | days={','.join(r.get('days',[]))}")
-          out.append('[meta]')
-          for k,v in data.get('meta',{}).items():
-              if v.get('housing')=='apartment': continue
-              out.append(f"{k} => provider={v.get('provider')} plate={v.get('plate')} district={v.get('district')} housing={v.get('housing')} zoneEligible={v.get('zoneEligible')}")
+          lines=txt.splitlines()
+          pats=[r'zone',r'Zone',r'polygon',r'Polygon',r'boundary',r'Boundary',r'권역',r'pointIn',r'contains',r'nearestRoute',r'renderNearbyRouteSchedule',r'auto']
+          hits=[]
+          for i,line in enumerate(lines):
+              if any(re.search(p,line) for p in pats):
+                  hits.append(i)
+          ranges=[]
+          for i in hits:
+              a=max(0,i-5); b=min(len(lines),i+8)
+              if ranges and a<=ranges[-1][1]+2:
+                  ranges[-1]=(ranges[-1][0],max(ranges[-1][1],b))
+              else:
+                  ranges.append((a,b))
+          out=[f'lines={len(lines)} ranges={len(ranges)}']
+          for a,b in ranges:
+              out.append(f'\n===== {a+1}-{b} =====')
+              out.extend(f'{n+1}: {lines[n]}' for n in range(a,b))
           Path('tools/rural_schedule_diag.txt').write_text('\n'.join(out),encoding='utf-8')
           PY
       - name: Commit diagnostic
@@ -48,5 +48,5 @@ jobs:
           git config user.name 'ChatGPT Diagnostic Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tools/rural_schedule_diag.txt tools/rural-schedule-diag.trigger
-          git commit -m 'Summarize contractor schedules'
+          git commit -m 'Inspect automatic zone boundary logic'
           git push
