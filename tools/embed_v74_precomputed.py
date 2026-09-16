@@ -2,6 +2,9 @@ from pathlib import Path
 import re,json
 p=Path('index.html')
 text=p.read_text(encoding='utf-8')
+# v75 이상 로직이 반영된 뒤에는 오래 실행 중이던 v74 작업이 번들 데이터를 덮어쓰지 못하게 막습니다.
+if 'v75-naedeok2-apartment-only' in text:
+    raise SystemExit('stale v74 freeze blocked: v75 is already active')
 data=Path('/tmp/v74-precomputed.json').read_text(encoding='utf-8')
 obj=json.loads(data)
 if obj.get('version')!='v74-source-multilocation': raise SystemExit('wrong export version')
