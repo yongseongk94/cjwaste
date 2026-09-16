@@ -1,0 +1,49 @@
+name: Merge bundled service zones offline
+
+on:
+  push:
+    paths:
+      - 'tools/bundled-zone-merge.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge bundled zones
+        run: python3 tools/merge_bundled_zones.py
+      - name: Validate bundled data and JavaScript
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          s=Path('index.html').read_text(encoding='utf-8')
+          m=re.search(r'<script id="bundledPrecomputed" type="application/json">(.*?)</script>',s,re.S)
+          if not m: raise SystemExit('bundled precomputed missing')
+          d=json.loads(m.group(1))
+          expected='zone-v69-merged-grid-blocks|'+d['version']
+          if d.get('zoneVersion')!=expected: raise SystemExit('wrong zoneVersion')
+          g=d['zones']['general']; r=d['zones']['recycle']
+          gm=sum(1 for z in g if z.get('gridMerged')); rm=sum(1 for z in r if z.get('gridMerged'))
+          ge=sum(1 for z in g if z.get('estimated')); re_=sum(1 for z in r if z.get('estimated'))
+          print(f'FINAL general={len(g)} recycle={len(r)} gridMerged={gm}/{rm} estimated={ge}/{re_}')
+          if not gm or not rm: raise SystemExit('merged blocks missing')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',s,re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit merged bundled zones
+        shell: bash
+        run: |
+          rm -f tools/bundled-zone-merge.trigger tools/freeze_precomputed_now.ready
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/bundled-zone-merge.trigger tools/freeze_precomputed_now.ready
+          git commit -m 'Embed merged automatic service-zone blocks'
+          git push
