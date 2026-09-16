@@ -1,0 +1,43 @@
+name: Freeze verified v74 routes now
+
+on:
+  push:
+    paths:
+      - 'tools/freeze-v74-now.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wait for live v74 parser
+        run: |
+          for i in $(seq 1 100); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?freeze=$RANDOM" -o /tmp/live.html && grep -q 'v74-source-multilocation' /tmp/live.html && grep -q 'splitRouteLocationUnits(part).forEach' /tmp/live.html; then exit 0; fi
+            sleep 3
+          done
+          exit 1
+      - name: Recompute and verify all routes
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          node tools/v74_freeze.js
+      - name: Embed verified data
+        run: |
+          git pull --rebase
+          python3 tools/embed_v74_precomputed.py
+          node --check /tmp/index-inline.js
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/freeze-v74-now.trigger
+          git add index.html tools/v74_multilocation_precompute_report.json tools/freeze-v74-now.trigger
+          git commit -m 'Embed verified v74 multi-location routes'
+          git push
