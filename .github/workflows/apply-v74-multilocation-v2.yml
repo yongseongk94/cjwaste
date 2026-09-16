@@ -1,0 +1,63 @@
+name: Apply v74 multi-location source audit v2
+
+on:
+  push:
+    paths:
+      - 'tools/v74-multilocation2.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch index
+        run: |
+          python3 tools/apply_v74_multilocation.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          t=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/index-inline.js').write_text('\n'.join(re.findall(r'<script>(.*?)</script>',t,flags=re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Publish v74 parser
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/v74-multilocation2.trigger
+          git add index.html tools/v74_multilocation_source_audit.json tools/v74-multilocation2.trigger
+          git commit -m 'Split multi-location source rows for route generation'
+          git push
+
+      - name: Wait for Pages
+        run: |
+          for i in $(seq 1 100); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?v74=$RANDOM" -o /tmp/live.html && grep -q 'v74-source-multilocation' /tmp/live.html; then exit 0; fi
+            sleep 4
+          done
+          exit 1
+
+      - name: Recompute and verify
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          node tools/v74_freeze.js
+
+      - name: Embed verified data
+        run: |
+          git pull --rebase
+          python3 tools/embed_v74_precomputed.py
+          node --check /tmp/index-inline.js
+          git add index.html tools/v74_multilocation_precompute_report.json
+          git commit -m 'Embed v74 multi-location route geometry'
+          git push
