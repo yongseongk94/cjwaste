@@ -51,7 +51,7 @@ text=text.replace(old_map,new_map)
 
 # 6) 이랜드해가든 예외는 도로명만 같다고 매칭하지 않고 정확 주소(30번) 또는 단지명일 때만 허용합니다.
 needle="for(const x of rows){\n    if(canonicalDistrict(x.district)!==district)continue;"
-insert="for(const x of rows){\n    if(canonicalDistrict(x.district)!==district)continue;\n    if(x.provider==='제일환경' && x.district==='내덕2동' && x.vehicle==='95오0147' && /이랜드해가든/.test(String(x.name||x.address||''))){\n      const exactAddr=normalizeRouteAddress('공항로84번길 30');\n      const exactName=normalizeRouteAddress('이랜드해가든');\n      if(!target.includes(exactAddr) && !target.includes(exactName))continue;\n    }"
+insert="for(const x of rows){\n    if(canonicalDistrict(x.district)!==district)continue;\n    if(x.provider==='제일환경' && x.district==='내덕2동' && x.vehicle==='95오0147' && /이랜드해가든/.test(String(x.name||x.address||''))){\n      const exactAddr=contractAddressNorm('공항로84번길 30');\n      const exactName=contractAddressNorm('이랜드해가든');\n      if(!target.includes(exactAddr) && !target.includes(exactName))continue;\n    }"
 if needle not in text:
     raise SystemExit('special point match loop not found')
 text=text.replace(needle,insert,1)
