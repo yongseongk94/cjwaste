@@ -1,0 +1,32 @@
+{
+  "structure": {
+    "all": 289,
+    "dong": 210,
+    "allEstimated": true,
+    "allExcluded": true,
+    "visible": 210,
+    "nonBox": 114
+  },
+  "exact": {
+    "district": "율량사천동",
+    "vehicle": "3346",
+    "day": "월",
+    "lat": 36.673202223398654,
+    "lng": 127.49764303970514,
+    "nearCount": 1,
+    "nearDistance": 0,
+    "zoneHit": false,
+    "badge": "노선연동 · 월·화·수·목·금"
+  },
+  "inferred": {
+    "district": "오근장동",
+    "lat": 36.671575,
+    "lng": 127.45726,
+    "badge": "수거권역 (추정) · 화",
+    "zoneEstimated": true,
+    "nearCount": 0
+  },
+  "beforeVisible": 143,
+  "afterVisible": 143,
+  "pageErrors": []
+}
