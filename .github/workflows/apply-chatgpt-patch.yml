@@ -24,6 +24,10 @@ jobs:
           test -f tools/chatgpt_patch.ready
           if compgen -G 'tools/chatgpt_index.b64.part*' > /dev/null; then
             cat tools/chatgpt_index.b64.part* | base64 -d | gzip -d > index.html
+          elif compgen -G 'tools/chatgpt_patch.hex.part*' > /dev/null; then
+            cat tools/chatgpt_patch.hex.part* | xxd -r -p | gzip -d > /tmp/chatgpt_patch.diff
+            git apply --check --whitespace=nowarn /tmp/chatgpt_patch.diff
+            git apply --whitespace=nowarn /tmp/chatgpt_patch.diff
           else
             cat tools/chatgpt_patch.b64.part* | base64 -d | gzip -d > /tmp/chatgpt_patch.diff
             git apply --check --whitespace=nowarn /tmp/chatgpt_patch.diff
@@ -46,7 +50,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f tools/chatgpt_patch.ready tools/chatgpt_patch.b64.part* tools/chatgpt_index.b64.part*
+          rm -f tools/chatgpt_patch.ready tools/chatgpt_patch.b64.part* tools/chatgpt_patch.hex.part* tools/chatgpt_index.b64.part*
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html tools/
