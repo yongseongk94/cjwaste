@@ -263,7 +263,7 @@ const CONTRACT_SOURCE_AUDIT={
   hyundaiDistricts:[...new Set(CONTRACT_ROUTES.general.concat(CONTRACT_ROUTES.recycle).filter(r=>r.provider==='현대환경').flatMap(r=>r.districts||[]))]
 };
 const v67HyundaiScopeAudit=[...new Set(CONTRACT_ROUTES.general.concat(CONTRACT_ROUTES.recycle).filter(r=>r.provider==='현대환경').flatMap(r=>r.districts||[]))];
-if(v67HyundaiScopeAudit.some(d=>canonicalDistrict(d)!=='내덕1동'))console.error('v67 현대환경 청원구 범위 오류',v67HyundaiScopeAudit);
+if(v67HyundaiScopeAudit.some(d=>String(d||'').replace(/\s+/g,'')!=='내덕1동'))console.error('v67 현대환경 청원구 범위 오류',v67HyundaiScopeAudit);
 
 function contractRouteMeta(vehicle){return CONTRACT_ROUTE_META[String(vehicle||'')]||null}
 function routeCatalog(type){return [...(DIRECT_ROUTES[type]||[]),...(CONTRACT_ROUTES[type]||[])]}
