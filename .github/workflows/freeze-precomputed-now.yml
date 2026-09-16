@@ -11,25 +11,25 @@ permissions:
 jobs:
   freeze:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Wait for deployed v69 merged zones
+      - name: Wait for deployed v72
         shell: bash
         run: |
           set -euo pipefail
-          for i in $(seq 1 60); do
-            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" -o /tmp/cjwaste-live.html && grep -q 'zone-v69-merged-grid-blocks' /tmp/cjwaste-live.html; then
-              echo 'v69 merged service zones are deployed'
+          for i in $(seq 1 90); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" -o /tmp/cjwaste-live.html && grep -q 'v72-road-retry-no-straight' /tmp/cjwaste-live.html; then
+              echo 'v72 route-reliability build is deployed'
               exit 0
             fi
-            sleep 5
+            sleep 4
           done
-          echo 'Timed out waiting for v69 Pages deployment' >&2
+          echo 'Timed out waiting for v72 Pages deployment' >&2
           exit 1
-      - name: Capture exact geometry from deployed v69
+      - name: Recompute exact road geometry and service zones
         shell: bash
         run: |
           set -euo pipefail
@@ -42,27 +42,45 @@ jobs:
           const fs=require('fs');
           const puppeteer=require('puppeteer-core');
           (async()=>{
-            const browser=await puppeteer.launch({headless:true,protocolTimeout:1200000,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const browser=await puppeteer.launch({headless:true,protocolTimeout:1500000,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
             const page=await browser.newPage();
-            page.setDefaultTimeout(1200000);
-            page.on('console',msg=>console.log('PAGE',msg.text()));
-            page.on('pageerror',err=>console.error('PAGEERROR',err.message));
+            page.setDefaultTimeout(1500000);
+            const pageErrors=[];
+            const finalRouteFailures=[];
+            page.on('console',msg=>{
+              const t=msg.text();
+              console.log('PAGE',t);
+              if(t.includes('도로망 수거노선 최종 실패'))finalRouteFailures.push(t);
+            });
+            page.on('pageerror',err=>{pageErrors.push(err.message);console.error('PAGEERROR',err.message)});
             await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
             await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:180000});
-            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1200000,polling:1000});
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1500000,polling:1000});
             await page.waitForFunction(()=>{
               const d=window.exportCjWastePrecomputed?.();
-              return !!(d?.zones?.general?.length&&d?.zones?.recycle?.length);
-            },{timeout:1200000,polling:2000});
-            const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
+              return !!(d?.routes?.length&&d?.zones?.general?.length&&d?.zones?.recycle?.length);
+            },{timeout:1500000,polling:2000});
+            const state=await page.evaluate(()=>({
+              data:window.exportCjWastePrecomputed(),
+              finalFailures:+window.__CJWASTE_ROUTE_PROXY_FINAL_FAILURES||0
+            }));
+            const data=state.data;
             if(!data?.routes?.length) throw new Error('No routes exported');
             if(!data?.zones?.general?.length || !data?.zones?.recycle?.length) throw new Error('No service zones exported');
-            if(data.zoneVersion!=='zone-v69-merged-grid-blocks|'+data.version) throw new Error('Unexpected zone version: '+data.zoneVersion);
+            if(data.version!=='v72-road-retry-no-straight') throw new Error('Unexpected route version: '+data.version);
+            if(data.zoneVersion!=='zone-v72-road-retry-no-straight|'+data.version) throw new Error('Unexpected zone version: '+data.zoneVersion);
+            if(state.finalFailures!==0 || finalRouteFailures.length) throw new Error('Final route proxy failures remain: '+state.finalFailures+' / '+finalRouteFailures.length);
+            if(pageErrors.length) throw new Error('Page errors: '+pageErrors.join(' | '));
+            const routeStats={
+              count:data.routes.length,
+              withSegments:data.routes.filter(r=>(r.data?.segments||[]).some(seg=>seg.length>=2)).length,
+              empty:data.routes.filter(r=>!(r.data?.segments||[]).some(seg=>seg.length>=2)).map(r=>`${r.type}|${r.vehicle}|${r.day}`)
+            };
             const estimated={general:(data.zones.general||[]).filter(z=>z.estimated).length,recycle:(data.zones.recycle||[]).filter(z=>z.estimated).length};
-            const merged={general:(data.zones.general||[]).filter(z=>z.gridMerged).length,recycle:(data.zones.recycle||[]).filter(z=>z.gridMerged).length};
             fs.writeFileSync('/tmp/precomputed.json',JSON.stringify(data));
-            console.log('ESTIMATED_MERGED_ZONES',JSON.stringify(estimated));
-            console.log('GRID_MERGED_BLOCKS',JSON.stringify(merged));
+            fs.writeFileSync('tools/v72_precompute_report.txt',JSON.stringify({routeStats,estimated,finalFailures:state.finalFailures,pageErrors},null,2));
+            console.log('V72_ROUTE_STATS',JSON.stringify(routeStats));
+            console.log('V72_ESTIMATED_ZONES',JSON.stringify(estimated));
             console.log(`EXPORTED routes=${data.routes.length} generalZones=${data.zones.general.length} recycleZones=${data.zones.recycle.length}`);
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
@@ -74,10 +92,13 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          import re
+          import re,json
           p=Path('index.html')
           text=p.read_text(encoding='utf-8')
           data=Path('/tmp/precomputed.json').read_text(encoding='utf-8')
+          obj=json.loads(data)
+          if obj.get('version')!='v72-road-retry-no-straight': raise SystemExit('wrong route version')
+          if obj.get('zoneVersion')!='zone-v72-road-retry-no-straight|v72-road-retry-no-straight': raise SystemExit('wrong zone version')
           pat=r'(<script id="bundledPrecomputed" type="application/json">).*?(</script>)'
           text,n=re.subn(pat,lambda m:m.group(1)+data+m.group(2),text,count=1,flags=re.S)
           if n!=1: raise SystemExit('precomputed slot missing')
@@ -86,17 +107,13 @@ jobs:
           Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
           PY
           node --check /tmp/index-inline.js
-      - name: Commit embedded data
+      - name: Commit embedded v72 data
         shell: bash
         run: |
           set -euo pipefail
           rm -f freeze.js package.json package-lock.json tools/freeze_precomputed_now.ready tools/freeze_precomputed.ready
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html tools/
-          if git diff --cached --quiet; then
-            echo 'No precomputed changes to commit.'
-            exit 0
-          fi
-          git commit -m 'Embed v69 merged service-zone blocks'
+          git add index.html tools/v72_precompute_report.txt tools/freeze_precomputed_now.ready
+          git commit -m 'Embed v72 road-following route data'
           git push
