@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
-<!-- v64: outsourced collection routes added from Jeil Environment zone-6 and Hyundai Environment 2026-08-11 route sheets. Hyundai is restricted to Cheongwon-gu Naedeok 1-dong only. Contractor single-family routes drive service-zone schedules; apartment schedules use exact source addresses. Precomputed geometry remains embedded for immediate first load. -->
+<!-- v65: contractor route sheets are reflected as actual route-layer sources, including Jeil Environment apartment/general routes and single-house general/recycle routes. Hyundai Environment is strictly limited to Cheongwon-gu Naedeok 1-dong; all Heungdeok-gu rows are excluded. Single-house contractor routes drive area schedules; apartment schedules remain exact-address based. -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -250,6 +250,16 @@ const CONTRACT_APARTMENTS=CONTRACT_SOURCE_DATA.apartments;
 const CONTRACT_SPECIAL_POINTS=CONTRACT_SOURCE_DATA.special;
 const CONTRACT_INCOMBUSTIBLE=CONTRACT_SOURCE_DATA.incombustible;
 const CONTRACT_OPERATOR_INFO={'제일환경':{phone:'043-286-0997'},'현대환경':{phone:''}};
+
+const CONTRACT_SOURCE_AUDIT={
+  generalRoutes:CONTRACT_ROUTES.general.length,
+  recycleRoutes:CONTRACT_ROUTES.recycle.length,
+  apartmentSchedules:CONTRACT_APARTMENTS.length,
+  jeilGeneral:CONTRACT_ROUTES.general.filter(r=>r.provider==='제일환경').length,
+  hyundaiGeneral:CONTRACT_ROUTES.general.filter(r=>r.provider==='현대환경').length,
+  hyundaiDistricts:[...new Set(CONTRACT_ROUTES.general.concat(CONTRACT_ROUTES.recycle).filter(r=>r.provider==='현대환경').flatMap(r=>r.districts||[]))]
+};
+
 function contractRouteMeta(vehicle){return CONTRACT_ROUTE_META[String(vehicle||'')]||null}
 function routeCatalog(type){return [...(DIRECT_ROUTES[type]||[]),...(CONTRACT_ROUTES[type]||[])]}
 function routeCompany(vehicle){return contractRouteMeta(vehicle)?.provider||''}
@@ -263,6 +273,29 @@ function contractorZoneRoutes(type,district){return (CONTRACT_ROUTES[type]||[]).
 function contractorZoneSpecs(type,district){const out=[];for(const r of contractorZoneRoutes(type,district))for(const [day,raw] of Object.entries(r.days||{}))out.push({type,vehicle:r.vehicle,provider:r.provider,plate:r.plate,housing:r.housing,zoneEligible:true,day,raw,districts:[...(r.districts||[])]});return out}
 function contractAddressNorm(s){return String(s||'').toLowerCase().replace(/충청북도|충북|청주시|청원구/g,'').replace(/(?:인근|일대|주택및상가|공장및상가)/g,'').replace(/[^0-9a-z가-힣]/g,'')}
 function contractAddressCandidates(s){return String(s||'').split(/[,/]/).map(contractAddressNorm).filter(x=>x.length>=5)}
+
+function contractIncombustibleRowsFor(ctx){
+  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  if(!district)return [];
+  return CONTRACT_INCOMBUSTIBLE.filter(x=>canonicalDistrict(x.district)===district);
+}
+function contractorIncombustibleSummary(ctx){
+  const rows=contractIncombustibleRowsFor(ctx);if(!rows.length)return '';
+  const exactTarget=contractAddressNorm(ctx?.address||'');
+  const exact=rows.filter(x=>{
+    if(!exactTarget)return false;
+    return contractAddressCandidates(x.address).some(k=>exactTarget.includes(k)||k.includes(exactTarget));
+  });
+  const use=exact.length?exact:rows;
+  const daySet=new Set();use.forEach(x=>(x.days||[]).forEach(d=>daySet.add(d)));
+  const days=DAYS.filter(d=>daySet.has(d));
+  if(!days.length)return '';
+  const provider=use[0]?.provider||'';
+  const note=(provider==='제일환경'&&canonicalDistrict(ctx?.legalEmd||ctx?.district)==='우암동')
+    ? ' (원자료상 물량에 따라 화·목 탄력수거 표기)'
+    : '';
+  return `<br><strong>불연성:</strong> ${days.join(' · ')}${note}`;
+}
 function contractExactScheduleMatch(type,ctx){
   const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');const target=contractAddressNorm(ctx?.address||'');if(!target)return null;
   const rows=[];if(type==='general')rows.push(...CONTRACT_APARTMENTS.map(x=>({...x,housing:'apartment',type:'general'})));rows.push(...CONTRACT_SPECIAL_POINTS.filter(x=>x.type===type).map(x=>({...x,housing:'single'})));
@@ -272,7 +305,7 @@ function contractExactScheduleMatch(type,ctx){
 function renderContractExactSchedule(type,row,ctx){
   const days=DAYS.filter(d=>(row.days||[]).includes(d));selectedVehicle[type]=row.provider||'전체';const badge=document.getElementById(type+'Badge');badge.textContent=`대행 · ${days.join('·')}`;renderDays(type+'Days',days);
   const phone=CONTRACT_OPERATOR_INFO[row.provider]?.phone||'';const place=[ctx?.legalEmd||ctx?.district,ctx?.legalRi].filter(Boolean).join(' ');const name=row.name?` (${escapeHtml(row.name)})`:'';
-  document.getElementById(type+'Detail').innerHTML=`<div class="verified">${place?`<strong>판정지역:</strong> ${escapeHtml(place)}<br>`:''}<strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${escapeHtml(row.provider)}${phone?' · '+phone:''}<br><strong>차량:</strong> ${escapeHtml(row.vehicle||'확인')}<br><strong>수거일:</strong> ${days.join(' · ')}${row.time&&row.time!=='"'?`<br><strong>수거시간:</strong> ${escapeHtml(row.time)}`:''}<br><strong>원자료 위치:</strong> ${escapeHtml(row.address||'')}${name}<br><span style="color:#6b7280">※ 대행업체 수거노선표의 해당 주소 행과 직접 매칭한 일정입니다.</span></div>`;
+  document.getElementById(type+'Detail').innerHTML=`<div class="verified">${place?`<strong>판정지역:</strong> ${escapeHtml(place)}<br>`:''}<strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${escapeHtml(row.provider)}${phone?' · '+phone:''}<br><strong>차량:</strong> ${escapeHtml(row.vehicle||'확인')}<br><strong>수거일:</strong> ${days.join(' · ')}${row.time&&row.time!=='"'?`<br><strong>수거시간:</strong> ${escapeHtml(row.time)}`:''}<br><strong>원자료 위치:</strong> ${escapeHtml(row.address||'')}${name}${type==='general'?contractorIncombustibleSummary(ctx):''}<br><span style="color:#6b7280">※ 대행업체 수거노선표의 해당 주소 행과 직접 매칭한 일정입니다.</span></div>`;
 }
 
 const DISTRICT_ALIASES={
@@ -830,9 +863,9 @@ const selectedVehicle={general:'전체',recycle:'전체'};
 let zoneTooltipOverlay=null;
 const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[],districtOutline:[]};
 
-// 동지역 직영수거는 읍·면의 면(폴리곤) 레이어와 구분하여 차량·요일별 참고 노선으로 표시합니다.
+// 직영 동지역 + 대행업체 원본 수거노선을 차량·요일별 참고 노선으로 표시합니다.
 const DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
-// ② 근거노선은 동지역 직영코스만 취급합니다. 읍·면은 근거노선 선택·표시 대상에서 완전히 제외합니다.
+// ② 근거노선: 직영은 동지역 중심으로 유지하되, 대행업체가 제공한 청원구 원본 노선은 읍·동 구분 없이 실제 대행구간을 표시합니다.
 const VISUAL_DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 const CHEONGWON_ROUTE_DISTRICTS=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 const districtFeatureMap=new Map();
@@ -846,7 +879,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v64-contractors-precomputed';
+const DONG_ROUTE_CACHE_VERSION='v65-contractors-full';
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1299,7 +1332,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v64-contractors|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v65-contractors-full|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -2853,7 +2886,7 @@ async function preloadAllDongRoutes(){
 }
 
 function scheduleDongRoutePreload(){
-  // v64: 직영 동지역 + 새 대행업체 청원구 노선을 캐시 복원/누락분 준비합니다.
+  // v65: 직영 동지역 + 제일환경/현대환경 청원구 전체 제공노선을 캐시 복원/누락분 준비합니다.
   preloadAllDongRoutes().catch(e=>console.warn('수거노선 사전준비 실패',e));
 }
 
@@ -3075,7 +3108,7 @@ function renderServiceZoneSchedule(type,match,ctx,options={}){
   const body=company
     ? `<strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${escapeHtml(company)}${phone?' · '+phone:''}<br><strong>차량:</strong> ${escapeHtml(plate)}<br><strong>수거일:</strong> ${days.join(' · ')||'요일 확인 필요'}`
     : `<strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(match.vehicle||'담당')}호:</strong> ${days.join(' · ')||'요일 확인 필요'}`;
-  document.getElementById(type+'Detail').innerHTML=`<div class="${match.zoneStatus==='boundary'?'pending':'verified'}">${place?`<strong>판정지역:</strong> ${escapeHtml(place)}<br>`:''}${body}<br><span style="color:#6b7280">※ ${company?'대행업체 원본 차량×요일 노선':'직영 원본 차량×요일 노선'}을 기준으로 만든 ① 수거권역과 주소를 매칭했습니다. 현재 판정: ${status}.</span>${apartmentNotice}</div>`;
+  document.getElementById(type+'Detail').innerHTML=`<div class="${match.zoneStatus==='boundary'?'pending':'verified'}">${place?`<strong>판정지역:</strong> ${escapeHtml(place)}<br>`:''}${body}${company&&type==='general'?contractorIncombustibleSummary(ctx):''}<br><span style="color:#6b7280">※ ${company?'대행업체 원본 차량×요일 노선':'직영 원본 차량×요일 노선'}을 기준으로 만든 ① 수거권역과 주소를 매칭했습니다. 현재 판정: ${status}.</span>${apartmentNotice}</div>`;
 }
 function loadManualZones(){
   try{const raw=localStorage.getItem(ADMIN_ZONE_STORAGE_KEY);manualServiceZones=raw?JSON.parse(raw):[];if(!Array.isArray(manualServiceZones))manualServiceZones=[]}catch(e){manualServiceZones=[]}
