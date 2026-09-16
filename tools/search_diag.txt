@@ -1,0 +1,241 @@
+index_chars=3260206 lines=3888
+MATCH function\s+searchAddress\s*\([^)]*\)\s*\{[^\n]*: function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+MATCH function\s+loadSdk\s*\([^)]*\)\s*\{[^\n]*: function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
+MATCH function\s+init\s*\([^)]*\)\s*\{: function init(){
+MATCH geocoder\s*=\s*new\s+kakao\.maps\.services\.Geocoder\(\): geocoder=new kakao.maps.services.Geocoder()
+MATCH document\.getElementById\('landingForm'\)\.addEventListener\('submit'[^\n]*: document.getElementById('landingForm').addEventListener('submit',e=>{e.preventDefault();if(!geocoder){setLandingStatus('지도를 준비 중입니다. 잠시 후 다시 검색해주세요.',true);return}searchAddress(document.getElementById('landingInput').value)});
+MATCH loadSdk\(\);: loadSdk();
+MATCH const\s+KAKAO_KEY\s*=\s*[^;]+;: const KAKAO_KEY='***REDACTED***';
+
+--- searchAddress context ---
+urrentLng};
+    done&&done();
+    refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
+  });
+}
+function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));resolveDistrict(lat,lng,showResult)}
+function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
+
+
+
+let nearbyScheduleRequestSeq=0;
+let zoneBuildPromise=null;
+
+// 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
+const serviceLayerState={zone:true,route:false};
+const serviceZoneOverlays={general:[],recycle:[]};
+const serviceZoneBuildPromises=new Map();
+const serviceZoneBuilt={general:false,recycle:false};
+const serviceZoneRegions=[];
+let serviceRegionLoadComplete=false;
+const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
+const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
+const SERVICE_ZONE_CACHE_VERSION=`zone-v67-rural30-noapart|${DONG_ROUTE_CACHE_VERSION}`;
+const serviceZoneCacheHydrated={general:false,recycle:false};
+let manualServiceZones=[];
+let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
+
+// 빌드 시 확정된 노선/수거권역 좌표를 index.html 안에 직접 내장합니다.
+// 새 PC/새 브라우저에서도 IndexedDB 생성이나 길찾기 API 계산을 기다리지 않고 즉시 복원됩니다.
+function bundledPrecomputedData(){
+  try{
+    const el=document.getElementById('bundledPrecomputed');
+    if(!el)return null;
+    const raw=String(el.textContent||'').trim();
+    if(!raw||raw==='null')return null;
+    return JSON.parse(raw);
+  }catch(e){console.warn('내장 사전계산 데이터 읽기 실패',e);return null}
+}
+function hydrateBundledPrecomputedData(){
+  const data=bundledPrecomputedData();
+  if(!data)return false;
+  let hydrated=false;
+  try{
+    // 노선 좌표는 기존 v65 캐시를 그대로 재사용합니다. v66은 수거권역 구조만 변경합니다.
+    if(data.version===DONG_ROUTE_CACHE_VERSION){
+      const specMap=new Map(allDongRouteSpecs().map(s=>[`${s.type}|${s.vehicle}|${s.day}`,s]));
+      for(const r of (data.routes||[])){
+        const spec=specMap.get(`${r.type}|${r.vehicle}|${r.day}`);
+        if(!spec||existingDongRouteOverlay(spec))continue;
+        createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});
+      }
+      hydrated=true;
+    }
+    // v65의 잘게 쪼갠 읍·면 권역은 v66에서 절대 복원하지 않습니다.
+    if(data.zoneVersion===SERVICE_ZONE_CACHE_VERSION){
+      for(const type of ['general','recycle']){
+        const zones=Array.isArray(data.zones?.[type])?data.zones[type]:[];
+        if(zones.length){
+          clearServiceZoneOverlays(type);
+          for(const z of zones)addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:true,fromBundle:true});
+          rebuildManualZoneOverlays(type);
+          serviceZoneBuilt[type]=true;
+          serviceZoneCacheHydrated[t
+
+--- submit context ---
+trol{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}.vehicle-filter{max-width:calc(100% - 30px)}.day-filter{max-width:calc(100% - 30px);overflow-x:auto}.structure-control{max-width:calc(100% - 30px);overflow-x:auto;top:164px}.admin-panel{top:58px}
+}
+</style>
+</head>
+<body>
+<section id="landing">
+  <div class="hero">
+    <div class="brand">청원구 환경위생과</div>
+    <h1>민원인네 집 쓰레기<br>언제 수거되지?</h1>
+    <p>청원구 주소를 입력하면 생활·음식물·재활용 수거정보를 확인할 수 있습니다.</p>
+    <form class="search" id="landingForm">
+      <input id="landingInput" autocomplete="street-address" placeholder="예: 청주시 청원구 상당로 314" />
+      <button type="submit">주소 확인</button>
+    </form>
+    <div id="landingStatus" class="landing-status"></div>
+  </div>
+</section>
+
+<main id="app">
+  <aside class="side">
+    <div class="topline"><div class="logo">청원구 환경위생과</div><button id="backBtn" class="new-search" type="button">다른 주소 검색</button></div>
+    <div>
+      <div class="eyebrow">선택한 주소</div>
+      <div id="selectedAddress" class="address">주소를 검색해주세요.</div>
+      <div id="selectedDistrict" class="district-pill">청원구 행정동 확인 중</div>
+      <div id="selectedCoords" class="sub"></div>
+    </div>
+
+    <div class="cards">
+      <article id="card-general" class="card general" data-layer="general">
+        <div class="card-head"><div><h3>🗑️ 생활쓰레기</h3><p>종량제 봉투 등</p></div><span id="generalBadge" class="badge">확인 중</span></div>
+        <div id="generalDays" class="days"></div>
+        <div id="generalDetail" class="detail"></div>
+      </article>
+
+      <article id="card-food" class="card food" data-layer="food">
+        <div class="card-head"><div><h3>🍚 음식물쓰레기</h3><p>분류배출 구역 기준</p></div><span id="foodBadge" class="badge">확인 중</span></div>
+        <div id="foodDays" class="days"></div>
+        <div id="foodDetail" class="detail"></div>
+      </article>
+
+      <article id="card-recycle" class="card recycle" data-layer="recycle">
+        <div class="card-head"><div><h3>♻️ 재활용쓰레기</h3><p>종이·플라스틱·캔·병 등</p></div><span id="recycleBadge" class="badge">확인 중</span></div>
+        <div id="recycleDays" class="days"></div>
+        <div id="recycleDetail" class="detail"></div>
+      </article>
+    </div>
+    <div class="source-note">자료 기준: 사용자가 제공한 <strong>2026년 6월 청원구 직영 생활·재활용 코스표</strong>, <strong>제일환경 6구역 수거노선표</strong>, <strong>현대환경 2026.08.11 수거노선표</strong> 및 2025~2026 대행구역별 수거지역 자료와 청원구 읍·면·동/법정리 경계. 현대환경 자료는 청원구에 해당하는 <strong>내덕1동만</strong> 반영하고 흥덕구 자료는 제외했습니다. 생활·재활용은 <strong>① 수거권역 → ② 근거 수거노선</strong>의 2단계로 확인합니다. <strong>수거권역은 원본 코스의 차량·요일별 도로선과 시설·마을의 숨은 근거점을 함께 지리적으로 배치한 뒤, 같은 리 또는 행정동 안에서 가장 가까운 근거를 기준으로 자동 분할한 추정 권역</strong>입니다. 실제 GPS 주행경로나 공식 확정 GIS 권역이 아니므로 경계 부근은 담당자 확인이 필요합니다. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤 포함 여부를 그대로 사용하며, 관리자 편집으로 직접 그린 권역은 자동 추정권역보다 우선합니다. 자동권역과 근거노선은 브라우저 영구 캐시에 저장해 다음 접속부터 즉시 복원합니다. 제일환경·현대환경 대행구간은 새 수거노선표의 주소·차량·요일을 우선하며, 북이면 광암리→금암리 일정 상속은 기존 지정 규칙을 유지합니다. 음식물은 기존 분류배출 시행/제외지역 기준을 유지합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 화면에는 표시하지 않고 내수읍·오창읍·북이면의 수거권역 분할 계산에만 내부적으로 사용합니다.</div>
+  </aside>
+
+  <section class="map-wrap">
+    <div id="map" class="map"></div>
+    <div class="layer-control">
+      <button class="layer-btn active" data-layer="general">생활</button>
+      <button class="layer-btn" data-layer="recycle">재활용</button>
+      <button class="layer-btn" data-layer="food">음식물</button>
+    </div>
+    <div id="vehicleFilter" class="vehicle-filter"></div>
+    <div id="dayFilter" class="day-filter">
+      <button class="active" data-day="전체">전체요일</button>
+      <button data-day="월">월</button>
+      <button data-day="화">화</button>
+      <button data-day="수">수</button>
+      <button data-day="목">목</button>
+      <button data-day="금">금</button>
+    </div>
+    <div id="structureControl" class="structure-control">
+      <span class="structure-label">레이어</span>
+      <button class="active" data-structure="zone">① 수거권역</button>
+      <button data-structure="route">② 동지역 근거노선</button>
+    </
+
+--- loadSdk context ---
+ices.Geocoder();places=new kakao.maps.services.Places();
+  kakao.maps.event.addListener(map,'click',handleMapClick);
+  loadManualZones();
+  const bundled=hydrateBundledPrecomputedData();
+  if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
+  setLayer('general');
+  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+  scheduleDongRoutePreload();
+  zoneBuildPromise=buildZonePolygons();
+  document.getElementById('landingInput').focus();
+}
+function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
+
+document.getElementById('landingForm').addEventListener('submit',e=>{e.preventDefault();if(!geocoder){setLandingStatus('지도를 준비 중입니다. 잠시 후 다시 검색해주세요.',true);return}searchAddress(document.getElementById('landingInput').value)});
+document.getElementById('backBtn').addEventListener('click',showLanding);
+document.getElementById('zoomIn').addEventListener('click',()=>map&&map.setLevel(Math.max(1,map.getLevel()-1)));
+document.getElementById('zoomOut').addEventListener('click',()=>map&&map.setLevel(map.getLevel()+1));
+document.querySelectorAll('.layer-btn').forEach(btn=>btn.addEventListener('click',()=>setLayer(btn.dataset.layer)));
+document.querySelectorAll('.card').forEach(card=>card.addEventListener('click',()=>setLayer(card.dataset.layer)));
+document.querySelectorAll('#dayFilter button').forEach(btn=>btn.addEventListener('click',()=>setDay(btn.dataset.day)));
+document.querySelectorAll('#structureControl button').forEach(btn=>btn.addEventListener('click',()=>setStructureLayer(btn.dataset.structure)));
+document.getElementById('adminToggle').addEventListener('click',toggleAdminPanel);
+document.getElementById('adminType').addEventListener('change',updateAdminVehicleOptions);
+document.getElementById('adminDraw').addEventListener('click',startAdminDrawing);
+document.getElementById('adminFinish').addEventListener('click',finishAdminDrawing);
+document.getElementById('adminCancel').addEventListener('click',clearAdminDraft);
+document.getElementById('adminRebuild').addEventListener('click',async()=>{for(const t of ['general','recycle']){clearServiceZoneOverlays(t);serviceZoneBuilt[t]=false;serviceZoneCacheHydrated[t]=false;await deleteCachedServiceZones(t)}await buildServiceZones(activeLayer);setLayer(activeLayer);updateAdminStatus('자동권역을 다시 계산해 저장했습니다.')});
+document.getElementById('adminExport').addEventListener('click',exportAdminZones);
+document.getElementById('adminImport').addEventListener('click',()=>document.getElementById('adminImportFile').click());
+document.getElementById('adminImportFile').addEventListener('change',e=>{if(e.target.files?.[0])importAdminZones(e.target.files[0]);e.target.value=''});
+document.getElementById('adminClear').addEventListener('click',()=>{if(confirm('이 브라우저에 저장된 수동 수거권역을 모두 삭제할까요?')){manualServiceZones=[];saveManualZones();for(const t of ['general','recycle'])rebuildManualZoneOverlays(t);setLayer(activeLayer)}});
+loadSdk();
+</script>
+</body>
+</html>
+
+
+
+
+--- init context ---
+이터가 실패하면 읍·면 권역은 제한되지만 동지역 권역은 계속 사용할 수 있습니다.
+    serviceRegionLoadComplete=true;
+    // 이미 IndexedDB에서 복원한 자동권역은 유지합니다. 캐시가 없을 때만 새로 계산합니다.
+    if(!(serviceZoneOverlays.general||[]).some(z=>!z.manual))serviceZoneBuilt.general=false;
+    if(!(serviceZoneOverlays.recycle||[]).some(z=>!z.manual))serviceZoneBuilt.recycle=false;
+    setLayer(activeLayer);
+  }
+
+  // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
+  // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
+  scheduleDongRoutePreload();
+}
+function init(){
+  map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
+  marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng)});
+  geocoder=new kakao.maps.services.Geocoder();places=new kakao.maps.services.Places();
+  kakao.maps.event.addListener(map,'click',handleMapClick);
+  loadManualZones();
+  const bundled=hydrateBundledPrecomputedData();
+  if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
+  setLayer('general');
+  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+  scheduleDongRoutePreload();
+  zoneBuildPromise=buildZonePolygons();
+  document.getElementById('landingInput').focus();
+}
+function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
+
+document.getElementById('landingForm').addEventListener('submit',e=>{e.preventDefault();if(!geocoder){setLandingStatus('지도를 준비 중입니다. 잠시 후 다시 검색해주세요.',true);return}searchAddress(document.getElementById('landingInput').value)});
+document.getElementById('backBtn').addEventListener('click',showLanding);
+document.getElementById('zoomIn').addEventListener('click',()=>map&&map.setLevel(Math.max(1,map.getLevel()-1)));
+document.getElementById('zoomOut').addEventListener('click',()=>map&&map.setLevel(map.getLevel()+1));
+document.querySelectorAll('.layer-btn').forEach(btn=>btn.addEventListener('click',()=>setLayer(btn.dataset.layer)));
+document.querySelectorAll('.card').forEach(card=>card.addEventListener('click',()=>setLayer(card.dataset.layer)));
+document.querySelectorAll('#dayFilter button').forEach(btn=>btn.addEventListener('click',()=>setDay(btn.dataset.day)));
+document.querySelectorAll('#structureControl button').forEach(btn=>btn.addEventListener('click',()=>setStructureLayer(btn.dataset.structure)));
+document.getElementById('adminToggle').addEventListener('click',toggleAdminPanel);
+document.getElementById('adminType').addEventListener('change',updateAdminVehicleOptions);
+document.getElementById('adminDraw').addEventListener('click',startAdminDrawing);
+document.getElementById('adminFinish').addEventListener('click',finishAdminDrawing);
+document.getElementById('adminCancel').addEventListener('click',clearAdminDraft);
+document.getElementById('adminRebuild').addEventListener('click',async()=>{for(const t of ['general','recycle']){clearServiceZoneOverlays(t);serviceZoneBuilt[t]=false;serviceZoneCacheHydrated[t]=false;await deleteCachedServiceZones(t)}await buildServiceZones(activeLayer);setLayer(activeLayer);updateAdminStatus('자동권역을 다시 계산해 저장했습니다.')});
+document.getElementById('adminExport').addEventListener('click',exportAdminZones);
+document.getElementById('adminImport').addEventListener('click',()=>document.getElementById('adminImportFile').click());
+document.getElementById('adminImportFile').addEventListener('change',e=>{if(e.target.files?.[0])importAdminZones(e.target.files[0]);e.target.value=''});
+document.getElementById('adminClear').addEventListener('click',()=>{if(confirm('이 브라우저에 저장된 수동 수거권역을 모두 삭제할까요?')){manualServiceZones=[];saveManualZones();for(const t of ['general','recycle'])rebuildManualZoneOverlays(t);setLayer(activeLayer)}});
+loadSdk();
+</script>
+</body>
+</html>
+
+
