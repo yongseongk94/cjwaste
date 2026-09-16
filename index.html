@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
-<!-- v61: evidence-route layer is strictly dong-only; eup/myeon route lines are excluded from route selection/display while rural service-zone logic remains separate; dong routes are the audited focus -->
+<!-- v62: dong-only evidence routes re-audited against June 2026 source sheets; day-specific dong scopes prevent cross-dong bleed; source roads remain mandatory route evidence -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -820,7 +820,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v61';
+const DONG_ROUTE_CACHE_VERSION='v62-audited';
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1069,8 +1069,21 @@ const SERVICE_ZONE_ROUTE_SCOPE={
     '0264':['내수읍','북이면','오근장동','율량사천동']
   }
 };
-function routeDongScope(type,vehicle){
-  return [...(ROUTE_DONG_SCOPE[type]?.[vehicle]||[])];
+// 원본 코스표를 차량×요일 단위로 다시 감사한 동지역 범위입니다.
+// 차량 단위 범위보다 우선 적용하여, 예를 들어 6244/0263 노선이 오근장동으로 번지는 것을 막습니다.
+const ROUTE_DONG_DAY_SCOPE={
+  general:{
+    '6244':{월:['율량사천동'],화:['율량사천동'],수:['율량사천동'],목:['율량사천동'],금:['율량사천동']}
+  },
+  recycle:{
+    '0263':{월:['율량사천동'],화:['율량사천동'],수:['율량사천동'],목:['율량사천동'],금:['율량사천동']},
+    '9090':{월:['율량사천동'],화:['율량사천동','오근장동'],수:['율량사천동'],목:['율량사천동'],금:['율량사천동']},
+    '0264':{월:['율량사천동','오근장동'],화:['율량사천동','오근장동'],수:['율량사천동','오근장동'],목:['율량사천동','오근장동'],금:['오근장동']}
+  }
+};
+function routeDongScope(type,vehicle,day=''){
+  const exact=day&&ROUTE_DONG_DAY_SCOPE[type]?.[vehicle]?.[day];
+  return [...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])];
 }
 function serviceZoneRouteScope(type,vehicle){
   return [...(SERVICE_ZONE_ROUTE_SCOPE[type]?.[vehicle]||[])];
@@ -1849,10 +1862,10 @@ function routeCandidatesForSelection(type){
   const out=[];
   for(const route of (DIRECT_ROUTES[type]||[])){
     if(provider!=='전체'&&route.vehicle!==provider)continue;
-    const districts=routeDongScope(type,route.vehicle);
-    if(!districts.length)continue;
     for(const [routeDay,raw] of Object.entries(route.days||{})){
       if(day!=='전체'&&routeDay!==day)continue;
+      const districts=routeDongScope(type,route.vehicle,routeDay);
+      if(!districts.length)continue;
       out.push({type,vehicle:route.vehicle,day:routeDay,raw,districts:[...districts]});
     }
   }
@@ -2340,7 +2353,7 @@ async function localRoadAnchorsAroundPoint(base,spec,radiusKm=0.45){
   let samples=await searchRoadAnchorPlaces(road);
   samples=samples.filter(p=>{
     const d=routePointAnyDistrict(p);
-    return d && routeDongScope(spec.type,spec.vehicle).includes(d) && routePointDistance(base,p)<=radiusKm;
+    return d && routeDongScope(spec.type,spec.vehicle,spec.day).includes(d) && routePointDistance(base,p)<=radiusKm;
   });
   if(samples.length<2)return [];
   const n=roadHouseNumberFromAddress(base.address,road);
@@ -2379,7 +2392,7 @@ async function serviceAnchorsForEntry(entry,spec){
 }
 
 function finalRouteCoordinateAudit(spec,data){
-  const allowed=routeDongScope(spec.type,spec.vehicle);
+  const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
   const invalid=[];
   const check=(p,where)=>{
     if(!p||!Number.isFinite(+p.lat)||!Number.isFinite(+p.lng)){
@@ -2403,7 +2416,7 @@ function finalRouteCoordinateAudit(spec,data){
   return {ok:invalid.length===0,invalidCount:invalid.length,invalid:invalid.slice(0,12),allowed};
 }
 function sanitizeRouteDataToScope(spec,data){
-  const allowed=routeDongScope(spec.type,spec.vehicle);
+  const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
   const segments=[];
   for(const seg of (data?.segments||[])){
     const clipped=clipRoutePathToDistricts(seg,allowed);
@@ -2563,7 +2576,7 @@ async function buildDongRouteOverlay(spec){
           rejectedOutOfGu++;
           continue;
         }
-        const allowed=routeDongScope(spec.type,spec.vehicle);
+        const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
         if(!allowed.includes(actualDistrict)){
           outside.push({...point,district:actualDistrict});
           continue;
@@ -2614,7 +2627,7 @@ async function buildDongRouteOverlay(spec){
         const raw=roadResult?.path||anchors;
 
         // 해당 차량·요일에 배정된 동지역 경계 안에서만 구간을 남깁니다.
-        const localSegments=clipRoutePathToDistricts(raw,routeDongScope(spec.type,spec.vehicle));
+        const localSegments=clipRoutePathToDistricts(raw,routeDongScope(spec.type,spec.vehicle,spec.day));
         if(localSegments.length){
           for(const seg of localSegments){
             if(seg.length>=2)segments.push(seg.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -2723,9 +2736,9 @@ function allDongRouteSpecs(){
   const seen=new Set();
   for(const type of ['general','recycle']){
     for(const route of (DIRECT_ROUTES[type]||[])){
-      const districts=routeDongScope(type,route.vehicle);
-      if(!districts.length)continue;
       for(const [day,raw] of Object.entries(route.days||{})){
+        const districts=routeDongScope(type,route.vehicle,day);
+        if(!districts.length)continue;
         const key=`${type}|${route.vehicle}|${day}`;
         if(seen.has(key))continue;
         seen.add(key);
