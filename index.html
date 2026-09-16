@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
-<!-- v60: service-map boundary stage removed; collection zones and evidence routes only; Ochang Hwasan-ri (華山, li_cd 4311425322) explicitly rendered as food-waste separation exclusion -->
+<!-- v61: evidence-route layer is strictly dong-only; eup/myeon route lines are excluded from route selection/display while rural service-zone logic remains separate; dong routes are the audited focus -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -191,7 +191,7 @@
     <div id="structureControl" class="structure-control">
       <span class="structure-label">레이어</span>
       <button class="active" data-structure="zone">① 수거권역</button>
-      <button data-structure="route">② 근거노선</button>
+      <button data-structure="route">② 동지역 근거노선</button>
     </div>
     <div class="map-tools"><button id="adminToggle" class="admin-toggle">관리자 편집</button><button id="zoomIn">＋</button><button id="zoomOut">－</button></div>
     <div id="adminPanel" class="admin-panel">
@@ -805,9 +805,8 @@ let zoneTooltipOverlay=null;
 const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[],districtOutline:[]};
 
 // 동지역 직영수거는 읍·면의 면(폴리곤) 레이어와 구분하여 차량·요일별 참고 노선으로 표시합니다.
-const DONG_ROUTE_DISTRICTS=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
-// 지도에서 실제 수거노선 선을 보여주는 곳은 동지역만 유지합니다.
-// 읍·면 노선은 주소 20m 매칭 계산용으로만 생성·캐시합니다.
+const DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
+// ② 근거노선은 동지역 직영코스만 취급합니다. 읍·면은 근거노선 선택·표시 대상에서 완전히 제외합니다.
 const VISUAL_DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 const CHEONGWON_ROUTE_DISTRICTS=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 const districtFeatureMap=new Map();
@@ -821,7 +820,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v59';
+const DONG_ROUTE_CACHE_VERSION='v61';
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1035,7 +1034,24 @@ const SOURCE_ROUTE_ADDRESS_RANGES={"general":{"3346":{"월":["내수로8"],"화"
 
 // 읍·면은 법정리 면레이어로 처리하고, 동지역 노선선은 차량 전체 코스에서 실제 등장하는 동 권역을 허용합니다.
 // 일자별 수동 추론 누락 때문에 도로가 사라지던 문제를 막기 위한 차량 단위 범위입니다.
+// ② 근거노선은 동지역만 감사·표시합니다. 읍·면 전용 차량은 근거노선 시스템에서 제외합니다.
 const ROUTE_DONG_SCOPE={
+  general:{
+    '3346':['율량사천동','오근장동'],
+    '6244':['율량사천동','오근장동'],
+    '6224':['오근장동','율량사천동'],
+    '6157':['내덕2동','율량사천동']
+  },
+  recycle:{
+    '0263':['율량사천동','오근장동'],
+    '0261':['내덕2동','율량사천동'],
+    '9090':['율량사천동','오근장동'],
+    '0264':['오근장동','율량사천동']
+  }
+};
+// 읍·면 ① 수거권역은 기존 원자료 기반 권역판정을 유지하기 위한 별도 범위입니다.
+// 이 범위는 ② 근거노선 레이어/차량노선 선택에는 사용하지 않습니다.
+const SERVICE_ZONE_ROUTE_SCOPE={
   general:{
     '3344':['오창읍','북이면'],
     '3346':['율량사천동','오근장동','내수읍'],
@@ -1056,6 +1072,10 @@ const ROUTE_DONG_SCOPE={
 function routeDongScope(type,vehicle){
   return [...(ROUTE_DONG_SCOPE[type]?.[vehicle]||[])];
 }
+function serviceZoneRouteScope(type,vehicle){
+  return [...(SERVICE_ZONE_ROUTE_SCOPE[type]?.[vehicle]||[])];
+}
+
 function sourceRoadTermsForSpec(spec){
   return [...(SOURCE_ROUTE_ROADS[spec?.type]?.[spec?.vehicle]?.[spec?.day]||[])];
 }
@@ -2721,25 +2741,25 @@ async function preloadAllDongRoutes(){
   dongRoutePreloadStarted=true;
   const specs=allDongRouteSpecs();
 
-  // 저장된 노선은 한 번에 복원합니다. 지도에서 ② 근거노선을 켜면 즉시 표시됩니다.
+  // 저장된 동지역 노선만 한 번에 복원합니다. ② 근거노선은 읍·면을 계산/표시하지 않습니다.
   await hydrateCachedRouteOverlays(specs);
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
   // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   await mapWithConcurrency(missing,3,async spec=>{
-    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('백그라운드 수거노선 준비 실패',spec,e)}
+    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('동지역 수거노선 준비 실패',spec,e)}
     if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
   });
 
-  // 생활/재활용 수거권역도 사용자가 탭을 누르기 전에 모두 만들어 영구 캐시에 저장합니다.
+  // 생활/재활용 수거권역은 별도 구조로 유지합니다. 근거노선 사전계산 자체는 동지역에만 집중합니다.
   await buildServiceZones('general');
   await buildServiceZones('recycle');
   if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
 }
 
 function scheduleDongRoutePreload(){
-  // v58: 경계자료가 준비되는 즉시 캐시 복원/누락분 준비를 시작합니다.
+  // v61: 동지역 근거노선만 캐시 복원/누락분 준비를 시작합니다.
   preloadAllDongRoutes().catch(e=>console.warn('수거노선 사전준비 실패',e));
 }
 
@@ -2760,8 +2780,15 @@ function serviceZoneCandidateSpecs(type,district,riName=''){
   if(district==='북이면'&&sourceRi==='광암리')sourceRi='금암리';
   let specs=[];
   if(RI_LAYER_DISTRICTS.has(district)&&sourceRi)specs=riCandidateRouteDays(type,district,sourceRi);
-  if(!specs.length)specs=routeSpecsForDistrict(type,district);
-  specs=specs.map(s=>({...s,districts:Array.isArray(s.districts)&&s.districts.length?s.districts:[...routeDongScope(type,s.vehicle)]}));
+  if(!specs.length){
+    specs=[];
+    for(const route of (DIRECT_ROUTES[type]||[])){
+      const scope=serviceZoneRouteScope(type,route.vehicle);
+      if(!scope.includes(district))continue;
+      for(const [day,raw] of Object.entries(route.days||{}))specs.push({type,vehicle:route.vehicle,day,raw,districts:[...scope]});
+    }
+  }
+  specs=specs.map(s=>({...s,districts:Array.isArray(s.districts)&&s.districts.length?s.districts:[...serviceZoneRouteScope(type,s.vehicle)]}));
   return uniqueRouteSpecs(specs);
 }
 async function serviceRouteGroups(type,district,riName=''){
@@ -3050,7 +3077,7 @@ function updateMapBadge(custom){
   }
   const provider=selectedVehicle[activeLayer]||'전체',dayLabel=activeDay==='전체'?'전체요일':`${activeDay}요일`,providerLabel=provider==='전체'?'전체 수거주체':(provider==='제일환경'?'제일환경 위탁':`${provider}호 직영`);
   const state=[serviceLayerState.zone?'①수거권역':'',serviceLayerState.route?'②근거노선':''].filter(Boolean).join(' + ');
-  el.innerHTML=`<strong>${labels[activeLayer]} · ${providerLabel} · ${dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong>. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤과 동일한 경계를 그대로 사용합니다. 자동권역은 원본 차량·요일별 수거노선을 같은 리/행정동 안에서 최근접 분할한 추정 범위이며, 저장된 권역·노선은 브라우저 영구 캐시에서 즉시 복원됩니다. ② 근거노선을 켜면 권역 판단의 근거가 된 도로구간을 확인할 수 있습니다. 수거권역이 실제와 다르면 관리자 편집에서 수동권역을 그려 우선 적용할 수 있습니다.`}</span>`;
+  el.innerHTML=`<strong>${labels[activeLayer]} · ${providerLabel} · ${dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong>. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤과 동일한 경계를 그대로 사용합니다. 자동권역은 원본 차량·요일별 수거노선을 같은 리/행정동 안에서 최근접 분할한 추정 범위이며, 저장된 권역·노선은 브라우저 영구 캐시에서 즉시 복원됩니다. ② 근거노선은 우암동·내덕1동·내덕2동·오근장동·율량사천동의 직영코스만 표시합니다. 읍·면 근거노선은 표시·선택 대상에서 제외했습니다. 수거권역이 실제와 다르면 관리자 편집에서 수동권역을 그려 우선 적용할 수 있습니다.`}</span>`;
 }
 function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
