@@ -1,0 +1,1274 @@
+chars=3260208 lines=3888
+
+### showResult matches=1
+n=norm(name);for(const [alias,canonical] of Object.entries(DISTRICT_ALIASES)){if(norm(alias)===n)return canonical}return name||''}
+function normalizeRi(name){return String(name||'').replace(/\s+/g,'').trim()}
+function getFoodExclusion(legalEmd,legalRi,riCode=''){
+  const emd=canonicalDistrict(legalEmd); const ri=normalizeRi(legalRi);
+  // 오창읍 화산리(華山, 빛화산) 법정리코드. 동명이리 花山과 구분해 제외지역을 명시적으로 유지합니다.
+  if(emd==='오창읍'&&ri==='화산리'&&String(riCode)==='4311425322') return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDays('foodDays',food.days);
+    const extra=exclusion.excluded===null?'<br><strong>안내:</strong> 리 단위 제외지역 판정은 상세 주소로 다시 확인해 주세요.':'';
+    document.getElementById('foodDetail').innerHTML=`<div class="verified"><strong>단독주택 배출:</strong> ${food.days.join(' · ')}<br><strong>수거:</strong> ${food.pickup}<br><strong>수거업체:</strong> ${food.operator}${food.phone?' · '+food.phone:''}<br><strong>공동주택:</strong> 상시배출${extra}</div>`;
+  }else setPending('food','해당 지역의 음식물 일정을 공식자료에서 확인하지 못했습니다.');
+
+  const ctx={address:currentAddress,district,legalEmd,legalRi,lat:currentLat,lng:currentLng};
+
+  // 생활쓰레기: 확정되지 않은 리는 추정하지 않고 미확인으로 처리합니다.
+  if(isUnconfirmedRi('general',legalEmd||district,legalRi)){
+    selectedVehicle.general='전체';
+    document.getElementById('generalBadge').textContent='수거정보 미확인';
+    renderDays('generalDays',[]);
+    document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.</div>`;
+  }else{
+    const directGeneralCtx=inheritedScheduleContext(ctx);
+    const inheritedGeneral=!!directGeneralCtx.scheduleInheritedFrom;
+    const scienceGeneral=false;
+    if(false){
+    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedGeneral){
+      selectedVehicle.general='전체';
+      document.getElementById('generalBadge').textContent='수거노선 확인 중';
+      renderDays('generalDays',[]);
+      document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 리 단위 구분을 유지하되, 실제 일정은 표시된 수거노선에서 30m 이내인 주소만 확정합니다.</div>`;
+    }else{
+      const directGeneral=findDirectMatches('general',directGeneralCtx);
+      selectedVehicle.general=directGeneral.length?directGeneral[0].vehicle:'전체';
+      if(directGeneral.length){
+        renderDirectSchedule('general',directGeneral,directGeneralCtx);
+      }else if(districtHasDirectCoverage('general',district)){
+        document.getElementById('generalBadge').textContent='직영 구간 확인';
+        renderDays('generalDays',[]);
+        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>청원구 직영 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.</div>`;
+      }else{
+        const generals=findRegionEntries('general',district);
+        if(generals.length){
+          document.getElementById('generalBadge').textContent='요일 확인 필요';renderDays('generalDays',[]);
+          const rows=generals.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
+          document.getElementById('generalDetail').innerHTM
+
+### moveTo matches=1
+st h=result.find(x=>x.region_type==='H')||result[0];
+    const b=result.find(x=>x.region_type==='B')||h;
+    const district2=(h.region_2depth_name||'').replace(/\s+/g,' ').trim();
+    if(!district2.includes('청원구')){
+      currentDistrict='';currentLegalEmd='';currentLegalRi='';document.getElementById('selectedDistrict').textContent=`${h.region_1depth_name} ${h.region_2depth_name} · 서비스 대상 아님`;
+      ['general','food','recycle'].forEach(t=>setPending(t,'현재 1차 서비스는 청주시 청원구만 지원합니다.'));
+      updateMapBadge('청원구 밖 주소입니다.');done&&done();return;
+    }
+    currentDistrict=canonicalDistrict(h.region_3depth_name);
+    // 법정동(B) 결과에서 읍·면과 리를 읽어 제외지역을 판정합니다.
+    // 카카오 응답은 읍·면 주소에서 region_3depth_name=읍·면, region_4depth_name=리 형태입니다.
+    currentLegalEmd=canonicalDistrict(b.region_3depth_name||currentDistrict);
+    currentLegalRi=normalizeRi(b.region_4depth_name||'');
+    renderSchedule(currentDistrict,currentLegalEmd,currentLegalRi);
+    const nearbyCtx={address:currentAddress,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi,lat:currentLat,lng:currentLng};
+    done&&done();
+    refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
+  });
+}
+function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
+function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
+
+
+
+let nearbyScheduleRequestSeq=0;
+let zoneBuildPromise=null;
+
+// 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
+const serviceLayerState={zone:true,route:false};
+const serviceZoneOverlays={general:[],recycle:[]};
+const serviceZoneBuildPromises=new Map();
+const serviceZoneBuilt={general:false,recycle:false};
+const serviceZoneRegions=[];
+let serviceRegionLoadComplete=false;
+const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
+const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
+const SERVICE_ZONE_CACHE_VERSION=`zone-v67-rural30-noapart|${DONG_ROUTE_CACHE_VERSION}`;
+const serviceZoneCacheHydrated={general:false,recycle:false};
+let manualServiceZones=[];
+let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
+
+// 빌드 시 확정된 노선/수거권역 좌표를 index.html 안에 직접 내장합니다.
+// 새 PC/새 브라우저에서도 IndexedDB 생성이나 길찾기 API 계산을 기다리지 않고 즉시 복원됩니다.
+function bundledPrecomputedData(){
+  try{
+    const el=document.getElementById('bundledPrecomputed');
+    if(!el)return null;
+    const raw=String(el.textContent||'').trim();
+    if(!raw||raw==='null')return null;
+    return JSON.parse(raw);
+  }catch(e){console.warn('내장 사전계산 데이터 읽기 실패',e);return null}
+}
+function hydrateBundledPrecomputedData(){
+  const data=bundledPrecomputedData();
+  if(!data)return false;
+  let hydrated=false;
+  try{
+    // 노선 좌표는 기존 v65 캐시를 그대로 재사용합니다. v66은 수거권역 구조만 변경합니다.
+    if(data.version===DONG_ROUTE_CACHE_VERSION){
+      const specMap=new Map(allDongRouteSpecs().map(s=>[`${s.type}|${s.vehicle}|${s.day}`,s]));
+      for(const r of (data.routes||[])){
+        const spec=specMap.get(`${r.type}|${r.vehicle}|${r.day}`);
+        if(!spec||existingDongRouteOverlay(spec))continue;
+        createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});
+      }
+      hydrated=true;
+    }
+    // v65의 잘게 쪼갠 읍·면 권역은 v66에서 절대 복원하지 않습니다.
+    if(data.zoneVersion===SERVICE_ZONE_CACHE_VERSION){
+      for(const type of ['general','recycle']){
+        const zones=Array.isArray(data.zones?.[type])?data.zones[type]:[];
+        if(zones.length){
+          clearServiceZoneOverlays(type);
+          for(const z of zones)addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:true,fromBundle:true});
+          rebuildManualZoneOverlays(type);
+          serviceZoneBuilt[type]=true;
+          serviceZoneCacheHydrated[type]=true;
+          hydrated=true;
+        }
+      }
+    }
+    return hydrated;
+  }catch(e){console.warn('내장 사전계산 데이터 복원 실패',e);return false}
+}
+function exportCjWastePrecomputed(){
+  const routeFields=['segments','zoneEvidencePoints','termsCount','pointsCount','serviceTermCount','missingTerms','outsideTerms','outOfCheongwonTerms','rangeTerms','requiredRoadTerms','coveredRoadTerms','missingRoadTerms','outsideRoadTerms','addressRangeTerms','secondaryText','secondaryKind','districtLabel','roadMatchedCount','roadRequestedCount'];
+  const routes=[];
+  for(const type of ['general','recycle'])for(const item of (dongRouteOverlays[type]||[])){
+    const data={};
+    for(const k of routeFields){
+      if(k==='districtLabel')data[k]=item.district||item.districtLabel||'';
+      else if(item[k]!==undefined)data[k]=item[k];
+    }
+    data.distance=Number(item.roadResult?.distance)||0;
+    routes.push({type,vehicle:item.vehicle,day:item.day,data});
+  }
+  const zones={general:[],recycle:[]};
+  for(const type of ['general','recycle'])zones[type]=(serviceZoneOverlays[type]||[])
+    .filter(z=>!z.manual&&Array.isArray(z.point
+
+### resolveDistrict matches=1
+="pending"><strong>청원구 직영 재활용 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+      }else{
+        const recycles=findRegionEntries('recycle',district);
+        if(recycles.length){
+          document.getElementById('recycleBadge').textContent='요일 확인 필요';renderDays('recycleDays',[]);
+          const rows=recycles.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
+          document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>세부 수거요일은 확정자료 확인 후 반영합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+        }else{
+          setPending('recycle','현재 확정된 자료만으로는 이 지역의 재활용쓰레기 수거정보를 안내할 수 없습니다.');
+          document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+        }
+      }
+    }
+  }
+
+  if(activeLayer==='general'||activeLayer==='recycle'){renderVehicleFilter();setLayer(activeLayer)}
+  else updateMapBadge();
+}
+function resolveDistrict(lat,lng,done){
+  geocoder.coord2RegionCode(lng,lat,(result,status)=>{
+    if(status!==kakao.maps.services.Status.OK||!result.length){currentDistrict='';currentLegalEmd='';currentLegalRi='';renderSchedule('');done&&done();return}
+    const h=result.find(x=>x.region_type==='H')||result[0];
+    const b=result.find(x=>x.region_type==='B')||h;
+    const district2=(h.region_2depth_name||'').replace(/\s+/g,' ').trim();
+    if(!district2.includes('청원구')){
+      currentDistrict='';currentLegalEmd='';currentLegalRi='';document.getElementById('selectedDistrict').textContent=`${h.region_1depth_name} ${h.region_2depth_name} · 서비스 대상 아님`;
+      ['general','food','recycle'].forEach(t=>setPending(t,'현재 1차 서비스는 청주시 청원구만 지원합니다.'));
+      updateMapBadge('청원구 밖 주소입니다.');done&&done();return;
+    }
+    currentDistrict=canonicalDistrict(h.region_3depth_name);
+    // 법정동(B) 결과에서 읍·면과 리를 읽어 제외지역을 판정합니다.
+    // 카카오 응답은 읍·면 주소에서 region_3depth_name=읍·면, region_4depth_name=리 형태입니다.
+    currentLegalEmd=canonicalDistrict(b.region_3depth_name||currentDistrict);
+    currentLegalRi=normalizeRi(b.region_4depth_name||'');
+    renderSchedule(currentDistrict,currentLegalEmd,currentLegalRi);
+    const nearbyCtx={address:currentAddress,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi,lat:currentLat,lng:currentLng};
+    done&&done();
+    refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
+  });
+}
+function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
+function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
+
+
+
+let nearbyScheduleRequestSeq=0;
+let zoneBuildPromise=null;
+
+// 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
+const serviceLayerState={zone:true,route:false};
+const serviceZoneOverlays={general:[],recycle:[]};
+const serviceZoneBuildPromises=new Map();
+const serviceZoneBuilt={general:false,recycle:false};
+const serviceZoneRegions=[];
+let serviceRegionLoadComplete=false;
+const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
+const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
+const SERVICE_ZONE_CACHE_VERSION=`zone-v67-rural30-noapart|${DONG_ROUTE_CACHE_VERSION}`;
+const serviceZoneCacheHydrated={general:false,recycle:false};
+let manualServiceZones=[];
+let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
+
+// 빌드 시 확정된 노선/수거권역 좌표를 index.html 안에 직접 내장합니다.
+// 새 PC/새 브라우저에서도 IndexedDB 생성이나 길찾기 API 계산을 기다리지 않고 즉시 복원됩니다.
+function bundledPrecomputedData(){
+  try{
+    const el=document.getElementById('bundledPrecomputed');
+    if(!el)return null;
+    const raw=String(el.textContent||'').trim();
+    if(!raw||raw==='null')return null;
+    return JSON.parse(raw);
+  }catch(e){console.warn('내장 사전계산 데이터 읽기 실패',e);return null}
+}
+function hydrateBundledPrecomputedData(){
+  const data=bundledPrecomputedData();
+  if(!data)return false;
+  let hydrated=false;
+  try{
+    // 노선 좌표는 기존 v65 캐시를 그대로 재사용합니다. v66은 수거권역 구조만 변경합니다.
+    if(data.version===DONG_ROUTE_CACHE_VERSION){
+      const specMap=new Map(allDongRouteSpecs().map(s=>[`${s.type}|${s.vehicle}|${s.day}`,s]));
+      for(const r of (data.routes||[])){
+        const spec=specMap.get(`${r.type}|${r.vehicle}|${r.day}`);
+        if(!spec||existingDongRouteOverlay(spec))continue;
+        createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});
+      }
+      hydrated=true;
+    }
+    // v65의 잘게 쪼갠 읍·면 권역은 v66에서 절대 복원하지 않습니다.
+    if(data.zoneVersion===SERVICE_ZONE_CACHE_VERSION){
+      for(const type of ['general','recycle']){
+        const zones=Array.isArray(data.zones?.[
+
+### updateLocation matches=1
+de=''){
+  const emd=canonicalDistrict(legalEmd); const ri=normalizeRi(legalRi);
+  // 오창읍 화산리(華山, 빛화산) 법정리코드. 동명이리 花山과 구분해 제외지역을 명시적으로 유지합니다.
+  if(emd==='오창읍'&&ri==='화산리'&&String(riCode)==='4311425322') return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDays('foodDays',food.days);
+    const extra=exclusion.excluded===null?'<br><strong>안내:</strong> 리 단위 제외지역 판정은 상세 주소로 다시 확인해 주세요.':'';
+    document.getElementById('foodDetail').innerHTML=`<div class="verified"><strong>단독주택 배출:</strong> ${food.days.join(' · ')}<br><strong>수거:</strong> ${food.pickup}<br><strong>수거업체:</strong> ${food.operator}${food.phone?' · '+food.phone:''}<br><strong>공동주택:</strong> 상시배출${extra}</div>`;
+  }else setPending('food','해당 지역의 음식물 일정을 공식자료에서 확인하지 못했습니다.');
+
+  const ctx={address:currentAddress,district,legalEmd,legalRi,lat:currentLat,lng:currentLng};
+
+  // 생활쓰레기: 확정되지 않은 리는 추정하지 않고 미확인으로 처리합니다.
+  if(isUnconfirmedRi('general',legalEmd||district,legalRi)){
+    selectedVehicle.general='전체';
+    document.getElementById('generalBadge').textContent='수거정보 미확인';
+    renderDays('generalDays',[]);
+    document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.</div>`;
+  }else{
+    const directGeneralCtx=inheritedScheduleContext(ctx);
+    const inheritedGeneral=!!directGeneralCtx.scheduleInheritedFrom;
+    const scienceGeneral=false;
+    if(false){
+    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedGeneral){
+      selectedVehicle.general='전체';
+      document.getElementById('generalBadge').textContent='수거노선 확인 중';
+      renderDays('generalDays',[]);
+      document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 리 단위 구분을 유지하되, 실제 일정은 표시된 수거노선에서 30m 이내인 주소만 확정합니다.</div>`;
+    }else{
+      const directGeneral=findDirectMatches('general',directGeneralCtx);
+      selectedVehicle.general=directGeneral.length?directGeneral[0].vehicle:'전체';
+      if(directGeneral.length){
+        renderDirectSchedule('general',directGeneral,directGeneralCtx);
+      }else if(districtHasDirectCoverage('general',district)){
+        document.getElementById('generalBadge').textContent='직영 구간 확인';
+        renderDays('generalDays',[]);
+        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>청원구 직영 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.</div>`;
+      }else{
+        const generals=findRegionEntries('general',district);
+        if(generals.length){
+          document.getElementById('generalBadge').textContent='요일 확인 필요';renderDays('generalDays',[]);
+          const rows=generals.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
+          document.getElementById('generalDetail').innerHTML=`<div class="pending">${rows}<br><strong>배출시간:</strong> 일몰 후부터 자정 전<br>세부 수거요일은 확정자료 확인 후 반영합니다.</div>`;
+        }else setPending('general','현재 확정된 자료만으로는 이 지역의 생활쓰레기 수거정보를 안내할 수 없습니다.');
+      }
+    }
+  }
+
+  // 재활용: 확정되지 않은 리는 추정하지 않고 미확인으로 처리합니다.
+  if(
+
+### setLandingStatus matches=1
+?.type]?.[spec?.vehicle]?.[spec?.day]||[])];
+}
+
+function norm(s){return String(s||'').replace(/[\s·.]/g,'')}
+function canonicalDistrict(name){const n=norm(name);for(const [alias,canonical] of Object.entries(DISTRICT_ALIASES)){if(norm(alias)===n)return canonical}return name||''}
+function normalizeRi(name){return String(name||'').replace(/\s+/g,'').trim()}
+function getFoodExclusion(legalEmd,legalRi,riCode=''){
+  const emd=canonicalDistrict(legalEmd); const ri=normalizeRi(legalRi);
+  // 오창읍 화산리(華山, 빛화산) 법정리코드. 동명이리 花山과 구분해 제외지역을 명시적으로 유지합니다.
+  if(emd==='오창읍'&&ri==='화산리'&&String(riCode)==='4311425322') return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDays('foodDays',food.days);
+    const extra=exclusion.excluded===null?'<br><strong>안내:</strong> 리 단위 제외지역 판정은 상세 주소로 다시 확인해 주세요.':'';
+    document.getElementById('foodDetail').innerHTML=`<div class="verified"><strong>단독주택 배출:</strong> ${food.days.join(' · ')}<br><strong>수거:</strong> ${food.pickup}<br><strong>수거업체:</strong> ${food.operator}${food.phone?' · '+food.phone:''}<br><strong>공동주택:</strong> 상시배출${extra}</div>`;
+  }else setPending('food','해당 지역의 음식물 일정을 공식자료에서 확인하지 못했습니다.');
+
+  const ctx={address:currentAddress,district,legalEmd,legalRi,lat:currentLat,lng:currentLng};
+
+  // 생활쓰레기: 확정되지 않은 리는 추정하지 않고 미확인으로 처리합니다.
+  if(isUnconfirmedRi('general',legalEmd||district,legalRi)){
+    selectedVehicle.general='전체';
+    document.getElementById('generalBadge').textContent='수거정보 미확인';
+    renderDays('generalDays',[]);
+    document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.</div>`;
+  }else{
+    const directGeneralCtx=inheritedScheduleContext(ctx);
+    const inheritedGeneral=!!directGeneralCtx.scheduleInheritedFrom;
+    const scienceGeneral=false;
+    if(false){
+    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedGeneral){
+      selectedVehicle.general='전체';
+      document.getElementById('generalBadge').textContent='수거노선 확인 중';
+      renderDays('generalDays',[]);
+      document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 리 단위 구분을 유지하되, 실제 일정은 표시된 수거노선에서 30m 이내인 주소만 확정합니다.</div>`;
+    }else{
+      const directGeneral=findDirectMatches('general',directGeneralCtx);
+      selectedVehicle.general=directGeneral.length?directGeneral[0].vehicle:'전체';
+      if(directGeneral.length){
+        renderDirectSchedule('general',directGeneral,directGeneralCtx);
+      }else if(districtHasDirectCoverage('general',district)){
+        document.getElementById('generalBadge').textContent='직영 구간 확인';
+        renderDays('generalDays',[]);
+        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>청원구 직영 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.</div>`;
+      }else{
+        const generals=findRegionEntries('general',district);
+        if(generals.length){
+          document.getElementById('generalBadge').textContent='요일 확인 필요';renderDays('generalDays',[]);
+          const rows=generals.map(x=>`<strong>${x.housing==='apartme
+
+### init matches=1
+수읍'].size,
+      '오창읍':seenOfficialRi['오창읍'].size,
+      '북이면':seenOfficialRi['북이면'].size
+    };
+    const missingSummary=Object.entries(OFFICIAL_RI_EXPECTED_COUNTS)
+      .filter(([d,c])=>riCounts[d]!==c).map(([d,c])=>`${d} ${riCounts[d]}/${c}`).join(' · ');
+    serviceRegionLoadComplete=true;
+    // 이미 IndexedDB에서 복원한 자동권역은 유지합니다. 캐시가 없을 때만 새로 계산합니다.
+    if(!(serviceZoneOverlays.general||[]).some(z=>!z.manual))serviceZoneBuilt.general=false;
+    if(!(serviceZoneOverlays.recycle||[]).some(z=>!z.manual))serviceZoneBuilt.recycle=false;
+    setLayer(activeLayer);
+    if(missingSummary)console.warn('법정리 경계 일부 누락:',missingSummary);
+  }catch(err){
+    console.warn('법정리 레이어 로딩 실패',err);
+    // 리 데이터가 실패하면 읍·면 권역은 제한되지만 동지역 권역은 계속 사용할 수 있습니다.
+    serviceRegionLoadComplete=true;
+    // 이미 IndexedDB에서 복원한 자동권역은 유지합니다. 캐시가 없을 때만 새로 계산합니다.
+    if(!(serviceZoneOverlays.general||[]).some(z=>!z.manual))serviceZoneBuilt.general=false;
+    if(!(serviceZoneOverlays.recycle||[]).some(z=>!z.manual))serviceZoneBuilt.recycle=false;
+    setLayer(activeLayer);
+  }
+
+  // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
+  // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
+  scheduleDongRoutePreload();
+}
+function init(){
+  map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
+  marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng)});
+  geocoder=new kakao.maps.services.Geocoder();places=new kakao.maps.services.Places();
+  kakao.maps.event.addListener(map,'click',handleMapClick);
+  loadManualZones();
+  const bundled=hydrateBundledPrecomputedData();
+  if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
+  setLayer('general');
+  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+  scheduleDongRoutePreload();
+  zoneBuildPromise=buildZonePolygons();
+  document.getElementById('landingInput').focus();
+}
+function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
+
+document.getElementById('landingForm').addEventListener('submit',e=>{e.preventDefault();if(!geocoder){setLandingStatus('지도를 준비 중입니다. 잠시 후 다시 검색해주세요.',true);return}searchAddress(document.getElementById('landingInput').value)});
+document.getElementById('backBtn').addEventListener('click',showLanding);
+document.getElementById('zoomIn').addEventListener('click',()=>map&&map.setLevel(Math.max(1,map.getLevel()-1)));
+document.getElementById('zoomOut').addEventListener('click',()=>map&&map.setLevel(map.getLevel()+1));
+document.querySelectorAll('.layer-btn').forEach(btn=>btn.addEventListener('click',()=>setLayer(btn.dataset.layer)));
+document.querySelectorAll('.card').forEach(card=>card.addEventListener('click',()=>setLayer(card.dataset.layer)));
+document.querySelectorAll('#dayFilter button').forEach(btn=>btn.addEventListener('click',()=>setDay(btn.dataset.day)));
+document.querySelectorAll('#structureControl button').forEach(btn=>btn.addEventListener('click',()=>setStructureLayer(btn.dataset.structure)));
+document.getElementById('adminToggle').addEventListener('click',toggleAdminPanel);
+document.getElementById('adminType').addEventListener('change',updateAdminVehicleOptions);
+document.getElementById('adminDraw').addEventListener('click',startAdminDrawing);
+document.getElementById('adminFinish').addEventListener('click',finishAdminDrawing);
+document.getElementById('adminCancel').addEventListener('click',clearAdminDraft);
+document.getElementById('adminRebuild').addEventListener('click',async()=>{for(const t of ['general','recycle']){clearServiceZoneOverlays(t);serviceZoneBuilt[t]=false;serviceZoneCacheHydrated[t]=false;await deleteCachedServiceZones(t)}await buildServiceZones(activeLayer);setLayer(activeLayer);updateAdminStatus('자동권역을 다시 계산해 저장했습니다.')});
+document.getElementById('adminExport').addEventListener('click',exportAdminZones);
+document.getElementById('adminImport').addEventListener('click',()=>document.getElementById('adminImportFile').click());
+document.getElementById('adminImportFile').addEventListener('change',e=>{if(e.target.files?.[0])importAdminZones(e.target.files[0]);e.target.value=''});
+document.getElementById('adminClear').addEventListener('click',()=>{if(confirm('이 브라우저에 저장된 수동 수거권역을 모두 삭제할까요?')){manualServiceZones=[];saveManualZones();for(const t of ['general','recycle'])rebuildManualZoneOverlays(t);setLayer(activeLayer)}});
+loadSdk();
+</script>
+</body>
+</html>
+
+
+
+
+### landingCSS matches=4
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
+<!-- v67: 내수읍·북이면은 원본 차량×요일 수거코스의 항목 순서를 따라 도로망 차량이동경로를 추정해 ② 근거노선에 포함하고, 주소는 표시 수거노선 30m 이내에서만 일정을 확정합니다. 오창·내수·북이는 리 단위로 시각 그룹을 유지하되 내수·북이 전체 리를 수거대상으로 보지 않습니다. 오창산업단지는 제일환경 대행구간으로 별도 표시하며, 대행업체 공동주택(아파트) 노선·주소일정은 전부 제외합니다. -->
+<style>
+:root{
+  --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
+  --general:#17745a;--food:#df6b42;--recycle:#315ea8;--warn:#9a6700;
+}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;font-family:Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--bg)}button,input{font:inherit}
+#landing{
+  position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:flex-start;
+  padding:clamp(24px,5vw,76px);transition:.32s ease;overflow:hidden;
+  background:url("data:image/jpeg;base64,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") 18% 12% / 125% auto no-repeat;
+}
+#landing::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(7,18,31,.82) 0%,rgba(7,18,31,.63) 34%,rgba(7,18,31,.24) 60%,rgba(7,18,31,.10) 78%,rgba(7,18,31,.24) 100%),
+    linear-gradient(0deg,rgba(7,18,31,.28) 0%,rgba(7,18,31,0) 44%);
+}
+#landing.hidden{opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.012)}
+.hero{
+  position:relative;z-index:1;width:min(690px,100%);text-align:left;color:#fff;
+  padding:clamp(26px,3.2vw,44px);
+  border:1px solid rgba(255,255,255,.18);border-radius:30px;
+  background:linear-gradient(135deg,rgba(10,24,40,.38),rgba(10,24,40,.20));
+  box-shadow:0 24px 70px rgba(0,0,0,.24);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.brand{
+  display:inline-flex;align-items:center;
+  font-weight:900;font-size:13px;letter-spacing:.12em;margin-bottom:24px;
+  padding:8px 12px;border-radius:999px;
+  color:rgba(255,255,255,.96);background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.16);
+}
+.hero h1{
+  font-size:clamp(40px,5.7vw,70px);line-height:1.02;letter-spacing:-.065em;
+  margin:0 0 18px;color:#fff;text-shadow:0 3px 24px rgba(0,0,0,.26);
+}
+.hero p{
+  margin:0 0 30px;color:rgba(255,255,255,.86);font-size:16px;line-height:1.7;
+  text-shadow:0 2px 12px rgba(0,0,0,.16);
+}
+.search{
+  display:flex;gap:10px;max-width:650px;margin:0;
+  padding:7px;border-radius:22px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 12px 34px rgba(0,0,0,.18);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.search input{
+  flex:1;height:62px;border:0;border-radius:16px;padding:0 19px;font-size:17px;
+  outline:0;background:rgba(255,255,255,.96);color:#111827;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.78);
+}
+.search input::placeholder{color:#7b8491}
+.search input:focus{box-shadow:0 0 0 4px rgba(255,255,255,.24),inset 0 0 0 1px rgba(23,116,90,.34)}
+.search button{
+  height:62px;border:0;border-radius:16px;background:#17745a;color:#fff;
+  padding:0 26px;font-weight:900;cursor:pointer;white-space:nowrap;
+  box-shadow:0 8px 22px rgba(6,68,50,.30);transition:.18s ease;
+}
+.search button:hover{transform:translateY(-1px);background:#12634d}
+.landing-status{min-height:24px;margin-top:14px;color:rgba(255,255,255,.82);font-size:13px}
+.landing-status.error{color:#ffd3cf}
+#app{height:100%;display:grid;grid-template-columns:minmax(390px,42%) 1fr}.side{background:#fff;border-right:1px solid var(--line);padding:27px;overflow:auto;display:flex;flex-direction:column;gap:20px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-weight:950;letter-spacing:.06em}.new-search{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800;cursor:pointer}.eyebrow{font-size:12px;font-weight:900;color:#52606d;margin-bottom:7px}.address{font-size:23px;line-height:1.36;font-weight:950;letter-spacing:-.045em}.sub{font-size:13px;color:var(--muted);margin-top:7px}.district-pill{display:inline-flex;margin-top:10px;padding:6px 9px;border-radius:999px;background:#f3f4f6;font-size:11px;font-weight:850;color:#374151}
+.cards{display:grid;gap:11px}.card{border:1px solid var(--line);border-radius:18px;padding:17px;background:#fff;transition:.18s}.card.active{box-shadow:0 0 0 2px #111827 inset}.card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.card h3{margin:0;font-size:18px}.card p{margin:4px 0 0;color:var(--muted);font-size:12px}.badge{font-size:11px;font-weight:900;border-radius:999px;padding:6px 9px;white-space:nowrap}.general .badge{background:#eaf6f1;color:var(--general)}.food .badge{background:#fff0e9;color:#b44e2e}.recycle .badge{background:#edf3ff;color:var(--recycle)}
+.days{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.day{min-width:35px;height:35px;border-radius:9px;display:grid;place-items:center;padding:0 8px;font-size:12px;font-weight:900;background:#f3f4f6;color:#9ca3af}.general .day.on{background:#eaf6f1;color:var(--general)}.food .day.on{background:#fff0e9;color:#b44e2e}.recycle .day.on{background:#edf3ff;color:var(--recycle)}
+.detail{margin-top:12px;font-size:12px;line-height:1.65;color:#4b5563}.detail strong{color:#111827}.pending{margin-top:12px;background:#fff8df;color:#7a5500;border-radius:10px;padding:10px 11px;font-size:12px;line-height:1.55}.verified{margin-top:12px;background:#f7faf9;border-radius:10px;padding:10px 11px;font-size:12px;line-height:1.55;color:#3f514a}
+.source-note{font-size:11px;color:#9ca3af;line-height:1.55;border-top:1px solid var(--line);padding-top:15px}
+.map-wrap{position:relative;min-width:0}.map{position:absolute;inset:0}.map-tools{position:absolute;top:15px;right:15px;z-index:5;display:flex;gap:5px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 5px 16px rgba(0,0,0,.07)}.map-tools button{border:0;background:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:850;cursor:pointer}
+.layer-control{position:absolute;left:15px;top:15px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:15px;padding:8px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:flex;gap:5px}.layer-btn{border:0;background:#f3f4f6;color:#6
+:1px solid #d1d5db;background:#fff;border-radius:8px;padding:7px;font-size:11px}.admin-days{display:flex;gap:4px;flex-wrap:wrap}.admin-days label{display:flex;gap:3px;align-items:center;background:#f3f4f6;border-radius:7px;padding:5px 7px;font-size:10px}.admin-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.admin-actions button,.admin-panel .wide-btn{border:0;border-radius:9px;padding:8px 9px;font-size:10px;font-weight:900;cursor:pointer;background:#f3f4f6;color:#374151}.admin-actions button.primary{background:#17745a;color:#fff}.admin-actions button.danger{background:#fff1f2;color:#9f1239}.admin-panel .wide-btn{width:100%;margin-top:6px}.admin-status{margin-top:9px;padding:8px;border-radius:9px;background:#f8fafc;font-size:10px;line-height:1.45;color:#475569}.admin-status.drawing{background:#ecfdf5;color:#166534}.admin-zone-note{font-size:9px;color:#9ca3af;line-height:1.4;margin-top:8px}
+
+.route-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.day-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:#4b5563}
+.day-swatch{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+@media(max-width:900px){
+  #landing{justify-content:center;padding:22px;background-size:auto 118%;background-position:28% 10%}
+  #landing::before{background:linear-gradient(0deg,rgba(7,18,31,.76),rgba(7,18,31,.40))}
+  .hero{width:min(690px,100%);padding:30px}
+  #app{display:flex;flex-direction:column;height:auto;min-height:100%}.side{border-right:0;border-bottom:1px solid var(--line);padding:20px}.map-wrap{height:52vh;min-height:420px}.address{font-size:21px}
+}
+@media(max-width:560px){
+  #landing{align-items:flex-end;padding:18px;background-size:auto 112%;background-position:32% 8%}
+  .hero{padding:24px 20px;border-radius:24px;background:linear-gradient(135deg,rgba(10,24,40,.48),rgba(10,24,40,.28))}
+  .search{display:grid;padding:6px}
+  .search button{width:100%}
+  .brand{font-size:11px;margin-bottom:18px}
+  .hero h1{font-size:42px}
+  .hero p{font-size:14px;margin-bottom:22px}
+  .layer-control{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}.vehicle-filter{max-width:calc(100% - 30px)}.day-filter{max-width:calc(100% - 30px);overflow-x:auto}.structure-control{max-width:calc(100% - 30px);overflow-x:auto;top:164px}.admin-panel{top:58px}
+}
+</style>
+</head>
+<body>
+<section id="landing">
+  <div class="hero">
+    <div class="brand">청원구 환경위생과</div>
+    <h1>민원인네 집 쓰레기<br>언제 수거되지?</h1>
+    <p>청원구 주소를 입력하면 생활·음식물·재활용 수거정보를 확인할 수 있습니다.</p>
+    <form class="search" id="landingForm">
+      <input id="landingInput" autocomplete="street-address" placeholder="예: 청주시 청원구 상당로 314" />
+      <button type="submit">주소 확인</button>
+    </form>
+    <div id="landingStatus" class="landing-status"></div>
+  </div>
+</section>
+
+<main id="app">
+  <aside class="side">
+    <div class="topline"><div class="logo">청원구 환경위생과</div><button id="backBtn" class="new-search" type="button">다른 주소 검색</button></div>
+    <div>
+      <div class="eyebrow">선택한 주소</div>
+      <div id="selectedAddress" class="address">주소를 검색해주세요.</div>
+      <div id="selectedDistrict" class="district-pill">청원구 행정동 확인 중</div>
+      <div id="selectedCoords" class="sub"></div>
+    </div>
+
+    <div class="cards">
+      <article id="card-general" class="card general" data-layer="general">
+        <div class="card-head"><div><h3>🗑️ 생활쓰레기</h3><p>종량제 봉투 등</p></div><span id="generalBadge" class="badge">확인 중</span></div>
+        <div id="generalDays" class="days"></div>
+        <div id="generalDetail" class="detail"></div>
+      </article>
+
+      <article id="card-food" class="card food" data-layer="food">
+        <div class="card-head"><div><h3>🍚 음식물쓰레기</h3><p>분류배출 구역 기준</p></div><span id="foodBadge" class="badge">확인 중</span></div>
+        <div id="foodDays" class="days"></div>
+        <div id="foodDetail" class="detail"></div>
+      </article>
+
+      <article id="card-recycle" class="card recycle" data-layer="recycle">
+        <div class="card-head"><div><h3>♻️ 재활용쓰레기</h3><p>종이·플라스틱·캔·병 등</p></div><span id="recycleBadge" class="badge">확인 중</span></div>
+        <div id="recycleDays" class="days"></div>
+        <div id="recycleDetail" class="detail"></div>
+      </article>
+    </div>
+    <div class="source-note">자료 기준: 사용자가 제공한 <strong>2026년 6월 청원구 직영 생활·재활용 코스표</strong>, <strong>제일환경 6구역 수거노선표</strong>, <strong>현대환경 2026.08.11 수거노선표</strong> 및 2025~2026 대행구역별 수거지역 자료와 청원구 읍·면·동/법정리 경계. 현대환경 자료는 청원구에 해당하는 <strong>내덕1동만</strong> 반영하고 흥덕구 자료는 제외했습니다. 생활·재활용은 <strong>① 수거권역 → ② 근거 수거노선</strong>의 2단계로 확인합니다. <strong>수거권역은 원본 코스의 차량·요일별 도로선과 시설·마을의 숨은 근거점을 함께 지리적으로 배치한 뒤, 같은 리 또는 행정동 안에서 가장 가까운 근거를 기준으로 자동 분할한 추정 권역</strong>입니다. 실제 GPS 주행경로나 공식 확정 GIS 권역이 아니므로 경계 부근은 담당자 확인이 필요합니다. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤 포함 여부를 그대로 사용하며, 관리자 편집으로 직접 그린 권역은 자동 추정권역보다 우선합니다. 자동권역과 근거노선은 브라우저 영구 캐시에 저장해 다음 접속부터 즉시 복원합니다. 제일환경·현대환경 대행구간은 새 수거노선표의 주소·차량·요일을 우선하며, 북이면 광암리→금암리 일정 상속은 기존 지정 규칙을 유지합니다. 음식물은 기존 분류배출 시행/제외지역 기준을 유지합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 화면에는 표시하지 않고 내수읍·오창읍·북이면의 수거권역 분할 계산에만 내부적으로 사용합니다.</div>
+  </aside>
+
+  <section class="map-wrap">
+    <div id="map" class="map"></div>
+    <div class="layer-control">
+      <button class="layer-btn active" data-layer="general">생활</button>
+      <button class="layer-btn" data-layer="recycle">재활용</button>
+      <button class="layer-btn" data-layer="food">음식물</button>
+    </div>
+    <div id="vehicleFilter" class="vehicle-filter"></div>
+    <div id="dayFilter" class="day-filter">
+      <button class="active" data-day="전체">전체요일</button>
+      <button data-day="월">월</button>
+      <button data-day="화">화</button>
+      <button data-day="수">수</button>
+      <button data-day="목">목</button>
+      <button data-day="금">금</button>
+    </div>
+    <div id="structureControl" class="structure-control">
+      <span class="structure-label">레이어</span>
+      <button class="active" data-structure="zone">① 수거권역</button>
+      <button data-structure="route">② 동지역 근거노선</button>
+    </div>
+    <div class="map-tools"><button id="adminToggle" class="admin-toggle">관리자 편집</button><button id="zoomIn">＋</button><b
+er;background:#f3f4f6;color:#374151}.admin-actions button.primary{background:#17745a;color:#fff}.admin-actions button.danger{background:#fff1f2;color:#9f1239}.admin-panel .wide-btn{width:100%;margin-top:6px}.admin-status{margin-top:9px;padding:8px;border-radius:9px;background:#f8fafc;font-size:10px;line-height:1.45;color:#475569}.admin-status.drawing{background:#ecfdf5;color:#166534}.admin-zone-note{font-size:9px;color:#9ca3af;line-height:1.4;margin-top:8px}
+
+.route-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.day-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:#4b5563}
+.day-swatch{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+@media(max-width:900px){
+  #landing{justify-content:center;padding:22px;background-size:auto 118%;background-position:28% 10%}
+  #landing::before{background:linear-gradient(0deg,rgba(7,18,31,.76),rgba(7,18,31,.40))}
+  .hero{width:min(690px,100%);padding:30px}
+  #app{display:flex;flex-direction:column;height:auto;min-height:100%}.side{border-right:0;border-bottom:1px solid var(--line);padding:20px}.map-wrap{height:52vh;min-height:420px}.address{font-size:21px}
+}
+@media(max-width:560px){
+  #landing{align-items:flex-end;padding:18px;background-size:auto 112%;background-position:32% 8%}
+  .hero{padding:24px 20px;border-radius:24px;background:linear-gradient(135deg,rgba(10,24,40,.48),rgba(10,24,40,.28))}
+  .search{display:grid;padding:6px}
+  .search button{width:100%}
+  .brand{font-size:11px;margin-bottom:18px}
+  .hero h1{font-size:42px}
+  .hero p{font-size:14px;margin-bottom:22px}
+  .layer-control{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}.vehicle-filter{max-width:calc(100% - 30px)}.day-filter{max-width:calc(100% - 30px);overflow-x:auto}.structure-control{max-width:calc(100% - 30px);overflow-x:auto;top:164px}.admin-panel{top:58px}
+}
+</style>
+</head>
+<body>
+<section id="landing">
+  <div class="hero">
+    <div class="brand">청원구 환경위생과</div>
+    <h1>민원인네 집 쓰레기<br>언제 수거되지?</h1>
+    <p>청원구 주소를 입력하면 생활·음식물·재활용 수거정보를 확인할 수 있습니다.</p>
+    <form class="search" id="landingForm">
+      <input id="landingInput" autocomplete="street-address" placeholder="예: 청주시 청원구 상당로 314" />
+      <button type="submit">주소 확인</button>
+    </form>
+    <div id="landingStatus" class="landing-status"></div>
+  </div>
+</section>
+
+<main id="app">
+  <aside class="side">
+    <div class="topline"><div class="logo">청원구 환경위생과</div><button id="backBtn" class="new-search" type="button">다른 주소 검색</button></div>
+    <div>
+      <div class="eyebrow">선택한 주소</div>
+      <div id="selectedAddress" class="address">주소를 검색해주세요.</div>
+      <div id="selectedDistrict" class="district-pill">청원구 행정동 확인 중</div>
+      <div id="selectedCoords" class="sub"></div>
+    </div>
+
+    <div class="cards">
+      <article id="card-general" class="card general" data-layer="general">
+        <div class="card-head"><div><h3>🗑️ 생활쓰레기</h3><p>종량제 봉투 등</p></div><span id="generalBadge" class="badge">확인 중</span></div>
+        <div id="generalDays" class="days"></div>
+        <div id="generalDetail" class="detail"></div>
+      </article>
+
+      <article id="card-food" class="card food" data-layer="food">
+        <div class="card-head"><div><h3>🍚 음식물쓰레기</h3><p>분류배출 구역 기준</p></div><span id="foodBadge" class="badge">확인 중</span></div>
+        <div id="foodDays" class="days"></div>
+        <div id="foodDetail" class="detail"></div>
+      </article>
+
+      <article id="card-recycle" class="card recycle" data-layer="recycle">
+        <div class="card-head"><div><h3>♻️ 재활용쓰레기</h3><p>종이·플라스틱·캔·병 등</p></div><span id="recycleBadge" class="badge">확인 중</span></div>
+        <div id="recycleDays" class="days"></div>
+        <div id="recycleDetail" class="detail"></div>
+      </article>
+    </div>
+    <div class="source-note">자료 기준: 사용자가 제공한 <strong>2026년 6월 청원구 직영 생활·재활용 코스표</strong>, <strong>제일환경 6구역 수거노선표</strong>, <strong>현대환경 2026.08.11 수거노선표</strong> 및 2025~2026 대행구역별 수거지역 자료와 청원구 읍·면·동/법정리 경계. 현대환경 자료는 청원구에 해당하는 <strong>내덕1동만</strong> 반영하고 흥덕구 자료는 제외했습니다. 생활·재활용은 <strong>① 수거권역 → ② 근거 수거노선</strong>의 2단계로 확인합니다. <strong>수거권역은 원본 코스의 차량·요일별 도로선과 시설·마을의 숨은 근거점을 함께 지리적으로 배치한 뒤, 같은 리 또는 행정동 안에서 가장 가까운 근거를 기준으로 자동 분할한 추정 권역</strong>입니다. 실제 GPS 주행경로나 공식 확정 GIS 권역이 아니므로 경계 부근은 담당자 확인이 필요합니다. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤 포함 여부를 그대로 사용하며, 관리자 편집으로 직접 그린 권역은 자동 추정권역보다 우선합니다. 자동권역과 근거노선은 브라우저 영구 캐시에 저장해 다음 접속부터 즉시 복원합니다. 제일환경·현대환경 대행구간은 새 수거노선표의 주소·차량·요일을 우선하며, 북이면 광암리→금암리 일정 상속은 기존 지정 규칙을 유지합니다. 음식물은 기존 분류배출 시행/제외지역 기준을 유지합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 화면에는 표시하지 않고 내수읍·오창읍·북이면의 수거권역 분할 계산에만 내부적으로 사용합니다.</div>
+  </aside>
+
+  <section class="map-wrap">
+    <div id="map" class="map"></div>
+    <div class="layer-control">
+      <button class="layer-btn active" data-layer="general">생활</button>
+      <button class="layer-btn" data-layer="recycle">재활용</button>
+      <button class="layer-btn" data-layer="food">음식물</button>
+    </div>
+    <div id="vehicleFilter" class="vehicle-filter"></div>
+    <div id="dayFilter" class="day-filter">
+      <button class="active" data-day="전체">전체요일</button>
+      <button data-day="월">월</button>
+      <button data-day="화">화</button>
+      <button data-day="수">수</button>
+      <button data-day="목">목</button>
+      <button data-day="금">금</button>
+    </div>
+    <div id="structureControl" class="structure-control">
+      <span class="structure-label">레이어</span>
+      <button class="active" data-structure="zone">① 수거권역</button>
+      <button data-structure="route">② 동지역 근거노선</button>
+    </div>
+    <div class="map-tools"><button id="adminToggle" class="admin-toggle">관리자 편집</button><button id="zoomIn">＋</button><button id="zoomOut">－</button></div>
+    <div id="adminPanel" class="admin-panel">
+      <h4>수거권역 관리자 편집</h4>
+      <div class="admin-help">자동 추정권역이 실제와 다를 때 지도에서 직접 권역을 그립니다. 직접 그린 권역은 주소 판정에서 자동권역보다 우선합니다.</div>
+      <div class="admin-row"><label>종류</label><select id="adminType"><option value="general">생활쓰레기</option><option value="recycle">재활용</option></select><label>차량</label><select id="adminVehicle"></select></div>
+      <div class="admin-row"><label>요일</la
+
+### appCSS matches=2
+x rgba(0,0,0,.26);
+}
+.hero p{
+  margin:0 0 30px;color:rgba(255,255,255,.86);font-size:16px;line-height:1.7;
+  text-shadow:0 2px 12px rgba(0,0,0,.16);
+}
+.search{
+  display:flex;gap:10px;max-width:650px;margin:0;
+  padding:7px;border-radius:22px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 12px 34px rgba(0,0,0,.18);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.search input{
+  flex:1;height:62px;border:0;border-radius:16px;padding:0 19px;font-size:17px;
+  outline:0;background:rgba(255,255,255,.96);color:#111827;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.78);
+}
+.search input::placeholder{color:#7b8491}
+.search input:focus{box-shadow:0 0 0 4px rgba(255,255,255,.24),inset 0 0 0 1px rgba(23,116,90,.34)}
+.search button{
+  height:62px;border:0;border-radius:16px;background:#17745a;color:#fff;
+  padding:0 26px;font-weight:900;cursor:pointer;white-space:nowrap;
+  box-shadow:0 8px 22px rgba(6,68,50,.30);transition:.18s ease;
+}
+.search button:hover{transform:translateY(-1px);background:#12634d}
+.landing-status{min-height:24px;margin-top:14px;color:rgba(255,255,255,.82);font-size:13px}
+.landing-status.error{color:#ffd3cf}
+#app{height:100%;display:grid;grid-template-columns:minmax(390px,42%) 1fr}.side{background:#fff;border-right:1px solid var(--line);padding:27px;overflow:auto;display:flex;flex-direction:column;gap:20px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-weight:950;letter-spacing:.06em}.new-search{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800;cursor:pointer}.eyebrow{font-size:12px;font-weight:900;color:#52606d;margin-bottom:7px}.address{font-size:23px;line-height:1.36;font-weight:950;letter-spacing:-.045em}.sub{font-size:13px;color:var(--muted);margin-top:7px}.district-pill{display:inline-flex;margin-top:10px;padding:6px 9px;border-radius:999px;background:#f3f4f6;font-size:11px;font-weight:850;color:#374151}
+.cards{display:grid;gap:11px}.card{border:1px solid var(--line);border-radius:18px;padding:17px;background:#fff;transition:.18s}.card.active{box-shadow:0 0 0 2px #111827 inset}.card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.card h3{margin:0;font-size:18px}.card p{margin:4px 0 0;color:var(--muted);font-size:12px}.badge{font-size:11px;font-weight:900;border-radius:999px;padding:6px 9px;white-space:nowrap}.general .badge{background:#eaf6f1;color:var(--general)}.food .badge{background:#fff0e9;color:#b44e2e}.recycle .badge{background:#edf3ff;color:var(--recycle)}
+.days{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}.day{min-width:35px;height:35px;border-radius:9px;display:grid;place-items:center;padding:0 8px;font-size:12px;font-weight:900;background:#f3f4f6;color:#9ca3af}.general .day.on{background:#eaf6f1;color:var(--general)}.food .day.on{background:#fff0e9;color:#b44e2e}.recycle .day.on{background:#edf3ff;color:var(--recycle)}
+.detail{margin-top:12px;font-size:12px;line-height:1.65;color:#4b5563}.detail strong{color:#111827}.pending{margin-top:12px;background:#fff8df;color:#7a5500;border-radius:10px;padding:10px 11px;font-size:12px;line-height:1.55}.verified{margin-top:12px;background:#f7faf9;border-radius:10px;padding:10px 11px;font-size:12px;line-height:1.55;color:#3f514a}
+.source-note{font-size:11px;color:#9ca3af;line-height:1.55;border-top:1px solid var(--line);padding-top:15px}
+.map-wrap{position:relative;min-width:0}.map{position:absolute;inset:0}.map-tools{position:absolute;top:15px;right:15px;z-index:5;display:flex;gap:5px;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 5px 16px rgba(0,0,0,.07)}.map-tools button{border:0;background:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:850;cursor:pointer}
+.layer-control{position:absolute;left:15px;top:15px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:15px;padding:8px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:flex;gap:5px}.layer-btn{border:0;background:#f3f4f6;color:#6b7280;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:900;cursor:pointer}.layer-btn.active{background:#111827;color:#fff}
+.zone-tooltip{pointer-events:none;background:rgba(17,24,39,.94);color:#fff;border-radius:11px;padding:9px 11px;box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:12px;line-height:1.45;white-space:nowrap;transform:translate(0,-10px)}.zone-tooltip strong{display:block;font-size:13px;margin-bottom:2px}.zone-tooltip .basis{color:#d1d5db;font-size:10px;margin-top:2px}
+.map-badge{position:absolute;left:15px;bottom:15px;z-index:5;background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-size:12px;box-shadow:0 5px 16px rgba(0,0,0,.07);max-width:300px}.map-badge strong{display:block;margin-bottom:4px}.map-badge span{color:var(--muted);line-height:1.5}.map-badge .warn{color:var(--warn)}
+.food-legend,.route-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:7px}.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#4b5563}.legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}.legend-mwf{background:#ef8a62}.legend-tts{background:#67a9cf}.legend-excluded{background:#991b1b;box-shadow:0 0 0 1px #7f1d1d inset}.legend-pending{background:#b8b8b8}.legend-general-direct{background:#17745a}.legend-recycle-direct{background:#315ea8}.excluded-note{margin-top:12px;background:#fff1f2;color:#7f1d1d;border:1px solid #fecdd3;border-radius:10px;padding:11px 12px;font-size:12px;line-height:1.65}.food .badge.excluded{background:#7f1d1d;color:#fff}
+
+.day-filter{position:absolute;left:15px;top:116px;z-index:6;background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:13px;padding:5px;box-shadow:0 5px 16px rgba(0,0,0,.07);display:none;gap:4px;align-items:center}
+.day-filter.show{display:flex}
+.day-filter button{border:0;border-radius:8px;background:#f3f4f6;color:#6b7280;padding:7px 9px;font-size:11px;font-weight:900;cursor:pointer}
+.day-filter button.active{color:#fff}
+.day-filter button[data-day="전체"].active{background:#1
+7px;font-size:10px}.admin-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.admin-actions button,.admin-panel .wide-btn{border:0;border-radius:9px;padding:8px 9px;font-size:10px;font-weight:900;cursor:pointer;background:#f3f4f6;color:#374151}.admin-actions button.primary{background:#17745a;color:#fff}.admin-actions button.danger{background:#fff1f2;color:#9f1239}.admin-panel .wide-btn{width:100%;margin-top:6px}.admin-status{margin-top:9px;padding:8px;border-radius:9px;background:#f8fafc;font-size:10px;line-height:1.45;color:#475569}.admin-status.drawing{background:#ecfdf5;color:#166534}.admin-zone-note{font-size:9px;color:#9ca3af;line-height:1.4;margin-top:8px}
+
+.route-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.day-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:#4b5563}
+.day-swatch{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+@media(max-width:900px){
+  #landing{justify-content:center;padding:22px;background-size:auto 118%;background-position:28% 10%}
+  #landing::before{background:linear-gradient(0deg,rgba(7,18,31,.76),rgba(7,18,31,.40))}
+  .hero{width:min(690px,100%);padding:30px}
+  #app{display:flex;flex-direction:column;height:auto;min-height:100%}.side{border-right:0;border-bottom:1px solid var(--line);padding:20px}.map-wrap{height:52vh;min-height:420px}.address{font-size:21px}
+}
+@media(max-width:560px){
+  #landing{align-items:flex-end;padding:18px;background-size:auto 112%;background-position:32% 8%}
+  .hero{padding:24px 20px;border-radius:24px;background:linear-gradient(135deg,rgba(10,24,40,.48),rgba(10,24,40,.28))}
+  .search{display:grid;padding:6px}
+  .search button{width:100%}
+  .brand{font-size:11px;margin-bottom:18px}
+  .hero h1{font-size:42px}
+  .hero p{font-size:14px;margin-bottom:22px}
+  .layer-control{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}.vehicle-filter{max-width:calc(100% - 30px)}.day-filter{max-width:calc(100% - 30px);overflow-x:auto}.structure-control{max-width:calc(100% - 30px);overflow-x:auto;top:164px}.admin-panel{top:58px}
+}
+</style>
+</head>
+<body>
+<section id="landing">
+  <div class="hero">
+    <div class="brand">청원구 환경위생과</div>
+    <h1>민원인네 집 쓰레기<br>언제 수거되지?</h1>
+    <p>청원구 주소를 입력하면 생활·음식물·재활용 수거정보를 확인할 수 있습니다.</p>
+    <form class="search" id="landingForm">
+      <input id="landingInput" autocomplete="street-address" placeholder="예: 청주시 청원구 상당로 314" />
+      <button type="submit">주소 확인</button>
+    </form>
+    <div id="landingStatus" class="landing-status"></div>
+  </div>
+</section>
+
+<main id="app">
+  <aside class="side">
+    <div class="topline"><div class="logo">청원구 환경위생과</div><button id="backBtn" class="new-search" type="button">다른 주소 검색</button></div>
+    <div>
+      <div class="eyebrow">선택한 주소</div>
+      <div id="selectedAddress" class="address">주소를 검색해주세요.</div>
+      <div id="selectedDistrict" class="district-pill">청원구 행정동 확인 중</div>
+      <div id="selectedCoords" class="sub"></div>
+    </div>
+
+    <div class="cards">
+      <article id="card-general" class="card general" data-layer="general">
+        <div class="card-head"><div><h3>🗑️ 생활쓰레기</h3><p>종량제 봉투 등</p></div><span id="generalBadge" class="badge">확인 중</span></div>
+        <div id="generalDays" class="days"></div>
+        <div id="generalDetail" class="detail"></div>
+      </article>
+
+      <article id="card-food" class="card food" data-layer="food">
+        <div class="card-head"><div><h3>🍚 음식물쓰레기</h3><p>분류배출 구역 기준</p></div><span id="foodBadge" class="badge">확인 중</span></div>
+        <div id="foodDays" class="days"></div>
+        <div id="foodDetail" class="detail"></div>
+      </article>
+
+      <article id="card-recycle" class="card recycle" data-layer="recycle">
+        <div class="card-head"><div><h3>♻️ 재활용쓰레기</h3><p>종이·플라스틱·캔·병 등</p></div><span id="recycleBadge" class="badge">확인 중</span></div>
+        <div id="recycleDays" class="days"></div>
+        <div id="recycleDetail" class="detail"></div>
+      </article>
+    </div>
+    <div class="source-note">자료 기준: 사용자가 제공한 <strong>2026년 6월 청원구 직영 생활·재활용 코스표</strong>, <strong>제일환경 6구역 수거노선표</strong>, <strong>현대환경 2026.08.11 수거노선표</strong> 및 2025~2026 대행구역별 수거지역 자료와 청원구 읍·면·동/법정리 경계. 현대환경 자료는 청원구에 해당하는 <strong>내덕1동만</strong> 반영하고 흥덕구 자료는 제외했습니다. 생활·재활용은 <strong>① 수거권역 → ② 근거 수거노선</strong>의 2단계로 확인합니다. <strong>수거권역은 원본 코스의 차량·요일별 도로선과 시설·마을의 숨은 근거점을 함께 지리적으로 배치한 뒤, 같은 리 또는 행정동 안에서 가장 가까운 근거를 기준으로 자동 분할한 추정 권역</strong>입니다. 실제 GPS 주행경로나 공식 확정 GIS 권역이 아니므로 경계 부근은 담당자 확인이 필요합니다. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤 포함 여부를 그대로 사용하며, 관리자 편집으로 직접 그린 권역은 자동 추정권역보다 우선합니다. 자동권역과 근거노선은 브라우저 영구 캐시에 저장해 다음 접속부터 즉시 복원합니다. 제일환경·현대환경 대행구간은 새 수거노선표의 주소·차량·요일을 우선하며, 북이면 광암리→금암리 일정 상속은 기존 지정 규칙을 유지합니다. 음식물은 기존 분류배출 시행/제외지역 기준을 유지합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 화면에는 표시하지 않고 내수읍·오창읍·북이면의 수거권역 분할 계산에만 내부적으로 사용합니다.</div>
+  </aside>
+
+  <section class="map-wrap">
+    <div id="map" class="map"></div>
+    <div class="layer-control">
+      <button class="layer-btn active" data-layer="general">생활</button>
+      <button class="layer-btn" data-layer="recycle">재활용</button>
+      <button class="layer-btn" data-layer="food">음식물</button>
+    </div>
+    <div id="vehicleFilter" class="vehicle-filter"></div>
+    <div id="dayFilter" class="day-filter">
+      <button class="active" data-day="전체">전체요일</button>
+      <button data-day="월">월</button>
+      <button data-day="화">화</button>
+      <button data-day="수">수</button>
+      <button data-day="목">목</button>
+      <button data-day="금">금</button>
+    </div>
+    <div id="structureControl" class="structure-control">
+      <span class="structure-label">레이어</span>
+      <button class="active" data-structure="zone">① 수거권역</button>
+      <button data-structure="route">② 동지역 근거노선</button>
+    </div>
+    <div class="map-tools"><button id="adminToggle" class="admin-toggle">관리자 편집</button><button id="zoomIn">＋</button><button id="zoomOut">－</button></div>
+    <div id="adminPanel" class="admin-panel">
+      <h4>수거권역 관리자 편집</h4>
+      <div class="admin-help">자동 추정권역이 실제와 다를 때 지도에서 직접 권역을 그립니다. 직접 그린 권역은 주소 판정에서 자동권역보다 우선합니다.</div>
+      <div class="admi
+
+### literal landing.classList count=0
+
+### literal landing.style count=0
+
+### literal document.getElementById('landing') count=2
+산리'&&String(riCode)==='4311425322') return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDays('foodDays',
+') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDays('foodDays',food.days);
+    const extra=exclusion.excluded===null?'<br><strong>안내:</strong> 리 단위 제외지역 판정은 상세 주소로 다시 확인해 주세요.':'';
+    d
+
+### literal showResult() count=2
+오창읍'&&ri==='화산리'&&String(riCode)==='4311425322') return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDay
+currentLegalEmd=canonicalDistrict(b.region_3depth_name||currentDistrict);
+    currentLegalRi=normalizeRi(b.region_4depth_name||'');
+    renderSchedule(currentDistrict,currentLegalEmd,currentLegalRi);
+    const nearbyCtx={address:currentAddress,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi,lat:currentLat,lng:currentLng};
+    done&&done();
+    refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
+  });
+}
+function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
+function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
+
+
+
+let nearbyScheduleRequestSeq=0;
+let zoneBuildPromise=null;
+
+// 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
+const serviceLayerState={zone:true,route:false};
+const serviceZoneOverlays={general:[],recycle:[]};
+const serviceZoneBuildPromises=new Map();
+const serviceZoneBuilt={general:false,recycle:false};
+const serviceZoneRegions=[];
+let serviceRegionLoadComplete=false;
+const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
+const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
+const SERVICE_ZONE_CACHE_VERSION=`zone-v67-rural30-noapart|${DONG_ROUTE_CACHE_VERSION}`;
+const serviceZoneCacheHydrated={general:false,recycle:false};
+let manualServiceZones=[];
+let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
+
+// 빌드 시 확정된 노선/수거권역 좌표를 index.html 안에 직접 내장합니다.
+// 새 PC/새 브라우저에서도 IndexedDB 생성이나 길찾기 API 계산을 기다리지 않고 즉시 복원됩니다.
+function bundledPrecomputedData(){
+  try{
+    const el=document.getElementById('bundledPrecomputed');
+    if(!el)return null;
+
+### literal showResult( count=2
+오창읍'&&ri==='화산리'&&String(riCode)==='4311425322') return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDay
+currentLegalEmd=canonicalDistrict(b.region_3depth_name||currentDistrict);
+    currentLegalRi=normalizeRi(b.region_4depth_name||'');
+    renderSchedule(currentDistrict,currentLegalEmd,currentLegalRi);
+    const nearbyCtx={address:currentAddress,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi,lat:currentLat,lng:currentLng};
+    done&&done();
+    refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
+  });
+}
+function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
+function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
+
+
+
+let nearbyScheduleRequestSeq=0;
+let zoneBuildPromise=null;
+
+// 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
+const serviceLayerState={zone:true,route:false};
+const serviceZoneOverlays={general:[],recycle:[]};
+const serviceZoneBuildPromises=new Map();
+const serviceZoneBuilt={general:false,recycle:false};
+const serviceZoneRegions=[];
+let serviceRegionLoadComplete=false;
+const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
+const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
+const SERVICE_ZONE_CACHE_VERSION=`zone-v67-rural30-noapart|${DONG_ROUTE_CACHE_VERSION}`;
+const serviceZoneCacheHydrated={general:false,recycle:false};
+let manualServiceZones=[];
+let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
+
+// 빌드 시 확정된 노선/수거권역 좌표를 index.html 안에 직접 내장합니다.
+// 새 PC/새 브라우저에서도 IndexedDB 생성이나 길찾기 API 계산을 기다리지 않고 즉시 복원됩니다.
+function bundledPrecomputedData(){
+  try{
+    const el=document.getElementById('bundledPrecomputed');
+    if(!el)return null;
+
+### literal classList.add('hidden') count=1
+ return {excluded:true,label:'오창읍 화산리(華山)',reason:'음식물류 폐기물 분류배출 제외지역'};
+  if(emd==='북이면') return {excluded:true,label:'북이면 전 지역',reason:'음식물류 폐기물 분류배출 제외지역'};
+  const included=FOOD_INCLUDED_RI[emd];
+  if(included){
+    if(!ri) return {excluded:null,label:`${emd} 법정리 확인 필요`,reason:'리 단위 제외지역 판정을 위해 상세 주소가 필요합니다.'};
+    return included.has(ri)
+      ? {excluded:false,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 시행지역'}
+      : {excluded:true,label:`${emd} ${ri}`,reason:'음식물류 폐기물 분류배출 제외지역'};
+  }
+  return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
+}
+function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>map&&map.relayout(),350)}
+function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
+function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
+
+function renderDays(containerId,days){
+  const box=document.getElementById(containerId);box.innerHTML='';
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='day'+(days.includes(d)?' on':'');el.textContent=d;box.appendChild(el)});
+}
+function findRegionEntry(type,district){return WASTE_DATA[type].find(x=>x.regions.includes(district))||null}
+function findRegionEntries(type,district){return WASTE_DATA[type].filter(x=>x.regions.includes(district))}
+function setPending(type,message){
+  document.getElementById(type+'Badge').textContent='추가 확인 필요';
+  renderDays(type+'Days',[]);
+  document.getElementById(type+'Detail').innerHTML=`<div class="pending">${message}</div>`;
+}
+function renderSchedule(district,legalEmd='',legalRi=''){
+  const districtPill=document.getElementById('selectedDistrict');
+  const legalLabel=[legalEmd,legalRi].filter(Boolean).join(' ');
+  districtPill.textContent=`청원구 · ${district||'행정동 확인 불가'}${legalLabel && legalLabel!==district ? ' · '+legalLabel : ''}`;
+
+  const foodBadge=document.getElementById('foodBadge');
+  foodBadge.classList.remove('excluded');
+  const exclusion=getFoodExclusion(legalEmd||district,legalRi);
+  currentFoodExclusion=exclusion;
+  const food=findRegionEntry('food',district);
+
+  if(exclusion.excluded===true){
+    foodBadge.textContent='분류배출 제외';
+    foodBadge.classList.add('excluded');
+    renderDays('foodDays',[]);
+    document.getElementById('foodDetail').innerHTML=`<div class="excluded-note"><strong>${exclusion.label}</strong><br>이 위치는 음식물류 폐기물 <strong>분류배출 제외지역</strong>으로 분류됩니다.</div>`;
+  }else if(food&&food.status==='verified'){
+    foodBadge.textContent=food.days.join('·');renderDays('foodDays',food.days);
+    const extra=exclusi
+
+### literal classList.add("hidden") count=0
+
+### literal classList.add('off') count=0
+
+### literal display='none' count=0
+
+### literal display = 'none' count=0
