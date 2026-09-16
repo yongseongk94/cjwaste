@@ -1,0 +1,74 @@
+name: Freeze precomputed map data now
+
+on:
+  push:
+    paths:
+      - 'tools/freeze_precomputed_now.ready'
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Capture exact geometry from deployed v63
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat >/tmp/freeze.js <<'NODE'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage();
+            page.on('console',msg=>console.log('PAGE',msg.text()));
+            page.on('pageerror',err=>console.error('PAGEERROR',err.message));
+            await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
+            await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:120000});
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:900000,polling:1000});
+            const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
+            if(!data?.routes?.length) throw new Error('No routes exported');
+            if(!data?.zones?.general?.length || !data?.zones?.recycle?.length) throw new Error('No service zones exported');
+            fs.writeFileSync('/tmp/precomputed.json',JSON.stringify(data));
+            console.log(`EXPORTED routes=${data.routes.length} generalZones=${data.zones.general.length} recycleZones=${data.zones.recycle.length}`);
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node /tmp/freeze.js
+      - name: Embed data and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          text=p.read_text(encoding='utf-8')
+          data=Path('/tmp/precomputed.json').read_text(encoding='utf-8')
+          pat=r'(<script id="bundledPrecomputed" type="application/json">).*?(</script>)'
+          text,n=re.subn(pat,lambda m:m.group(1)+data+m.group(2),text,count=1,flags=re.S)
+          if n!=1: raise SystemExit('precomputed slot missing')
+          p.write_text(text,encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit embedded data
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/freeze_precomputed_now.ready tools/freeze_precomputed.ready
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/
+          git commit -m 'Embed precomputed route and service-zone geometry'
+          git push
