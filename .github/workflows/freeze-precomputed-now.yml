@@ -24,7 +24,7 @@ jobs:
           CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
           test -n "$CHROME_BIN"
           export CHROME_BIN
-          cat >/tmp/freeze.js <<'NODE'
+          cat >freeze.js <<'NODE'
           const fs=require('fs');
           const puppeteer=require('puppeteer-core');
           (async()=>{
@@ -43,7 +43,7 @@ jobs:
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
-          node /tmp/freeze.js
+          node freeze.js
       - name: Embed data and validate
         shell: bash
         run: |
@@ -66,7 +66,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f tools/freeze_precomputed_now.ready tools/freeze_precomputed.ready
+          rm -f freeze.js package.json package-lock.json tools/freeze_precomputed_now.ready tools/freeze_precomputed.ready
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html tools/
