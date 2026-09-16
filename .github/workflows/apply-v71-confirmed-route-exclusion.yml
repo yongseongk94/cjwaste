@@ -1,0 +1,61 @@
+name: Apply v71 confirmed-route exclusion
+
+on:
+  push:
+    paths:
+      - 'tools/v71-confirmed-route-exclusion.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install geometry dependency
+        run: python3 -m pip install --quiet shapely
+      - name: Apply v71 runtime logic
+        run: python3 tools/apply_v71_confirmed_route_exclusion.py
+      - name: Remove confirmed route corridors from bundled inferred zones
+        run: python3 tools/v71_subtract_confirmed_routes.py
+      - name: Validate v71 bundle and inline JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          s=Path('index.html').read_text(encoding='utf-8')
+          if 'zone-v71-confirmed-route-excluded' not in s: raise SystemExit('v71 cache marker missing')
+          if '① 추정권역' not in s: raise SystemExit('inference-only UI marker missing')
+          if 'const near=await nearestRouteMatchesForAddress' not in s: raise SystemExit('direct route priority missing')
+          m=re.search(r'<script id="bundledPrecomputed" type="application/json">(.*?)</script>',s,re.S)
+          if not m: raise SystemExit('bundled data missing')
+          d=json.loads(m.group(1))
+          expected='zone-v71-confirmed-route-excluded|'+d.get('version','')
+          if d.get('zoneVersion')!=expected: raise SystemExit((d.get('zoneVersion'),expected))
+          dongs={'우암동','내덕1동','내덕2동','오근장동','율량사천동'}
+          for typ in ('general','recycle'):
+              zs=d['zones'][typ]
+              dz=[z for z in zs if z.get('district') in dongs]
+              if not dz: raise SystemExit(f'{typ}: no dong inferred zones')
+              if any(not z.get('estimated') for z in dz): raise SystemExit(f'{typ}: non-estimated dong zone')
+              if any(not z.get('confirmedRouteExcluded') for z in dz): raise SystemExit(f'{typ}: exclusion flag missing')
+              print(typ,'all',len(zs),'dong_estimated',len(dz))
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',s,re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit v71
+        shell: bash
+        run: |
+          rm -f tools/v71-confirmed-route-exclusion.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v71-confirmed-route-exclusion.trigger
+          git commit -m 'Exclude confirmed routes from inferred service zones'
+          git push
