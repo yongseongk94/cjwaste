@@ -1,0 +1,551 @@
+=== live proxy simple POST ===
+HTTP/2 200 
+date: Wed, 16 Sep 2026 15:11:28 GMT
+content-type: application/json; charset=utf-8
+content-length: 1143
+access-control-allow-origin: *
+access-control-allow-headers: Content-Type
+access-control-allow-methods: POST, OPTIONS
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=fct3tXbiusKD6Cb2%2B8erjEyL6mBOdr5xxm6cp8b2HZcBs%2F4qARZFNuO4J0UjHc7ghVV7h7pGjse301NKf26D%2BjS3ek7pfonOg8QH7nKDdDPs2WnatvQSxToy75XT%2F%2Ff3DJMxkpWlgHh%2FTnLbOnRnPZuvhzG9"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a3c0cdc34bd655d1-SEA
+alt-svc: h3=":443"; ma=86400
+
+{"path":[[127.4862640472992,36.65150700599474],[127.48626482548485,36.65138985228328],[127.48627798503387,36.65109251031431],[127.4862793019052,36.65089425017154],[127.4863245173074,36.650822348488596],[127.48639144258998,36.65084967330645],[127.48642493516932,36.650858829788824],[127.48658145332756,36.650868516556734],[127.48660388143314,36.650859601135004],[127.48667110590733,36.650841866669644],[127.48666046008432,36.650760712045184],[127.48668312739,36.65071574930555],[127.48677325815353,36.650617004732474],[127.48715208367555,36.65083492623228],[127.48776488366931,36.651189034095445],[127.488210760514,36.65141625261291],[127.48847816867871,36.65157060658175],[127.48855622003913,36.65160699004291],[127.4886678242493,36.65164351748153],[127.48877960726952,36.65165300933467],[127.48889139031843,36.65166250108311],[127.48886777108318,36.651851653477635],[127.48886747329296,36.65189671261253],[127.48880797788996,36.652437182239716],[127.48876038093645,36.65286955787997],[127.48866435114458,36.65386047452919],[127.48863870457073,36.654356028784846],[127.48981237961922,36.65446920631857],[127.49018230546618,36.65434462101406]]}
+=== live proxy lat/lng POST ===
+HTTP/2 400 
+date: Wed, 16 Sep 2026 15:11:28 GMT
+content-type: application/json; charset=utf-8
+content-length: 53
+access-control-allow-origin: *
+access-control-allow-headers: Content-Type
+access-control-allow-methods: POST, OPTIONS
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=rXFn33LAeqNdtlxc4rwbuGMSJ%2BysNnoiPNka8wFAwFhXGpEv4PFNuLjS%2B2w1c1KXbPNaWApveUoPu1UH5fooMR8uW9PXcdYOXQzQvc8IzBXRBMdokPH8CfHTWf2tCbkEv42pOqWVcsmlfQ7yShYLJlwHqZOa"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+server: cloudflare
+cf-ray: a3c0cdca481d4715-SEA
+alt-svc: h3=":443"; ma=86400
+
+{"error":"최소 2개의 좌표가 필요합니다."}
+=== relevant frontend lines ===
+--- around 218 ---
+202:       <div class="admin-row"><label>메모</label><input id="adminNote" type="text" placeholder="예: 마산리 북쪽 구역" style="flex:1"></div>
+203:       <div class="admin-actions"><button id="adminDraw" class="primary">새 권역 그리기</button><button id="adminFinish">그리기 완료</button><button id="adminCancel">취소</button><button id="adminRebuild">자동권역 재표시</button></div>
+204:       <div id="adminStatus" class="admin-status">저장된 수동 권역을 불러오는 중입니다.</div>
+205:       <button id="adminExport" class="wide-btn">수동권역 JSON 내보내기</button>
+206:       <button id="adminImport" class="wide-btn">수동권역 JSON 가져오기</button><input id="adminImportFile" type="file" accept="application/json,.json" hidden>
+207:       <button id="adminClear" class="wide-btn" style="color:#9f1239">수동권역 전체 삭제</button>
+208:       <div class="admin-zone-note">현재 관리자 편집 저장은 이 브라우저의 localStorage에 보관됩니다. 전역 홈페이지 반영용으로는 JSON을 내보내 보관할 수 있습니다.</div>
+209:     </div>
+210:     <div id="mapBadge" class="map-badge"><strong>생활쓰레기 수거노선 레이어</strong><span>읍·면·동 경계와 수거노선을 불러오는 중입니다.</span></div>
+211:   </section>
+212: </main>
+213: 
+214: <script id="bundledPrecomputed" type="application/json">{"version":"v67-rural30-noapart","zoneVersion":"zone-v71-confirmed-route-excluded|v67-rural30-noapart","generatedAt":"2026-09-16T15:06:32.429164+00:00","routes":[{"type":"general","vehicle":"3346","day":"수","data":{"segments":[[{"lat":36.6720904735969,"lng":127.496957435397},{"lat":36.6720918303596,"lng":127.496956213603},{"lat":36.67253598757522,"lng":127.49723094404385},{"lat":36.67298014479084,"lng":127.49750567448471},{"lat":36.67342430200647,"lng":127.49778040492556},{"lat":36.67306206684776,"lng":127.49777658002607},{"lat":36.672699831689066,"lng":127.49777275512659},{"lat":36.67233759653036,"lng":127.4977689302271}],[{"lat":36.670688901431,"lng":127.49743551226},{"lat":36.6706500976456,"lng":127.497480640764},{"lat":36.6710058071873,"lng":127.497536625034},{"lat":36.67102662591142,"lng":127.49751438636177},{"lat":36.67096938591538,"lng":127.49697931062862},{"lat":36.6709220152737,"lng":127.497102055709},{"lat":36.67124936583616,"lng":127.49682785766561},{"lat":36.6712113750537,"lng":127.496862291205},{"lat":36.671128679612266,"lng":127.4970284363983},{"lat":36.671258791476404,"lng":127.49759194841135},{"lat":36.67126973 ...[CUT]
+215: <script>
+216: const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
+217: // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
+218: const ROUTE_PROXY_URL='https://cjwaste-route.yseong22.workers.dev/route'; // Kakao Mobility route proxy Worker
+219: const DEFAULT={lat:36.6515,lng:127.4866};
+220: const DAYS=['월','화','수','목','금','토','일'];
+221: 
+222: // v30: 직영·위탁 수거노선을 같은 레이어 체계에서 수거주체별로 표시하고 읍·면·동 외곽선만 강조
+223: // 2025~2026 청주시 공식 공개자료를 토대로 정리한 청원구 1차 데이터
+224: const WASTE_DATA={
+225:   food:[
+226:     {regions:['내수읍','오근장동'],days:['월','수','금'],pickup:'익일 03시부터',operator:'승일',phone:'043-294-6065',status:'verified'},
+227:     {regions:['오창읍'],days:['화','목','일'],pickup:'익일 03시부터',operator:'승일',phone:'043-294-6065',status:'verified'},
+228:     {regions:['율량사천동'],days:['월','수','금'],pickup:'익일 03시부터',operator:'승일',phone:'043-292-6062',status:'verified'},
+229:     {regions:['우암동','내덕1동','내덕2동'],days:['화','목','일'],pickup:'익일 03시부터',operator:'승일',phone:'043-292-6062',status:'verified'},
+230:     {regions:['북이면'],days:[],pickup:'',status:'excluded'}
+231:   ],
+232:   general:[
+233:     {regions:['내덕1동'],housing:'single',operator:'현대환경',phone:'',days:[],status:'route_based'},
+234:     {regions:['우암동'],housing:'single',operator:'제일환경',phone:'043-286-0997',days:[],status:'route_based'}
+235:   ],
+236:   recycle:[
+237:     {regions:['내덕1동'],housing:'single',operator:'현대환경',phone:'',days:[],status:'route_based'},
+238:     {regions:['우암동'],housing:'single',operator:'제일환경',phone:'043-286-0997',days:[],status:'route_based'}
+239:   ]
+240: };
+241: 
+242: 
+243: // 2026년 8월 대행업체 원본 수거노선표에서 청원구 행만 추출한 데이터입니다.
+244: // 현대환경은 사용자 지시대로 내덕1동만 포함하며 흥덕구 행은 전부 제외했습니다.
+245: const CONTRACT_SOURCE_DATA={"routes":{"general":[{"vehicle":"제일환경|81주3418|내덕2동|공동","provider":"제일환경","plate":"81주3418","districts":["내덕2동"],"housing":"apartment","zoneEligible":false,"days":{"화":"덕벌로 15번길 14, 안덕벌로 69번길 4, 안덕벌로 69번길 50, 충청대로 42번길 35, 내덕동 417-6, 충청대로 60, 1순환로 197번길 31, 1순환로 197번길 15-1, 충청대로 71번길 10","목":"덕벌로 15번길 14, 안덕벌로 69번길 4, 안덕벌로 69번길 50, 충청대로 42번길 35, 내덕동 417-6, 충청대로 60, 1순환로 197번길 31, 1순환로 197번길 15-1, 충청대로 71번길 10","토":"덕벌로 15번길 14, 안덕벌로 69번길 4, 안덕벌로 69번길 50, 충청대로 42번길 35, 내덕동 417-6, 충청대로 60, 1순환로 197번길 31, 1순환로 197번길 15-1, 충청대로 71번길 10"}},{"vehicle":"제일환경|94고3991|내덕2동|공동","provider":"제일환경","plate":"94고3991","districts":["내덕2동"],"housing":"apartment","zoneEligible":false,"days":{"월":"충청대로 84번길 30, 1순환로 123","수":"충청대로 84번길 30, 1순환로 123","목":"충청대로 84번길 30, 1순환로 123","금":"충청대로 84번길 30, 1순환로 123","토":"충청대로 84번길 30, 1순환로 123"}},{"vehicle":"제일환경|95오0147|내덕2동|단독","provider":"제일환경","plate":"95오0147","districts":["내덕2동"],"housing":"single","zoneEligible":false,"days":{"화":"공항로 84번길 해가든","목":"공항로 84번길 해가든","토":"공항로 84번길 해가든"}},{"vehicle":"제일환경|88저7556|내수읍|공동","provider":"제일환경","plate":"88저7556","districts":["내수읍"],"housing":"apartment","zoneEligible":false,"days":{"월":" ...[CUT]
+246: const CONTRACT_ROUTES={
+247:   general:(CONTRACT_SOURCE_DATA.routes?.general||[]).filter(r=>r.housing!=='apartment'),
+248:   recycle:(CONTRACT_SOURCE_DATA.routes?.recycle||[]).filter(r=>r.housing!=='apartment')
+249: };
+250: const CONTRACT_ROUTE_META=Object.fromEntries(Object.entries(CONTRACT_SOURCE_DATA.meta||{}).filter(([,m])=>m?.housing!=='apartment'));
+251: // v67: 대행업체 공동주택(아파트) 노선과 개별주소 일정은 지도/일정 판정에서 전부 제외합니다.
+252: const CONTRACT_APARTMENTS=[];
+--- around 1457 ---
+1441: function exportCjWastePrecomputed(){
+1442:   const routeFields=['segments','zoneEvidencePoints','termsCount','pointsCount','serviceTermCount','missingTerms','outsideTerms','outOfCheongwonTerms','rangeTerms','requiredRoadTerms','coveredRoadTerms','missingRoadTerms','outsideRoadTerms','addressRangeTerms','secondaryText','secondaryKind','districtLabel','roadMatchedCount','roadRequestedCount'];
+1443:   const routes=[];
+1444:   for(const type of ['general','recycle'])for(const item of (dongRouteOverlays[type]||[])){
+1445:     const data={};
+1446:     for(const k of routeFields){
+1447:       if(k==='districtLabel')data[k]=item.district||item.districtLabel||'';
+1448:       else if(item[k]!==undefined)data[k]=item[k];
+1449:     }
+1450:     data.distance=Number(item.roadResult?.distance)||0;
+1451:     routes.push({type,vehicle:item.vehicle,day:item.day,data});
+1452:   }
+1453:   const zones={general:[],recycle:[]};
+1454:   for(const type of ['general','recycle'])zones[type]=(serviceZoneOverlays[type]||[])
+1455:     .filter(z=>!z.manual&&Array.isArray(z.points)&&z.points.length>=3)
+1456:     .map(z=>({
+1457:       points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),rings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points]).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),hitRings:(Array.isArray(z.hitRings)&&z.hitRings.length?z.hitRings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points])).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
+1458:       vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
+1459:       automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized
+1460:     }));
+1461:   return {version:DONG_ROUTE_CACHE_VERSION,zoneVersion:SERVICE_ZONE_CACHE_VERSION,generatedAt:new Date().toISOString(),routes,zones};
+1462: }
+1463: window.exportCjWastePrecomputed=exportCjWastePrecomputed;
+1464: window.__CJWASTE_PRECOMPUTE_READY=false;
+1465: 
+1466: 
+1467: function serviceZoneCacheKey(type){
+1468:   return `${SERVICE_ZONE_CACHE_VERSION}|${type}`;
+1469: }
+1470: async function getCachedServiceZones(type){
+1471:   try{
+1472:     const db=await openDongRouteCache();
+1473:     if(!db)return null;
+1474:     return await new Promise(resolve=>{
+1475:       const tx=db.transaction(DONG_ROUTE_CACHE_STORE,'readonly');
+1476:       const req=tx.objectStore(DONG_ROUTE_CACHE_STORE).get(serviceZoneCacheKey(type));
+1477:       req.onsuccess=()=>resolve(Array.isArray(req.result?.zones)?req.result.zones:null);
+1478:       req.onerror=()=>resolve(null);
+1479:     });
+1480:   }catch(e){console.warn('수거권역 캐시 읽기 실패',e);return null}
+1481: }
+1482: async function putCachedServiceZones(type){
+1483:   try{
+1484:     const zones=(serviceZoneOverlays[type]||[])
+1485:       .filter(z=>!z.manual&&Array.isArray(z.points)&&z.points.length>=3)
+1486:       .map(z=>({
+1487:         points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),rings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points]).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),hitRings:(Array.isArray(z.hitRings)&&z.hitRings.length?z.hitRings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points])).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),
+1488:         district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
+1489:         vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
+1490:         automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized
+1491:       }));
+--- around 1487 ---
+1471:   try{
+1472:     const db=await openDongRouteCache();
+1473:     if(!db)return null;
+1474:     return await new Promise(resolve=>{
+1475:       const tx=db.transaction(DONG_ROUTE_CACHE_STORE,'readonly');
+1476:       const req=tx.objectStore(DONG_ROUTE_CACHE_STORE).get(serviceZoneCacheKey(type));
+1477:       req.onsuccess=()=>resolve(Array.isArray(req.result?.zones)?req.result.zones:null);
+1478:       req.onerror=()=>resolve(null);
+1479:     });
+1480:   }catch(e){console.warn('수거권역 캐시 읽기 실패',e);return null}
+1481: }
+1482: async function putCachedServiceZones(type){
+1483:   try{
+1484:     const zones=(serviceZoneOverlays[type]||[])
+1485:       .filter(z=>!z.manual&&Array.isArray(z.points)&&z.points.length>=3)
+1486:       .map(z=>({
+1487:         points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),rings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points]).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),hitRings:(Array.isArray(z.hitRings)&&z.hitRings.length?z.hitRings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points])).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),
+1488:         district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
+1489:         vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
+1490:         automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized
+1491:       }));
+1492:     if(!zones.length)return;
+1493:     const db=await openDongRouteCache();if(!db)return;
+1494:     await new Promise(resolve=>{
+1495:       const tx=db.transaction(DONG_ROUTE_CACHE_STORE,'readwrite');
+1496:       tx.objectStore(DONG_ROUTE_CACHE_STORE).put({key:serviceZoneCacheKey(type),savedAt:Date.now(),zones});
+1497:       tx.oncomplete=()=>resolve();tx.onerror=()=>resolve();tx.onabort=()=>resolve();
+1498:     });
+1499:   }catch(e){console.warn('수거권역 캐시 저장 실패',e)}
+1500: }
+1501: async function deleteCachedServiceZones(type){
+1502:   try{
+1503:     const db=await openDongRouteCache();if(!db)return;
+1504:     await new Promise(resolve=>{
+1505:       const tx=db.transaction(DONG_ROUTE_CACHE_STORE,'readwrite');
+1506:       tx.objectStore(DONG_ROUTE_CACHE_STORE).delete(serviceZoneCacheKey(type));
+1507:       tx.oncomplete=()=>resolve();tx.onerror=()=>resolve();tx.onabort=()=>resolve();
+1508:     });
+1509:   }catch(e){console.warn('수거권역 캐시 삭제 실패',e)}
+1510: }
+1511: async function hydrateCachedServiceZones(type){
+1512:   if(serviceZoneCacheHydrated[type]||serviceZoneBuilt[type])return serviceZoneBuilt[type];
+1513:   serviceZoneCacheHydrated[type]=true;
+1514:   const cached=await getCachedServiceZones(type);
+1515:   if(!cached?.length)return false;
+1516:   clearServiceZoneOverlays(type);
+1517:   for(const z of cached)addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:true});
+1518:   rebuildManualZoneOverlays(type);
+1519:   serviceZoneBuilt[type]=true;
+1520:   syncServiceZoneVisibility(type);
+1521:   return true;
+--- around 1885 ---
+1869: function roadPathSegmentsFromPoints(points){
+1870:   const ordered=orderedRoadSamples(points,14);
+1871:   if(ordered.length<2)return [];
+1872:   const segs=[];
+1873:   for(let i=1;i<ordered.length;i++){
+1874:     const a=ordered[i-1],b=ordered[i];
+1875:     if(routePointDistance(a,b)<=2.0)segs.push([a,b]);
+1876:   }
+1877:   return segs;
+1878: }
+1879: async function buildRuralSubzoneProfile(spec,ctx){
+1880:   const key=`${spec.type}|${spec.vehicle}|${spec.day}|${spec.district}|${spec.riName}`;
+1881:   if(ruralSubzoneProfileCache.has(key))return ruralSubzoneProfileCache.get(key);
+1882: 
+1883:   const promise=(async()=>{
+1884:     const feature=riFeatureForContext(ctx);
+1885:     if(!feature)return {spec,segments:[],points:[],terms:[],usable:false};
+1886: 
+1887:     const descriptors=descriptorWindowForRi(spec.raw,spec.riName);
+1888:     const segments=[];
+1889:     const points=[];
+1890:     const terms=[];
+1891: 
+1892:     for(const desc of descriptors){
+1893:       const term=routeSearchAlias(desc.term);
+1894:       if(!term||isGenericRiDescriptor(desc,spec.riName))continue;
+1895: 
+1896:       let found=[];
+1897:       if(isRoadRouteTerm(term)){
+1898:         const roadPts=await searchRoadAnchorPlaces(term);
+1899:         found.push(...roadPts);
+1900:       }
+1901:       const generic=await searchRouteTermPlaces(term);
+1902:       found.push(...generic);
+1903: 
+1904:       found=uniqueRoutePoints(found).filter(p=>{
+1905:         const d=routePointAnyDistrict(p);
+1906:         return d===spec.district && pointInsideRiFeature(p,feature);
+1907:       });
+1908:       if(!found.length)continue;
+1909: 
+1910:       if(isRoadRouteTerm(term)){
+1911:         const roadSegs=roadPathSegmentsFromPoints(found);
+1912:         if(roadSegs.length){
+1913:           roadSegs.forEach(s=>segments.push(s));
+1914:           terms.push(term);
+1915:           continue;
+1916:         }
+1917:       }
+1918: 
+1919:       // 도로가 아니면 정확히 검색된 시설/마을 거점만 점으로 사용.
+--- around 1925 ---
+1909: 
+1910:       if(isRoadRouteTerm(term)){
+1911:         const roadSegs=roadPathSegmentsFromPoints(found);
+1912:         if(roadSegs.length){
+1913:           roadSegs.forEach(s=>segments.push(s));
+1914:           terms.push(term);
+1915:           continue;
+1916:         }
+1917:       }
+1918: 
+1919:       // 도로가 아니면 정확히 검색된 시설/마을 거점만 점으로 사용.
+1920:       // 반경 면적을 만들지 않고 주소점과의 실제 거리만 계산합니다.
+1921:       for(const p of found.slice(0,3))points.push({...p,term});
+1922:       terms.push(term);
+1923:     }
+1924: 
+1925:     return {spec,segments,points:uniqueRoutePoints(points),terms:[...new Set(terms)],usable:segments.length>0||points.length>0};
+1926:   })();
+1927: 
+1928:   ruralSubzoneProfileCache.set(key,promise);
+1929:   return promise;
+1930: }
+1931: function ruralProfileDistanceKm(profile,lat,lng){
+1932:   let best=Infinity;
+1933:   for(const seg of (profile?.segments||[])){
+1934:     for(let i=1;i<seg.length;i++)best=Math.min(best,pointSegmentDistanceKm(lat,lng,seg[i-1],seg[i]));
+1935:   }
+1936:   for(const p of (profile?.points||[])){
+1937:     best=Math.min(best,routePointDistance({lat:+lat,lng:+lng},{lat:+p.lat,lng:+p.lng}));
+1938:   }
+1939:   return best;
+1940: }
+1941: function renderRuralSubzoneNoMatch(type,ctx,candidateCount){
+1942:   selectedVehicle[type]='전체';
+1943:   const badge=document.getElementById(type+'Badge');
+1944:   badge.textContent='세부구획 확인 필요';
+1945:   renderDays(type+'Days',[]);
+1946:   const label=type==='general'?'생활':'재활용';
+1947:   const apartmentNotice=type==='recycle'
+1948:     ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+1949:     : '';
+1950:   document.getElementById(type+'Detail').innerHTML=
+1951:     `<div class="pending"><strong>${escapeHtml([ctx.legalEmd||ctx.district,ctx.legalRi].filter(Boolean).join(' '))}</strong><br>`+
+1952:     `원본 코스표에는 이 법정리가 여러 요일에 나뉘어 기재되어 있어 <strong>리 전체를 ${label} 수거요일로 합산하지 않습니다.</strong><br>`+
+1953:     `검색주소에서 20m 이내에 요일을 특정할 수 있는 세부 도로·시설 코스를 찾지 못했습니다.`+
+1954:     `${candidateCount?` <span style="color:#6b7280">(원본 후보 ${candidateCount}개 요일)</span>`:''}`+
+1955:     `<br><span style="color:#6b7280">※ 정확한 리 내부 구획경계는 현재 코스표에 별도로 적혀 있지 않아 임의로 나누지 않습니다.</span>${apartmentNotice}</div>`;
+1956: }
+1957: function renderRuralSubzoneMatch(type,ctx,profile,distanceKm){
+1958:   const spec=profile.spec;
+1959:   selectedVehicle[type]=spec.vehicle;
+--- around 2479 ---
+2463: }
+2464: async function expandRangeCandidates(candidates,desc){
+2465:   if(desc?.scope!=='range'||!candidates?.length)return candidates||[];
+2466:   const out=[...candidates];
+2467:   const base=candidates[0];
+2468:   const roads=[...new Set(candidates.map(c=>roadNameFromAddress(c.address)).filter(Boolean))].slice(0,2);
+2469:   for(const road of roads){
+2470:     const samples=await searchRoadAnchorPlaces(road);
+2471:     for(const s of samples){
+2472:       if(routePointDistance(base,s)>1.2)continue;
+2473:       if(!out.some(x=>Math.abs(x.lat-s.lat)<1e-6&&Math.abs(x.lng-s.lng)<1e-6))out.push({...s,source:'range-road-sample'});
+2474:     }
+2475:   }
+2476:   return out;
+2477: }
+2478: function routeProxyConfigured(){
+2479:   const u=String(ROUTE_PROXY_URL||'').trim();
+2480:   return (u.startsWith('/') || /^https:\/\//i.test(u)) && !/YOUR|계정|example/i.test(u);
+2481: }
+2482: async function fetchRoadFollowingPath(points){
+2483:   if(!routeProxyConfigured()||!Array.isArray(points)||points.length<2)return null;
+2484:   const payload={
+2485:     points:points.map(p=>({x:+p.lng,y:+p.lat,name:String(p.term||p.name||'').slice(0,80)})),
+2486:     priority:'RECOMMEND'
+2487:   };
+2488:   const controller=new AbortController();
+2489:   const timer=setTimeout(()=>controller.abort(),25000);
+2490:   try{
+2491:     const res=await fetch(ROUTE_PROXY_URL,{
+2492:       method:'POST',
+2493:       headers:{'Content-Type':'application/json'},
+2494:       body:JSON.stringify(payload),
+2495:       signal:controller.signal
+2496:     });
+2497:     if(!res.ok)throw new Error(`route proxy ${res.status}`);
+2498:     const data=await res.json();
+2499:     const path=(data?.path||[]).map(p=>({lng:+p[0],lat:+p[1]})).filter(p=>Number.isFinite(p.lng)&&Number.isFinite(p.lat));
+2500:     if(path.length<2)throw new Error('empty road path');
+2501:     return {path,distance:+data.distance||0,duration:+data.duration||0,chunks:+data.chunks||1};
+2502:   }catch(err){
+2503:     console.warn('도로망 수거노선 생성 실패, 확인지점 직선 연결로 대체합니다.',err);
+2504:     return null;
+2505:   }finally{
+2506:     clearTimeout(timer);
+2507:   }
+2508: }
+2509: 
+2510: 
+2511: function pointInsideRouteDistricts(point,districts){
+2512:   if(!point||!Array.isArray(districts)||!districts.length)return false;
+2513:   return districts.some(d=>{
+--- around 2491 ---
+2475:   }
+2476:   return out;
+2477: }
+2478: function routeProxyConfigured(){
+2479:   const u=String(ROUTE_PROXY_URL||'').trim();
+2480:   return (u.startsWith('/') || /^https:\/\//i.test(u)) && !/YOUR|계정|example/i.test(u);
+2481: }
+2482: async function fetchRoadFollowingPath(points){
+2483:   if(!routeProxyConfigured()||!Array.isArray(points)||points.length<2)return null;
+2484:   const payload={
+2485:     points:points.map(p=>({x:+p.lng,y:+p.lat,name:String(p.term||p.name||'').slice(0,80)})),
+2486:     priority:'RECOMMEND'
+2487:   };
+2488:   const controller=new AbortController();
+2489:   const timer=setTimeout(()=>controller.abort(),25000);
+2490:   try{
+2491:     const res=await fetch(ROUTE_PROXY_URL,{
+2492:       method:'POST',
+2493:       headers:{'Content-Type':'application/json'},
+2494:       body:JSON.stringify(payload),
+2495:       signal:controller.signal
+2496:     });
+2497:     if(!res.ok)throw new Error(`route proxy ${res.status}`);
+2498:     const data=await res.json();
+2499:     const path=(data?.path||[]).map(p=>({lng:+p[0],lat:+p[1]})).filter(p=>Number.isFinite(p.lng)&&Number.isFinite(p.lat));
+2500:     if(path.length<2)throw new Error('empty road path');
+2501:     return {path,distance:+data.distance||0,duration:+data.duration||0,chunks:+data.chunks||1};
+2502:   }catch(err){
+2503:     console.warn('도로망 수거노선 생성 실패, 확인지점 직선 연결로 대체합니다.',err);
+2504:     return null;
+2505:   }finally{
+2506:     clearTimeout(timer);
+2507:   }
+2508: }
+2509: 
+2510: 
+2511: function pointInsideRouteDistricts(point,districts){
+2512:   if(!point||!Array.isArray(districts)||!districts.length)return false;
+2513:   return districts.some(d=>{
+2514:     const f=districtFeatureMap.get(d);
+2515:     return !!f && pointInGeoFeature([+point.lng,+point.lat],f);
+2516:   });
+2517: }
+2518: function clipRoutePathToDistricts(path,districts){
+2519:   const dense=densifyRoutePath(path,0.06);
+2520:   const segments=[];
+2521:   let current=[];
+2522:   for(const p of dense){
+2523:     if(routePointInsideCheongwon(p) && pointInsideRouteDistricts(p,districts)){
+2524:       current.push(p);
+2525:     }else{
+--- around 2503 ---
+2487:   };
+2488:   const controller=new AbortController();
+2489:   const timer=setTimeout(()=>controller.abort(),25000);
+2490:   try{
+2491:     const res=await fetch(ROUTE_PROXY_URL,{
+2492:       method:'POST',
+2493:       headers:{'Content-Type':'application/json'},
+2494:       body:JSON.stringify(payload),
+2495:       signal:controller.signal
+2496:     });
+2497:     if(!res.ok)throw new Error(`route proxy ${res.status}`);
+2498:     const data=await res.json();
+2499:     const path=(data?.path||[]).map(p=>({lng:+p[0],lat:+p[1]})).filter(p=>Number.isFinite(p.lng)&&Number.isFinite(p.lat));
+2500:     if(path.length<2)throw new Error('empty road path');
+2501:     return {path,distance:+data.distance||0,duration:+data.duration||0,chunks:+data.chunks||1};
+2502:   }catch(err){
+2503:     console.warn('도로망 수거노선 생성 실패, 확인지점 직선 연결로 대체합니다.',err);
+2504:     return null;
+2505:   }finally{
+2506:     clearTimeout(timer);
+2507:   }
+2508: }
+2509: 
+2510: 
+2511: function pointInsideRouteDistricts(point,districts){
+2512:   if(!point||!Array.isArray(districts)||!districts.length)return false;
+2513:   return districts.some(d=>{
+2514:     const f=districtFeatureMap.get(d);
+2515:     return !!f && pointInGeoFeature([+point.lng,+point.lat],f);
+2516:   });
+2517: }
+2518: function clipRoutePathToDistricts(path,districts){
+2519:   const dense=densifyRoutePath(path,0.06);
+2520:   const segments=[];
+2521:   let current=[];
+2522:   for(const p of dense){
+2523:     if(routePointInsideCheongwon(p) && pointInsideRouteDistricts(p,districts)){
+2524:       current.push(p);
+2525:     }else{
+2526:       if(current.length>=2)segments.push(current);
+2527:       current=[];
+2528:     }
+2529:   }
+2530:   if(current.length>=2)segments.push(current);
+2531:   return segments;
+2532: }
+2533: function uniqueRoutePoints(points){
+2534:   const out=[];
+2535:   for(const p of (points||[])){
+2536:     if(!p||!Number.isFinite(+p.lat)||!Number.isFinite(+p.lng))continue;
+2537:     if(out.some(x=>Math.abs(x.lat-+p.lat)<1e-6&&Math.abs(x.lng-+p.lng)<1e-6))continue;
+--- around 3149 ---
+3133:   const color=meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type)));
+3134:   const rural=!!meta.rural;
+3135:   const baseFill=outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22)))));
+3136:   const displayRings=(Array.isArray(meta.rings)&&meta.rings.length?meta.rings:[points]).filter(r=>Array.isArray(r)&&r.length>=3);
+3137:   if(!displayRings.length)return null;
+3138:   const normalizedDisplayRings=displayRings.map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
+3139:   const polygonPath=normalizedDisplayRings.length>1
+3140:     ? normalizedDisplayRings.map(r=>r.map(p=>new kakao.maps.LatLng(p.lat,p.lng)))
+3141:     : normalizedDisplayRings[0].map(p=>new kakao.maps.LatLng(p.lat,p.lng));
+3142:   const polygon=new kakao.maps.Polygon({
+3143:     path:polygonPath,
+3144:     strokeWeight:meta.gridMerged?0:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:meta.gridMerged?0:meta.manual?.95:(contract?.86:(rural?.42:0)),
+3145:     fillColor:color,fillOpacity:baseFill
+3146:   });
+3147:   polygon.setMap(null);
+3148:   const exactRings=(Array.isArray(meta.hitRings)&&meta.hitRings.length?meta.hitRings:normalizedDisplayRings).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
+3149:   const zone={polygon,type,...meta,points:[...(exactRings[0]||[])],rings:normalizedDisplayRings,hitRings:exactRings};
+3150:   kakao.maps.event.addListener(polygon,'mouseover',e=>{
+3151:     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
+3152:     const ratioText=meta.estimated&&Number.isFinite(+meta.neighborRatio)&&+meta.neighborRatio>0?` · 인접권역 ${Math.round(+meta.neighborRatio*100)}% 우세`:'';
+3153:     const detail=meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`);
+3154:     const basis=meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할')));
+3155:     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
+3156:   });
+3157:   kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
+3158:   kakao.maps.event.addListener(polygon,'mouseout',()=>{polygon.setOptions({fillOpacity:baseFill});hideZoneTooltip()});
+3159:   kakao.maps.event.addListener(polygon,'click',()=>{
+3160:     if(meta.noSchedule){updateMapBadge(`${meta.district||''}${meta.riName?' '+meta.riName:''} · 리 단위 구분 · 실제 수거일정은 표시 수거노선 30m 이내에서만 판정`);return}
+3161:     updateMapBadge(`${meta.district||''}${meta.riName?' '+meta.riName:''} · ${serviceZoneLabel(zone)} · ${contract?'제일환경 대행업체 구간':(meta.riGrouped?'리 단위 수거권역':(meta.manual?'관리자 수동권역':'수거노선 근거 자동추정권역'))}${meta.estimated?' · (추정)':(meta.ambiguous?' · 경계부 확인 필요':'')}`);
+3162:     if(activeLayer===type){
+3163:       renderServiceZoneSchedule(type,{vehicle:zone.vehicle,vehicles:zone.vehicles,provider:zone.provider,plate:zone.plate,days:zone.days,riGrouped:!!zone.riGrouped,contractLayer:!!zone.contractLayer,zoneStatus:meta.manual?'manual':(meta.estimated?'estimated':(meta.ambiguous?'boundary':'inferred')),estimated:!!meta.estimated,neighborRatio:Number.isFinite(+meta.neighborRatio)?+meta.neighborRatio:0,neighborSupport:+meta.neighborSupport||0,neighborTotal:+meta.neighborTotal||0,distanceKm:Infinity},{district:meta.district||'',legalEmd:meta.district||'',legalRi:meta.riName||''},{fromMap:true});
+3164:     }
+3165:   });
+3166:   serviceZoneOverlays[type].push(zone);return zone;
+3167: }
+3168: function featureOuterPathPoints(feature){
+3169:   const rings=outerRingsOfFeature(feature);return rings.flatMap(r=>r.map(([lng,lat])=>({lat:+lat,lng:+lng})));
+3170: }
+3171: function wholeFeatureZone(type,feature,meta){
+3172:   const g=feature?.geometry;if(!g)return;
+3173:   meta={...meta,rural:meta.rural??RI_LAYER_DISTRICTS.has(meta.district||'')};
+3174:   const polys=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+3175:   polys.forEach(poly=>{const ring=poly?.[0]||[];if(ring.length>=3)addServiceZonePolygon(type,ring.map(([lng,lat])=>({lat,lng})),meta)});
+3176: }
+3177: function classifyServiceGroups(groups,lat,lng){
+3178:   const ranked=(groups||[]).map(g=>({group:g,distanceKm:serviceGroupDistanceKm(g,lat,lng)})).filter(x=>Number.isFinite(x.distanceKm)).sort((a,b)=>a.distanceKm-b.distanceKm);
+3179:   if(!ranked.length)return null;
+3180:   const best=ranked[0],second=ranked[1]||null;
+3181:   const delta=second?second.distanceKm-best.distanceKm:Infinity;
+3182:   const ambiguous=!!second && (delta<0.08 || (best.distanceKm>0.05 && second.distanceKm/(best.distanceKm||.001)<1.18));
+3183:   return {...best,second,ambiguous};
+--- around 3591 ---
+3575:   const path=adminDraftPoints.map(p=>new kakao.maps.LatLng(p.lat,p.lng));
+3576:   adminDraftLine=new kakao.maps.Polyline({path,strokeWeight:3,strokeColor:'#111827',strokeOpacity:.95,strokeStyle:'solid'});adminDraftLine.setMap(map);
+3577:   if(adminDraftPoints.length>=3){adminDraftPolygon=new kakao.maps.Polygon({path,strokeWeight:2,strokeColor:'#111827',strokeOpacity:.9,fillColor:'#111827',fillOpacity:.12});adminDraftPolygon.setMap(map)}
+3578:   updateAdminStatus()
+3579: }
+3580: function startAdminDrawing(){
+3581:   if(activeLayer!=='general'&&activeLayer!=='recycle')setLayer('general');document.getElementById('adminType').value=activeLayer;updateAdminVehicleOptions();
+3582:   clearAdminDraft();adminDrawing=true;updateAdminStatus('권역 그리기 시작 · 지도에서 경계점을 순서대로 클릭하세요.')
+3583: }
+3584: function finishAdminDrawing(){
+3585:   if(!adminDrawing||adminDraftPoints.length<3){updateAdminStatus('점 3개 이상을 찍어야 권역을 저장할 수 있습니다.');return}
+3586:   const type=document.getElementById('adminType').value;const vehicle=document.getElementById('adminVehicle').value;const days=[...document.querySelectorAll('#adminDays input:checked')].map(x=>x.value);
+3587:   if(!vehicle||!days.length){updateAdminStatus('차량과 요일을 먼저 선택해주세요.');return}
+3588:   const c=adminDraftPoints.reduce((a,p)=>({lat:a.lat+p.lat/adminDraftPoints.length,lng:a.lng+p.lng/adminDraftPoints.length}),{lat:0,lng:0});
+3589:   const district=routePointAnyDistrict(c)||'';let riName='';
+3590:   for(const r of serviceZoneRegions){if(r.district===district&&r.riName&&pointInGeoFeature([c.lng,c.lat],r.feature)){riName=r.riName;break}}
+3591:   manualServiceZones.push({id:`manual-${Date.now()}`,type,vehicle,days,district,riName,note:document.getElementById('adminNote').value.trim(),points:adminDraftPoints.map(p=>({...p})),createdAt:new Date().toISOString()});
+3592:   saveManualZones();clearAdminDraft();rebuildManualZoneOverlays(type);setLayer(type);updateAdminStatus('수동 수거권역을 저장했습니다. 주소 판정에서 자동권역보다 우선합니다.')
+3593: }
+3594: function toggleAdminPanel(){
+3595:   adminMode=!adminMode;document.getElementById('adminPanel').classList.toggle('show',adminMode);document.getElementById('adminToggle').classList.toggle('active',adminMode);
+3596:   if(adminMode){if(activeLayer==='general'||activeLayer==='recycle')document.getElementById('adminType').value=activeLayer;updateAdminVehicleOptions();updateAdminStatus()}
+3597:   else clearAdminDraft()
+3598: }
+3599: function exportAdminZones(){
+3600:   const blob=new Blob([JSON.stringify(manualServiceZones,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`cjwaste-service-zones-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+3601: }
+3602: function importAdminZones(file){
+3603:   const r=new FileReader();r.onload=()=>{try{const data=JSON.parse(r.result);if(!Array.isArray(data))throw new Error('배열 아님');manualServiceZones=data.filter(z=>z&&['general','recycle'].includes(z.type)&&Array.isArray(z.points)&&z.points.length>=3);saveManualZones();for(const t of ['general','recycle'])rebuildManualZoneOverlays(t);setLayer(activeLayer);updateAdminStatus(`수동 권역 ${manualServiceZones.length}개를 가져왔습니다.`)}catch(e){updateAdminStatus('JSON 형식을 확인해주세요.')}};r.readAsText(file)
+3604: }
+3605: function handleMapClick(e){
+3606:   const p=e.latLng;if(adminDrawing){adminDraftPoints.push({lat:p.getLat(),lng:p.getLng()});redrawAdminDraft();return}marker.setPosition(p);reverseGeocode(p.getLat(),p.getLng())
+3607: }
+3608: 
+3609: function setDay(day){
+3610:   activeDay=day||'전체';
+3611:   document.querySelectorAll('#dayFilter button').forEach(b=>{
+3612:     b.classList.toggle('active',b.dataset.day===activeDay);
+3613:   });
+3614:   if(activeLayer==='general'||activeLayer==='recycle') setLayer(activeLayer);
+3615: }
+3616: function setLayer(layer){
+3617:   hideZoneTooltip();activeLayer=layer;
+3618:   document.querySelectorAll('.layer-btn').forEach(b=>b.classList.toggle('active',b.dataset.layer===layer));
+3619:   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('active',c.dataset.layer===layer));
+3620:   const service=layer==='general'||layer==='recycle';
+3621:   document.getElementById('vehicleFilter').classList.toggle('show',service);document.getElementById('dayFilter').classList.toggle('show',service);document.getElementById('structureControl').classList.toggle('show',service);
+3622:   renderVehicleFilter();hideDongRouteOverlays();for(const t of ['general','recycle'])(serviceZoneOverlays[t]||[]).forEach(z=>z.polygon?.setMap(null));
+3623:   const seen=new Set();Object.values(zonePolygons).flat().forEach(item=>{if(!item?.polygon||seen.has(item.polygon))return;seen.add(item.polygon);item.polygon.setMap(null)});
+3624:   if(layer==='food'){
+3625:     zonePolygons.food.forEach(item=>item.polygon.setMap(map));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
