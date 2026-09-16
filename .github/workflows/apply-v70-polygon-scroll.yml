@@ -1,0 +1,55 @@
+name: Apply v70 dong polygons and persistent layers
+
+on:
+  push:
+    paths:
+      - 'tools/v70-polygon-scroll.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install polygon union dependency
+        run: python3 -m pip install --quiet shapely
+      - name: Apply runtime patch
+        run: python3 tools/apply_v70_polygon_scroll.py
+      - name: Polygonize bundled dong zones
+        run: python3 tools/polygonize_bundled_dong_zones.py
+      - name: Validate inline JavaScript and bundled geometry
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          s=Path('index.html').read_text(encoding='utf-8')
+          if 'zone-v70-dong-polygons-persist' not in s: raise SystemExit('v70 cache marker missing')
+          if "kakao.maps.event.addListener(map,'zoom_changed'" not in s: raise SystemExit('zoom refresh missing')
+          if "window.addEventListener('scroll'" not in s: raise SystemExit('page scroll refresh missing')
+          if 'function pointInZonePolygon' not in s: raise SystemExit('ring hit-test missing')
+          m=re.search(r'<script id="bundledPrecomputed" type="application/json">(.*?)</script>',s,re.S)
+          if not m: raise SystemExit('bundled data missing')
+          d=json.loads(m.group(1))
+          if d.get('zoneVersion')!='zone-v70-dong-polygons-persist|'+d.get('version',''): raise SystemExit('wrong zoneVersion')
+          counts={t:sum(1 for z in d['zones'][t] if z.get('polygonized')) for t in ('general','recycle')}
+          holes={t:sum(1 for z in d['zones'][t] if len(z.get('hitRings') or [])>1) for t in ('general','recycle')}
+          print('POLYGONIZED',counts,'HOLES',holes,'TOTAL',{t:len(d['zones'][t]) for t in ('general','recycle')})
+          if not counts['general'] or not counts['recycle']: raise SystemExit('polygonized dong zones missing')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',s,re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit update
+        shell: bash
+        run: |
+          rm -f tools/v70-polygon-scroll.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v70-polygon-scroll.trigger
+          git commit -m 'Polygonize dong service zones and persist layers on scroll'
+          git push
