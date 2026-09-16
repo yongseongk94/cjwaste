@@ -50,6 +50,10 @@ jobs:
             await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
             await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:180000});
             await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1200000,polling:1000});
+            await page.waitForFunction(()=>{
+              const d=window.exportCjWastePrecomputed?.();
+              return !!(d?.zones?.general?.length&&d?.zones?.recycle?.length);
+            },{timeout:1200000,polling:2000});
             const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
             if(!data?.routes?.length) throw new Error('No routes exported');
             if(!data?.zones?.general?.length || !data?.zones?.recycle?.length) throw new Error('No service zones exported');
