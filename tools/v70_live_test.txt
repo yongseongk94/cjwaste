@@ -1,0 +1,51 @@
+{
+  "before": {
+    "activeLayer": "general",
+    "level": 7,
+    "all": 150,
+    "visible": 150,
+    "polygonized": 71,
+    "visiblePolygonized": 71,
+    "nonBox": 28,
+    "maxVertices": 62,
+    "holes": 5,
+    "zoneEnabled": true
+  },
+  "afterWheel": {
+    "activeLayer": "general",
+    "level": 7,
+    "all": 150,
+    "visible": 150,
+    "polygonized": 71,
+    "visiblePolygonized": 71,
+    "nonBox": 28,
+    "maxVertices": 62,
+    "holes": 5,
+    "zoneEnabled": true
+  },
+  "afterPageScroll": {
+    "activeLayer": "general",
+    "level": 7,
+    "all": 150,
+    "visible": 150,
+    "polygonized": 71,
+    "visiblePolygonized": 71,
+    "nonBox": 28,
+    "maxVertices": 62,
+    "holes": 5,
+    "zoneEnabled": true
+  },
+  "afterSetLevel": {
+    "activeLayer": "general",
+    "level": 8,
+    "all": 150,
+    "visible": 150,
+    "polygonized": 71,
+    "visiblePolygonized": 71,
+    "nonBox": 28,
+    "maxVertices": 62,
+    "holes": 5,
+    "zoneEnabled": true
+  },
+  "pageErrors": []
+}
