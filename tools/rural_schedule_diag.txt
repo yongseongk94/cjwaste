@@ -1,153 +1,5 @@
 lines=3973
-===== 3000-3380 =====
-3000: }
-3001: async function ensureDongRoutesForSelection(type){
-3002:   const specs=routeCandidatesForSelection(type);
-3003:   if(!specs.length){syncDongRouteVisibility(type);return}
-3004:   // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
-3005:   await hydrateCachedRouteOverlays(specs);
-3006:   syncDongRouteVisibility(type);
-3007:   // 2차: 캐시에 없는 노선만 뒤에서 계산하며, 완성되는 선부터 바로 추가합니다.
-3008:   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
-3009:   await mapWithConcurrency(missing,3,async spec=>{
-3010:     await buildDongRouteOverlay(spec);
-3011:     if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
-3012:   });
-3013:   syncDongRouteVisibility(type);
-3014: }
-3015: 
-3016: function allDongRouteSpecs(){
-3017:   const out=[];const seen=new Set();
-3018:   for(const type of ['general','recycle']){
-3019:     for(const route of routeCatalog(type)){
-3020:       for(const [day,raw] of Object.entries(route.days||{})){
-3021:         const districts=(route.districts?.length?[...route.districts]:routeDongScope(type,route.vehicle,day)).map(canonicalDistrict);
-3022:         if(!districts.length)continue;
-3023:         const key=`${type}|${route.vehicle}|${day}`;if(seen.has(key))continue;seen.add(key);
-3024:         out.push({type,vehicle:route.vehicle,provider:route.provider||'',plate:route.plate||route.vehicle,housing:route.housing||'single',zoneEligible:route.zoneEligible!==false,day,raw,districts});
-3025:       }
-3026:     }
-3027:   }
-3028:   return out;
-3029: }
-3030: function sleepMs(ms){return new Promise(r=>setTimeout(r,ms))}
-3031: async function preloadAllDongRoutes(){
-3032:   if(dongRoutePreloadStarted)return;
-3033:   dongRoutePreloadStarted=true;
-3034:   const specs=allDongRouteSpecs();
-3035: 
-3036:   // v63: index.html 내장본을 최우선 사용합니다. 내장본이 없거나 일부 누락된 경우에만 IndexedDB를 확인합니다.
-3037:   const bundled=hydrateBundledPrecomputedData();
-3038:   if(!bundled)await hydrateCachedRouteOverlays(specs);
-3039:   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
-3040: 
-3041:   // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
-3042:   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
-3043:   await mapWithConcurrency(missing,3,async spec=>{
-3044:     try{await buildDongRouteOverlay(spec)}catch(e){console.warn('동지역 수거노선 준비 실패',spec,e)}
-3045:     if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
-3046:   });
-3047: 
-3048:   // 생활/재활용 수거권역은 별도 구조로 유지합니다. 근거노선 사전계산 자체는 동지역에만 집중합니다.
-3049:   await buildServiceZones('general');
-3050:   await buildServiceZones('recycle');
-3051:   if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
-3052:   window.__CJWASTE_PRECOMPUTE_READY=true;
-3053: }
-3054: 
-3055: function scheduleDongRoutePreload(){
-3056:   // v65: 직영 동지역 + 제일환경/현대환경 청원구 전체 제공노선을 캐시 복원/누락분 준비합니다.
-3057:   preloadAllDongRoutes().catch(e=>console.warn('수거노선 사전준비 실패',e));
-3058: }
-3059: 
-3060: 
-3061: 
-3062: function featureBounds(feature){
-3063:   const rings=outerRingsOfFeature(feature);if(!rings.length)return null;
-3064:   let minLng=Infinity,maxLng=-Infinity,minLat=Infinity,maxLat=-Infinity;
-3065:   rings.forEach(r=>r.forEach(p=>{const lng=+p[0],lat=+p[1];if(!Number.isFinite(lng)||!Number.isFinite(lat))return;minLng=Math.min(minLng,lng);maxLng=Math.max(maxLng,lng);minLat=Math.min(minLat,lat);maxLat=Math.max(maxLat,lat)}));
-3066:   return Number.isFinite(minLng)?{minLng,maxLng,minLat,maxLat}:null;
-3067: }
-3068: function routePatternKey(spec){return `${spec.vehicle}|${routeNorm(expandRouteShorthand(spec.raw||''))}`}
-3069: function uniqueRouteSpecs(specs){
-3070:   const seen=new Set();return (specs||[]).filter(s=>{const k=`${s.type}|${s.vehicle}|${s.day}`;if(seen.has(k))return false;seen.add(k);return true});
-3071: }
-3072: function serviceZoneCandidateSpecs(type,district,riName=''){
-3073:   let sourceRi=normalizeRi(riName||'');if(district==='북이면'&&sourceRi==='광암리')sourceRi='금암리';
-3074:   const contractSpecs=contractorZoneSpecs(type,district);
-3075:   if((district==='내덕1동'||district==='우암동')&&contractSpecs.length)return uniqueRouteSpecs(contractSpecs);
-3076:   let specs=[];
-3077:   if(RI_LAYER_DISTRICTS.has(district)&&sourceRi)specs=riCandidateRouteDays(type,district,sourceRi);
-3078:   if(!specs.length){
-3079:     for(const route of (DIRECT_ROUTES[type]||[])){
-3080:       const scope=serviceZoneRouteScope(type,route.vehicle);if(!scope.includes(district))continue;
-3081:       for(const [day,raw] of Object.entries(route.days||{}))specs.push({type,vehicle:route.vehicle,day,raw,districts:[...scope]});
-3082:     }
-3083:   }
-3084:   specs=specs.map(s=>({...s,districts:Array.isArray(s.districts)&&s.districts.length?s.districts:[...serviceZoneRouteScope(type,s.vehicle)]}));
-3085:   if(district==='오창읍'&&contractSpecs.length)specs.push(...contractSpecs);
-3086:   return uniqueRouteSpecs(specs);
-3087: }
-3088: async function serviceRouteGroups(type,district,riName=''){
-3089:   const specs=serviceZoneCandidateSpecs(type,district,riName);
-3090:   const items=await mapWithConcurrency(specs,3,s=>buildDongRouteOverlay(s));
-3091:   const groups=new Map();
-3092:   specs.forEach((spec,i)=>{
-3093:     const key=routePatternKey(spec);
-3094:     if(!groups.has(key))groups.set(key,{key,type,vehicle:spec.vehicle,provider:spec.provider||routeCompany(spec.vehicle),plate:spec.plate||routePlate(spec.vehicle),housing:spec.housing||routeHousing(spec.vehicle),days:[],specs:[],items:[],raw:spec.raw||''});
-3095:     const g=groups.get(key);g.specs.push(spec);if(!g.days.includes(spec.day))g.days.push(spec.day);if(items[i])g.items.push(items[i]);
-3096:   });
-3097:   return [...groups.values()].map(g=>({...g,days:DAYS.filter(d=>g.days.includes(d))}));
-3098: }
-3099: function serviceGroupDistanceKm(group,lat,lng){
-3100:   let best=Infinity;for(const item of (group?.items||[]))best=Math.min(best,serviceZoneEvidenceDistanceKm(item,lat,lng));return best;
-3101: }
-3102: function serviceZoneColor(days,type='general'){
-3103:   const sig=DAYS.filter(d=>(days||[]).includes(d)).join('·');
-3104:   if((days||[]).length===1)return DAY_COLORS[days[0]]||'#64748b';
-3105:   if(SCHEDULE_GROUP_COLORS[sig])return SCHEDULE_GROUP_COLORS[sig];
-3106:   let hash=0;for(const ch of `${type}|${sig}`)hash=(hash*31+ch.charCodeAt(0))>>>0;
-3107:   return SCHEDULE_FALLBACK_COLORS[hash%SCHEDULE_FALLBACK_COLORS.length];
-3108: }
-3109: function serviceZoneLabel(zone){return `${routeDisplayLabel(zone.vehicle||'담당')} · ${(zone.days||[]).join('·')||'요일 미정'}`}
-3110: function clearServiceZoneOverlays(type){
-3111:   (serviceZoneOverlays[type]||[]).forEach(z=>z.polygon?.setMap(null));serviceZoneOverlays[type]=[];
-3112: }
-3113: function addServiceZonePolygon(type,points,meta={}){
-3114:   if(!points||points.length<3)return null;
-3115:   const contract=!!meta.contractLayer;
-3116:   const outline=!!meta.groupOutline;
-3117:   const buffer=!!meta.routeBuffer;
-3118:   const color=meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type)));
-3119:   const rural=!!meta.rural;
-3120:   const baseFill=outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22)))));
-3121:   const polygon=new kakao.maps.Polygon({
-3122:     path:points.map(p=>new kakao.maps.LatLng(+p.lat,+p.lng)),
-3123:     strokeWeight:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:meta.manual?.95:(contract?.86:(rural?.42:0)),
-3124:     fillColor:color,fillOpacity:baseFill
-3125:   });
-3126:   polygon.setMap(null);
-3127:   const zone={polygon,type,...meta,points:points.map(p=>({lat:+p.lat,lng:+p.lng}))};
-3128:   kakao.maps.event.addListener(polygon,'mouseover',e=>{
-3129:     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
-3130:     const detail=meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`;
-3131:     const basis=meta.manual?'관리자 직접 지정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할'));
-3132:     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
-3133:   });
-3134:   kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
-3135:   kakao.maps.event.addListener(polygon,'mouseout',()=>{polygon.setOptions({fillOpacity:baseFill});hideZoneTooltip()});
-3136:   kakao.maps.event.addListener(polygon,'click',()=>{
-3137:     if(meta.noSchedule){updateMapBadge(`${meta.district||''}${meta.riName?' '+meta.riName:''} · 리 단위 구분 · 실제 수거일정은 표시 수거노선 30m 이내에서만 판정`);return}
-3138:     updateMapBadge(`${meta.district||''}${meta.riName?' '+meta.riName:''} · ${serviceZoneLabel(zone)} · ${contract?'제일환경 대행업체 구간':(meta.riGrouped?'리 단위 수거권역':(meta.manual?'관리자 수동권역':'수거노선 근거 자동추정권역'))}${meta.ambiguous?' · 경계부 확인 필요':''}`);
-3139:     if(activeLayer===type){
-3140:       renderServiceZoneSchedule(type,{vehicle:zone.vehicle,vehicles:zone.vehicles,provider:zone.provider,plate:zone.plate,days:zone.days,riGrouped:!!zone.riGrouped,contractLayer:!!zone.contractLayer,zoneStatus:meta.manual?'manual':(meta.ambiguous?'boundary':'inferred'),distanceKm:Infinity},{district:meta.district||'',legalEmd:meta.district||'',legalRi:meta.riName||''},{fromMap:true});
-3141:     }
-3142:   });
-3143:   serviceZoneOverlays[type].push(zone);return zone;
-3144: }
-3145: function featureOuterPathPoints(feature){
-3146:   const rings=outerRingsOfFeature(feature);return rings.flatMap(r=>r.map(([lng,lat])=>({lat:+lat,lng:+lng})));
-3147: }
+===== 3148-3385 =====
 3148: function wholeFeatureZone(type,feature,meta){
 3149:   const g=feature?.geometry;if(!g)return;
 3150:   meta={...meta,rural:meta.rural??RI_LAYER_DISTRICTS.has(meta.district||'')};
@@ -381,7 +233,32 @@ lines=3973
 3378:   (zonePolygons.general||[]).forEach(i=>i.polygon?.setMap(null));
 3379:   (zonePolygons.recycle||[]).forEach(i=>i.polygon?.setMap(null));
 3380:   (zonePolygons.districtOutline||[]).forEach(i=>i.polygon?.setMap(null));
-===== 1860-2050 =====
+3381: }
+3382: function setStructureLayer(key){
+3383:   if(!(key in serviceLayerState))return;serviceLayerState[key]=!serviceLayerState[key];
+3384:   document.querySelectorAll('#structureControl button').forEach(b=>b.classList.toggle('active',!!serviceLayerState[b.dataset.structure]));
+3385:   if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
+===== 1840-2075 =====
+1840:     }
+1841:   }
+1842:   return out;
+1843: }
+1844: function descriptorWindowForRi(raw,riName){
+1845:   const desc=routeDescriptorsForMap(raw);
+1846:   const hits=[];
+1847:   desc.forEach((d,i)=>{if(isGenericRiDescriptor(d,riName))hits.push(i)});
+1848:   const picked=[];
+1849:   const add=d=>{
+1850:     if(!d)return;
+1851:     const key=`${routeNorm(d.term)}|${d.scope||''}`;
+1852:     if(!picked.some(x=>x._key===key))picked.push({...d,_key:key});
+1853:   };
+1854:   if(hits.length){
+1855:     for(const idx of hits){
+1856:       for(let j=Math.max(0,idx-4);j<=Math.min(desc.length-1,idx+4);j++){
+1857:         if(j===idx)continue; // '마산리' 같은 리 이름 자체의 대표점은 구획판정에 사용하지 않음
+1858:         add(desc[j]);
+1859:       }
 1860:     }
 1861:   }else{
 1862:     // 시설주소 검증규칙으로 해당 리가 확정된 날은 관련 용어만 사용
@@ -573,3 +450,28 @@ lines=3973
 2048:     }
 2049:     // 동지역/오창은 화면에 그려지는 ① 수거권역과 동일한 판정구조를 사용합니다.
 2050:     const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
+2051:     if(seq!==nearbyScheduleRequestSeq)return;
+2052:     if(match)renderServiceZoneSchedule(type,match,ctx);
+2053:     else renderNoNearbyRouteSchedule(type,district);
+2054:   }
+2055:   if(seq!==nearbyScheduleRequestSeq)return;
+2056:   renderVehicleFilter();
+2057:   if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
+2058: }
+2059: 
+2060: function renderVehicleFilter(){
+2061:   const el=document.getElementById('vehicleFilter');
+2062:   const serviceLayer=activeLayer==='general'||activeLayer==='recycle';
+2063:   el.classList.toggle('show',serviceLayer);
+2064:   if(!serviceLayer){el.innerHTML='';return}
+2065:   const current=selectedVehicle[activeLayer]||'전체';
+2066:   const buttons=['전체',...providerList(activeLayer)];
+2067:   const buttonLabel=v=>v==='전체'?'전체 노선':((v==='제일환경'||v==='현대환경')?`${v}(대행)`:v+'호');
+2068:   el.innerHTML=`<span class="vehicle-label">수거주체</span>`+buttons.map(v=>`<button type="button" data-vehicle="${escapeHtml(v)}" class="${v===current?'active':''}">${buttonLabel(v)}</button>`).join('');
+2069:   el.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>setVehicle(btn.dataset.vehicle)));
+2070: }
+2071: function setVehicle(vehicle){
+2072:   if(activeLayer!=='general'&&activeLayer!=='recycle')return;
+2073:   selectedVehicle[activeLayer]=vehicle||'전체';
+2074:   renderVehicleFilter();
+2075:   setLayer(activeLayer);
