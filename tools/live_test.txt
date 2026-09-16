@@ -1,18 +1,39 @@
-PAGEERROR: Cannot access 'DISTRICT_ALIASES' before initialization
-URL=https://yongseongk94.github.io/cjwaste/
-HTTP=200
-BEFORE landingClass=null
-BEFORE status=
-BEFORE geocoder=evalerr:page.evaluate: ReferenceError: geocoder is not defined
-    at eval (eval at evaluate (:291:30), <anonymous>:1:5)
-    at UtilityScript.evaluate (<anonymous>:293:16)
-    at UtilityScript.<anonymous> (<anonymous>:1:44)
-PAGEERROR: Cannot access 'DISTRICT_ALIASES' before initialization
-AFTER landingClass=null
-AFTER status=
-AFTER address=주소를 검색해주세요.
-AFTER district=청원구 행정동 확인 중
-AFTER geocoder=evalerr:page.evaluate: ReferenceError: geocoder is not defined
-    at eval (eval at evaluate (:291:30), <anonymous>:1:5)
-    at UtilityScript.evaluate (<anonymous>:293:16)
-    at UtilityScript.<anonymous> (<anonymous>:1:44)
+=== DISTRICT_ALIASES / canonicalDistrict / RURAL markers ===
+266:if(v67HyundaiScopeAudit.some(d=>canonicalDistrict(d)!=='내덕1동'))console.error('v67 현대환경 청원구 범위 오류',v67HyundaiScopeAudit);
+283:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+285:  return CONTRACT_INCOMBUSTIBLE.filter(x=>canonicalDistrict(x.district)===district);
+299:  const note=(provider==='제일환경'&&canonicalDistrict(ctx?.legalEmd||ctx?.district)==='우암동')
+305:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');const target=contractAddressNorm(ctx?.address||'');if(!target)return null;
+307:  let best=null,bestLen=0;for(const x of rows){if(canonicalDistrict(x.district)!==district)continue;for(const key of contractAddressCandidates(x.address)){if((target.includes(key)||key.includes(target))&&Math.min(key.length,target.length)>bestLen){best=x;bestLen=Math.min(key.length,target.length)}}}
+316:const DISTRICT_ALIASES={
+367:  return !!riName && !!UNCONFIRMED_RIS[type]?.has(`${canonicalDistrict(district)}|${normalizeRi(riName)}`);
+508:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+874:const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['내수읍','북이면']);
+875:const RURAL_ROUTE_MATCH_KM=0.030;
+1152:  const cm=contractRouteMeta(vehicle);if(cm)return [canonicalDistrict(cm.district)];
+1157:  const cm=contractRouteMeta(vehicle);if(cm)return cm.zoneEligible?[canonicalDistrict(cm.district)]:[];
+1169:function canonicalDistrict(name){const n=norm(name);for(const [alias,canonical] of Object.entries(DISTRICT_ALIASES)){if(norm(alias)===n)return canonical}return name||''}
+1172:  const emd=canonicalDistrict(legalEmd); const ri=normalizeRi(legalRi);
+1236:    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedGeneral){
+1272:    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedRecycle){
+1314:    currentDistrict=canonicalDistrict(h.region_3depth_name);
+1317:    currentLegalEmd=canonicalDistrict(b.region_3depth_name||currentDistrict);
+1474:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+1482:    if(z.district&&canonicalDistrict(z.district)!==district)return false;
+1516:function routeMatchLimitKm(district){return RURAL_INFERRED_ROUTE_DISTRICTS.has(canonicalDistrict(district))?RURAL_ROUTE_MATCH_KM:MAX_ADDRESS_ROUTE_DISTANCE_KM} // 주소점에서 실제 표시 수거노선 20m 이내만 수거일정으로 인정
+1624:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+1655:    `${secondary}<br><span style="color:#6b7280">※ ${basisText} 주소점에서 실제 표시 수거선까지 ${limitM}m 이내인 경우에만 수거요일을 인정하며, 다른 차량의 인접노선 요일을 섞지 않습니다.${RURAL_INFERRED_ROUTE_DISTRICTS.has(district)?' 내수·북이는 원본 코스 순서를 따라 추정한 차량이동 도로구간도 수거노선에 포함합니다.':''}</span>${apartmentNotice}</div>`;
+1669:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+1670:  if(!DONG_ROUTE_DISTRICTS.has(district)&&!RURAL_INFERRED_ROUTE_DISTRICTS.has(district))return null;
+1730:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+1889:  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+1946:  const district=canonicalDistrict(ctx.legalEmd||ctx.district);if(!CHEONGWON_ROUTE_DISTRICTS.has(district))return;
+1956:    if(RURAL_INFERRED_ROUTE_DISTRICTS.has(district)){
+2702:  for(const district of RURAL_INFERRED_ROUTE_DISTRICTS){
+2788:    const ruralMovementAnchors=Object.fromEntries([...RURAL_INFERRED_ROUTE_DISTRICTS].map(d=>[d,[]]));
+2801:      for(const ruralDistrict of RURAL_INFERRED_ROUTE_DISTRICTS){
+2802:        const localCandidates=entry.candidates.filter(p=>canonicalDistrict(p.district||routePointAnyDistrict(p))===ruralDistrict);
+3133:function bufferedRoutePolygon(path,radiusKm=RURAL_ROUTE_MATCH_KM){
+3153:          const poly=bufferedRoutePolygon(part,RURAL_ROUTE_MATCH_KM);if(poly.length<4)continue;
+3187:  if(RURAL_INFERRED_ROUTE_DISTRICTS.has(region.district)){
+3747:      district=canonicalDistrict(district);
