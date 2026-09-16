@@ -1,0 +1,59 @@
+name: Retry v75 Naedeok2 verification
+
+on:
+  push:
+    paths:
+      - 'tools/retry-v75-naedeok2.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-freeze-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fix address normalizer
+        run: |
+          python3 tools/fix_v75_normalizer.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          t=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/index-inline.js').write_text('\n'.join(re.findall(r'<script>(.*?)</script>',t,flags=re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Publish hotfix
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/retry-v75-naedeok2.trigger
+          git add index.html tools/retry-v75-naedeok2.trigger
+          git commit -m 'Fix v75 exact address normalizer'
+          git pull --rebase origin main
+          git push
+      - name: Wait for live hotfix
+        run: |
+          for i in $(seq 1 120); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?v75fix=$RANDOM" -o /tmp/live.html && grep -q "contractAddressNorm('공항로84번길 30')" /tmp/live.html; then exit 0; fi
+            sleep 3
+          done
+          exit 1
+      - name: Recompute and verify v75
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          node tools/v75_freeze.js
+      - name: Embed verified v75 data
+        run: |
+          git pull --rebase origin main
+          python3 tools/embed_v75_precomputed.py
+          node --check /tmp/index-inline.js
+          git add index.html tools/v75_naedeok2_verify_report.json
+          git commit -m 'Embed verified v75 Naedeok2 routes'
+          git push
