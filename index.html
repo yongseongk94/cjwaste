@@ -345,8 +345,8 @@ function contractExactScheduleMatch(type,ctx){
   for(const x of rows){
     if(canonicalDistrict(x.district)!==district)continue;
     if(x.provider==='제일환경' && x.district==='내덕2동' && x.vehicle==='95오0147' && /이랜드해가든/.test(String(x.name||x.address||''))){
-      const exactAddr=normalizeRouteAddress('공항로84번길 30');
-      const exactName=normalizeRouteAddress('이랜드해가든');
+      const exactAddr=contractAddressNorm('공항로84번길 30');
+      const exactName=contractAddressNorm('이랜드해가든');
       if(!target.includes(exactAddr) && !target.includes(exactName))continue;
     }
     for(const key of contractAddressCandidates(x.address)){
