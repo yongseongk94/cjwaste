@@ -1,0 +1,65 @@
+name: Live address search test
+
+on:
+  push:
+    paths:
+      - 'tools/live-search-test.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  test-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test deployed page in Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/live-test
+          mkdir -p /tmp/live-test
+          cd /tmp/live-test
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.55.0 >/dev/null 2>&1
+          npx playwright install chromium >/dev/null 2>&1
+          cat > test.js <<'JS'
+          const { chromium } = require('playwright');
+          (async()=>{
+            const out=[];
+            const url='https://yongseongk94.github.io/cjwaste/';
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage();
+            page.on('console',m=>out.push('CONSOLE '+m.type()+': '+m.text()));
+            page.on('pageerror',e=>out.push('PAGEERROR: '+e.message));
+            page.on('requestfailed',r=>out.push('REQUESTFAILED: '+r.url()+' :: '+(r.failure()?.errorText||'')));
+            const resp=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
+            out.push('URL='+page.url());
+            out.push('HTTP='+(resp?resp.status():'none'));
+            await page.waitForTimeout(7000);
+            out.push('BEFORE landingClass='+(await page.locator('#landing').getAttribute('class')));
+            out.push('BEFORE status='+(await page.locator('#landingStatus').innerText().catch(()=>'')));
+            out.push('BEFORE geocoder='+(await page.evaluate(()=>typeof geocoder==='undefined'?'undefined':String(!!geocoder)).catch(e=>'evalerr:'+e.message)));
+            await page.locator('#landingInput').fill('청주시 청원구 상당로 314');
+            await page.locator('#landingForm button[type=submit]').click();
+            await page.waitForTimeout(7000);
+            out.push('AFTER landingClass='+(await page.locator('#landing').getAttribute('class')));
+            out.push('AFTER status='+(await page.locator('#landingStatus').innerText().catch(()=>'')));
+            out.push('AFTER address='+(await page.locator('#selectedAddress').innerText().catch(()=>'')));
+            out.push('AFTER district='+(await page.locator('#selectedDistrict').innerText().catch(()=>'')));
+            out.push('AFTER geocoder='+(await page.evaluate(()=>typeof geocoder==='undefined'?'undefined':String(!!geocoder)).catch(e=>'evalerr:'+e.message)));
+            await browser.close();
+            require('fs').writeFileSync('/tmp/live-test-result.txt',out.join('\n'));
+          })().catch(e=>{require('fs').writeFileSync('/tmp/live-test-result.txt','FATAL: '+(e.stack||e));process.exitCode=1});
+          JS
+          node test.js || true
+          cp /tmp/live-test-result.txt "$GITHUB_WORKSPACE/tools/live_test.txt"
+      - name: Commit test result
+        shell: bash
+        run: |
+          rm -f tools/live-search-test.trigger
+          git config user.name 'ChatGPT Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/live_test.txt tools/live-search-test.trigger
+          git commit -m 'Record live address-search diagnostic'
+          git push
