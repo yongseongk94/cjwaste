@@ -1,0 +1,28 @@
+name: Scroll and polygon diagnostic
+
+on:
+  push:
+    paths:
+      - 'tools/scroll-polygon-diag.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inspect scroll and service-zone drawing
+        run: python3 tools/diag_scroll_polygon.py
+      - name: Commit diagnostic
+        shell: bash
+        run: |
+          rm -f tools/scroll-polygon-diag.trigger
+          git config user.name 'ChatGPT Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/scroll_polygon_diag.txt tools/scroll-polygon-diag.trigger
+          git commit -m 'Inspect scroll and service-zone drawing'
+          git push
