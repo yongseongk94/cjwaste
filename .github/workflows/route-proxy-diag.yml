@@ -26,31 +26,20 @@ jobs:
           cat /tmp/h1 >> "$OUT" || true
           cat /tmp/b1 >> "$OUT" || true
           echo >> "$OUT"
-          echo '=== live proxy lat/lng POST ===' >> "$OUT"
-          curl -sS -D /tmp/h2 -o /tmp/b2 -X POST 'https://cjwaste-route.yseong22.workers.dev/route' \
-            -H 'Content-Type: application/json' \
-            --data '{"points":[{"lng":127.4866,"lat":36.6515},{"lng":127.4900,"lat":36.6540}]}' || true
-          cat /tmp/h2 >> "$OUT" || true
-          cat /tmp/b2 >> "$OUT" || true
-          echo >> "$OUT"
-          echo '=== relevant frontend lines ===' >> "$OUT"
+          echo '=== route-generation code ranges ===' >> "$OUT"
           python3 - <<'PY' >> "$OUT"
           from pathlib import Path
           s=Path('index.html').read_text(encoding='utf-8').splitlines()
-          keys=['ROUTE_PROXY_URL','fetch(ROUTE_PROXY_URL','route_failed','도로망 수거노선','points:','waypoints','requestRoute','buildRoad','roadRoute','mobility']
-          hit=[]
-          for i,line in enumerate(s):
-              if any(k in line for k in keys):
-                  hit.append(i)
-          seen=set()
-          for i in hit:
-              if any(abs(i-j)<8 for j in seen): continue
-              seen.add(i)
-              print(f'--- around {i+1} ---')
-              for n in range(max(0,i-16),min(len(s),i+35)):
+          for a,b in [(2420,2585),(2585,2745),(2745,2910)]:
+              print(f'--- lines {a}-{b} ---')
+              for n in range(a-1,min(len(s),b)):
                   t=s[n]
-                  if len(t)>1200:t=t[:1200]+' ...[CUT]'
+                  if len(t)>1800:t=t[:1800]+' ...[CUT]'
                   print(f'{n+1}: {t}')
+          print('=== all fallback/straight references ===')
+          for i,line in enumerate(s):
+              if any(k in line for k in ['직선','fallback','fetchRoadFollowingPath(','segments=','segments:', 'routeSource','roadPath']):
+                  print(f'{i+1}: {line[:1800]}')
           PY
       - name: Commit diagnostic
         shell: bash
@@ -59,5 +48,5 @@ jobs:
           git config user.name 'ChatGPT Diagnostic Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tools/route_proxy_diag.txt tools/route-proxy-diag.trigger
-          git commit -m 'Record route proxy diagnostic'
+          git commit -m 'Expand route generation diagnostic'
           git push
