@@ -1,0 +1,41 @@
+name: Diagnose route proxy
+
+on:
+  push:
+    paths:
+      - 'tools/diag-route-proxy.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe route proxy
+        shell: bash
+        run: |
+          set +e
+          URL='https://cjwaste-route.yseong22.workers.dev/route'
+          curl -sS -D /tmp/h.txt -o /tmp/b.txt -X POST "$URL" \
+            -H 'Content-Type: application/json' \
+            --data '{"points":[{"x":127.4898,"y":36.6424},{"x":127.4910,"y":36.6434}]}'
+          CODE=$?
+          {
+            echo "curl_exit=$CODE"
+            echo '--- headers ---'
+            cat /tmp/h.txt
+            echo '--- body ---'
+            cat /tmp/b.txt
+          } > tools/route_proxy_diag.txt
+          cat tools/route_proxy_diag.txt
+      - name: Commit diagnostic
+        shell: bash
+        run: |
+          rm -f tools/diag-route-proxy.trigger
+          git config user.name 'ChatGPT Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/route_proxy_diag.txt tools/diag-route-proxy.trigger
+          git commit -m 'Diagnose route proxy response' || exit 0
+          git push
