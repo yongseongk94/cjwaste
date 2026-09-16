@@ -1,0 +1,19 @@
+{
+  "version": "v75-naedeok2-apartment-only",
+  "classification": {
+    "naedeok2_single_general": "direct",
+    "naedeok2_single_recycle": "direct",
+    "naedeok2_apartment_general": "contractor",
+    "haegadeun": {
+      "provider": "제일환경",
+      "vehicle": "95오0147",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "address": "공항로84번길 30",
+      "mapGeometry": "exact-point-only"
+    }
+  }
+}
