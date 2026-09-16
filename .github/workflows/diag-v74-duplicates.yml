@@ -1,0 +1,25 @@
+name: Diagnose v74 parser duplicates
+
+on:
+  push:
+    paths:
+      - 'tools/v74-duplicates.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: python3 tools/diag_v74_duplicates.py
+      - run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/v74-duplicates.trigger
+          git add tools/v74_duplicate_diag.txt tools/v74-duplicates.trigger
+          git commit -m 'Record v74 duplicate parser diagnostic'
+          git push
