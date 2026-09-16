@@ -16,20 +16,20 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Wait for deployed v72
+      - name: Wait for deployed v73
         shell: bash
         run: |
           set -euo pipefail
           for i in $(seq 1 90); do
-            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" -o /tmp/cjwaste-live.html && grep -q 'v72-road-retry-no-straight' /tmp/cjwaste-live.html; then
-              echo 'v72 route-reliability build is deployed'
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" -o /tmp/cjwaste-live.html && grep -q 'v73-partial-road-segments' /tmp/cjwaste-live.html; then
+              echo 'v73 partial-road build is deployed'
               exit 0
             fi
             sleep 4
           done
-          echo 'Timed out waiting for v72 Pages deployment' >&2
+          echo 'Timed out waiting for v73 Pages deployment' >&2
           exit 1
-      - name: Recompute exact road geometry and service zones
+      - name: Recompute verified road geometry and service zones
         shell: bash
         run: |
           set -euo pipefail
@@ -46,11 +46,11 @@ jobs:
             const page=await browser.newPage();
             page.setDefaultTimeout(1500000);
             const pageErrors=[];
-            const finalRouteFailures=[];
+            const unresolvedConsole=[];
             page.on('console',msg=>{
               const t=msg.text();
               console.log('PAGE',t);
-              if(t.includes('도로망 수거노선 최종 실패'))finalRouteFailures.push(t);
+              if(t.includes('도로망 미해결 구간은 확정노선에서 제외합니다.'))unresolvedConsole.push(t);
             });
             page.on('pageerror',err=>{pageErrors.push(err.message);console.error('PAGEERROR',err.message)});
             await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
@@ -62,31 +62,35 @@ jobs:
             },{timeout:1500000,polling:2000});
             const state=await page.evaluate(()=>({
               data:window.exportCjWastePrecomputed(),
-              finalFailures:+window.__CJWASTE_ROUTE_PROXY_FINAL_FAILURES||0
+              failedLegs:[...(window.__CJWASTE_ROUTE_PROXY_FAILED_LEGS||[])]
             }));
             const data=state.data;
-            if(!data?.routes?.length) throw new Error('No routes exported');
-            if(!data?.zones?.general?.length || !data?.zones?.recycle?.length) throw new Error('No service zones exported');
-            if(data.version!=='v72-road-retry-no-straight') throw new Error('Unexpected route version: '+data.version);
-            if(data.zoneVersion!=='zone-v72-road-retry-no-straight|'+data.version) throw new Error('Unexpected zone version: '+data.zoneVersion);
-            if(state.finalFailures!==0 || finalRouteFailures.length) throw new Error('Final route proxy failures remain: '+state.finalFailures+' / '+finalRouteFailures.length);
-            if(pageErrors.length) throw new Error('Page errors: '+pageErrors.join(' | '));
+            if(!data?.routes?.length)throw new Error('No routes exported');
+            if(!data?.zones?.general?.length||!data?.zones?.recycle?.length)throw new Error('No service zones exported');
+            if(data.version!=='v73-partial-road-segments')throw new Error('Unexpected route version: '+data.version);
+            if(data.zoneVersion!=='zone-v73-partial-road-segments|'+data.version)throw new Error('Unexpected zone version: '+data.zoneVersion);
+            if(pageErrors.length)throw new Error('Page errors: '+pageErrors.join(' | '));
+
             const routeStats={
               count:data.routes.length,
               withSegments:data.routes.filter(r=>(r.data?.segments||[]).some(seg=>seg.length>=2)).length,
-              empty:data.routes.filter(r=>!(r.data?.segments||[]).some(seg=>seg.length>=2)).map(r=>`${r.type}|${r.vehicle}|${r.day}`)
+              empty:data.routes.filter(r=>!(r.data?.segments||[]).some(seg=>seg.length>=2)).map(r=>`${r.type}|${r.vehicle}|${r.day}`),
+              segmentCount:data.routes.reduce((n,r)=>n+(r.data?.segments||[]).filter(seg=>seg.length>=2).length,0),
+              vertexCount:data.routes.reduce((n,r)=>n+(r.data?.segments||[]).reduce((m,seg)=>m+seg.length,0),0)
             };
             const estimated={general:(data.zones.general||[]).filter(z=>z.estimated).length,recycle:(data.zones.recycle||[]).filter(z=>z.estimated).length};
+            const failureSummary=state.failedLegs.map((x,i)=>({index:i+1,from:x.from,to:x.to,message:x.message}));
             fs.writeFileSync('/tmp/precomputed.json',JSON.stringify(data));
-            fs.writeFileSync('tools/v72_precompute_report.txt',JSON.stringify({routeStats,estimated,finalFailures:state.finalFailures,pageErrors},null,2));
-            console.log('V72_ROUTE_STATS',JSON.stringify(routeStats));
-            console.log('V72_ESTIMATED_ZONES',JSON.stringify(estimated));
+            fs.writeFileSync('tools/v73_precompute_report.txt',JSON.stringify({routeStats,estimated,unresolvedLegCount:failureSummary.length,unresolvedLegs:failureSummary,pageErrors},null,2));
+            console.log('V73_ROUTE_STATS',JSON.stringify(routeStats));
+            console.log('V73_UNRESOLVED_LEGS',failureSummary.length);
+            console.log('V73_ESTIMATED_ZONES',JSON.stringify(estimated));
             console.log(`EXPORTED routes=${data.routes.length} generalZones=${data.zones.general.length} recycleZones=${data.zones.recycle.length}`);
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
           node freeze.js
-      - name: Embed data and validate
+      - name: Embed data and validate no straight fallback
         shell: bash
         run: |
           set -euo pipefail
@@ -97,8 +101,12 @@ jobs:
           text=p.read_text(encoding='utf-8')
           data=Path('/tmp/precomputed.json').read_text(encoding='utf-8')
           obj=json.loads(data)
-          if obj.get('version')!='v72-road-retry-no-straight': raise SystemExit('wrong route version')
-          if obj.get('zoneVersion')!='zone-v72-road-retry-no-straight|v72-road-retry-no-straight': raise SystemExit('wrong zone version')
+          if obj.get('version')!='v73-partial-road-segments': raise SystemExit('wrong route version')
+          if obj.get('zoneVersion')!='zone-v73-partial-road-segments|v73-partial-road-segments': raise SystemExit('wrong zone version')
+          for bad in ['roadResult?.path||anchors','roadResult?.path || anchors','확인지점 직선 연결로 대체합니다.']:
+              if bad in text: raise SystemExit('straight fallback remains: '+bad)
+          if text.count('for(const roadPath of (roadResult?.segments||[]))') < 2:
+              raise SystemExit('partial road segment callers missing')
           pat=r'(<script id="bundledPrecomputed" type="application/json">).*?(</script>)'
           text,n=re.subn(pat,lambda m:m.group(1)+data+m.group(2),text,count=1,flags=re.S)
           if n!=1: raise SystemExit('precomputed slot missing')
@@ -107,13 +115,13 @@ jobs:
           Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
           PY
           node --check /tmp/index-inline.js
-      - name: Commit embedded v72 data
+      - name: Commit embedded v73 data
         shell: bash
         run: |
           set -euo pipefail
           rm -f freeze.js package.json package-lock.json tools/freeze_precomputed_now.ready tools/freeze_precomputed.ready
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html tools/v72_precompute_report.txt tools/freeze_precomputed_now.ready
-          git commit -m 'Embed v72 road-following route data'
+          git add index.html tools/v73_precompute_report.txt tools/freeze_precomputed_now.ready
+          git commit -m 'Embed verified v73 road route segments'
           git push
