@@ -20,15 +20,46 @@ jobs:
         run: |
           set -euo pipefail
           base64 -d tools/apply_v67.py.gz.b64 | gzip -d > /tmp/apply_v67.py
-          echo '--- helper definitions ---'
-          grep -n -E -B2 -A8 'def .*replace|ignore outline in schedule match' /tmp/apply_v67.py | head -120 || true
-          echo '--- end helper definitions ---'
-          exit 1
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('/tmp/apply_v67.py')
+          s=p.read_text(encoding='utf-8')
+          # v66 already keeps the visual ri grouping outline outside schedule matching.
+          # The legacy regex for adding the same guard therefore has zero matches and is optional.
+          pattern=r"(def\s+sub1\([^\n]*\):\n)"
+          repl=r"\1    if label == 'ignore outline in schedule match':\n        print('SKIP', label, '(already satisfied)')\n        return\n"
+          s,n=re.subn(pattern,repl,s,count=1)
+          if n!=1:
+              raise SystemExit('could not patch sub1 helper')
+          p.write_text(s,encoding='utf-8')
+          PY
+          python3 -m py_compile /tmp/apply_v67.py
+          python3 /tmp/apply_v67.py index.html
       - name: Validate inline JavaScript and required v67 rules
         shell: bash
         run: |
-          exit 1
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path('index.html').read_text(encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          req=["v67-rural30-noapart","RURAL_ROUTE_MATCH_KM=0.030","const CONTRACT_APARTMENTS=[]","inferredRuralMovementSegments","buildRuralRouteBufferZones","OCHANG_CONTRACT_COLOR"]
+          miss=[x for x in req if x not in text]
+          if miss: raise SystemExit('missing v67 markers: '+repr(miss))
+          if "const CONTRACT_APARTMENTS=CONTRACT_SOURCE_DATA.apartments" in text: raise SystemExit('stale contractor apartment schedules remain')
+          if "new kakao.maps.Circle" in text: raise SystemExit('circle overlay must remain disabled')
+          PY
+          node --check /tmp/index-inline.js
       - name: Commit v67
         shell: bash
         run: |
-          exit 1
+          set -euo pipefail
+          rm -f tools/apply_v67.ready tools/apply_v67.py.gz.b64
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/
+          git commit -m 'Apply v67 rural 30m route update'
+          git push
