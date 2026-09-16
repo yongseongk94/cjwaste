@@ -1,0 +1,54 @@
+name: Apply contractor schedule fix
+
+on:
+  push:
+    paths:
+      - 'tools/contractor-schedule-fix.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply contractor schedule direct match
+        run: python3 tools/fix_contractor_schedule_match.py
+      - name: Validate inline JavaScript
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          h=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',h,re.S|re.I)
+          js='\n'.join(x for x in scripts if x.strip() and not x.lstrip().startswith('{'))
+          Path('/tmp/index-inline.js').write_text(js,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Validate contractor source schedules
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          m=re.search(r'const CONTRACT_SOURCE_DATA=(\{.*?\});\nconst CONTRACT_ROUTES=',s,re.S)
+          if not m: raise SystemExit('CONTRACT_SOURCE_DATA missing')
+          d=json.loads(m.group(1))
+          singles=[r for t in ('general','recycle') for r in d.get('routes',{}).get(t,[]) if r.get('housing')!='apartment']
+          assert singles and all(r.get('days') for r in singles)
+          print('single contractor routes:',len(singles))
+          PY
+      - name: Commit fix
+        shell: bash
+        run: |
+          rm -f tools/contractor-schedule-fix.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/contractor-schedule-fix.trigger
+          git commit -m 'Match contractor schedules directly from source routes'
+          git push
