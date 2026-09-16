@@ -1390,7 +1390,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v68-boundary-majority|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v69-merged-grid-blocks|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -1456,7 +1456,7 @@ function exportCjWastePrecomputed(){
     .map(z=>({
       points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
       vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
-      automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline
+      automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged
     }));
   return {version:DONG_ROUTE_CACHE_VERSION,zoneVersion:SERVICE_ZONE_CACHE_VERSION,generatedAt:new Date().toISOString(),routes,zones};
 }
@@ -1487,7 +1487,7 @@ async function putCachedServiceZones(type){
         points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),
         district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
         vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
-        automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline
+        automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged
       }));
     if(!zones.length)return;
     const db=await openDongRouteCache();if(!db)return;
@@ -1536,7 +1536,7 @@ function serviceZoneOverlayMatch(type,ctx){
   if(!hits.length)return null;
   hits.sort((a,b)=>(a.ambiguous?2:(a.estimated?1:0))-(b.ambiguous?2:(b.estimated?1:0)));
   const z=hits[0];
-  return {vehicle:z.vehicle,vehicles:[...(z.vehicles||[])],provider:z.provider||routeCompany(z.vehicle),plate:z.plate||'',days:[...(z.days||[])],distanceKm:Infinity,matchBasis:'displayed-zone',zoneStatus:z.estimated?'estimated':(z.ambiguous?'boundary':'inferred'),estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,matchedRoads:[],district,riName,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline};
+  return {vehicle:z.vehicle,vehicles:[...(z.vehicles||[])],provider:z.provider||routeCompany(z.vehicle),plate:z.plate||'',days:[...(z.days||[])],distanceKm:Infinity,matchBasis:'displayed-zone',zoneStatus:z.estimated?'estimated':(z.ambiguous?'boundary':'inferred'),estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,matchedRoads:[],district,riName,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged};
 }
 async function ensureServiceZoneMatch(type,ctx){
   let match=serviceZoneOverlayMatch(type,ctx);if(match)return match;
@@ -3120,7 +3120,7 @@ function addServiceZonePolygon(type,points,meta={}){
   const baseFill=outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22)))));
   const polygon=new kakao.maps.Polygon({
     path:points.map(p=>new kakao.maps.LatLng(+p.lat,+p.lng)),
-    strokeWeight:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:meta.manual?.95:(contract?.86:(rural?.42:0)),
+    strokeWeight:meta.gridMerged?0:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:meta.gridMerged?0:meta.manual?.95:(contract?.86:(rural?.42:0)),
     fillColor:color,fillOpacity:baseFill
   });
   polygon.setMap(null);
@@ -3164,11 +3164,20 @@ function mergedRowRuns(cells){
   const runs=[];let run=null;
   for(const c of cells){
     const sig=`${c.key}|${c.estimated?'E':(c.ambiguous?'A':'C')}`;
-    if(!run||run.sig!==sig||c.ix!==run.x1+1){if(run)runs.push(run);run={...c,sig,x0:c.ix,x1:c.ix}}else run.x1=c.ix;
+    if(!run||run.sig!==sig||c.ix!==run.x1+1){
+      if(run)runs.push(run);
+      run={...c,sig,x0:c.ix,x1:c.ix,neighborSupport:+c.neighborSupport||0,neighborTotal:+c.neighborTotal||0};
+    }else{
+      run.x1=c.ix;
+      if(run.estimated){
+        run.neighborSupport+=(+c.neighborSupport||0);
+        run.neighborTotal+=(+c.neighborTotal||0);
+        run.neighborRatio=run.neighborTotal?run.neighborSupport/run.neighborTotal:(+run.neighborRatio||0);
+      }
+    }
   }
   if(run)runs.push(run);return runs;
 }
-
 function contractorRiScheduleFromSources(type,district,riName,riCode=''){
   const byDay={};
   const candidates=normalizedRiTextCandidates(riName,riCode).concat(extraRiTextAliases(district,riName)).filter(Boolean);
@@ -3289,14 +3298,13 @@ async function buildGridServiceZonesForRegion(type,region,groups){
     wholeFeatureZone(type,region.feature,{district:region.district,riName:region.riName||'',vehicle:groups[0].vehicle,provider:groups[0].provider||routeCompany(groups[0].vehicle),days:groups[0].days,groupKey:groups[0].key,automatic:true,rural});
     return;
   }
-  // 읍·면은 법정리/노선통로 구조를 유지하고, 이 격자 분할은 동지역 자동권역에만 사용합니다.
   const latStep=.00175,lngStep=.00205;
   const ny=Math.max(1,Math.ceil((b.maxLat-b.minLat)/latStep));
   const nx=Math.max(1,Math.ceil((b.maxLng-b.minLng)/lngStep));
   const grid=Array.from({length:ny},()=>Array(nx).fill(null));
   const groupByKey=new Map(groups.map(g=>[g.key,g]));
 
-  // 1차: 기존 최근접 수거노선 기준으로 모든 셀을 분류하고 경계부만 표시해 둡니다.
+  // 1) Base classification by nearest source route.
   for(let iy=0;iy<ny;iy++){
     const lat0=b.minLat+iy*latStep,lat1=Math.min(b.maxLat,lat0+latStep),lat=(lat0+lat1)/2;
     for(let ix=0;ix<nx;ix++){
@@ -3309,8 +3317,6 @@ async function buildGridServiceZonesForRegion(type,region,groups){
   }
 
   function dominantNeighborForBoundary(iy,ix,cell){
-    // 가까운 확정권역부터 최대 3칸 반경까지 넓혀 보며, 셀 개수 비율이 높은 수거노선을 선택합니다.
-    // 동률이면 반경을 넓히고, 끝까지 동률이면 기존 최근접 분류를 보조기준으로 유지합니다.
     for(const radius of [1,2,3]){
       const counts=new Map();let total=0;
       for(let dy=-radius;dy<=radius;dy++)for(let dx=-radius;dx<=radius;dx++){
@@ -3323,11 +3329,8 @@ async function buildGridServiceZonesForRegion(type,region,groups){
       if(!counts.size)continue;
       const ranked=[...counts.entries()].sort((a,b)=>b[1]-a[1]||(a[0]===cell.key?-1:(b[0]===cell.key?1:String(a[0]).localeCompare(String(b[0]),'ko'))));
       const top=ranked[0],second=ranked[1];
-      if(!second||top[1]>second[1]){
-        return {key:top[0],support:top[1],total,ratio:top[1]/Math.max(1,total)};
-      }
+      if(!second||top[1]>second[1])return {key:top[0],support:top[1],total,ratio:top[1]/Math.max(1,total)};
     }
-    // 확정 이웃이 매우 적거나 끝까지 동률이면, 주변 모든 원분류의 비율을 한 번 더 비교합니다.
     const counts=new Map();let total=0;
     for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){
       if(!dx&&!dy)continue;
@@ -3341,7 +3344,7 @@ async function buildGridServiceZonesForRegion(type,region,groups){
     return {key:cell.key,support:0,total:0,ratio:0};
   }
 
-  // 2차: 경계부 셀을 주변 확정 자동권역의 점유비율이 높은 쪽 일정에 편입합니다.
+  // 2) Boundary cells inherit the locally dominant neighboring route but stay marked estimated.
   for(let iy=0;iy<ny;iy++)for(let ix=0;ix<nx;ix++){
     const cell=grid[iy][ix];if(!cell?.ambiguous)continue;
     const choice=dominantNeighborForBoundary(iy,ix,cell);
@@ -3350,17 +3353,40 @@ async function buildGridServiceZonesForRegion(type,region,groups){
     cell.neighborRatio=choice.ratio;cell.neighborSupport=choice.support;cell.neighborTotal=choice.total;
   }
 
-  // 3차: 확정셀과 추정셀을 따로 병합하여, 추정 표기가 확정권역에 섞여 사라지지 않게 합니다.
+  // 3) Merge adjacent cells into large display blocks.  First merge each row, then extend
+  // identical runs vertically.  Any remaining touching blocks have no internal stroke, so
+  // they read visually as one service area rather than a checkerboard of cells.
+  const finished=[];let active=new Map();
   for(let iy=0;iy<ny;iy++){
-    const cells=grid[iy].filter(Boolean);
-    for(const run of mergedRowRuns(cells)){
-      const left=b.minLng+run.x0*lngStep,right=Math.min(b.maxLng,b.minLng+(run.x1+1)*lngStep);
-      addServiceZonePolygon(type,[{lat:run.lat0,lng:left},{lat:run.lat0,lng:right},{lat:run.lat1,lng:right},{lat:run.lat1,lng:left}],{
-        district:region.district,riName:region.riName||'',vehicle:run.group.vehicle,provider:run.group.provider||routeCompany(run.group.vehicle),days:run.group.days,groupKey:run.group.key,
-        ambiguous:false,estimated:!!run.estimated,neighborRatio:+run.neighborRatio||0,neighborSupport:+run.neighborSupport||0,neighborTotal:+run.neighborTotal||0,automatic:true,rural
-      });
+    const runs=mergedRowRuns(grid[iy].filter(Boolean));
+    const next=new Map();
+    for(const run of runs){
+      const id=`${run.sig}|${run.x0}|${run.x1}`;
+      const prev=active.get(id);
+      if(prev&&prev.iy1===iy-1){
+        prev.iy1=iy;prev.lat1=run.lat1;
+        if(prev.estimated){
+          prev.neighborSupport+=(+run.neighborSupport||0);
+          prev.neighborTotal+=(+run.neighborTotal||0);
+          prev.neighborRatio=prev.neighborTotal?prev.neighborSupport/prev.neighborTotal:(+prev.neighborRatio||0);
+        }
+        next.set(id,prev);
+      }else{
+        next.set(id,{...run,iy0:iy,iy1:iy});
+      }
     }
-    if(iy%8===0)await sleepMs(0);
+    for(const [id,rect] of active)if(!next.has(id))finished.push(rect);
+    active=next;
+  }
+  for(const rect of active.values())finished.push(rect);
+
+  for(const rect of finished){
+    const left=b.minLng+rect.x0*lngStep,right=Math.min(b.maxLng,b.minLng+(rect.x1+1)*lngStep);
+    const bottom=b.minLat+rect.iy0*latStep,top=Math.min(b.maxLat,b.minLat+(rect.iy1+1)*latStep);
+    addServiceZonePolygon(type,[{lat:bottom,lng:left},{lat:bottom,lng:right},{lat:top,lng:right},{lat:top,lng:left}],{
+      district:region.district,riName:region.riName||'',vehicle:rect.group.vehicle,provider:rect.group.provider||routeCompany(rect.group.vehicle),days:rect.group.days,groupKey:rect.group.key,
+      ambiguous:false,estimated:!!rect.estimated,neighborRatio:+rect.neighborRatio||0,neighborSupport:+rect.neighborSupport||0,neighborTotal:+rect.neighborTotal||0,automatic:true,rural,gridMerged:true
+    });
   }
 }
 function isContractRegion(region){return false}
