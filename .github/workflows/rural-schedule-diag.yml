@@ -15,25 +15,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Extract compact contractor schedule logic
+      - name: Summarize contractor schedules
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import json,re
           txt=Path('index.html').read_text(encoding='utf-8')
-          lines=txt.splitlines()
-          out=[f'CURRENT lines={len(lines)} chars={len(txt)}']
-          keys=['CONTRACT_ROUTES','CONTRACT_ROUTE_META','CONTRACT_SOURCE_DATA','contractExactScheduleMatch','renderContractExactSchedule','findRegionEntries','요일 확인 필요','제일환경','현대환경','대행수거']
-          hits=[]
-          for i,line in enumerate(lines):
-              if any(k in line for k in keys): hits.append(i)
-          selected=set()
-          for i in hits:
-              for n in range(max(0,i-5),min(len(lines),i+10)): selected.add(n)
-          for n in sorted(selected):
-              line=lines[n]
-              if len(line)>1800: line=line[:1800]+' ...[TRUNCATED]'
-              out.append(f'{n+1}: {line}')
+          m=re.search(r'const CONTRACT_SOURCE_DATA=(\{.*?\});\nconst CONTRACT_ROUTES=',txt,re.S)
+          if not m: raise SystemExit('CONTRACT_SOURCE_DATA not found')
+          data=json.loads(m.group(1))
+          out=[]
+          for typ in ('general','recycle'):
+              out.append(f'[{typ}]')
+              for r in data.get('routes',{}).get(typ,[]):
+                  if r.get('housing')=='apartment': continue
+                  out.append(f"{r.get('provider')} | {r.get('plate')} | {','.join(r.get('districts',[]))} | {r.get('housing')} | zoneEligible={r.get('zoneEligible')} | days={','.join(r.get('days',{}).keys())}")
+          out.append('[special]')
+          for r in data.get('special',[]):
+              if r.get('housing')=='apartment': continue
+              out.append(f"{r.get('type')} | {r.get('provider')} | {r.get('district')} | {r.get('vehicle')} | {r.get('address')} | days={','.join(r.get('days',[]))}")
+          out.append('[meta]')
+          for k,v in data.get('meta',{}).items():
+              if v.get('housing')=='apartment': continue
+              out.append(f"{k} => provider={v.get('provider')} plate={v.get('plate')} district={v.get('district')} housing={v.get('housing')} zoneEligible={v.get('zoneEligible')}")
           Path('tools/rural_schedule_diag.txt').write_text('\n'.join(out),encoding='utf-8')
           PY
       - name: Commit diagnostic
@@ -43,5 +48,5 @@ jobs:
           git config user.name 'ChatGPT Diagnostic Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tools/rural_schedule_diag.txt tools/rural-schedule-diag.trigger
-          git commit -m 'Record compact contractor schedule diagnostic'
+          git commit -m 'Summarize contractor schedules'
           git push
