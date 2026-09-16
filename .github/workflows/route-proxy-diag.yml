@@ -1,0 +1,63 @@
+name: Route proxy diagnostic
+
+on:
+  push:
+    paths:
+      - 'tools/route-proxy-diag.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test deployed route proxy and inspect frontend calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT=tools/route_proxy_diag.txt
+          : > "$OUT"
+          echo '=== live proxy simple POST ===' >> "$OUT"
+          curl -sS -D /tmp/h1 -o /tmp/b1 -X POST 'https://cjwaste-route.yseong22.workers.dev/route' \
+            -H 'Content-Type: application/json' \
+            --data '{"points":[{"x":127.4866,"y":36.6515},{"x":127.4900,"y":36.6540}]}' || true
+          cat /tmp/h1 >> "$OUT" || true
+          cat /tmp/b1 >> "$OUT" || true
+          echo >> "$OUT"
+          echo '=== live proxy lat/lng POST ===' >> "$OUT"
+          curl -sS -D /tmp/h2 -o /tmp/b2 -X POST 'https://cjwaste-route.yseong22.workers.dev/route' \
+            -H 'Content-Type: application/json' \
+            --data '{"points":[{"lng":127.4866,"lat":36.6515},{"lng":127.4900,"lat":36.6540}]}' || true
+          cat /tmp/h2 >> "$OUT" || true
+          cat /tmp/b2 >> "$OUT" || true
+          echo >> "$OUT"
+          echo '=== relevant frontend lines ===' >> "$OUT"
+          python3 - <<'PY' >> "$OUT"
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8').splitlines()
+          keys=['ROUTE_PROXY_URL','fetch(ROUTE_PROXY_URL','route_failed','도로망 수거노선','points:','waypoints','requestRoute','buildRoad','roadRoute','mobility']
+          hit=[]
+          for i,line in enumerate(s):
+              if any(k in line for k in keys):
+                  hit.append(i)
+          seen=set()
+          for i in hit:
+              if any(abs(i-j)<8 for j in seen): continue
+              seen.add(i)
+              print(f'--- around {i+1} ---')
+              for n in range(max(0,i-16),min(len(s),i+35)):
+                  t=s[n]
+                  if len(t)>1200:t=t[:1200]+' ...[CUT]'
+                  print(f'{n+1}: {t}')
+          PY
+      - name: Commit diagnostic
+        shell: bash
+        run: |
+          rm -f tools/route-proxy-diag.trigger
+          git config user.name 'ChatGPT Diagnostic Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/route_proxy_diag.txt tools/route-proxy-diag.trigger
+          git commit -m 'Record route proxy diagnostic'
+          git push
