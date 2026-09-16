@@ -1,0 +1,27 @@
+name: Diagnose Naedeok2 contractor interpretation
+
+on:
+  push:
+    paths:
+      - 'tools/diag-naedeok2-contract.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract current code context
+        run: python3 tools/diag_naedeok2_contract.py
+      - name: Commit diagnostic
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/diag-naedeok2-contract.trigger
+          git add tools/naedeok2_contract_diag.txt tools/diag-naedeok2-contract.trigger
+          git commit -m 'Record Naedeok2 contractor diagnostic'
+          git push
