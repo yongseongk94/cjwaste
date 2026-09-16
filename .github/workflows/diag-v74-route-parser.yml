@@ -1,0 +1,27 @@
+name: Diagnose v74 route parser
+
+on:
+  push:
+    paths:
+      - 'tools/v74-parser-diag.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Extract parser
+        run: python3 tools/extract_v74_route_parser.py
+      - name: Commit report
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/v74-parser-diag.trigger
+          git add tools/v74_route_parser_diag.txt tools/v74-parser-diag.trigger
+          git commit -m 'Record v74 route parser diagnostic'
+          git push
