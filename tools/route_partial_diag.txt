@@ -1,0 +1,203 @@
+===== 2890-2955 =====
+2890:       ...descriptors.filter(d=>isRoadRouteTerm(routeSearchAlias(d.term))).map(d=>routeSearchAlias(d.term))
+2891:     ])];
+2892:     const coveredRoadTerms=[];
+2893:     const outsideRoadTerms=[];
+2894:     const addressRangeTerms=sourceAddressRangeTermsForSpec(spec);
+2895: 
+2896:     for(const desc of descriptors){
+2897:       const term=desc.term;
+2898:       let generic=await searchRouteTermPlaces(term);
+2899:       generic=await expandRangeCandidates(generic,desc);
+2900:       const roadTerm=isRoadRouteTerm(routeSearchAlias(term)) || desc.scope==='road' || desc.scope==='line';
+2901:       const roadSamples=roadTerm?await searchRoadAnchorPlaces(routeSearchAlias(term)):[];
+2902:       const merged=uniqueRoutePoints([...roadSamples,...generic]);
+2903:       const candidates=[];
+2904:       const outside=[];
+2905:       let rejectedOutOfGu=0;
+2906: 
+2907:       for(const point of merged){
+2908:         const actualDistrict=routePointAnyDistrict(point);
+2909:         if(!actualDistrict||!CHEONGWON_ROUTE_DISTRICTS.has(actualDistrict)){
+2910:           rejectedOutOfGu++;
+2911:           continue;
+2912:         }
+2913:         const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
+2914:         if(!allowed.includes(actualDistrict)){
+2915:           outside.push({...point,district:actualDistrict});
+2916:           continue;
+2917:         }
+2918:         candidates.push({...point,district:actualDistrict});
+2919:       }
+2920: 
+2921:       if(rejectedOutOfGu && !candidates.length && !outside.length)outOfCheongwonTerms.push(term);
+2922:       if(desc.scope==='range'||desc.scope==='road-address-range')rangeTerms.push(term);
+2923:       if(!candidates.length){
+2924:         if(outside.length){
+2925:           outsideTerms.push(term);
+2926:           if(roadTerm){
+2927:             const rk=routeSearchAlias(term);
+2928:             if(requiredRoadTerms.includes(rk)&&!outsideRoadTerms.includes(rk))outsideRoadTerms.push(rk);
+2929:           }
+2930:         }else if(!outOfCheongwonTerms.includes(term))missingTerms.push(term);
+2931:       }
+2932:       entries.push({term,desc,isRoad:roadTerm,candidates,outside,rejectedOutOfGu});
+2933:     }
+2934: 
+2935:     const segments=[];
+2936:     const servicePoints=[];
+2937:     const zoneEvidencePoints=[];
+2938:     const ruralMovementAnchors=Object.fromEntries([...RURAL_INFERRED_ROUTE_DISTRICTS].map(d=>[d,[]]));
+2939:     let anchorPointCount=0;
+2940:     let serviceTermCount=0;
+2941:     let roadRequestedCount=0;
+2942:     let roadMatchedCount=0;
+2943: 
+2944:     // 중요: 각 코스 항목을 독립적으로 처리합니다.
+2945:     // 이전처럼 A→B→C를 하나의 길찾기로 연결하지 않으므로 "다음 수거구간으로 이동하는 길"은 지도에 그려지지 않습니다.
+2946:     for(const entry of entries){
+2947:       if(!entry.candidates.length)continue;
+2948: 
+2949:       const base=bestLocalCandidate(entry);
+2950:       // 내수·북이는 원본 항목 순서를 보존해 각 리/도로/시설 사이 차량 이동경로를 도로망으로 추정합니다.
+2951:       for(const ruralDistrict of RURAL_INFERRED_ROUTE_DISTRICTS){
+2952:         const localCandidates=entry.candidates.filter(p=>canonicalDistrict(p.district||routePointAnyDistrict(p))===ruralDistrict);
+2953:         if(!localCandidates.length)continue;
+2954:         const localBase=bestLocalCandidate({...entry,candidates:localCandidates});
+2955:         if(localBase)ruralMovementAnchors[ruralDistrict].push({lat:+localBase.lat,lng:+localBase.lng,name:localBase.name||entry.term,term:entry.term,district:ruralDistrict});
+===== 2788-2820 =====
+2788:     const roadHandled=coveredRoadTerms.length+outsideRoadTerms.length;
+2789:     const roads=requiredRoadTerms.length?` · 원본 명시도로 ${roadHandled}/${requiredRoadTerms.length} (동선 ${coveredRoadTerms.length}·읍면 ${outsideRoadTerms.length})`:'';
+2790:     const evidence=zoneEvidencePoints.length?` · 권역근거점 ${zoneEvidencePoints.length}개`:'';
+2791:     return `원본 ${termsCount}개 항목 · 표시 수거구간 ${segments.length}개${evidence}${inferredMovementCount?` · 내수·북이 차량이동 추정 ${inferredMovementCount}구간`:''}${roads}${api}${outside}${blocked} · 미해결 ${missingTerms.length}개`;
+2792:   };
+2793:   const mouseover=e=>{
+2794:     emphasize();
+2795:     showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 수거구간`,basisText());
+2796:   };
+2797:   const mousemove=e=>moveZoneTooltip(e.latLng);
+2798:   const mouseout=()=>{normalize();hideZoneTooltip()};
+2799:   const click=()=>{
+2800:     const original=String(spec.raw||'').replace(/\s+/g,' ').trim();
+2801:     const apiNote=roadRequestedCount?` · 실제 도로망 적용 ${roadMatchedCount}/${roadRequestedCount}구간`:'';
+2802:     const outsideNote=outsideTerms.length?` · 읍·면/다른 권역 처리: ${escapeHtml(outsideTerms.join(', '))}`:'';
+2803:     const blockedNote=outOfCheongwonTerms.length?` · 청원구 밖 검색결과 차단: ${escapeHtml(outOfCheongwonTerms.join(', '))}`:'';
+2804:     const outsideRoadNote=outsideRoadTerms.length?` · 읍·면 면레이어 처리 도로: ${escapeHtml(outsideRoadTerms.join(', '))}`:'';
+2805:     const addressRangeNote=addressRangeTerms.length?` · 도로주소형 구간: ${escapeHtml(addressRangeTerms.join(', '))}`:'';
+2806:     const missingRoadNote=missingRoadTerms.length?` · 미표시 도로: ${escapeHtml(missingRoadTerms.join(', '))}`:'';
+2807:     const missingNote=missingTerms.length?` · 미해결 항목: ${escapeHtml(missingTerms.join(', '))}`:'';
+2808:     const rangeNote=rangeTerms.length?` · 범위표현: ${escapeHtml(rangeTerms.join(', '))}`:'';
+2809:     const secondaryNote=secondaryText?` · ${secondaryKind}: ${escapeHtml(secondaryText)} ※ ${secondaryKind}은 주 수거구간과 별도 작업정보입니다.`:'';
+2810:     updateMapBadge(`${districtLabel} · ${escapeHtml(routeDisplayLabel(spec.vehicle))} · ${spec.day}요일 · 실제 수거구간 ${segments.length}개 · ${inferredMovementCount?`내수·북이 차량이동 추정 ${inferredMovementCount}구간 포함`:`구간 사이 이동선 제외`}${apiNote}${distance?` · 표시구간 약 ${(distance/1000).toFixed(1)}km`:''}${outsideNote}${blockedNote}${rangeNote}${outsideRoadNote}${addressRangeNote}${missingRoadNote}${missingNote}${secondaryNote} · 원본 주 수거코스: ${escapeHtml(original)}`);
+2811:   };
+2812: 
+2813:   polylines.forEach(shape=>{
+2814:     kakao.maps.event.addListener(shape,'mouseover',mouseover);
+2815:     kakao.maps.event.addListener(shape,'mousemove',mousemove);
+2816:     kakao.maps.event.addListener(shape,'mouseout',mouseout);
+2817:     kakao.maps.event.addListener(shape,'click',click);
+2818:   });
+2819: 
+2820:   const item={
+===== 2470-2570 =====
+2470:     const samples=await searchRoadAnchorPlaces(road);
+2471:     for(const s of samples){
+2472:       if(routePointDistance(base,s)>1.2)continue;
+2473:       if(!out.some(x=>Math.abs(x.lat-s.lat)<1e-6&&Math.abs(x.lng-s.lng)<1e-6))out.push({...s,source:'range-road-sample'});
+2474:     }
+2475:   }
+2476:   return out;
+2477: }
+2478: function routeProxyConfigured(){
+2479:   const u=String(ROUTE_PROXY_URL||'').trim();
+2480:   return (u.startsWith('/') || /^https:\/\//i.test(u)) && !/YOUR|계정|example/i.test(u);
+2481: }
+2482: async function fetchRoadFollowingPath(points){
+2483:   if(!routeProxyConfigured()||!Array.isArray(points)||points.length<2)return null;
+2484:   const clean=[];
+2485:   for(const p of points){
+2486:     const q={lng:+p.lng,lat:+p.lat,term:p.term||'',name:p.name||''};
+2487:     if(!Number.isFinite(q.lng)||!Number.isFinite(q.lat))continue;
+2488:     const prev=clean[clean.length-1];
+2489:     if(prev&&Math.abs(prev.lng-q.lng)<1e-7&&Math.abs(prev.lat-q.lat)<1e-7)continue;
+2490:     clean.push(q);
+2491:   }
+2492:   if(clean.length<2)return null;
+2493: 
+2494:   window.__CJWASTE_ROUTE_PROXY_FINAL_FAILURES=window.__CJWASTE_ROUTE_PROXY_FINAL_FAILURES||0;
+2495:   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+2496:   const mergePaths=(a,b)=>{
+2497:     if(!a?.length)return b||[];
+2498:     if(!b?.length)return a||[];
+2499:     const out=[...a],last=out[out.length-1],first=b[0];
+2500:     const skip=last&&first&&Math.abs(last.lng-first.lng)<1e-8&&Math.abs(last.lat-first.lat)<1e-8?1:0;
+2501:     out.push(...b.slice(skip));return out;
+2502:   };
+2503: 
+2504:   async function requestOnce(batch){
+2505:     const payload={
+2506:       points:batch.map(p=>({x:+p.lng,y:+p.lat,name:String(p.term||p.name||'').slice(0,80)})),
+2507:       priority:'RECOMMEND'
+2508:     };
+2509:     const controller=new AbortController();
+2510:     const timer=setTimeout(()=>controller.abort(),25000);
+2511:     try{
+2512:       const res=await fetch(ROUTE_PROXY_URL,{
+2513:         method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal
+2514:       });
+2515:       const raw=await res.text();
+2516:       let data={};try{data=raw?JSON.parse(raw):{}}catch(e){data={}}
+2517:       if(!res.ok)throw new Error(`route proxy ${res.status}${raw?' '+raw.slice(0,220):''}`);
+2518:       const path=(data?.path||[]).map(p=>({lng:+p[0],lat:+p[1]})).filter(p=>Number.isFinite(p.lng)&&Number.isFinite(p.lat));
+2519:       if(path.length<2)throw new Error('empty road path');
+2520:       return {path,distance:+data.distance||0,duration:+data.duration||0,chunks:+data.chunks||1};
+2521:     }finally{clearTimeout(timer)}
+2522:   }
+2523: 
+2524:   async function requestWithRetry(batch){
+2525:     let lastErr=null;
+2526:     for(let attempt=0;attempt<3;attempt++){
+2527:       try{return await requestOnce(batch)}catch(err){
+2528:         lastErr=err;
+2529:         if(attempt<2)await sleep(attempt===0?250:700);
+2530:       }
+2531:     }
+2532:     throw lastErr||new Error('route request failed');
+2533:   }
+2534: 
+2535:   async function requestResilient(batch,depth=0){
+2536:     try{return await requestWithRetry(batch)}catch(err){
+2537:       if(batch.length<=2||depth>=6)throw err;
+2538:       const mid=Math.floor((batch.length-1)/2);
+2539:       const left=await requestResilient(batch.slice(0,mid+1),depth+1);
+2540:       const right=await requestResilient(batch.slice(mid),depth+1);
+2541:       return {path:mergePaths(left.path,right.path),distance:(+left.distance||0)+(+right.distance||0),duration:(+left.duration||0)+(+right.duration||0),chunks:(+left.chunks||1)+(+right.chunks||1)};
+2542:     }
+2543:   }
+2544: 
+2545:   try{
+2546:     let path=[],distance=0,duration=0,chunks=0;
+2547:     const MAX_POINTS=18;
+2548:     for(let start=0;start<clean.length-1;start+=MAX_POINTS-1){
+2549:       const batch=clean.slice(start,Math.min(start+MAX_POINTS,clean.length));
+2550:       if(batch.length<2)break;
+2551:       const part=await requestResilient(batch);
+2552:       path=mergePaths(path,part.path);distance+=+part.distance||0;duration+=+part.duration||0;chunks+=+part.chunks||1;
+2553:     }
+2554:     if(path.length<2)throw new Error('no complete road path');
+2555:     return {path,distance,duration,chunks:chunks||1};
+2556:   }catch(err){
+2557:     window.__CJWASTE_ROUTE_PROXY_FINAL_FAILURES++;
+2558:     console.warn('도로망 수거노선 최종 실패, 직선 대체 없이 해당 구간을 제외합니다.',err);
+2559:     return null;
+2560:   }
+2561: }
+2562: 
+2563: function pointInsideRouteDistricts(point,districts){
+2564:   if(!point||!Array.isArray(districts)||!districts.length)return false;
+2565:   return districts.some(d=>{
+2566:     const f=districtFeatureMap.get(d);
+2567:     return !!f && pointInGeoFeature([+point.lng,+point.lat],f);
+2568:   });
+2569: }
+2570: function clipRoutePathToDistricts(path,districts){
