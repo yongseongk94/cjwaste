@@ -1,0 +1,18 @@
+PAGEERROR: Cannot access 'DISTRICT_ALIASES' before initialization
+URL=https://yongseongk94.github.io/cjwaste/
+HTTP=200
+BEFORE landingClass=null
+BEFORE status=
+BEFORE geocoder=evalerr:page.evaluate: ReferenceError: geocoder is not defined
+    at eval (eval at evaluate (:291:30), <anonymous>:1:5)
+    at UtilityScript.evaluate (<anonymous>:293:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+PAGEERROR: Cannot access 'DISTRICT_ALIASES' before initialization
+AFTER landingClass=null
+AFTER status=
+AFTER address=주소를 검색해주세요.
+AFTER district=청원구 행정동 확인 중
+AFTER geocoder=evalerr:page.evaluate: ReferenceError: geocoder is not defined
+    at eval (eval at evaluate (:291:30), <anonymous>:1:5)
+    at UtilityScript.evaluate (<anonymous>:293:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
