@@ -2454,8 +2454,12 @@ function splitRouteLocationUnits(part){
 function routeDescriptorsForMap(raw){
   const src=expandRouteShorthand(expandKnownMultiLocationSource(raw));
   const out=[];
-  src.split(/[,\n]/).forEach(part=>{
-    String(part||'').split(/\s*및\s*|\s*\/\s*/).forEach(unit=>{
+
+  // 최상위 쉼표/줄바꿈만 위치 구분자로 사용합니다.
+  // 괄호 안의 '쉐보레부품,더좋은하우스' 같은 복수 시설은 아래에서 따로 분리합니다.
+  splitTopLevelRouteParts(src).forEach(part=>{
+    // '/', '및', 'A~B'는 실제 복수 위치/구간으로 분리합니다.
+    splitRouteLocationUnits(part).forEach(unit=>{
       const original=String(unit||'').trim();
       if(!original)return;
       const bareOriginal=original.replace(/\([^)]*\)/g,' ').trim();
@@ -2471,7 +2475,12 @@ function routeDescriptorsForMap(raw){
 
       const hasRange=/(일대|일원|원룸지역|상가지역|주거지역)/.test(original);
       const hasLine=/(간선|주요간선도로)/.test(original);
-      const parens=[...original.matchAll(/\(([^)]+)\)/g)].map(m=>m[1].trim()).filter(Boolean);
+      const parens=[...original.matchAll(/\(([^)]+)\)/g)]
+        .map(m=>m[1].trim())
+        .filter(Boolean)
+        .flatMap(x=>String(x).split(/\s*,\s*|\s*\/\s*|\s*및\s*/))
+        .map(x=>x.trim())
+        .filter(Boolean);
       const outer=cleanRouteTerm(bareOriginal);
 
       if(outer){
@@ -2483,11 +2492,11 @@ function routeDescriptorsForMap(raw){
         out.push({term:outer,scope,raw:original});
       }
 
-      // 괄호 안 도로명은 원문 위치의 독립 수거도로로 취급합니다.
+      // 괄호 안 도로명/시설명도 원문 위치의 독립 수거지점으로 취급합니다.
       for(const inside of parens){
         const pt=cleanRouteTerm(inside);
         if(!pt)continue;
-        let scope=isRoadRouteTerm(pt)?'road':(isRoadAddressPointTerm(pt)?'road-address':'point');
+        const scope=isRoadRouteTerm(pt)?'road':(isRoadAddressPointTerm(pt)?'road-address':'point');
         out.push({term:pt,scope,raw:original,parent:outer||''});
       }
     });
