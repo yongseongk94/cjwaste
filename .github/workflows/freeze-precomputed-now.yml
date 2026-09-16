@@ -16,20 +16,20 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Wait for deployed v65
+      - name: Wait for deployed v68 boundary zones
         shell: bash
         run: |
           set -euo pipefail
           for i in $(seq 1 60); do
-            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" | grep -q 'v65:'; then
-              echo 'v65 is deployed'
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" | grep -q 'zone-v68-boundary-majority'; then
+              echo 'v68 boundary-majority zones are deployed'
               exit 0
             fi
             sleep 5
           done
-          echo 'Timed out waiting for v65 Pages deployment' >&2
+          echo 'Timed out waiting for v68 Pages deployment' >&2
           exit 1
-      - name: Capture exact geometry from deployed v65
+      - name: Capture exact geometry from deployed v68
         shell: bash
         run: |
           set -euo pipefail
@@ -54,8 +54,11 @@ jobs:
             const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
             if(!data?.routes?.length) throw new Error('No routes exported');
             if(!data?.zones?.general?.length || !data?.zones?.recycle?.length) throw new Error('No service zones exported');
+            if(data.zoneVersion!=='zone-v68-boundary-majority|'+data.version) console.log('ZONE_VERSION',data.zoneVersion,'ROUTE_VERSION',data.version);
+            const estimated={general:(data.zones.general||[]).filter(z=>z.estimated).length,recycle:(data.zones.recycle||[]).filter(z=>z.estimated).length};
             fs.writeFileSync('/tmp/precomputed.json',JSON.stringify(data));
             console.log('CONTRACT_AUDIT',JSON.stringify(audit));
+            console.log('ESTIMATED_BOUNDARY_ZONES',JSON.stringify(estimated));
             console.log(`EXPORTED routes=${data.routes.length} generalZones=${data.zones.general.length} recycleZones=${data.zones.recycle.length}`);
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
@@ -91,5 +94,5 @@ jobs:
             echo 'No precomputed changes to commit.'
             exit 0
           fi
-          git commit -m 'Embed v65 contractor route and service-zone geometry'
+          git commit -m 'Embed v68 boundary-majority service zones'
           git push
