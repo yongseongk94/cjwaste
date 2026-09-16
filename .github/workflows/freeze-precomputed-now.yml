@@ -11,11 +11,25 @@ permissions:
 jobs:
   freeze:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Capture exact geometry from deployed v63
+      - name: Wait for deployed v65
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 60); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?check=$RANDOM" | grep -q 'v65:'; then
+              echo 'v65 is deployed'
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'Timed out waiting for v65 Pages deployment' >&2
+          exit 1
+      - name: Capture exact geometry from deployed v65
         shell: bash
         run: |
           set -euo pipefail
@@ -28,17 +42,20 @@ jobs:
           const fs=require('fs');
           const puppeteer=require('puppeteer-core');
           (async()=>{
-            const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const browser=await puppeteer.launch({headless:true,protocolTimeout:1200000,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
             const page=await browser.newPage();
+            page.setDefaultTimeout(1200000);
             page.on('console',msg=>console.log('PAGE',msg.text()));
             page.on('pageerror',err=>console.error('PAGEERROR',err.message));
-            await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
-            await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:120000});
-            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:900000,polling:1000});
+            await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
+            await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:180000});
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1200000,polling:1000});
+            const audit=await page.evaluate(()=>window.CONTRACT_SOURCE_AUDIT||null);
             const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
             if(!data?.routes?.length) throw new Error('No routes exported');
             if(!data?.zones?.general?.length || !data?.zones?.recycle?.length) throw new Error('No service zones exported');
             fs.writeFileSync('/tmp/precomputed.json',JSON.stringify(data));
+            console.log('CONTRACT_AUDIT',JSON.stringify(audit));
             console.log(`EXPORTED routes=${data.routes.length} generalZones=${data.zones.general.length} recycleZones=${data.zones.recycle.length}`);
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
@@ -70,5 +87,9 @@ jobs:
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html tools/
-          git commit -m 'Embed precomputed route and service-zone geometry'
+          if git diff --cached --quiet; then
+            echo 'No precomputed changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Embed v65 contractor route and service-zone geometry'
           git push
