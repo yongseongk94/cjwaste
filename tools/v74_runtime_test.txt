@@ -1,0 +1,58 @@
+{
+  "version": "v74-source-multilocation",
+  "expandA": "사북로 145~121",
+  "knownA": "사북로 145~121",
+  "topA": [
+    "사북로 145~121"
+  ],
+  "rangeA": [
+    "사북로 145",
+    "사북로 121"
+  ],
+  "unitsA": [
+    "사북로 145",
+    "사북로 121"
+  ],
+  "finalA": [
+    {
+      "term": "사북로 145",
+      "scope": "road-address",
+      "raw": "사북로 145"
+    },
+    {
+      "term": "사북로 121",
+      "scope": "road-address",
+      "raw": "사북로 121"
+    }
+  ],
+  "expandB": "교서로 222번길 일대 (쉐보레부품,더좋은하우스)",
+  "knownB": "교서로 222번길 일대 (쉐보레부품,더좋은하우스)",
+  "topB": [
+    "교서로 222번길 일대 (쉐보레부품,더좋은하우스)"
+  ],
+  "unitsB": [
+    "교서로 222번길 일대 (쉐보레부품,더좋은하우스)"
+  ],
+  "finalB": [
+    {
+      "term": "교서로 222번길",
+      "scope": "road",
+      "raw": "교서로 222번길 일대 (쉐보레부품,더좋은하우스)"
+    },
+    {
+      "term": "쉐보레부품",
+      "scope": "point",
+      "raw": "교서로 222번길 일대 (쉐보레부품,더좋은하우스)",
+      "parent": "교서로 222번길"
+    },
+    {
+      "term": "더좋은하우스",
+      "scope": "point",
+      "raw": "교서로 222번길 일대 (쉐보레부품,더좋은하우스)",
+      "parent": "교서로 222번길"
+    }
+  ],
+  "routeFn": "function routeDescriptorsForMap(raw){\n  const src=expandRouteShorthand(expandKnownMultiLocationSource(raw));\n  const out=[];\n\n  // 최상위 쉼표/줄바꿈만 위치 구분자로 사용합니다.\n  // 괄호 안의 '쉐보레부품,더좋은하우스' 같은 복수 시설은 아래에서 따로 분리합니다.\n  splitTopLevelRouteParts(src).forEach(part=>{\n    // '/', '및', 'A~B'는 실제 복수 위치/구간으로 분리합니다.\n    splitRouteLocationUnits(part).forEach(unit=>{\n      const original=String(unit||'').trim();\n      if(!original)return;\n      const bareOriginal=original.replace(/\\([^)]*\\)/g,' ').trim();\n\n      // '및 원룸지역'처럼 범위어만 떨어져 적힌 경우 직전 항목의 범위 의미로 흡수합니다.\n      if(/^(원룸지역|상가지역|주거지역)$/.test(bareOriginal)){\n        if(out.length){\n          out[out.length-1].scope='range';\n          out[out.length-1].raw=`${out[out.length-1].raw} + ${bareOriginal}`;\n        }\n        return;\n      }\n\n      const hasRange=/(일대|일원|원룸지역|상가지역|주거지역)/.test(original);\n      const hasLine=/(간선|주요간선도로)/.test(original);\n      const parens=[...original.matchAll(/\\(([^)]+)\\)/g)]\n        .map(m=>m[1].trim())\n        .filter(Boolean)\n        .flatMap(x=>String(x).split(/\\s*,\\s*|\\s*\\/\\s*|\\s*및\\s*/))\n        .map(x=>x.trim())\n        .filter(Boolean);\n      const outer=cleanRouteTerm(bareOriginal);\n\n      if(outer){\n        let scope=hasRange?'range':(hasLine?'line':'point');\n        if(isRoadRouteTerm(outer))scope='road';\n        else if(isRoadAddressPointTerm(outer))scope=hasRange?'road-address-range':'road-address';\n        // '내덕2동주요간선도로' 같이 실제 도로명이 아닌 포괄문구는 선을 만들지 않습니다.\n        if(/주요간선도로$/.test(outer))scope='broad';\n        out.push({term:outer,scope,raw:original});\n      }\n\n      // 괄호 안 도로명/시설명도 원문 위치의 독립 수거지점으로 취급합니다.\n      for(const inside of parens){\n        const pt=cleanRouteTerm(inside);\n        if(!pt)continue;\n        const scope=isRoadRouteTerm(pt)?'road':(isRoadAddressPointTerm(pt)?'road-address':'point');\n        out.push({term:pt,scope,raw:original,parent:outer||''});\n      }\n    });\n  });\n\n  // 연속 중복만 정리합니다. 원본 순서와 반복 방문은 유지합니다.\n  return out.filter((d,i)=>i===0 || routeNorm(d.term)!==routeNorm(out[i-1].term) || d.scope!==out[i-1].scope);\n}",
+  "rangeFn": "function splitRouteRangeUnit(unit){\n  const s=String(unit||'').trim(); if(!s)return [];\n  if(/\\d{1,2}:\\d{2}\\s*[~～]\\s*\\d{1,2}:\\d{2}/.test(s))return [s];\n  if(!/[~～]/.test(s))return [s];\n  const parts=s.split(/\\s*[~～]\\s*/,2);\n  let left=String(parts[0]||'').trim(), right=String(parts[1]||'').trim();\n  if(!left)return right?[right]:[];\n  if(!right)return [left];\n  if(/^\\d+(?:-\\d+)?(?:\\s*(?:일대|일원|주변|원룸촌\\s*일대))?$/.test(right)){\n    const m=left.match(/^(.*?(?:대로|로|길|번길))\\s*\\d+(?:-\\d+)?/);\n    if(m)right=`${m[1]} ${right}`;\n  }\n  return [left,right];\n}",
+  "topFn": "function splitTopLevelRouteParts(src){\n  const out=[]; let buf=''; let depth=0;\n  for(const ch of String(src||'')){\n    if(ch==='(')depth++;\n    if(ch===')'&&depth>0)depth--;\n    if((ch===','||ch==='\\n')&&depth===0){ if(buf.trim())out.push(buf.trim()); buf=''; continue; }\n    buf+=ch;\n  }\n  if(buf.trim())out.push(buf.trim());\n  return out;\n}"
+}
