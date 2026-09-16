@@ -1,0 +1,73 @@
+name: Fix v74 parser body
+
+on:
+  push:
+    paths:
+      - 'tools/v74-parser-body.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Replace parser body
+        run: |
+          python3 tools/fix_v74_route_parser_body.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          t=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/index-inline.js').write_text('\n'.join(re.findall(r'<script>(.*?)</script>',t,flags=re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit parser body fix
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/v74-parser-body.trigger
+          git add index.html tools/v74-parser-body.trigger
+          git commit -m 'Wire multi-location parsing into route parser'
+          git push
+      - name: Wait for Pages
+        run: |
+          for i in $(seq 1 100); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?parser=$RANDOM" -o /tmp/live.html && grep -q 'splitRouteLocationUnits(part).forEach' /tmp/live.html; then exit 0; fi
+            sleep 3
+          done
+          exit 1
+      - name: Fast live parser tests
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          node - <<'NODE'
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage();
+            await page.goto('https://yongseongk94.github.io/cjwaste/?parser-test='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
+            await page.waitForFunction(()=>typeof routeDescriptorsForMap==='function',{timeout:120000});
+            const r=await page.evaluate(()=>({
+              range:routeDescriptorsForMap('사북로 145~121').map(x=>x.term),
+              haegadeun:routeDescriptorsForMap('공항로 84번길, 이랜드해가든아파트').map(x=>x.term),
+              apartments:routeDescriptorsForMap('율량로 17(주공1단지) / 율량로 47(주공2단지)').map(x=>x.term),
+              pois:routeDescriptorsForMap('교서로 222번길 일대 (쉐보레부품,더좋은하우스)').map(x=>x.term),
+              dangling:routeDescriptorsForMap('향군로 125 ~').map(x=>x.term)
+            }));
+            console.log(JSON.stringify(r,null,2));
+            if(r.range.length<2||!r.range.some(x=>String(x).includes('145'))||!r.range.some(x=>String(x).includes('121')))throw new Error('range split failed');
+            if(!r.haegadeun.some(x=>String(x).includes('공항로'))||!r.haegadeun.some(x=>String(x).includes('이랜드해가든')))throw new Error('Haegadeun split failed');
+            if(!r.apartments.some(x=>String(x).includes('율량로17'))&&!r.apartments.some(x=>String(x).includes('율량로 17')))throw new Error('apartment 1 missing');
+            if(!r.apartments.some(x=>String(x).includes('율량로47'))&&!r.apartments.some(x=>String(x).includes('율량로 47')))throw new Error('apartment 2 missing');
+            if(!r.pois.some(x=>String(x).includes('쉐보레부품'))||!r.pois.some(x=>String(x).includes('더좋은하우스')))throw new Error('POI split failed');
+            if(r.dangling.length!==1)throw new Error('dangling range created fake endpoint');
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
