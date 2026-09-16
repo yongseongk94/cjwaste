@@ -1,0 +1,96 @@
+name: Freeze precomputed map data
+
+on:
+  push:
+    paths:
+      - 'tools/freeze_precomputed.ready'
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for v63 GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://yongseongk94.github.io/cjwaste/'
+          for i in $(seq 1 60); do
+            if curl -fsSL "$URL?freeze_check=$RANDOM" | grep -q 'v63: audited dong routes'; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'Timed out waiting for v63 page deployment' >&2
+          exit 1
+
+      - name: Capture exact route and zone geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat >/tmp/freeze.js <<'NODE'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage();
+            page.setDefaultTimeout(900000);
+            await page.goto('https://yongseongk94.github.io/cjwaste/?precompute='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:900000});
+            const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
+            if(!data || !Array.isArray(data.routes) || !data.routes.length) throw new Error('No route data exported');
+            if(!data.zones || !Array.isArray(data.zones.general) || !Array.isArray(data.zones.recycle)) throw new Error('No zone data exported');
+            fs.writeFileSync('/tmp/precomputed.json',JSON.stringify(data));
+            console.log(`routes=${data.routes.length} generalZones=${data.zones.general.length} recycleZones=${data.zones.recycle.length}`);
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node /tmp/freeze.js
+
+      - name: Embed precomputed data into index
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          index=Path('index.html')
+          text=index.read_text(encoding='utf-8')
+          data=Path('/tmp/precomputed.json').read_text(encoding='utf-8')
+          pat=r'(<script id="bundledPrecomputed" type="application/json">).*?(</script>)'
+          new,n=re.subn(pat,lambda m:m.group(1)+data+m.group(2),text,count=1,flags=re.S)
+          if n!=1:
+            raise SystemExit('bundledPrecomputed placeholder not found')
+          index.write_text(new,encoding='utf-8')
+          PY
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path('index.html').read_text(encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit frozen data
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/freeze_precomputed.ready
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/freeze_precomputed.ready
+          git commit -m 'Embed precomputed waste-map geometry'
+          git push
