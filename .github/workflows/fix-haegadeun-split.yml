@@ -1,0 +1,61 @@
+name: Fix Haegadeun source split
+
+on:
+  push:
+    paths:
+      - 'tools/fix_haegadeun_split.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Split combined source locations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          text=p.read_text(encoding='utf-8')
+          old='공항로 84번길 해가든'
+          new='공항로 84번길, 이랜드해가든아파트'
+          n=text.count(old)
+          print('MATCH_COUNT', n)
+          if n < 1:
+              raise SystemExit('source text not found')
+          text=text.replace(old,new)
+          p.write_text(text,encoding='utf-8')
+          print('REPLACED', n)
+          PY
+      - name: Validate inline JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path('index.html').read_text(encoding='utf-8')
+          if '공항로 84번길 해가든' in text:
+              raise SystemExit('combined source text remains')
+          if '공항로 84번길, 이랜드해가든아파트' not in text:
+              raise SystemExit('split source text missing')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit split source locations
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/fix_haegadeun_split.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/fix_haegadeun_split.trigger
+          git commit -m 'Split Gonghang-ro and E-Land Haegadeun source locations'
+          git push
