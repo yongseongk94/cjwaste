@@ -22,14 +22,27 @@ jobs:
         run: |
           set -euo pipefail
           test -f tools/chatgpt_patch.ready
+          normalize_patch_paths() {
+            python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/chatgpt_patch.diff')
+          lines=p.read_text(encoding='utf-8').splitlines(True)
+          if len(lines)>=2:
+              lines[0]='--- a/index.html\n'
+              lines[1]='+++ b/index.html\n'
+          p.write_text(''.join(lines),encoding='utf-8')
+          PY
+          }
           if compgen -G 'tools/chatgpt_index.b64.part*' > /dev/null; then
             cat tools/chatgpt_index.b64.part* | base64 -d | gzip -d > index.html
           elif compgen -G 'tools/chatgpt_patch.hex.part*' > /dev/null; then
             cat tools/chatgpt_patch.hex.part* | xxd -r -p | gzip -d > /tmp/chatgpt_patch.diff
+            normalize_patch_paths
             git apply --check --whitespace=nowarn /tmp/chatgpt_patch.diff
             git apply --whitespace=nowarn /tmp/chatgpt_patch.diff
           else
             cat tools/chatgpt_patch.b64.part* | base64 -d | gzip -d > /tmp/chatgpt_patch.diff
+            normalize_patch_paths
             git apply --check --whitespace=nowarn /tmp/chatgpt_patch.diff
             git apply --whitespace=nowarn /tmp/chatgpt_patch.diff
           fi
