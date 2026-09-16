@@ -38,7 +38,7 @@ jobs:
           CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
           test -n "$CHROME_BIN"
           export CHROME_BIN
-          cat > /tmp/v70-test.js <<'NODE'
+          cat > v70-test.js <<'NODE'
           const fs=require('fs');
           const puppeteer=require('puppeteer-core');
           (async()=>{
@@ -83,7 +83,6 @@ jobs:
             const afterPageScroll=await snap();
             if(afterPageScroll.visible<=0)throw new Error('Service zones disappeared after page scroll event');
 
-            // Also force a programmatic zoom cycle to exercise zoom_changed/idle refresh.
             await page.evaluate(()=>map.setLevel(Math.min(14,map.getLevel()+1)));
             await new Promise(r=>setTimeout(r,1500));
             const afterSetLevel=await snap();
@@ -96,11 +95,11 @@ jobs:
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
-          node /tmp/v70-test.js
+          node v70-test.js
       - name: Commit live verification result
         shell: bash
         run: |
-          rm -f tools/live-v70-verify.trigger package.json package-lock.json
+          rm -f tools/live-v70-verify.trigger v70-test.js package.json package-lock.json
           git config user.name 'ChatGPT Verification Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tools/v70_live_test.txt tools/live-v70-verify.trigger
