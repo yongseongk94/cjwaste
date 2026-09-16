@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
-<!-- v62: dong-only evidence routes re-audited against June 2026 source sheets; day-specific dong scopes prevent cross-dong bleed; source roads remain mandatory route evidence -->
+<!-- v63: audited dong routes + service zones support bundled precomputed geometry. First visit hydrates embedded route/zone coordinates immediately; IndexedDB and route API are fallback/rebuild paths only. -->
 <style>
 :root{
   --bg:#f6f7f9;--panel:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
@@ -211,6 +211,7 @@
   </section>
 </main>
 
+<script id="bundledPrecomputed" type="application/json">null</script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -820,7 +821,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v62-audited';
+const DONG_ROUTE_CACHE_VERSION='v63-precomputed';
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1275,10 +1276,70 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v60-no-boundary|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v63-precomputed|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
+
+// 빌드 시 확정된 노선/수거권역 좌표를 index.html 안에 직접 내장합니다.
+// 새 PC/새 브라우저에서도 IndexedDB 생성이나 길찾기 API 계산을 기다리지 않고 즉시 복원됩니다.
+function bundledPrecomputedData(){
+  try{
+    const el=document.getElementById('bundledPrecomputed');
+    if(!el)return null;
+    const raw=String(el.textContent||'').trim();
+    if(!raw||raw==='null')return null;
+    const data=JSON.parse(raw);
+    return data&&data.version===DONG_ROUTE_CACHE_VERSION?data:null;
+  }catch(e){console.warn('내장 사전계산 데이터 읽기 실패',e);return null}
+}
+function hydrateBundledPrecomputedData(){
+  const data=bundledPrecomputedData();
+  if(!data)return false;
+  try{
+    const specMap=new Map(allDongRouteSpecs().map(s=>[`${s.type}|${s.vehicle}|${s.day}`,s]));
+    for(const r of (data.routes||[])){
+      const spec=specMap.get(`${r.type}|${r.vehicle}|${r.day}`);
+      if(!spec||existingDongRouteOverlay(spec))continue;
+      createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});
+    }
+    for(const type of ['general','recycle']){
+      const zones=Array.isArray(data.zones?.[type])?data.zones[type]:[];
+      if(zones.length){
+        clearServiceZoneOverlays(type);
+        for(const z of zones)addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:true,fromBundle:true});
+        rebuildManualZoneOverlays(type);
+        serviceZoneBuilt[type]=true;
+        serviceZoneCacheHydrated[type]=true;
+      }
+    }
+    return true;
+  }catch(e){console.warn('내장 사전계산 데이터 복원 실패',e);return false}
+}
+function exportCjWastePrecomputed(){
+  const routeFields=['segments','zoneEvidencePoints','termsCount','pointsCount','serviceTermCount','missingTerms','outsideTerms','outOfCheongwonTerms','rangeTerms','requiredRoadTerms','coveredRoadTerms','missingRoadTerms','outsideRoadTerms','addressRangeTerms','secondaryText','secondaryKind','districtLabel','roadMatchedCount','roadRequestedCount'];
+  const routes=[];
+  for(const type of ['general','recycle'])for(const item of (dongRouteOverlays[type]||[])){
+    const data={};
+    for(const k of routeFields){
+      if(k==='districtLabel')data[k]=item.district||item.districtLabel||'';
+      else if(item[k]!==undefined)data[k]=item[k];
+    }
+    data.distance=Number(item.roadResult?.distance)||0;
+    routes.push({type,vehicle:item.vehicle,day:item.day,data});
+  }
+  const zones={general:[],recycle:[]};
+  for(const type of ['general','recycle'])zones[type]=(serviceZoneOverlays[type]||[])
+    .filter(z=>!z.manual&&Array.isArray(z.points)&&z.points.length>=3)
+    .map(z=>({
+      points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',
+      days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,automatic:true,sourceOnly:!!z.sourceOnly
+    }));
+  return {version:DONG_ROUTE_CACHE_VERSION,generatedAt:new Date().toISOString(),routes,zones};
+}
+window.exportCjWastePrecomputed=exportCjWastePrecomputed;
+window.__CJWASTE_PRECOMPUTE_READY=false;
+
 
 function serviceZoneCacheKey(type){
   return `${SERVICE_ZONE_CACHE_VERSION}|${type}`;
@@ -2754,8 +2815,9 @@ async function preloadAllDongRoutes(){
   dongRoutePreloadStarted=true;
   const specs=allDongRouteSpecs();
 
-  // 저장된 동지역 노선만 한 번에 복원합니다. ② 근거노선은 읍·면을 계산/표시하지 않습니다.
-  await hydrateCachedRouteOverlays(specs);
+  // v63: index.html 내장본을 최우선 사용합니다. 내장본이 없거나 일부 누락된 경우에만 IndexedDB를 확인합니다.
+  const bundled=hydrateBundledPrecomputedData();
+  if(!bundled)await hydrateCachedRouteOverlays(specs);
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
   // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
@@ -2769,6 +2831,7 @@ async function preloadAllDongRoutes(){
   await buildServiceZones('general');
   await buildServiceZones('recycle');
   if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
+  window.__CJWASTE_PRECOMPUTE_READY=true;
 }
 
 function scheduleDongRoutePreload(){
@@ -3514,7 +3577,7 @@ async function buildZonePolygons(){
   }
 
   // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
-  // 첫 접속에서 한 번 준비되면 이후에는 IndexedDB 캐시를 사용해 거의 즉시 표시됩니다.
+  // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
   scheduleDongRoutePreload();
 }
 function init(){
@@ -3522,7 +3585,14 @@ function init(){
   marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng)});
   geocoder=new kakao.maps.services.Geocoder();places=new kakao.maps.services.Places();
   kakao.maps.event.addListener(map,'click',handleMapClick);
-  loadManualZones();hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');setLayer('general');zoneBuildPromise=buildZonePolygons();document.getElementById('landingInput').focus();
+  loadManualZones();
+  const bundled=hydrateBundledPrecomputedData();
+  if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
+  setLayer('general');
+  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+  scheduleDongRoutePreload();
+  zoneBuildPromise=buildZonePolygons();
+  document.getElementById('landingInput').focus();
 }
 function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
 
