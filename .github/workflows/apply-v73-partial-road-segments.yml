@@ -1,0 +1,46 @@
+name: Apply v73 partial road segments
+
+on:
+  push:
+    paths:
+      - 'tools/v73-partial-road-segments.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply v73 patch
+        run: python3 tools/apply_v73_partial_road_segments.py
+      - name: Validate route invariants and JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          required=['v73-partial-road-segments','zone-v73-partial-road-segments','도로망 미해결 구간은 확정노선에서 제외합니다.','roadResult?.segments||[]']
+          for x in required:
+              if x not in s: raise SystemExit('missing '+x)
+          forbidden=['roadResult?.path||anchors','roadResult?.path || anchors','확인지점 직선 연결로 대체합니다.']
+          for x in forbidden:
+              if x in s: raise SystemExit('forbidden straight fallback: '+x)
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',s,re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit v73
+        shell: bash
+        run: |
+          rm -f tools/v73-partial-road-segments.trigger tools/freeze_precomputed_now.ready
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v73-partial-road-segments.trigger tools/freeze_precomputed_now.ready
+          git commit -m 'Keep only successful road-following route segments'
+          git push
