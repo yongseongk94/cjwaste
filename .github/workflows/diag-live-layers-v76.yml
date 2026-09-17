@@ -1,0 +1,26 @@
+name: Diagnose live route layers
+on:
+  push:
+    paths:
+      - 'tools/diag-live-layers-v76.trigger'
+permissions:
+  contents: write
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          node tools/diag_live_layers_v76.js
+      - run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/diag-live-layers-v76.trigger
+          git add tools/live_layers_v76_report.json tools/diag-live-layers-v76.trigger
+          git commit -m 'Record live layer diagnostic' || true
+          git pull --rebase origin main
+          git push
