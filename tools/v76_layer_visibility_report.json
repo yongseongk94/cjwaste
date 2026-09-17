@@ -1,0 +1,10 @@
+{
+  "version": "v76-layer-visibility-refresh",
+  "fix": [
+    "fresh cache namespace",
+    "immediate service-layer reattach",
+    "120ms reattach",
+    "700ms reattach"
+  ],
+  "preserve": "existing v75 Naedeok2 contractor classification and bundled route/zone geometry"
+}
