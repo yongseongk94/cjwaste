@@ -1,0 +1,14 @@
+{
+  "version": "v75-naedeok2-apartment-only",
+  "zoneVersion": "zone-v75-naedeok2-apartment-only|v75-naedeok2-apartment-only",
+  "restoredFrom": "9763d90510fc73eab031f4f2d28d294f5e986c80",
+  "routesBefore": 97,
+  "routesAfter": 94,
+  "removedNaedeok2BadRoutes": 3,
+  "generalZones": 555,
+  "recycleZones": 558,
+  "defaultLayers": {
+    "zone": true,
+    "route": true
+  }
+}
