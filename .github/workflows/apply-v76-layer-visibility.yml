@@ -1,0 +1,65 @@
+name: Apply v76 layer visibility refresh
+on:
+  push:
+    paths:
+      - 'tools/v76-layer-visibility.trigger'
+permissions:
+  contents: write
+jobs:
+  patch-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply layer visibility patch
+        run: |
+          python3 tools/apply_v76_layer_visibility.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          t=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/index-inline.js').write_text('\n'.join(re.findall(r'<script>(.*?)</script>',t,flags=re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Publish v76 source
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/v76-layer-visibility.trigger
+          git add index.html tools/v76_layer_visibility_report.json tools/v76-layer-visibility.trigger
+          git commit -m 'Refresh service layer rendering'
+          git pull --rebase origin main
+          git push
+      - name: Wait for live v76
+        run: |
+          for i in $(seq 1 120); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?v76=$RANDOM" -o /tmp/live.html && grep -q 'v76-layer-visibility-refresh' /tmp/live.html; then exit 0; fi
+            sleep 3
+          done
+          exit 1
+      - name: Verify visible layers in browser
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          node - <<'NODE'
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const b=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const p=await b.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+            await p.goto('https://yongseongk94.github.io/cjwaste/?verifyV76='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
+            await new Promise(r=>setTimeout(r,3500));
+            const s=await p.evaluate(()=>{
+              const routes=Object.values(dongRouteOverlays||{}).flat();
+              const pls=routes.flatMap(x=>routeItemPolylines(x));
+              const zones=Object.values(serviceZoneOverlays||{}).flat();
+              return {activeLayer,routeItems:routes.length,visibleRoutePolylines:pls.filter(x=>x?.getMap&&x.getMap()).length,visibleZones:zones.filter(x=>x.polygon?.getMap&&x.polygon.getMap()).length,generalZones:serviceZoneOverlays.general?.length||0,recycleZones:serviceZoneOverlays.recycle?.length||0};
+            });
+            console.log(JSON.stringify(s));
+            if(errs.length)throw new Error(errs.join(' | '));
+            if(s.activeLayer!=='general'||s.visibleRoutePolylines<1||s.visibleZones<1||s.generalZones<1||s.recycleZones<1)throw new Error('layer visibility verification failed: '+JSON.stringify(s));
+            await b.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
