@@ -40,7 +40,7 @@ jobs:
           npm install puppeteer-core@24.16.0 >/dev/null 2>&1
           CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           export CHROME_BIN
-          cat > /tmp/diag.js <<'JS'
+          cat > tools/tmp_live_layer_diag.js <<'JS'
           const fs=require('fs');
           const puppeteer=require('puppeteer-core');
           (async()=>{
@@ -50,7 +50,7 @@ jobs:
             await page.goto('https://yongseongk94.github.io/cjwaste/?layerdiag='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
             await new Promise(r=>setTimeout(r,8000));
             const state=await page.evaluate(()=>{
-              const safe=(expr)=>{try{return (0,eval)(expr)}catch(e){return {error:String(e)}}};
+              const safe=(expr)=>{try{return eval(expr)}catch(e){return {error:String(e)}}};
               const buttons=[...document.querySelectorAll('button')].map((b,i)=>({i,text:(b.innerText||'').trim(),disabled:b.disabled,display:getComputedStyle(b).display,cls:b.className})).filter(x=>x.text);
               const inputs=[...document.querySelectorAll('input')].map((x,i)=>({i,type:x.type,id:x.id,name:x.name,checked:x.checked,value:x.value,display:getComputedStyle(x).display}));
               const texts=(document.body.innerText||'');
@@ -83,7 +83,8 @@ jobs:
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           JS
-          node /tmp/diag.js
+          node tools/tmp_live_layer_diag.js
+          rm -f tools/tmp_live_layer_diag.js
       - name: Commit diagnostic
         run: |
           git config user.name 'ChatGPT Update Bot'
