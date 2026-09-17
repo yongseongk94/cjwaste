@@ -1,0 +1,21 @@
+name: Diagnose static layers
+on:
+  push:
+    paths:
+      - 'tools/diag-layers-static.trigger'
+permissions:
+  contents: write
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/diag_layers_static.py
+      - run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/diag-layers-static.trigger
+          git add tools/layers_static_report.json tools/diag-layers-static.trigger
+          git commit -m 'Record static layer diagnostic'
+          git pull --rebase origin main
+          git push
