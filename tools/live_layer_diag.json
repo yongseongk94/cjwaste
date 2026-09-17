@@ -1,0 +1,98 @@
+{
+  "url": "https://yongseongk94.github.io/cjwaste/?layerdiag=1789603595974",
+  "title": "청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27",
+  "bodyHasEvidence": true,
+  "bodyHasZone": true,
+  "buttons": [
+    {
+      "i": 2,
+      "text": "생활",
+      "disabled": false,
+      "display": "block",
+      "cls": "layer-btn active"
+    },
+    {
+      "i": 3,
+      "text": "재활용",
+      "disabled": false,
+      "display": "block",
+      "cls": "layer-btn"
+    },
+    {
+      "i": 4,
+      "text": "음식물",
+      "disabled": false,
+      "display": "block",
+      "cls": "layer-btn"
+    },
+    {
+      "i": 5,
+      "text": "전체 노선",
+      "disabled": false,
+      "display": "block",
+      "cls": "active"
+    },
+    {
+      "i": 20,
+      "text": "① 추정권역",
+      "disabled": false,
+      "display": "block",
+      "cls": "active"
+    },
+    {
+      "i": 21,
+      "text": "② 동지역 근거노선",
+      "disabled": false,
+      "display": "block",
+      "cls": ""
+    },
+    {
+      "i": 25,
+      "text": "새 권역 그리기",
+      "disabled": false,
+      "display": "block",
+      "cls": "primary"
+    },
+    {
+      "i": 28,
+      "text": "자동권역 재표시",
+      "disabled": false,
+      "display": "block",
+      "cls": ""
+    },
+    {
+      "i": 29,
+      "text": "수동권역 JSON 내보내기",
+      "disabled": false,
+      "display": "inline-block",
+      "cls": "wide-btn"
+    },
+    {
+      "i": 30,
+      "text": "수동권역 JSON 가져오기",
+      "disabled": false,
+      "display": "inline-block",
+      "cls": "wide-btn"
+    },
+    {
+      "i": 31,
+      "text": "수동권역 전체 삭제",
+      "disabled": false,
+      "display": "inline-block",
+      "cls": "wide-btn"
+    }
+  ],
+  "inputs": [],
+  "cacheVersion": "v75-naedeok2-apartment-only",
+  "globals": {
+    "routePolylines": null,
+    "routePolylineCount": null,
+    "serviceZonePolygons": null,
+    "serviceZonesGeneral": null,
+    "serviceZonesRecycle": null,
+    "precomputedRoutes": null,
+    "layerMode": null,
+    "activeWasteType": null
+  },
+  "pageErrors": []
+}
