@@ -1,0 +1,40 @@
+name: Inspect bundle repair inputs
+
+on:
+  push:
+    paths:
+      - 'tools/inspect-bundle-repair.trigger'
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inspect current state and last valid bundle
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json,subprocess
+          cur=Path('index.html').read_text(encoding='utf-8')
+          for term in ['serviceLayerState','function hydrateBundledPrecomputedData','const serviceZoneOverlays','const serviceZoneBuilt']:
+              print('\n###',term)
+              for m in list(re.finditer(re.escape(term),cur))[:4]:
+                  print(cur[max(0,m.start()-500):m.start()+2200])
+          old=subprocess.check_output(['git','show','9763d90510fc73eab031f4f2d28d294f5e986c80:index.html'],text=True)
+          m=re.search(r'<script id="bundledPrecomputed" type="application/json">(.*?)</script>',old,re.S)
+          if not m: raise SystemExit('old bundle missing')
+          obj=json.loads(m.group(1))
+          print('\n### OLD BUNDLE')
+          print('keys',obj.keys())
+          print('version',obj.get('version'))
+          print('routes',len(obj.get('routes',[])))
+          print('zones', {k:len(v) for k,v in (obj.get('zones') or {}).items()})
+          print('route samples',json.dumps(obj.get('routes',[])[:2],ensure_ascii=False)[:5000])
+          bad=[x for x in obj.get('routes',[]) if '95오0147' in json.dumps(x,ensure_ascii=False) and '내덕2동' in json.dumps(x,ensure_ascii=False)]
+          print('bad route count',len(bad),json.dumps(bad,ensure_ascii=False)[:5000])
+          for typ,arr in (obj.get('zones') or {}).items():
+              badz=[x for x in arr if '95오0147' in json.dumps(x,ensure_ascii=False) and '내덕2동' in json.dumps(x,ensure_ascii=False)]
+              print('bad zones',typ,len(badz),json.dumps(badz,ensure_ascii=False)[:3000])
+          PY
