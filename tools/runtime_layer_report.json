@@ -1,0 +1,24 @@
+{
+  "activeLayer": "general",
+  "serviceLayerState": {
+    "zone": true,
+    "route": true
+  },
+  "mapReady": true,
+  "routeCounts": {
+    "general": 50,
+    "recycle": 44
+  },
+  "zoneCounts": {
+    "general": 555,
+    "recycle": 558
+  },
+  "visibleRoutes": 0,
+  "visibleZones": 555,
+  "badge": "생활쓰레기 · 전체 수거주체 · 전체요일\n표시:\n①수거권역 + ②근거노선\n. 주소 수거일정은 실제 표시 수거노선 20m 이내를 먼저 확정하고, 그 밖의 주소에서만 ① 추정권역 폴리곤을 사용합니다. 추정권역은 확정 노선 범위를 제외한 빈 공간을 원본 차량·요일별 수거노선 기준으로 나눈 범위이며, 저장된 권역·노선은 브라우저 영구 캐시에서 즉시 복원됩니다. ② 근거노선은 원본 코스표에서 실제 도로망으로 확인된 수거구간을 표시합니다. 확인되지 않은 구간을 임의 직선으로 연결하지 않습니다. 수거권역이 실제와 다르면 관리자 편집에서 수동권역을 그려 우선 적용할 수 있습니다.",
+  "structure": "레이어\n① 추정권역\n② 근거노선",
+  "pageErrors": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 ()"
+  ]
+}
