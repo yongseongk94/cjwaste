@@ -1,0 +1,95 @@
+name: Diagnose live evidence and service-zone layers
+
+on:
+  push:
+    paths:
+      - 'tools/diag-live-layers.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inspect source contexts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          t=Path('index.html').read_text(encoding='utf-8')
+          needles=['근거노선','추정권역','수거권역','syncServiceZoneVisibility','serviceZone','evidence','routePolyline','bundledPrecomputed','DONG_ROUTE_CACHE_VERSION']
+          out=[]
+          for n in needles:
+            out.append(f'## {n} count={t.count(n)}')
+            start=0
+            for i in range(min(t.count(n),8)):
+              p=t.find(n,start)
+              if p<0: break
+              out.append(f'--- {n} #{i+1} @{p} ---')
+              out.append(t[max(0,p-600):p+1200])
+              start=p+len(n)
+          Path('tools/live_layer_source_context.txt').write_text('\n'.join(out),encoding='utf-8')
+          PY
+      - name: Inspect live browser state
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          export CHROME_BIN
+          cat > /tmp/diag.js <<'JS'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
+            const page=await browser.newPage();
+            const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+            await page.goto('https://yongseongk94.github.io/cjwaste/?layerdiag='+Date.now(),{waitUntil:'domcontentloaded',timeout:180000});
+            await new Promise(r=>setTimeout(r,8000));
+            const state=await page.evaluate(()=>{
+              const safe=(expr)=>{try{return (0,eval)(expr)}catch(e){return {error:String(e)}}};
+              const buttons=[...document.querySelectorAll('button')].map((b,i)=>({i,text:(b.innerText||'').trim(),disabled:b.disabled,display:getComputedStyle(b).display,cls:b.className})).filter(x=>x.text);
+              const inputs=[...document.querySelectorAll('input')].map((x,i)=>({i,type:x.type,id:x.id,name:x.name,checked:x.checked,value:x.value,display:getComputedStyle(x).display}));
+              const texts=(document.body.innerText||'');
+              return {
+                url:location.href,
+                title:document.title,
+                bodyHasEvidence:texts.includes('근거노선'),
+                bodyHasZone:texts.includes('수거권역')||texts.includes('추정권역'),
+                buttons:buttons.filter(x=>/근거|노선|권역|생활|재활용|음식물/.test(x.text)).slice(0,80),
+                inputs:inputs.filter(x=>/route|zone|layer|general|recycle|food/i.test((x.id||'')+' '+(x.name||''))).slice(0,80),
+                cacheVersion:safe('DONG_ROUTE_CACHE_VERSION'),
+                bundled:safe("JSON.parse(document.getElementById('bundledPrecomputed')?.textContent||'{}')"),
+                globals:{
+                  routePolylines:safe("typeof routePolylines!=='undefined'?routePolylines.length:null"),
+                  routePolylineCount:safe("typeof routePolylineByKey!=='undefined'?Object.keys(routePolylineByKey).length:null"),
+                  serviceZonePolygons:safe("typeof serviceZonePolygons!=='undefined'?serviceZonePolygons.length:null"),
+                  serviceZonesGeneral:safe("typeof SERVICE_ZONES!=='undefined'&&SERVICE_ZONES.general?SERVICE_ZONES.general.length:null"),
+                  serviceZonesRecycle:safe("typeof SERVICE_ZONES!=='undefined'&&SERVICE_ZONES.recycle?SERVICE_ZONES.recycle.length:null"),
+                  precomputedRoutes:safe("typeof PRECOMPUTED_ROUTE_GEOMETRY!=='undefined'?Object.keys(PRECOMPUTED_ROUTE_GEOMETRY).length:null"),
+                  layerMode:safe("typeof serviceZoneLayerMode!=='undefined'?serviceZoneLayerMode:null"),
+                  activeWasteType:safe("typeof activeWasteType!=='undefined'?activeWasteType:null")
+                },
+                errors
+              };
+            });
+            if(state.bundled?.routes) state.bundledSummary={version:state.bundled.version,routeCount:state.bundled.routes.length,generalZones:state.bundled.zones?.general?.length||0,recycleZones:state.bundled.zones?.recycle?.length||0};
+            delete state.bundled;
+            fs.writeFileSync('tools/live_layer_diag.json',JSON.stringify(state,null,2));
+            console.log(JSON.stringify(state,null,2));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node /tmp/diag.js
+      - name: Commit diagnostic
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/diag-live-layers.trigger
+          git add tools/live_layer_diag.json tools/live_layer_source_context.txt tools/diag-live-layers.trigger
+          git commit -m 'Record live layer diagnostic'
+          git pull --rebase origin main
+          git push
