@@ -24,19 +24,30 @@ jobs:
             const errors=[]; const consoleErrors=[];
             page.on('pageerror',e=>errors.push(e.message));
             page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
-            await page.goto('https://yongseongk94.github.io/cjwaste/?runtimeLayerDiag='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
+            await page.goto('https://yongseongk94.github.io/cjwaste/?runtimeLayerDiag2='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
             await new Promise(r=>setTimeout(r,8000));
-            const state=await page.evaluate(()=>({
-              activeLayer:typeof activeLayer==='undefined'?'undefined':activeLayer,
-              serviceLayerState:typeof serviceLayerState==='undefined'?null:serviceLayerState,
-              mapReady:!!window.map,
-              routeCounts:typeof dongRouteOverlays==='undefined'?null:{general:dongRouteOverlays.general?.length||0,recycle:dongRouteOverlays.recycle?.length||0},
-              zoneCounts:typeof serviceZoneOverlays==='undefined'?null:{general:serviceZoneOverlays.general?.length||0,recycle:serviceZoneOverlays.recycle?.length||0},
-              visibleRoutes:typeof dongRouteOverlays==='undefined'?null:Object.values(dongRouteOverlays).flat().filter(x=>(x.segments||[]).some(s=>s.getMap&&s.getMap())).length,
-              visibleZones:typeof serviceZoneOverlays==='undefined'?null:Object.values(serviceZoneOverlays).flat().filter(x=>x.polygon?.getMap&&x.polygon.getMap()).length,
-              badge:document.getElementById('mapBadge')?.innerText||'',
-              structure:document.getElementById('structureControl')?.innerText||''
-            }));
+            const state=await page.evaluate(()=>{
+              const allRoutes=typeof dongRouteOverlays==='undefined'?[]:Object.values(dongRouteOverlays).flat();
+              const rpls=[];
+              for(const x of allRoutes){
+                try{ if(typeof routeItemPolylines==='function') rpls.push(...routeItemPolylines(x)); }catch(e){}
+              }
+              const allZones=typeof serviceZoneOverlays==='undefined'?[]:Object.values(serviceZoneOverlays).flat();
+              return {
+                activeLayer:typeof activeLayer==='undefined'?'undefined':activeLayer,
+                serviceLayerState:typeof serviceLayerState==='undefined'?null:serviceLayerState,
+                routeItems:allRoutes.length,
+                routePolylineCount:rpls.length,
+                visibleRoutePolylines:rpls.filter(pl=>pl?.getMap&&pl.getMap()).length,
+                visibleRouteSample:rpls.slice(0,3).map(pl=>({map:!!pl?.getMap?.(),strokeOpacity:pl?.getStrokeOpacity?.(),strokeWeight:pl?.getStrokeWeight?.()})),
+                zoneItems:allZones.length,
+                visibleZones:allZones.filter(x=>x.polygon?.getMap&&x.polygon.getMap()).length,
+                zoneSample:allZones.slice(0,3).map(x=>({map:!!x.polygon?.getMap?.(),district:x.district,estimated:x.estimated,gridMerged:x.gridMerged,polygonized:x.polygonized})),
+                mapLevel:typeof map==='undefined'?null:map.getLevel(),
+                mapCenter:typeof map==='undefined'?null:{lat:map.getCenter().getLat(),lng:map.getCenter().getLng()},
+                badge:document.getElementById('mapBadge')?.innerText||''
+              };
+            });
             state.pageErrors=errors;state.consoleErrors=consoleErrors;
             fs.writeFileSync('tools/runtime_layer_report.json',JSON.stringify(state,null,2));
             await browser.close();
@@ -47,6 +58,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           rm -f tools/diag-runtime-layer-errors.trigger
           git add tools/runtime_layer_report.json tools/diag-runtime-layer-errors.trigger
-          git commit -m 'Record runtime layer diagnostic'
+          git commit -m 'Record runtime layer diagnostic v2'
           git pull --rebase origin main
           git push
