@@ -1,0 +1,48 @@
+name: Restore v75 map layers from verified bundle
+
+on:
+  push:
+    paths:
+      - 'tools/restore-v75-layers.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore verified bundled routes and zones
+        run: |
+          python3 tools/restore_v75_layers_from_v73.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,json
+          t=Path('index.html').read_text(encoding='utf-8')
+          m=re.search(r'<script id="bundledPrecomputed" type="application/json">(.*?)</script>',t,re.S)
+          if not m: raise SystemExit('bundle missing after restore')
+          d=json.loads(m.group(1))
+          assert d['version']=='v75-naedeok2-apartment-only'
+          assert len(d['routes'])==94
+          assert len(d['zones']['general'])==555
+          assert len(d['zones']['recycle'])==558
+          assert not any('95오0147' in json.dumps(r,ensure_ascii=False) and '내덕2동' in json.dumps(r,ensure_ascii=False) for r in d['routes'])
+          assert 'const serviceLayerState={zone:true,route:true};' in t
+          assert '<button class="active" data-structure="route">② 근거노선</button>' in t
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',t,re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit restored bundle
+        run: |
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f tools/restore-v75-layers.trigger
+          git add index.html tools/v75_layer_restore_report.json tools/restore-v75-layers.trigger
+          git commit -m 'Restore evidence routes and service zones'
+          git pull --rebase origin main
+          git push
