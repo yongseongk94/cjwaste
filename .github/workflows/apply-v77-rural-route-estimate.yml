@@ -1,0 +1,181 @@
+name: Apply v77 rural route and estimate layers
+
+on:
+  push:
+    paths:
+      - 'tools/v77-rural-route-estimate.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch index.html
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          replacements = [
+          ('''<button class="active" data-structure="zone">① 추정권역</button>''',
+           '''<button class="active" data-structure="zone">① 추정지역</button>'''),
+
+          ('''<button class="active" data-structure="route">② 근거노선</button>''',
+           '''<button class="active" data-structure="route">② 수거노선</button>'''),
+
+          ('''function routeDongScope(type,vehicle,day=''){
+            const cm=contractRouteMeta(vehicle);if(cm)return [canonicalDistrict(cm.district)];
+            const exact=day&&ROUTE_DONG_DAY_SCOPE[type]?.[vehicle]?.[day];
+            return [...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])];
+          }''',
+           '''function routeDongScope(type,vehicle,day=''){
+            const cm=contractRouteMeta(vehicle);if(cm)return [canonicalDistrict(cm.district)];
+            const exact=day&&ROUTE_DONG_DAY_SCOPE[type]?.[vehicle]?.[day];
+            const base=[...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])].map(canonicalDistrict);
+            // v77: 오창·내수·북이도 동지역과 동일한 ② 수거노선 레이어에 포함합니다.
+            // 차량 전체 범위를 읍·면에 무조건 펼치지 않고, 원자료에서 해당 요일에 실제 등장한 읍·면만 추가합니다.
+            const ruralByDay=day
+              ? [...(DIRECT_INFERRED_REGIONS?.[type]?.[vehicle]?.[day]||[])]
+              : [...(SERVICE_ZONE_ROUTE_SCOPE[type]?.[vehicle]||[])];
+            const rural=ruralByDay.map(canonicalDistrict).filter(d=>d==='오창읍'||d==='내수읍'||d==='북이면');
+            return [...new Set([...base,...rural])];
+          }'''),
+
+          ('''function routeCacheKey(spec){
+            return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}`;
+          }''',
+           '''function routeScopeCacheSuffix(spec){
+            const scope=(Array.isArray(spec?.districts)&&spec.districts.length?spec.districts:routeDongScope(spec?.type,spec?.vehicle,spec?.day))
+              .map(canonicalDistrict);
+            const rural=[...new Set(scope.filter(d=>d==='오창읍'||d==='내수읍'||d==='북이면'))].sort();
+            return rural.length?`|rural-${routeTextHash(rural.join("|"))}`:'';
+          }
+          function routeCacheKey(spec){
+            return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}${routeScopeCacheSuffix(spec)}`;
+          }'''),
+
+          ('''const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['내수읍','북이면']);
+          const RURAL_ROUTE_MATCH_KM=0.030;''',
+           '''const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['오창읍','내수읍','북이면']);
+          const RURAL_ROUTE_MATCH_KM=0.020;'''),
+
+          ('''const SERVICE_ZONE_CACHE_VERSION=`zone-v76-layer-visibility-refresh|${DONG_ROUTE_CACHE_VERSION}`;''',
+           '''const SERVICE_ZONE_CACHE_VERSION=`zone-v77-rural-route-estimate|${DONG_ROUTE_CACHE_VERSION}`;'''),
+
+          ('''        if(!spec||existingDongRouteOverlay(spec))continue;
+                  createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});''',
+           '''        if(!spec||existingDongRouteOverlay(spec))continue;
+                  // v76 내장 노선은 읍·면이 빠진 차량이 있으므로, 오창·내수·북이가 포함된 spec은
+                  // 기존 번들을 재사용하지 않고 새 담당범위로 한 번 다시 계산해 IndexedDB에 저장합니다.
+                  const scope=(spec.districts||routeDongScope(spec.type,spec.vehicle,spec.day)).map(canonicalDistrict);
+                  if(scope.some(d=>d==='오창읍'||d==='내수읍'||d==='북이면'))continue;
+                  createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});'''),
+
+          ('''async function buildRuralRiServiceZone(type,region){
+            const meta=ruralRiZoneMeta(type,region);
+            if(!meta)return false;
+            if(RURAL_INFERRED_ROUTE_DISTRICTS.has(region.district)){
+              // 리 단위 묶음은 외곽선/약한 배경으로만 유지하고, 실제 일정권역은 노선 30m 통로입니다.
+              wholeFeatureZone(type,region.feature,{...meta,noSchedule:true,groupOutline:true,days:[]});
+              await buildRuralRouteBufferZones(type,region);
+              return true;
+            }
+            // 오창읍은 기존 v66 리 단위 권역을 유지하며 산업단지 대행구간은 별도 색상으로 표시합니다.
+            wholeFeatureZone(type,region.feature,meta);
+            return true;
+          }''',
+           '''async function buildRuralRiServiceZone(type,region){
+            const meta=ruralRiZoneMeta(type,region);
+            if(!meta)return false;
+
+            // v77: 오창·내수·북이도 동지역과 동일하게
+            // ② 실제 표시 수거노선 20m 범위를 확정구간으로 두고,
+            // 그 밖의 같은 리 내부 빈 공간만 주변 차량×요일 노선에 따라 ① 추정지역으로 나눕니다.
+            const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+            const usable=groups.filter(g=>g.items.length);
+            if(!usable.length)return false;
+            await buildGridServiceZonesForRegion(type,region,usable);
+            return true;
+          }'''),
+
+          ('''    if(RURAL_INFERRED_ROUTE_DISTRICTS.has(district)){
+                const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
+                if(seq!==nearbyScheduleRequestSeq)return;
+                if(near?.length)renderNearbyRouteSchedule(type,near,ctx);
+                else if(!renderRestoredRuralRiSchedule(type,ctx))renderNoNearbyRouteSchedule(type,district);
+                continue;
+              }''',
+           '''    if(RI_LAYER_DISTRICTS.has(district)){
+                // 오창·내수·북이도 동지역과 동일한 순서로 판정:
+                // 표시 수거노선 20m 이내를 우선 확정하고, 그 밖은 ① 추정지역을 사용합니다.
+                const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
+                if(seq!==nearbyScheduleRequestSeq)return;
+                if(near?.length){renderNearbyRouteSchedule(type,near,ctx);continue}
+                const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
+                if(seq!==nearbyScheduleRequestSeq)return;
+                if(match)renderServiceZoneSchedule(type,{...match,estimated:true,zoneStatus:'estimated'},ctx);
+                else if(!renderRestoredRuralRiSchedule(type,ctx))renderNoNearbyRouteSchedule(type,district);
+                continue;
+              }'''),
+
+          ('''const state=[serviceLayerState.zone?'①수거권역':'',serviceLayerState.route?'②근거노선':''].filter(Boolean).join(' + ');''',
+           '''const state=[serviceLayerState.zone?'①추정지역':'',serviceLayerState.route?'②수거노선':''].filter(Boolean).join(' + ');'''),
+
+          ('''주소 수거일정은 실제 표시 수거노선 20m 이내를 먼저 확정하고, 그 밖의 주소에서만 ① 추정권역 폴리곤을 사용합니다. 추정권역은 확정 노선 범위를 제외한 빈 공간을 원본 차량·요일별 수거노선 기준으로 나눈 범위이며''',
+           '''주소 수거일정은 실제 표시 수거노선 20m 이내를 먼저 확정하고, 그 밖의 주소에서만 ① 추정지역 폴리곤을 사용합니다. 추정지역은 확정 노선 범위를 제외한 빈 공간을 원본 차량·요일별 수거노선 기준으로 나눈 범위이며'''),
+          ]
+
+          for i, (old, new) in enumerate(replacements, 1):
+              count = s.count(old)
+              if count != 1:
+                  raise SystemExit(f'replacement {i}: expected 1 match, found {count}')
+              s = s.replace(old, new, 1)
+
+          required = [
+              '① 추정지역',
+              '② 수거노선',
+              "new Set(['오창읍','내수읍','북이면'])",
+              'RURAL_ROUTE_MATCH_KM=0.020',
+              'zone-v77-rural-route-estimate',
+              'await buildGridServiceZonesForRegion(type,region,usable);',
+          ]
+          for token in required:
+              if token not in s:
+                  raise SystemExit(f'missing required token: {token}')
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validate inline JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path('index.html').read_text(encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/v77-rural-route-estimate.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v77-rural-route-estimate.trigger
+          git commit -m 'Add Ochang Naesu Bugi route and estimated-area layers'
+          git push
