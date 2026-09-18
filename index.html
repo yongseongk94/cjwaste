@@ -1408,7 +1408,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v77-rural-route-estimate|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v78-rural-boundary-ready|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -3171,6 +3171,9 @@ async function ensureDongRoutesForSelection(type){
   // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
   await hydrateCachedRouteOverlays(specs);
   syncDongRouteVisibility(type);
+  // 읍·면/동 경계가 준비되기 전에 새 노선을 계산하면 좌표가 담당구역 밖으로 오판정됩니다.
+  // 저장된 노선만 먼저 보여주고, 경계 로딩 뒤 setLayer/buildZonePolygons에서 다시 계산합니다.
+  if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d)))return;
   // 2차: 캐시에 없는 노선만 뒤에서 계산하며, 완성되는 선부터 바로 추가합니다.
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   await mapWithConcurrency(missing,3,async spec=>{
@@ -3204,6 +3207,13 @@ async function preloadAllDongRoutes(){
   const bundled=hydrateBundledPrecomputedData();
   if(!bundled)await hydrateCachedRouteOverlays(specs);
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
+
+  // v78: 오창·내수·북이 신규 노선은 행정경계가 있어야 청원구/담당구역 판정이 가능합니다.
+  // 초기 init 단계에서는 내장/캐시 노선만 즉시 표시하고, 경계 준비 뒤 다시 사전계산하도록 잠금을 해제합니다.
+  if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d))){
+    dongRoutePreloadStarted=false;
+    return;
+  }
 
   // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
