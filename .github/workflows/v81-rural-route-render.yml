@@ -1,0 +1,102 @@
+name: Fix v81 rural route render race and scope
+
+on:
+  push:
+    paths:
+      - 'tools/v81-rural-route-render.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch rural route rendering
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          old_existing="""function existingDongRouteOverlay(spec){
+            return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day) || null;
+          }"""
+          new_existing="""function routeScopeSignature(spec){
+            const scope=(Array.isArray(spec?.districts)&&spec.districts.length
+              ? spec.districts
+              : routeDongScope(spec?.type,spec?.vehicle,spec?.day))
+              .map(canonicalDistrict).filter(Boolean);
+            return [...new Set(scope)].sort().join('|');
+          }
+          function existingDongRouteOverlay(spec){
+            const scopeKey=routeScopeSignature(spec);
+            return (dongRouteOverlays[spec.type]||[]).find(x=>
+              x.vehicle===spec.vehicle &&
+              x.day===spec.day &&
+              routeScopeSignature(x)===scopeKey
+            ) || null;
+          }"""
+          if s.count(old_existing) != 1:
+              raise SystemExit(f'existing overlay block count={s.count(old_existing)}')
+          s=s.replace(old_existing,new_existing,1)
+
+          old_key="const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}`;"
+          new_key="const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}|${routeScopeSignature(spec)}`;"
+          if s.count(old_key) != 1:
+              raise SystemExit(f'build key count={s.count(old_key)}')
+          s=s.replace(old_key,new_key,1)
+
+          old_init="""  setLayer('general');
+            // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+            scheduleDongRoutePreload();
+            zoneBuildPromise=buildZonePolygons();
+            document.getElementById('landingInput').focus();"""
+          new_init="""  setLayer('general');
+            // 내장 좌표는 즉시 렌더링하되 오창·내수·북이 신규 노선은 행정경계 준비 뒤 계산합니다.
+            // 초기 선계산과 경계 로딩이 경합해 읍·면 노선이 영구 누락되는 것을 방지합니다.
+            zoneBuildPromise=buildZonePolygons();
+            zoneBuildPromise.then(()=>{
+              if(!dongRoutePreloadStarted)scheduleDongRoutePreload();
+            }).catch(e=>console.warn('행정경계 준비 후 수거노선 사전준비 실패',e));
+            document.getElementById('landingInput').focus();"""
+          if s.count(old_init) != 1:
+              raise SystemExit(f'init preload block count={s.count(old_init)}')
+          s=s.replace(old_init,new_init,1)
+
+          if 'function routeScopeSignature(spec)' not in s:
+              raise SystemExit('scope signature missing after patch')
+          if "zoneBuildPromise.then(()=>{" not in s:
+              raise SystemExit('post-boundary retry missing after patch')
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Validate inline JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path('index.html').read_text(encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/v81-rural-route-render.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v81-rural-route-render.trigger
+          git commit -m 'Fix rural route preload race and scoped overlays'
+          git push
