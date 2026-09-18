@@ -2828,8 +2828,20 @@ function sanitizeRouteDataToScope(spec,data){
   }).map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:routePointAnyDistrict(p)}));
   return {...data,segments,servicePoints:[],zoneEvidencePoints};
 }
+function routeScopeSignature(spec){
+  const scope=(Array.isArray(spec?.districts)&&spec.districts.length
+    ? spec.districts
+    : routeDongScope(spec?.type,spec?.vehicle,spec?.day))
+    .map(canonicalDistrict).filter(Boolean);
+  return [...new Set(scope)].sort().join('|');
+}
 function existingDongRouteOverlay(spec){
-  return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day) || null;
+  const scopeKey=routeScopeSignature(spec);
+  return (dongRouteOverlays[spec.type]||[]).find(x=>
+    x.vehicle===spec.vehicle &&
+    x.day===spec.day &&
+    routeScopeSignature(x)===scopeKey
+  ) || null;
 }
 function createDongRouteOverlay(spec,data){
   let segments=Array.isArray(data.segments)?data.segments:[];
@@ -2969,7 +2981,7 @@ async function inferredRuralMovementSegments(anchorMap){
 }
 
 async function buildDongRouteOverlay(spec){
-  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}`;
+  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}|${routeScopeSignature(spec)}`;
   const existing=existingDongRouteOverlay(spec);
   if(existing)return existing;
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
@@ -4252,9 +4264,12 @@ function init(){
   const bundled=hydrateBundledPrecomputedData();
   if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
   setLayer('general');
-  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
-  scheduleDongRoutePreload();
+  // 내장 좌표는 즉시 렌더링하되 오창·내수·북이 신규 노선은 행정경계 준비 뒤 계산합니다.
+  // 초기 선계산과 경계 로딩이 경합해 읍·면 노선이 영구 누락되는 것을 방지합니다.
   zoneBuildPromise=buildZonePolygons();
+  zoneBuildPromise.then(()=>{
+    if(!dongRoutePreloadStarted)scheduleDongRoutePreload();
+  }).catch(e=>console.warn('행정경계 준비 후 수거노선 사전준비 실패',e));
   document.getElementById('landingInput').focus();
 }
 function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
