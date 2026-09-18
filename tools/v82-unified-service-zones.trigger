@@ -1,1 +1,1 @@
-apply v82 unified service zones
+retry v82 unified service zones
