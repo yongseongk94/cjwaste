@@ -1,0 +1,116 @@
+name: Fix v80 rural route rendering readiness
+
+on:
+  push:
+    paths:
+      - 'tools/v80-rural-route-ready.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch rural route readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_ensure = """  // 읍·면/동 경계가 준비되기 전에 새 노선을 계산하면 좌표가 담당구역 밖으로 오판정됩니다.
+            // 저장된 노선만 먼저 보여주고, 경계 로딩 뒤 setLayer/buildZonePolygons에서 다시 계산합니다.
+            if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d)))return;
+            // 2차: 캐시에 없는 노선만 뒤에서 계산하며, 완성되는 선부터 바로 추가합니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s));"""
+
+          new_ensure = """  // v80: 한 행정구역 경계가 늦거나 명칭이 달라도 전체 노선 계산을 막지 않습니다.
+            // 해당 차량×요일에 필요한 담당구역 경계가 준비된 노선부터 계산합니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s) &&
+              (s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d))));"""
+
+          old_preload = """  // v78: 오창·내수·북이 신규 노선은 행정경계가 있어야 청원구/담당구역 판정이 가능합니다.
+            // 초기 init 단계에서는 내장/캐시 노선만 즉시 표시하고, 경계 준비 뒤 다시 사전계산하도록 잠금을 해제합니다.
+            if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d))){
+              dongRoutePreloadStarted=false;
+              return;
+            }
+
+            // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s));"""
+
+          new_preload = """  // v80: 모든 행정구역 경계를 기다리지 않고 필요한 경계가 준비된 차량×요일부터 계산합니다.
+            // 오창·내수·북이가 다른 동의 경계 문제 때문에 함께 막히지 않도록 합니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s) &&
+              (s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d))));
+            const hasPendingBoundary=specs.some(s=>!existingDongRouteOverlay(s) &&
+              !(s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d))));"""
+
+          old_zone = "const SERVICE_ZONE_CACHE_VERSION=`zone-v78-rural-boundary-ready|${DONG_ROUTE_CACHE_VERSION}`;"
+          new_zone = "const SERVICE_ZONE_CACHE_VERSION=`zone-v80-rural-route-ready|${DONG_ROUTE_CACHE_VERSION}`;"
+
+          ready = "  window.__CJWASTE_PRECOMPUTE_READY=true;"
+          ready_new = "  if(hasPendingBoundary)dongRoutePreloadStarted=false;\n  window.__CJWASTE_PRECOMPUTE_READY=true;"
+
+          checks = [
+              ('ensure', old_ensure),
+              ('preload', old_preload),
+              ('zone', old_zone),
+              ('ready', ready),
+          ]
+          for name, old in checks:
+              count = s.count(old)
+              if count != 1:
+                  raise SystemExit(f'{name}: expected 1 match, found {count}')
+
+          if "'내덕제1동':'내덕1동'" not in s or "'내덕제2동':'내덕2동'" not in s:
+              raise SystemExit('v79 district aliases missing')
+
+          s = s.replace(old_ensure, new_ensure, 1)
+          s = s.replace(old_preload, new_preload, 1)
+          s = s.replace(old_zone, new_zone, 1)
+          s = s.replace(ready, ready_new, 1)
+
+          required = [
+              'zone-v80-rural-route-ready',
+              'const hasPendingBoundary=',
+              "(s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d)))",
+          ]
+          for token in required:
+              if token not in s:
+                  raise SystemExit(f'missing required token: {token}')
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Validate inline JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text = Path('index.html').read_text(encoding='utf-8')
+          scripts = '\n'.join(re.findall(r'<script>(.*?)</script>', text, flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts, encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/v80-rural-route-ready.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v80-rural-route-ready.trigger
+          git commit -m 'Fix Ochang Naesu Bugi route rendering readiness'
+          git push
