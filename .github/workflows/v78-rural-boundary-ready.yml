@@ -1,0 +1,126 @@
+name: Fix v78 rural boundary preload race
+
+on:
+  push:
+    paths:
+      - 'tools/v78-rural-boundary-ready.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch index.html
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          replacements=[
+          ('''async function ensureDongRoutesForSelection(type){
+            const specs=routeCandidatesForSelection(type);
+            if(!specs.length){syncDongRouteVisibility(type);return}
+            // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
+            await hydrateCachedRouteOverlays(specs);
+            syncDongRouteVisibility(type);
+            // 2차: 캐시에 없는 노선만 뒤에서 계산하며, 완성되는 선부터 바로 추가합니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s));''',
+           '''async function ensureDongRoutesForSelection(type){
+            const specs=routeCandidatesForSelection(type);
+            if(!specs.length){syncDongRouteVisibility(type);return}
+            // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
+            await hydrateCachedRouteOverlays(specs);
+            syncDongRouteVisibility(type);
+            // 읍·면/동 경계가 준비되기 전에 새 노선을 계산하면 좌표가 담당구역 밖으로 오판정됩니다.
+            // 저장된 노선만 먼저 보여주고, 경계 로딩 뒤 setLayer/buildZonePolygons에서 다시 계산합니다.
+            if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d)))return;
+            // 2차: 캐시에 없는 노선만 뒤에서 계산하며, 완성되는 선부터 바로 추가합니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s));'''),
+
+          ('''async function preloadAllDongRoutes(){
+            if(dongRoutePreloadStarted)return;
+            dongRoutePreloadStarted=true;
+            const specs=allDongRouteSpecs();
+
+            // v63: index.html 내장본을 최우선 사용합니다. 내장본이 없거나 일부 누락된 경우에만 IndexedDB를 확인합니다.
+            const bundled=hydrateBundledPrecomputedData();
+            if(!bundled)await hydrateCachedRouteOverlays(specs);
+            if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
+
+            // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s));''',
+           '''async function preloadAllDongRoutes(){
+            if(dongRoutePreloadStarted)return;
+            dongRoutePreloadStarted=true;
+            const specs=allDongRouteSpecs();
+
+            // v63: index.html 내장본을 최우선 사용합니다. 내장본이 없거나 일부 누락된 경우에만 IndexedDB를 확인합니다.
+            const bundled=hydrateBundledPrecomputedData();
+            if(!bundled)await hydrateCachedRouteOverlays(specs);
+            if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
+
+            // v78: 오창·내수·북이 신규 노선은 행정경계가 있어야 청원구/담당구역 판정이 가능합니다.
+            // 초기 init 단계에서는 내장/캐시 노선만 즉시 표시하고, 경계 준비 뒤 다시 사전계산하도록 잠금을 해제합니다.
+            if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d))){
+              dongRoutePreloadStarted=false;
+              return;
+            }
+
+            // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
+            const missing=specs.filter(s=>!existingDongRouteOverlay(s));'''),
+
+          ('''const SERVICE_ZONE_CACHE_VERSION=`zone-v77-rural-route-estimate|${DONG_ROUTE_CACHE_VERSION}`;''',
+           '''const SERVICE_ZONE_CACHE_VERSION=`zone-v78-rural-boundary-ready|${DONG_ROUTE_CACHE_VERSION}`;'''),
+          ]
+
+          for i,(old,new) in enumerate(replacements,1):
+              count=s.count(old)
+              if count!=1:
+                  raise SystemExit(f'replacement {i}: expected 1 match, found {count}')
+              s=s.replace(old,new,1)
+
+          required=[
+              'zone-v78-rural-boundary-ready',
+              'dongRoutePreloadStarted=false;',
+              'if([...CHEONGWON_ROUTE_DISTRICTS].some(d=>!districtFeatureMap.has(d)))return;',
+          ]
+          for token in required:
+              if token not in s:
+                  raise SystemExit(f'missing required token: {token}')
+
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Validate inline JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          text=Path('index.html').read_text(encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script>(.*?)</script>',text,flags=re.S))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/v78-rural-boundary-ready.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/v78-rural-boundary-ready.trigger
+          git commit -m 'Fix Ochang Naesu Bugi route preload timing'
+          git push
