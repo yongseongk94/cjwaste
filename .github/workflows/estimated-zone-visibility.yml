@@ -1,0 +1,19 @@
+name: Estimated region visibility fix
+on:
+  push:
+    paths: ['tools/estimated-zone-visibility.trigger']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/fix_estimated_zone_visibility.py
+      - run: |
+          grep -F 'function ensureBundledServiceZones(type)' index.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Force display estimated regions on all service areas'
+          git push
