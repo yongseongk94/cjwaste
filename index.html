@@ -1206,7 +1206,10 @@ const ROUTE_DONG_DAY_SCOPE={
 function routeDongScope(type,vehicle,day=''){
   const cm=contractRouteMeta(vehicle);if(cm)return [canonicalDistrict(cm.district)];
   const exact=day&&ROUTE_DONG_DAY_SCOPE[type]?.[vehicle]?.[day];
-  return [...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])].map(canonicalDistrict);
+  // 직영 기본노선은 동지역만 유지합니다. 읍·면은 routeRuralScope()에서 요일별 별도 범위로 생성합니다.
+  return [...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])]
+    .map(canonicalDistrict)
+    .filter(d=>DONG_ROUTE_DISTRICTS.has(d));
 }
 function routeRuralScope(type,vehicle,day=''){
   if(contractRouteMeta(vehicle))return [];
@@ -1417,7 +1420,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v83-3-all-rural-route-estimate|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v83-4-scope-isolation|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -1444,10 +1447,18 @@ function hydrateBundledPrecomputedData(){
       const baseMap=new Map(specs.filter(s=>s.scopeKind!=='rural').map(s=>[`${s.type}|${s.vehicle}|${s.day}`,s]));
       const exactMap=new Map(specs.map(s=>[`${s.type}|${s.vehicle}|${s.day}|${routeScopeSignature(s)}`,s]));
       for(const r of (data.routes||[])){
-        const spec=(Array.isArray(r.districts)&&r.districts.length)
+        const hasExplicitScope=Array.isArray(r.districts)&&r.districts.length;
+        const spec=hasExplicitScope
           ? exactMap.get(`${r.type}|${r.vehicle}|${r.day}|${routeScopeSignature(r)}`)
           : baseMap.get(`${r.type}|${r.vehicle}|${r.day}`);
         if(!spec||existingDongRouteOverlay(spec))continue;
+        // v76 내장본은 일부 직영 차량에서 동지역+읍면 범위가 한 캐시에 섞여 있었습니다.
+        // 명시적 범위정보가 없는 구형 번들은 해당 요일의 과거 범위에 읍면이 섞였으면 재사용하지 않고 다시 계산합니다.
+        if(!hasExplicitScope&&!routeCompany(spec.vehicle)){
+          const legacyExact=ROUTE_DONG_DAY_SCOPE[r.type]?.[r.vehicle]?.[r.day];
+          const legacyScope=[...(legacyExact||ROUTE_DONG_SCOPE[r.type]?.[r.vehicle]||[])].map(canonicalDistrict);
+          if(legacyScope.some(d=>RURAL_INFERRED_ROUTE_DISTRICTS.has(d)))continue;
+        }
         createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});
       }
       hydrated=true;
@@ -3231,8 +3242,9 @@ async function preloadAllDongRoutes(){
   const specs=allDongRouteSpecs();
 
   // v63: index.html 내장본을 최우선 사용합니다. 내장본이 없거나 일부 누락된 경우에만 IndexedDB를 확인합니다.
-  const bundled=hydrateBundledPrecomputedData();
-  if(!bundled)await hydrateCachedRouteOverlays(specs);
+  hydrateBundledPrecomputedData();
+  // 내장 v76 노선이 일부 복원돼도, 범위키가 다른 읍·면/재계산 노선은 IndexedDB에서 항상 추가 복원합니다.
+  await hydrateCachedRouteOverlays(specs);
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
   // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
@@ -3280,9 +3292,11 @@ function serviceZoneCandidateSpecs(type,district,riName=''){
   }
   specs=specs.map(s=>{
     if(RI_LAYER_DISTRICTS.has(district))return {...s,districts:[district],scopeKind:'rural'};
-    const districts=Array.isArray(s.districts)&&s.districts.length?s.districts:[...serviceZoneRouteScope(type,s.vehicle)];
+    // 동지역 추정권역용 근거노선도 읍·면이 섞인 SERVICE_ZONE_ROUTE_SCOPE를 쓰지 않고
+    // 실제 동지역 표시범위와 동일한 routeDongScope를 재사용합니다.
+    const districts=routeDongScope(type,s.vehicle,s.day);
     return {...s,districts,scopeKind:s.scopeKind||'base'};
-  });
+  }).filter(s=>s.districts.length);
   if(district==='오창읍'&&contractSpecs.length)specs.push(...contractSpecs.map(s=>({...s,scopeKind:'base'})));
   return uniqueRouteSpecs(specs);
 }
