@@ -129,11 +129,29 @@ current_bundle = bundle_map(parse_bundle(current_text))
 direct_diff = compare_maps("DIRECT_ROUTES", baseline_direct, current_direct)
 bundle_diff = compare_maps("BUNDLED_ROUTES", baseline_bundle, current_bundle)
 
-# Every current direct vehicle/day route must also exist in the precomputed bundle.
-missing_precomputed = sorted(set(current_direct) - set(current_bundle))
-print("DIRECT_NOT_PRECOMPUTED", len(missing_precomputed), missing_precomputed)
+# v76 itself intentionally leaves some 읍·면 direct routes out of the embedded bundle.
+# Those routes are built on first use and then persisted to IndexedDB. Stage 4 therefore
+# fails only when CURRENT introduces a newly unbundled route beyond the v76 baseline.
+baseline_not_precomputed = set(baseline_direct) - set(baseline_bundle)
+current_not_precomputed = set(current_direct) - set(current_bundle)
+newly_unbundled = sorted(current_not_precomputed - baseline_not_precomputed)
+resolved_since_v76 = sorted(baseline_not_precomputed - current_not_precomputed)
+print("V76_DYNAMIC_ROUTE_KEYS", len(baseline_not_precomputed), sorted(baseline_not_precomputed))
+print("CURRENT_DYNAMIC_ROUTE_KEYS", len(current_not_precomputed), sorted(current_not_precomputed))
+print("NEWLY_UNBUNDLED", len(newly_unbundled), newly_unbundled)
+print("RESOLVED_SINCE_V76", len(resolved_since_v76), resolved_since_v76)
 
-# Contractor routes that were explicitly required during the v76 rollback/recovery.
+# Stage 3 requirement: 오창·내수·북이는 routeRuralScope -> allDongRouteSpecs path
+# so the legacy v76 dynamic route keys are actually built/cached and can be displayed.
+required_stage3_tokens = [
+    "const RURAL_ROUTE_LAYER_DISTRICTS=new Set(['오창읍','내수읍','북이면']);",
+    "const RURAL_ROUTE_MATCH_KM=0.020;",
+    "const rural=routeRuralScope(type,route.vehicle,routeDay);",
+    "if(rural.length)out.push({...common,districts:rural,scopeKind:'rural'});",
+]
+missing_stage3 = [token for token in required_stage3_tokens if token not in current_text]
+print("STAGE3_RURAL_PATH_MISSING", len(missing_stage3), missing_stage3)
+
 required_contractors = [
     "현대환경|95오0125|내덕1동|단독",
     "제일환경|95오0147|오창읍|단독",
@@ -144,8 +162,10 @@ print("REQUIRED_CONTRACTORS_MISSING", len(missing_contractors), missing_contract
 
 if any(any(group) for group in (direct_diff, bundle_diff)):
     raise SystemExit("Stage 4 failed: current route data differs from v76 baseline")
-if missing_precomputed:
-    raise SystemExit("Stage 4 failed: direct vehicle/day routes missing from precomputed bundle")
+if newly_unbundled:
+    raise SystemExit("Stage 4 failed: current has newly unbundled direct vehicle/day routes")
+if missing_stage3:
+    raise SystemExit("Stage 4 failed: Ochang/Naesu/Bugi dynamic route layer path is incomplete")
 if missing_contractors:
     raise SystemExit("Stage 4 failed: required contractor route missing")
 
