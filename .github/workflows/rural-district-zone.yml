@@ -1,0 +1,21 @@
+name: Rural district estimated zones
+on:
+  push:
+    paths: ['tools/rural-district-zone.trigger']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/rural_district_zone_patch.py
+      - run: |
+          grep -F 'zone-v78-rural-district-estimated-regions' index.html
+          grep -F "serviceRouteGroups(type,region.district,'')" index.html
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Use district-wide rural estimated zones"
+          git push
