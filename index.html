@@ -920,7 +920,8 @@ const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[],districtOutli
 // 직영 동지역 + 대행업체 원본 수거노선을 차량·요일별 참고 노선으로 표시합니다.
 const DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 // v67: 내수·북이는 표시된 수거노선에서 30m 이내만 자동 수거대상으로 인정합니다.
-const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['내수읍','북이면']);
+const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['오창읍','내수읍','북이면']);
+const RURAL_ROUTE_LAYER_DISTRICTS=new Set(['오창읍']);
 const RURAL_ROUTE_MATCH_KM=0.030;
 // ② 근거노선: 직영은 동지역 중심으로 유지하되, 대행업체가 제공한 청원구 원본 노선은 읍·동 구분 없이 실제 대행구간을 표시합니다.
 const VISUAL_DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
@@ -948,8 +949,13 @@ function routeTextHash(s){
   }
   return h.toString(36);
 }
+function routeScopeCacheSuffix(spec){
+  const base=[...routeDongScope(spec?.type,spec?.vehicle,spec?.day)].map(canonicalDistrict).filter(Boolean).sort();
+  const scope=routeAllowedDistricts(spec).slice().sort();
+  return base.join('|')===scope.join('|')?'':`|scope-${routeTextHash(scope.join('|'))}`;
+}
 function routeCacheKey(spec){
-  return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}`;
+  return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}${routeScopeCacheSuffix(spec)}`;
 }
 function openDongRouteCache(){
   return new Promise((resolve,reject)=>{
@@ -1202,6 +1208,18 @@ function routeDongScope(type,vehicle,day=''){
   const exact=day&&ROUTE_DONG_DAY_SCOPE[type]?.[vehicle]?.[day];
   return [...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])];
 }
+function routeRuralScope(type,vehicle,day=''){
+  if(contractRouteMeta(vehicle))return [];
+  const src=day
+    ? [...(DIRECT_INFERRED_REGIONS?.[type]?.[vehicle]?.[day]||[])]
+    : [...(SERVICE_ZONE_ROUTE_SCOPE[type]?.[vehicle]||[])];
+  return [...new Set(src.map(canonicalDistrict).filter(d=>RURAL_ROUTE_LAYER_DISTRICTS.has(d)))];
+}
+function routeAllowedDistricts(spec){
+  const src=Array.isArray(spec?.districts)&&spec.districts.length?spec.districts:routeDongScope(spec?.type,spec?.vehicle,spec?.day);
+  return [...new Set(src.map(canonicalDistrict).filter(Boolean))];
+}
+function routeScopeSignature(spec){return routeAllowedDistricts(spec).slice().sort().join('|');}
 function serviceZoneRouteScope(type,vehicle){
   const cm=contractRouteMeta(vehicle);if(cm)return cm.zoneEligible?[canonicalDistrict(cm.district)]:[];
   return [...(SERVICE_ZONE_ROUTE_SCOPE[type]?.[vehicle]||[])];
@@ -1569,7 +1587,7 @@ function pointSegmentDistanceKm(lat,lng,a,b){
   return Math.hypot(p.x-(p1.x+t*vx),p.y-(p1.y+t*vy));
 }
 const MAX_ADDRESS_ROUTE_DISTANCE_KM=0.020;
-function routeMatchLimitKm(district){return RURAL_INFERRED_ROUTE_DISTRICTS.has(canonicalDistrict(district))?RURAL_ROUTE_MATCH_KM:MAX_ADDRESS_ROUTE_DISTANCE_KM} // 주소점에서 실제 표시 수거노선 20m 이내만 수거일정으로 인정
+function routeMatchLimitKm(district){const d=canonicalDistrict(district);return RURAL_ROUTE_LAYER_DISTRICTS.has(d)?MAX_ADDRESS_ROUTE_DISTANCE_KM:(RURAL_INFERRED_ROUTE_DISTRICTS.has(d)?RURAL_ROUTE_MATCH_KM:MAX_ADDRESS_ROUTE_DISTANCE_KM)} // 3단계: 오창 20m, 내수·북이는 기존 30m 유지
 function routeItemDistanceKm(item,lat,lng){
   // 주소 20m 직접매칭은 실제 표시 수거선만 사용합니다.
   let best=Infinity;
@@ -2045,6 +2063,16 @@ async function refreshNearbyRouteSchedules(ctx){
   for(const type of ['general','recycle']){
     const exact=contractExactScheduleMatch(type,ctx);if(exact){renderContractExactSchedule(type,exact,ctx);continue}
     if(isUnconfirmedRi(type,district,ctx.legalRi||''))continue;
+    if(district==='오창읍'){
+      const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
+      if(seq!==nearbyScheduleRequestSeq)return;
+      if(near?.length){renderNearbyRouteSchedule(type,near,ctx);continue}
+      const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
+      if(seq!==nearbyScheduleRequestSeq)return;
+      if(match)renderServiceZoneSchedule(type,{...match,estimated:true,zoneStatus:'estimated'},ctx);
+      else renderNoNearbyRouteSchedule(type,district);
+      continue;
+    }
     if(RURAL_INFERRED_ROUTE_DISTRICTS.has(district)){
       const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
       if(seq!==nearbyScheduleRequestSeq)return;
@@ -2114,9 +2142,11 @@ function routeCandidatesForSelection(type){
     if(provider!=='전체'&&!routeSelectedBy(provider,route.vehicle))continue;
     for(const [routeDay,raw] of Object.entries(route.days||{})){
       if(day!=='전체'&&routeDay!==day)continue;
-      const districts=routeDongScope(type,route.vehicle,routeDay);
-      if(!districts.length)continue;
-      out.push({type,vehicle:route.vehicle,provider:route.provider||'',plate:route.plate||route.vehicle,housing:route.housing||'single',zoneEligible:route.zoneEligible!==false,day:routeDay,raw,districts:[...districts]});
+      const common={type,vehicle:route.vehicle,provider:route.provider||'',plate:route.plate||route.vehicle,housing:route.housing||'single',zoneEligible:route.zoneEligible!==false,day:routeDay,raw};
+      const base=routeDongScope(type,route.vehicle,routeDay);
+      if(base.length)out.push({...common,districts:[...base],scopeKind:'base'});
+      const rural=routeRuralScope(type,route.vehicle,routeDay);
+      if(rural.length)out.push({...common,districts:rural,scopeKind:'rural'});
     }
   }
   return out;
@@ -2728,7 +2758,7 @@ async function localRoadAnchorsAroundPoint(base,spec,radiusKm=0.45){
   let samples=await searchRoadAnchorPlaces(road);
   samples=samples.filter(p=>{
     const d=routePointAnyDistrict(p);
-    return d && routeDongScope(spec.type,spec.vehicle,spec.day).includes(d) && routePointDistance(base,p)<=radiusKm;
+    return d && routeAllowedDistricts(spec).includes(d) && routePointDistance(base,p)<=radiusKm;
   });
   if(samples.length<2)return [];
   const n=roadHouseNumberFromAddress(base.address,road);
@@ -2767,7 +2797,7 @@ async function serviceAnchorsForEntry(entry,spec){
 }
 
 function finalRouteCoordinateAudit(spec,data){
-  const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
+  const allowed=routeAllowedDistricts(spec);
   const invalid=[];
   const check=(p,where)=>{
     if(!p||!Number.isFinite(+p.lat)||!Number.isFinite(+p.lng)){
@@ -2791,7 +2821,7 @@ function finalRouteCoordinateAudit(spec,data){
   return {ok:invalid.length===0,invalidCount:invalid.length,invalid:invalid.slice(0,12),allowed};
 }
 function sanitizeRouteDataToScope(spec,data){
-  const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
+  const allowed=routeAllowedDistricts(spec);
   const segments=[];
   for(const seg of (data?.segments||[])){
     const clipped=clipRoutePathToDistricts(seg,allowed);
@@ -2806,7 +2836,8 @@ function sanitizeRouteDataToScope(spec,data){
   return {...data,segments,servicePoints:[],zoneEvidencePoints};
 }
 function existingDongRouteOverlay(spec){
-  return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day) || null;
+  const scope=routeScopeSignature(spec);
+  return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day&&routeScopeSignature(x)===scope)||null;
 }
 function createDongRouteOverlay(spec,data){
   let segments=Array.isArray(data.segments)?data.segments:[];
@@ -2946,7 +2977,7 @@ async function inferredRuralMovementSegments(anchorMap){
 }
 
 async function buildDongRouteOverlay(spec){
-  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}`;
+  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}|${routeScopeSignature(spec)}`;
   const existing=existingDongRouteOverlay(spec);
   if(existing)return existing;
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
@@ -2989,7 +3020,7 @@ async function buildDongRouteOverlay(spec){
           rejectedOutOfGu++;
           continue;
         }
-        const allowed=routeDongScope(spec.type,spec.vehicle,spec.day);
+        const allowed=routeAllowedDistricts(spec);
         if(!allowed.includes(actualDistrict)){
           outside.push({...point,district:actualDistrict});
           continue;
@@ -3047,7 +3078,7 @@ async function buildDongRouteOverlay(spec){
         let matchedThisTerm=false;
         for(const roadPath of (roadResult?.segments||[])){
           // 해당 차량·요일에 배정된 동지역 경계 안에서만 실제 도로망 구간을 남깁니다.
-          const localSegments=clipRoutePathToDistricts(roadPath,routeDongScope(spec.type,spec.vehicle,spec.day));
+          const localSegments=clipRoutePathToDistricts(roadPath,routeAllowedDistricts(spec));
           if(!localSegments.length)continue;
           for(const seg of localSegments){
             if(seg.length>=2){segments.push(seg.map(p=>({lat:+p.lat,lng:+p.lng})));matchedThisTerm=true}
@@ -3160,13 +3191,15 @@ async function ensureDongRoutesForSelection(type){
 
 function allDongRouteSpecs(){
   const out=[];const seen=new Set();
+  const push=s=>{const k=`${s.type}|${s.vehicle}|${s.day}|${routeScopeSignature(s)}`;if(!seen.has(k)){seen.add(k);out.push(s)}};
   for(const type of ['general','recycle']){
     for(const route of routeCatalog(type)){
       for(const [day,raw] of Object.entries(route.days||{})){
-        const districts=(route.districts?.length?[...route.districts]:routeDongScope(type,route.vehicle,day)).map(canonicalDistrict);
-        if(!districts.length)continue;
-        const key=`${type}|${route.vehicle}|${day}`;if(seen.has(key))continue;seen.add(key);
-        out.push({type,vehicle:route.vehicle,provider:route.provider||'',plate:route.plate||route.vehicle,housing:route.housing||'single',zoneEligible:route.zoneEligible!==false,day,raw,districts});
+        const common={type,vehicle:route.vehicle,provider:route.provider||'',plate:route.plate||route.vehicle,housing:route.housing||'single',zoneEligible:route.zoneEligible!==false,day,raw};
+        const base=(route.districts?.length?[...route.districts]:routeDongScope(type,route.vehicle,day)).map(canonicalDistrict);
+        if(base.length)push({...common,districts:base,scopeKind:'base'});
+        const rural=routeRuralScope(type,route.vehicle,day);
+        if(rural.length)push({...common,districts:rural,scopeKind:'rural'});
       }
     }
   }
@@ -3435,13 +3468,18 @@ function ruralRiZoneMeta(type,region){
 async function buildRuralRiServiceZone(type,region){
   const meta=ruralRiZoneMeta(type,region);
   if(!meta)return false;
+  if(region.district==='오창읍'){
+    const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+    const usable=groups.filter(g=>g.items.length);
+    if(!usable.length)return false;
+    await buildGridServiceZonesForRegion(type,region,usable);
+    return true;
+  }
   if(RURAL_INFERRED_ROUTE_DISTRICTS.has(region.district)){
-    // 리 단위 묶음은 외곽선/약한 배경으로만 유지하고, 실제 일정권역은 노선 30m 통로입니다.
     wholeFeatureZone(type,region.feature,{...meta,noSchedule:true,groupOutline:true,days:[]});
     await buildRuralRouteBufferZones(type,region);
     return true;
   }
-  // 오창읍은 기존 v66 리 단위 권역을 유지하며 산업단지 대행구간은 별도 색상으로 표시합니다.
   wholeFeatureZone(type,region.feature,meta);
   return true;
 }
