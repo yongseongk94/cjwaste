@@ -1,0 +1,29 @@
+name: Stage 3 rural route layers
+on:
+  push:
+    paths: ['tools/stage3-rural.trigger']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - run: python3 tools/stage3_rural_patch.py
+      - name: JS syntax check
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          t=Path('index.html').read_text()
+          Path('/tmp/a.js').write_text('\n'.join(re.findall(r'<script>(.*?)</script>',t,re.S)))
+          PY
+          node --check /tmp/a.js
+      - run: |
+          rm -f tools/stage3-rural.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html tools/stage3-rural.trigger
+          git commit -m 'Stage 3: enable Ochang Naesu Bugi route layers'
+          git push
