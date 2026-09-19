@@ -190,8 +190,8 @@
     </div>
     <div id="structureControl" class="structure-control">
       <span class="structure-label">레이어</span>
-      <button class="active" data-structure="zone">① 추정지역</button>
-      <button class="active" data-structure="route">② 수거노선</button>
+      <button class="active" data-structure="zone">① 추정권역</button>
+      <button class="active" data-structure="route">② 근거노선</button>
     </div>
     <div class="map-tools"><button id="adminToggle" class="admin-toggle">관리자 편집</button><button id="zoomIn">＋</button><button id="zoomOut">－</button></div>
     <div id="adminPanel" class="admin-panel">
@@ -363,8 +363,7 @@ function renderContractExactSchedule(type,row,ctx){
 }
 
 const DISTRICT_ALIASES={
-  '내수읍':'내수읍','오창읍':'오창읍','북이면':'북이면','우암동':'우암동',
-  '내덕1동':'내덕1동','내덕제1동':'내덕1동','내덕2동':'내덕2동','내덕제2동':'내덕2동','오근장동':'오근장동',
+  '내수읍':'내수읍','오창읍':'오창읍','북이면':'북이면','우암동':'우암동','내덕1동':'내덕1동','내덕2동':'내덕2동','오근장동':'오근장동',
   '율량사천동':'율량사천동','율량·사천동':'율량사천동','율량.사천동':'율량사천동'
 };
 
@@ -921,8 +920,8 @@ const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[],districtOutli
 // 직영 동지역 + 대행업체 원본 수거노선을 차량·요일별 참고 노선으로 표시합니다.
 const DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 // v67: 내수·북이는 표시된 수거노선에서 30m 이내만 자동 수거대상으로 인정합니다.
-const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['오창읍','내수읍','북이면']);
-const RURAL_ROUTE_MATCH_KM=0.020;
+const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['내수읍','북이면']);
+const RURAL_ROUTE_MATCH_KM=0.030;
 // ② 근거노선: 직영은 동지역 중심으로 유지하되, 대행업체가 제공한 청원구 원본 노선은 읍·동 구분 없이 실제 대행구간을 표시합니다.
 const VISUAL_DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 const CHEONGWON_ROUTE_DISTRICTS=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
@@ -949,14 +948,8 @@ function routeTextHash(s){
   }
   return h.toString(36);
 }
-function routeScopeCacheSuffix(spec){
-  const scope=(Array.isArray(spec?.districts)&&spec.districts.length?spec.districts:routeDongScope(spec?.type,spec?.vehicle,spec?.day))
-    .map(canonicalDistrict);
-  const rural=[...new Set(scope.filter(d=>d==='오창읍'||d==='내수읍'||d==='북이면'))].sort();
-  return rural.length?`|rural-${routeTextHash(rural.join("|"))}`:'';
-}
 function routeCacheKey(spec){
-  return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}${routeScopeCacheSuffix(spec)}`;
+  return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}`;
 }
 function openDongRouteCache(){
   return new Promise((resolve,reject)=>{
@@ -1207,14 +1200,7 @@ const ROUTE_DONG_DAY_SCOPE={
 function routeDongScope(type,vehicle,day=''){
   const cm=contractRouteMeta(vehicle);if(cm)return [canonicalDistrict(cm.district)];
   const exact=day&&ROUTE_DONG_DAY_SCOPE[type]?.[vehicle]?.[day];
-  const base=[...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])].map(canonicalDistrict);
-  // v77: 오창·내수·북이도 동지역과 동일한 ② 수거노선 레이어에 포함합니다.
-  // 차량 전체 범위를 읍·면에 무조건 펼치지 않고, 원자료에서 해당 요일에 실제 등장한 읍·면만 추가합니다.
-  const ruralByDay=day
-    ? [...(DIRECT_INFERRED_REGIONS?.[type]?.[vehicle]?.[day]||[])]
-    : [...(SERVICE_ZONE_ROUTE_SCOPE[type]?.[vehicle]||[])];
-  const rural=ruralByDay.map(canonicalDistrict).filter(d=>d==='오창읍'||d==='내수읍'||d==='북이면');
-  return [...new Set([...base,...rural])];
+  return [...(exact||ROUTE_DONG_SCOPE[type]?.[vehicle]||[])];
 }
 function serviceZoneRouteScope(type,vehicle){
   const cm=contractRouteMeta(vehicle);if(cm)return cm.zoneEligible?[canonicalDistrict(cm.district)]:[];
@@ -1409,7 +1395,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v82-district-grid-unified|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v76-layer-visibility-refresh|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -1436,10 +1422,6 @@ function hydrateBundledPrecomputedData(){
       for(const r of (data.routes||[])){
         const spec=specMap.get(`${r.type}|${r.vehicle}|${r.day}`);
         if(!spec||existingDongRouteOverlay(spec))continue;
-        // v76 내장 노선은 읍·면이 빠진 차량이 있으므로, 오창·내수·북이가 포함된 spec은
-        // 기존 번들을 재사용하지 않고 새 담당범위로 한 번 다시 계산해 IndexedDB에 저장합니다.
-        const scope=(spec.districts||routeDongScope(spec.type,spec.vehicle,spec.day)).map(canonicalDistrict);
-        if(scope.some(d=>d==='오창읍'||d==='내수읍'||d==='북이면'))continue;
         createDongRouteOverlay(spec,{...(r.data||{}),fromCache:true,fromBundle:true});
       }
       hydrated=true;
@@ -1761,7 +1743,7 @@ function renderRestoredRuralRiSchedule(type,ctx){
   const rows=schedule.days.map(day=>`<strong>${day}요일:</strong> ${(schedule.byDay[day]||[]).map(v=>escapeHtml(v+'호')).join(' · ')}`).join('<br>');
   const inherited=schedule.inheritedFrom?`<br><span style="color:#6b7280">※ 북이면 ${escapeHtml(schedule.originalRi)}는 기존 지정 규칙에 따라 ${escapeHtml(schedule.inheritedFrom)} 일정을 적용합니다.</span>`:'';
   const apartment=type==='recycle'?'<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.':'';
-  document.getElementById(type+'Detail').innerHTML=`<div class="verified"><strong>${escapeHtml(schedule.district+' '+schedule.originalRi)}</strong><br><strong>2026년 6월 직영 코스표 기준 수거일:</strong><br>${rows}${inherited}<br><span style="color:#6b7280">※ 주소가 표시 수거노선 20m 이내로 매칭되면 해당 노선의 결과를 우선 적용하고, 그 밖은 행정구역 단위 추정지역을 사용합니다.</span>${apartment}</div>`;
+  document.getElementById(type+'Detail').innerHTML=`<div class="verified"><strong>${escapeHtml(schedule.district+' '+schedule.originalRi)}</strong><br><strong>2026년 6월 직영 코스표 기준 수거일:</strong><br>${rows}${inherited}<br><span style="color:#6b7280">※ 주소가 표시 수거노선 30m 이내로 매칭되면 해당 노선의 더 세부적인 결과를 우선 적용합니다.</span>${apartment}</div>`;
   return true;
 }
 function renderNoNearbyRouteSchedule(type,district){
@@ -2063,15 +2045,10 @@ async function refreshNearbyRouteSchedules(ctx){
   for(const type of ['general','recycle']){
     const exact=contractExactScheduleMatch(type,ctx);if(exact){renderContractExactSchedule(type,exact,ctx);continue}
     if(isUnconfirmedRi(type,district,ctx.legalRi||''))continue;
-    if(RI_LAYER_DISTRICTS.has(district)){
-      // 오창·내수·북이도 동지역과 동일한 순서로 판정:
-      // 표시 수거노선 20m 이내를 우선 확정하고, 그 밖은 ① 추정지역을 사용합니다.
+    if(RURAL_INFERRED_ROUTE_DISTRICTS.has(district)){
       const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
       if(seq!==nearbyScheduleRequestSeq)return;
-      if(near?.length){renderNearbyRouteSchedule(type,near,ctx);continue}
-      const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
-      if(seq!==nearbyScheduleRequestSeq)return;
-      if(match)renderServiceZoneSchedule(type,{...match,estimated:true,zoneStatus:'estimated'},ctx);
+      if(near?.length)renderNearbyRouteSchedule(type,near,ctx);
       else if(!renderRestoredRuralRiSchedule(type,ctx))renderNoNearbyRouteSchedule(type,district);
       continue;
     }
@@ -2828,20 +2805,8 @@ function sanitizeRouteDataToScope(spec,data){
   }).map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:routePointAnyDistrict(p)}));
   return {...data,segments,servicePoints:[],zoneEvidencePoints};
 }
-function routeScopeSignature(spec){
-  const scope=(Array.isArray(spec?.districts)&&spec.districts.length
-    ? spec.districts
-    : routeDongScope(spec?.type,spec?.vehicle,spec?.day))
-    .map(canonicalDistrict).filter(Boolean);
-  return [...new Set(scope)].sort().join('|');
-}
 function existingDongRouteOverlay(spec){
-  const scopeKey=routeScopeSignature(spec);
-  return (dongRouteOverlays[spec.type]||[]).find(x=>
-    x.vehicle===spec.vehicle &&
-    x.day===spec.day &&
-    routeScopeSignature(x)===scopeKey
-  ) || null;
+  return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day) || null;
 }
 function createDongRouteOverlay(spec,data){
   let segments=Array.isArray(data.segments)?data.segments:[];
@@ -2981,7 +2946,7 @@ async function inferredRuralMovementSegments(anchorMap){
 }
 
 async function buildDongRouteOverlay(spec){
-  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}|${routeScopeSignature(spec)}`;
+  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}`;
   const existing=existingDongRouteOverlay(spec);
   if(existing)return existing;
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
@@ -3184,10 +3149,8 @@ async function ensureDongRoutesForSelection(type){
   // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
   await hydrateCachedRouteOverlays(specs);
   syncDongRouteVisibility(type);
-  // v80: 한 행정구역 경계가 늦거나 명칭이 달라도 전체 노선 계산을 막지 않습니다.
-  // 해당 차량×요일에 필요한 담당구역 경계가 준비된 노선부터 계산합니다.
-  const missing=specs.filter(s=>!existingDongRouteOverlay(s) &&
-    (s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d))));
+  // 2차: 캐시에 없는 노선만 뒤에서 계산하며, 완성되는 선부터 바로 추가합니다.
+  const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   await mapWithConcurrency(missing,3,async spec=>{
     await buildDongRouteOverlay(spec);
     if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
@@ -3220,12 +3183,8 @@ async function preloadAllDongRoutes(){
   if(!bundled)await hydrateCachedRouteOverlays(specs);
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
-  // v80: 모든 행정구역 경계를 기다리지 않고 필요한 경계가 준비된 차량×요일부터 계산합니다.
-  // 오창·내수·북이가 다른 동의 경계 문제 때문에 함께 막히지 않도록 합니다.
-  const missing=specs.filter(s=>!existingDongRouteOverlay(s) &&
-    (s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d))));
-  const hasPendingBoundary=specs.some(s=>!existingDongRouteOverlay(s) &&
-    !(s.districts||[]).every(d=>districtFeatureMap.has(canonicalDistrict(d))));
+  // 캐시에 없는 노선만 백그라운드에서 준비합니다. 인위적인 120ms 대기는 제거했습니다.
+  const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   await mapWithConcurrency(missing,3,async spec=>{
     try{await buildDongRouteOverlay(spec)}catch(e){console.warn('동지역 수거노선 준비 실패',spec,e)}
     if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
@@ -3235,7 +3194,6 @@ async function preloadAllDongRoutes(){
   await buildServiceZones('general');
   await buildServiceZones('recycle');
   if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
-  if(hasPendingBoundary)dongRoutePreloadStarted=false;
   window.__CJWASTE_PRECOMPUTE_READY=true;
 }
 
@@ -3477,14 +3435,14 @@ function ruralRiZoneMeta(type,region){
 async function buildRuralRiServiceZone(type,region){
   const meta=ruralRiZoneMeta(type,region);
   if(!meta)return false;
-
-  // v77: 오창·내수·북이도 동지역과 동일하게
-  // ② 실제 표시 수거노선 20m 범위를 확정구간으로 두고,
-  // 그 밖의 같은 리 내부 빈 공간만 주변 차량×요일 노선에 따라 ① 추정지역으로 나눕니다.
-  const groups=await serviceRouteGroups(type,region.district,region.riName||'');
-  const usable=groups.filter(g=>g.items.length);
-  if(!usable.length)return false;
-  await buildGridServiceZonesForRegion(type,region,usable);
+  if(RURAL_INFERRED_ROUTE_DISTRICTS.has(region.district)){
+    // 리 단위 묶음은 외곽선/약한 배경으로만 유지하고, 실제 일정권역은 노선 30m 통로입니다.
+    wholeFeatureZone(type,region.feature,{...meta,noSchedule:true,groupOutline:true,days:[]});
+    await buildRuralRouteBufferZones(type,region);
+    return true;
+  }
+  // 오창읍은 기존 v66 리 단위 권역을 유지하며 산업단지 대행구간은 별도 색상으로 표시합니다.
+  wholeFeatureZone(type,region.feature,meta);
   return true;
 }
 
@@ -3607,12 +3565,19 @@ async function buildServiceZones(type){
     let done=0;
     for(const region of regions){
       if(isUnconfirmedRi(type,region.district,region.riName||'')){done++;continue}
-      // v82: 읍·면·동을 구분하지 않고 동일한 방식으로 추정지역을 생성합니다.
-      // 행정구역 전체에서 차량×요일 수거노선을 기준으로 최근접 분할하고,
-      // 실제 표시 수거노선 20m 이내는 확정구간으로 남겨 추정폴리곤에서 제외합니다.
-      const groups=await serviceRouteGroups(type,region.district,'');
-      const usable=groups.filter(g=>g.items.length);
-      if(usable.length)await buildGridServiceZonesForRegion(type,region,usable);
+      if(RI_LAYER_DISTRICTS.has(region.district)){
+        // v66: 내수·오창·북이는 법정리 경계 자체를 ① 수거권역으로 사용합니다.
+        // 같은 리 안을 100m 격자로 다시 쪼개지 않습니다.
+        await buildRuralRiServiceZone(type,region);
+      }else{
+        const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+        const usable=groups.filter(g=>g.items.length);
+        if(!usable.length){
+          // 근거노선 좌표가 없으면 동 전체를 임의 수거권역으로 채우지 않습니다.
+        }else{
+          await buildGridServiceZonesForRegion(type,region,usable);
+        }
+      }
       done++;
       // 계산되는 즉시 화면에 추가하되, 사용자에게 별도 '로딩' 상태를 표시하지 않습니다.
       if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
@@ -3816,8 +3781,8 @@ function updateMapBadge(custom){
     el.innerHTML=`<strong>음식물쓰레기 수거·분류배출 레이어</strong><span>${custom||'수거 시행지역과 분류배출 제외지역을 면색으로 구분합니다.'}</span><div class="food-legend"><span class="legend-item"><i class="legend-dot legend-mwf"></i>시행지역 · 월·수·금</span><span class="legend-item"><i class="legend-dot legend-tts"></i>시행지역 · 화·목·일</span><span class="legend-item"><i class="legend-dot legend-excluded"></i>분류배출 제외지역</span></div>`;return;
   }
   const provider=selectedVehicle[activeLayer]||'전체',dayLabel=activeDay==='전체'?'전체요일':`${activeDay}요일`,providerLabel=provider==='전체'?'전체 수거주체':((provider==='제일환경'||provider==='현대환경')?`${provider} 대행`:`${provider}호 직영`);
-  const state=[serviceLayerState.zone?'①추정지역':'',serviceLayerState.route?'②수거노선':''].filter(Boolean).join(' + ');
-  el.innerHTML=`<strong>${labels[activeLayer]} · ${providerLabel} · ${dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong>. 주소 수거일정은 실제 표시 수거노선 20m 이내를 먼저 확정하고, 그 밖의 주소에서만 ① 추정지역 폴리곤을 사용합니다. 추정지역은 확정 노선 범위를 제외한 빈 공간을 원본 차량·요일별 수거노선 기준으로 나눈 범위이며, 저장된 권역·노선은 브라우저 영구 캐시에서 즉시 복원됩니다. ② 근거노선은 원본 코스표에서 실제 도로망으로 확인된 수거구간을 표시합니다. 확인되지 않은 구간을 임의 직선으로 연결하지 않습니다. 수거권역이 실제와 다르면 관리자 편집에서 수동권역을 그려 우선 적용할 수 있습니다.`}</span>`;
+  const state=[serviceLayerState.zone?'①수거권역':'',serviceLayerState.route?'②근거노선':''].filter(Boolean).join(' + ');
+  el.innerHTML=`<strong>${labels[activeLayer]} · ${providerLabel} · ${dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong>. 주소 수거일정은 실제 표시 수거노선 20m 이내를 먼저 확정하고, 그 밖의 주소에서만 ① 추정권역 폴리곤을 사용합니다. 추정권역은 확정 노선 범위를 제외한 빈 공간을 원본 차량·요일별 수거노선 기준으로 나눈 범위이며, 저장된 권역·노선은 브라우저 영구 캐시에서 즉시 복원됩니다. ② 근거노선은 원본 코스표에서 실제 도로망으로 확인된 수거구간을 표시합니다. 확인되지 않은 구간을 임의 직선으로 연결하지 않습니다. 수거권역이 실제와 다르면 관리자 편집에서 수동권역을 그려 우선 적용할 수 있습니다.`}</span>`;
 }
 function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -4149,9 +4114,7 @@ async function buildZonePolygons(){
       matched++;
       districtFeatures.set(district,f);
       districtFeatureMap.set(district,f);
-      // v82: 생활·재활용 추정지역은 읍·면·동 모두 행정구역 전체 경계를 동일하게 사용합니다.
-      // 오창·내수·북이도 리 단위로 쪼개지 않고 동지역과 같은 차량×요일 노선 기반 분할을 사용합니다.
-      serviceZoneRegions.push({district,riName:'',riCode:'',feature:f});
+      if(!RI_LAYER_DISTRICTS.has(district))serviceZoneRegions.push({district,riName:'',riCode:'',feature:f});
       addDistrictOutlineGeometry(f,district);
       // 음식물: 동 지역은 행정동 경계, 읍·면은 아래 법정리 단계에서 정확한 시행/제외 범위를 생성합니다.
       if(!RI_LAYER_DISTRICTS.has(district))addFoodGeometry(f,district);
@@ -4167,13 +4130,7 @@ async function buildZonePolygons(){
     const bugi=districtFeatures.get('북이면');
     if(bugi)addWholeDistrictExclusion(bugi,'북이면');
 
-    // v82: 생활·재활용 추정지역은 리 경계를 기다릴 필요가 없습니다.
-    // 행정구역 경계가 준비되는 즉시 동지역과 읍·면을 같은 방식으로 계산합니다.
-    serviceRegionLoadComplete=true;
-    serviceZoneBuilt.general=false;
-    serviceZoneBuilt.recycle=false;
     setLayer(activeLayer);
-    scheduleDongRoutePreload();
   }catch(err){
     console.error('행정동 레이어 로딩 실패',err);
     updateMapBadge('정밀 행정동 경계를 불러오지 못했습니다. 주소별 일정 판정은 계속 사용할 수 있습니다.');
@@ -4203,8 +4160,15 @@ async function buildZonePolygons(){
       seenOfficialRi[district].add(district==='오창읍'&&riName==='화산리'?`${riName}|${riCode}`:riName);
       riFeatureMap.set(`${district}|${riName}|${riCode}`,f);
       if(!riFeatureMap.has(`${district}|${riName}`))riFeatureMap.set(`${district}|${riName}`,f);
-      // v82: 리 경계는 음식물 분류배출 및 주소 세부판정 자료로만 유지합니다.
-      // 생활·재활용 지도 레이어에는 리 단위 폴리곤을 만들지 않습니다.
+      serviceZoneRegions.push({district,riName,riCode,feature:f});
+
+      // 생활·재활용: 법정리별 일정표 + 시설/도로명 실제 주소대조 규칙을 붙여 생성.
+      // 오창의 동명이리 화산리는 li_cd로 꽃화산/빛화산을 구분합니다.
+      for(const type of ['general','recycle']){
+        // 위탁구역은 riScheduleFromSources에서 직영차량과 분리해 위탁업체 일정만 반환합니다.
+        const scheduleByDay=riScheduleFromSources(type,district,riName,riCode);
+        addRiServiceGeometry(f,district,riName,type,scheduleByDay,riCode);
+      }
 
       if(['내수읍','오창읍'].includes(district)){
         const ex=getFoodExclusion(district,riName,riCode);
@@ -4241,9 +4205,9 @@ async function buildZonePolygons(){
     setLayer(activeLayer);
   }
 
-  // v82: 차량×요일 노선 사전계산은 행정구역 경계 직후 이미 시작합니다.
-  // 법정리 로딩 완료 시점에는 현재 레이어만 다시 동기화합니다.
-  if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
+  // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
+  // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
+  scheduleDongRoutePreload();
 }
 function init(){
   map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
@@ -4258,12 +4222,9 @@ function init(){
   const bundled=hydrateBundledPrecomputedData();
   if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
   setLayer('general');
-  // 내장 좌표는 즉시 렌더링하되 오창·내수·북이 신규 노선은 행정경계 준비 뒤 계산합니다.
-  // 초기 선계산과 경계 로딩이 경합해 읍·면 노선이 영구 누락되는 것을 방지합니다.
+  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+  scheduleDongRoutePreload();
   zoneBuildPromise=buildZonePolygons();
-  zoneBuildPromise.then(()=>{
-    if(!dongRoutePreloadStarted)scheduleDongRoutePreload();
-  }).catch(e=>console.warn('행정경계 준비 후 수거노선 사전준비 실패',e));
   document.getElementById('landingInput').focus();
 }
 function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
