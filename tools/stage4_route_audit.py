@@ -1,28 +1,152 @@
 from pathlib import Path
-import re, json
-s=Path("index.html").read_text(encoding="utf-8")
+import json
+import subprocess
 
-start=s.find("const DIRECT_ROUTES=")
-end=s.find("\nconst DIRECT_INFERRED_REGIONS=",start)
-if start<0 or end<0: raise SystemExit("DIRECT_ROUTES not found")
-raw=s[start+len("const DIRECT_ROUTES="):end].strip()
-if raw.endswith(";"): raw=raw[:-1]
-routes=json.loads(raw)
-expected={(typ,str(r["vehicle"]),day) for typ,arr in routes.items() for r in arr for day in r.get("days",{})}
+BASELINE = "a65108eacae4ce165c12bfd258493a3cf3ff2937"
 
-bm=re.search(r'<script id="bundledPrecomputed" type="application/json">(.*?)</script>',s,re.S)
-if not bm: raise SystemExit("bundledPrecomputed script not found")
-bundle=json.loads(bm.group(1))
-actual={(str(x.get("type")),str(x.get("vehicle")),str(x.get("day"))) for x in bundle.get("routes",[])}
 
-missing=sorted(expected-actual)
-extra=sorted(actual-expected)
-print("expected",len(expected),"actual",len(actual),"missing",len(missing),"extra",len(extra))
-print("MISSING",missing)
-print("EXTRA",extra)
+def extract_object_after(text, marker):
+    pos = text.find(marker)
+    if pos < 0:
+        raise SystemExit(f"{marker} not found")
+    start = text.find("{", pos + len(marker))
+    if start < 0:
+        raise SystemExit(f"{marker} object start not found")
 
-if missing:
-    raise SystemExit("Stage 4 failed: bundled direct vehicle/day routes are missing")
-for token in ["현대환경|95오0125|내덕1동|단독","제일환경|95오0147|오창읍|단독","제일환경|88저7478|오창읍|단독"]:
-    if token not in s: raise SystemExit("Stage 4 failed: contractor route missing: "+token)
+    depth = 0
+    in_string = False
+    quote = ""
+    escaped = False
+
+    for i in range(start, len(text)):
+        ch = text[i]
+        if in_string:
+            if escaped:
+                escaped = False
+                continue
+            if ch == "\\":
+                escaped = True
+                continue
+            if ch == quote:
+                in_string = False
+                quote = ""
+            continue
+
+        if ch in ('"', "'"):
+            in_string = True
+            quote = ch
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start:i + 1]
+
+    raise SystemExit(f"{marker} object is unterminated")
+
+
+def parse_direct(text):
+    return json.loads(extract_object_after(text, "const DIRECT_ROUTES="))
+
+
+def parse_bundle(text):
+    marker = '<script id="bundledPrecomputed" type="application/json">'
+    start = text.find(marker)
+    if start < 0:
+        raise SystemExit("bundledPrecomputed script not found")
+    start += len(marker)
+    end = text.find("</script>", start)
+    if end < 0:
+        raise SystemExit("bundledPrecomputed closing script not found")
+    return json.loads(text[start:end])
+
+
+def direct_map(routes):
+    out = {}
+    for typ, rows in routes.items():
+        for row in rows:
+            vehicle = str(row["vehicle"])
+            for day, value in row.get("days", {}).items():
+                out[(str(typ), vehicle, str(day))] = json.dumps(
+                    value, ensure_ascii=False, sort_keys=True
+                )
+    return out
+
+
+def bundle_map(bundle):
+    out = {}
+    for row in bundle.get("routes", []):
+        key = (str(row.get("type")), str(row.get("vehicle")), str(row.get("day")))
+        out[key] = json.dumps(
+            row.get("data"), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        )
+    return out
+
+
+def compare_maps(name, baseline, current):
+    baseline_keys = set(baseline)
+    current_keys = set(current)
+    missing = sorted(baseline_keys - current_keys)
+    extra = sorted(current_keys - baseline_keys)
+    changed = sorted(
+        key for key in baseline_keys & current_keys
+        if baseline[key] != current[key]
+    )
+
+    print(
+        name,
+        "baseline", len(baseline),
+        "current", len(current),
+        "missing", len(missing),
+        "extra", len(extra),
+        "changed", len(changed),
+    )
+    if missing:
+        print(name, "MISSING", missing)
+    if extra:
+        print(name, "EXTRA", extra)
+    if changed:
+        print(name, "CHANGED", changed)
+
+    return missing, extra, changed
+
+
+current_text = Path("index.html").read_text(encoding="utf-8")
+try:
+    baseline_text = subprocess.check_output(
+        ["git", "show", f"{BASELINE}:index.html"],
+        text=True,
+        encoding="utf-8",
+    )
+except subprocess.CalledProcessError as exc:
+    raise SystemExit(f"Could not read v76 baseline {BASELINE}: {exc}")
+
+baseline_direct = direct_map(parse_direct(baseline_text))
+current_direct = direct_map(parse_direct(current_text))
+baseline_bundle = bundle_map(parse_bundle(baseline_text))
+current_bundle = bundle_map(parse_bundle(current_text))
+
+direct_diff = compare_maps("DIRECT_ROUTES", baseline_direct, current_direct)
+bundle_diff = compare_maps("BUNDLED_ROUTES", baseline_bundle, current_bundle)
+
+# Every current direct vehicle/day route must also exist in the precomputed bundle.
+missing_precomputed = sorted(set(current_direct) - set(current_bundle))
+print("DIRECT_NOT_PRECOMPUTED", len(missing_precomputed), missing_precomputed)
+
+# Contractor routes that were explicitly required during the v76 rollback/recovery.
+required_contractors = [
+    "현대환경|95오0125|내덕1동|단독",
+    "제일환경|95오0147|오창읍|단독",
+    "제일환경|88저7478|오창읍|단독",
+]
+missing_contractors = [token for token in required_contractors if token not in current_text]
+print("REQUIRED_CONTRACTORS_MISSING", len(missing_contractors), missing_contractors)
+
+if any(any(group) for group in (direct_diff, bundle_diff)):
+    raise SystemExit("Stage 4 failed: current route data differs from v76 baseline")
+if missing_precomputed:
+    raise SystemExit("Stage 4 failed: direct vehicle/day routes missing from precomputed bundle")
+if missing_contractors:
+    raise SystemExit("Stage 4 failed: required contractor route missing")
+
 print("STAGE4_OK")
