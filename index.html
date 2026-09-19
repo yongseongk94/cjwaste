@@ -1413,7 +1413,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v76-layer-visibility-refresh|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v78-rural-district-estimated-regions|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -3604,18 +3604,13 @@ async function buildServiceZones(type){
     let done=0;
     for(const region of regions){
       if(isUnconfirmedRi(type,region.district,region.riName||'')){done++;continue}
-      if(RI_LAYER_DISTRICTS.has(region.district)){
-        // v66: 내수·오창·북이는 법정리 경계 자체를 ① 수거권역으로 사용합니다.
-        // 같은 리 안을 100m 격자로 다시 쪼개지 않습니다.
-        await buildRuralRiServiceZone(type,region);
+      // 내수·오창·북이도 동지역과 동일하게 읍·면 전체 경계 안에서 차량×요일 근거노선으로 추정권역을 분할합니다.
+      const groups=await serviceRouteGroups(type,region.district,'');
+      const usable=groups.filter(g=>g.items.length);
+      if(!usable.length){
+        // 근거노선 좌표가 없으면 읍·면·동 전체를 임의 권역으로 채우지 않습니다.
       }else{
-        const groups=await serviceRouteGroups(type,region.district,region.riName||'');
-        const usable=groups.filter(g=>g.items.length);
-        if(!usable.length){
-          // 근거노선 좌표가 없으면 동 전체를 임의 수거권역으로 채우지 않습니다.
-        }else{
-          await buildGridServiceZonesForRegion(type,region,usable);
-        }
+        await buildGridServiceZonesForRegion(type,region,usable);
       }
       done++;
       // 계산되는 즉시 화면에 추가하되, 사용자에게 별도 '로딩' 상태를 표시하지 않습니다.
@@ -4168,7 +4163,8 @@ async function buildZonePolygons(){
       matched++;
       districtFeatures.set(district,f);
       districtFeatureMap.set(district,f);
-      if(!RI_LAYER_DISTRICTS.has(district))serviceZoneRegions.push({district,riName:'',riCode:'',feature:f});
+      // 생활·재활용은 읍·면도 동지역처럼 전체 읍·면 경계에서 노선 기준 추정권역을 생성합니다.
+      serviceZoneRegions.push({district,riName:'',riCode:'',feature:f});
       addDistrictOutlineGeometry(f,district);
       // 음식물: 동 지역은 행정동 경계, 읍·면은 아래 법정리 단계에서 정확한 시행/제외 범위를 생성합니다.
       if(!RI_LAYER_DISTRICTS.has(district))addFoodGeometry(f,district);
@@ -4214,7 +4210,7 @@ async function buildZonePolygons(){
       seenOfficialRi[district].add(district==='오창읍'&&riName==='화산리'?`${riName}|${riCode}`:riName);
       riFeatureMap.set(`${district}|${riName}|${riCode}`,f);
       if(!riFeatureMap.has(`${district}|${riName}`))riFeatureMap.set(`${district}|${riName}`,f);
-      serviceZoneRegions.push({district,riName,riCode,feature:f});
+      // 리 경계는 음식물/주소 판정용으로만 사용하며 생활·재활용 추정권역 생성 단위에는 넣지 않습니다.
 
       // 생활·재활용: 법정리별 일정표 + 시설/도로명 실제 주소대조 규칙을 붙여 생성.
       // 오창의 동명이리 화산리는 li_cd로 꽃화산/빛화산을 구분합니다.
