@@ -54,8 +54,8 @@ once(
 )
 
 once(
-"const SERVICE_ZONE_CACHE_VERSION=`zone-v76-layer-visibility-refresh|\${DONG_ROUTE_CACHE_VERSION}`;",
-"const SERVICE_ZONE_CACHE_VERSION=`zone-v83-1-ochang-route-estimate|\${DONG_ROUTE_CACHE_VERSION}`;",
+"const SERVICE_ZONE_CACHE_VERSION=`zone-v76-layer-visibility-refresh|${DONG_ROUTE_CACHE_VERSION}`;",
+"const SERVICE_ZONE_CACHE_VERSION=`zone-v83-1-ochang-route-estimate|${DONG_ROUTE_CACHE_VERSION}`;",
 "service zone cache version"
 )
 
