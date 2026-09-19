@@ -1,0 +1,25 @@
+name: Stage 5 rural estimated regions
+on:
+  push:
+    paths: ['tools/stage5-rural-zone.trigger']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch estimated-region cache version
+        run: python3 tools/stage5_rural_zone_patch.py
+      - name: Verify patch
+        run: |
+          grep -F 'zone-v77-rural-estimated-regions' index.html
+          grep -F "const RURAL_ROUTE_LAYER_DISTRICTS=new Set(['오창읍','내수읍','북이면']);" index.html
+      - name: Commit index update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Rebuild Ochang Naesu Bugi estimated regions"
+          git push
