@@ -1,0 +1,12 @@
+name: Stage 4 route completeness audit
+on:
+  push:
+    paths: ['tools/stage4-audit.trigger']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/stage4_route_audit.py
