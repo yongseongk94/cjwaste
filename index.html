@@ -3632,6 +3632,16 @@ async function buildServiceZones(type){
   try{return await task}finally{serviceZoneBuildPromises.delete(type)}
 }
 
+function ensureBundledServiceZones(type){
+  if((serviceZoneOverlays[type]||[]).some(z=>!z.manual))return true;
+  const data=bundledPrecomputedData();
+  const zones=Array.isArray(data?.zones?.[type])?data.zones[type]:[];
+  if(!zones.length)return false;
+  for(const z of zones)addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:true,fromBundle:true});
+  rebuildManualZoneOverlays(type);
+  serviceZoneBuilt[type]=true;
+  return true;
+}
 function syncServiceZoneVisibility(type,forceRedraw=false){
   const provider=selectedVehicle[type]||'전체',day=activeDay||'전체';
   for(const t of ['general','recycle']){
@@ -3649,7 +3659,8 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
         fillOpacity:z.manual?.28:(z.ambiguous?.18:(contract?.36:(rural?.30:.22))),
         strokeWeight:z.gridMerged?0:(z.manual?2:(contract?2:(rural?1:0))),
         strokeColor:z.manual?'#111827':color,
-        strokeOpacity:z.gridMerged?0:(z.manual?.95:(contract?.86:(rural?.42:0)))
+        strokeOpacity:z.gridMerged?0:(z.manual?.95:(contract?.86:(rural?.42:0))),
+        zIndex:3
       });
       if(forceRedraw&&z.polygon.getMap()===map)z.polygon.setMap(null);
       if(z.polygon.getMap()!==map)z.polygon.setMap(map);
@@ -3804,7 +3815,11 @@ function setLayer(layer){
     zonePolygons.food.forEach(item=>item.polygon.setMap(map));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
   }else{
     syncBoundaryVisibility();
-    if(serviceLayerState.zone)buildServiceZones(layer).then(()=>syncServiceZoneVisibility(layer)).catch(e=>console.warn('수거권역 생성 실패',e));
+    if(serviceLayerState.zone){
+      ensureBundledServiceZones(layer);
+      syncServiceZoneVisibility(layer,true);
+      buildServiceZones(layer).then(()=>syncServiceZoneVisibility(layer,true)).catch(e=>console.warn('수거권역 생성 실패',e));
+    }
     if(serviceLayerState.route)ensureDongRoutesForSelection(layer);else hideDongRouteOverlays();
   }
   updateMapBadge();
