@@ -921,8 +921,8 @@ const zonePolygons={general:[],food:[],foodExclusion:[],recycle:[],districtOutli
 const DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 // v67: 내수·북이는 표시된 수거노선에서 30m 이내만 자동 수거대상으로 인정합니다.
 const RURAL_INFERRED_ROUTE_DISTRICTS=new Set(['오창읍','내수읍','북이면']);
-const RURAL_ROUTE_LAYER_DISTRICTS=new Set(['오창읍']);
-const RURAL_ROUTE_MATCH_KM=0.030;
+const RURAL_ROUTE_LAYER_DISTRICTS=new Set(['오창읍','내수읍','북이면']);
+const RURAL_ROUTE_MATCH_KM=0.020;
 // ② 근거노선: 직영은 동지역 중심으로 유지하되, 대행업체가 제공한 청원구 원본 노선은 읍·동 구분 없이 실제 대행구간을 표시합니다.
 const VISUAL_DONG_ROUTE_DISTRICTS=new Set(['우암동','내덕1동','내덕2동','오근장동','율량사천동']);
 const CHEONGWON_ROUTE_DISTRICTS=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
@@ -1587,7 +1587,7 @@ function pointSegmentDistanceKm(lat,lng,a,b){
   return Math.hypot(p.x-(p1.x+t*vx),p.y-(p1.y+t*vy));
 }
 const MAX_ADDRESS_ROUTE_DISTANCE_KM=0.020;
-function routeMatchLimitKm(district){const d=canonicalDistrict(district);return RURAL_ROUTE_LAYER_DISTRICTS.has(d)?MAX_ADDRESS_ROUTE_DISTANCE_KM:(RURAL_INFERRED_ROUTE_DISTRICTS.has(d)?RURAL_ROUTE_MATCH_KM:MAX_ADDRESS_ROUTE_DISTANCE_KM)} // 3단계: 오창 20m, 내수·북이는 기존 30m 유지
+function routeMatchLimitKm(district){const d=canonicalDistrict(district);return RURAL_ROUTE_LAYER_DISTRICTS.has(d)?MAX_ADDRESS_ROUTE_DISTANCE_KM:(RURAL_INFERRED_ROUTE_DISTRICTS.has(d)?RURAL_ROUTE_MATCH_KM:MAX_ADDRESS_ROUTE_DISTANCE_KM)} // 오창·내수·북이 20m
 function routeItemDistanceKm(item,lat,lng){
   // 주소 20m 직접매칭은 실제 표시 수거선만 사용합니다.
   let best=Infinity;
@@ -2063,7 +2063,7 @@ async function refreshNearbyRouteSchedules(ctx){
   for(const type of ['general','recycle']){
     const exact=contractExactScheduleMatch(type,ctx);if(exact){renderContractExactSchedule(type,exact,ctx);continue}
     if(isUnconfirmedRi(type,district,ctx.legalRi||''))continue;
-    if(district==='오창읍'){
+    if(RURAL_ROUTE_LAYER_DISTRICTS.has(district)){
       const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
       if(seq!==nearbyScheduleRequestSeq)return;
       if(near?.length){renderNearbyRouteSchedule(type,near,ctx);continue}
@@ -3468,7 +3468,7 @@ function ruralRiZoneMeta(type,region){
 async function buildRuralRiServiceZone(type,region){
   const meta=ruralRiZoneMeta(type,region);
   if(!meta)return false;
-  if(region.district==='오창읍'){
+  if(RURAL_ROUTE_LAYER_DISTRICTS.has(region.district)){
     const groups=await serviceRouteGroups(type,region.district,region.riName||'');
     const usable=groups.filter(g=>g.items.length);
     if(!usable.length)return false;
