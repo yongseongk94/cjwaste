@@ -1516,12 +1516,14 @@ function desiredServiceZoneEntries(manifest,type,districts=null){
     const wanted=new Set(districts.map(canonicalDistrict));
     return entries.filter(e=>wanted.has(canonicalDistrict(e.district)));
   }
-  const box=currentMapBoundsBox(.22);
-  let visible=entries.filter(e=>manifestEntryIntersectsBox(e,box));
-  if(visible.length)return visible;
+  // TEST FAST PATH: 첫 화면에서는 여러 읍면동을 한꺼번에 만들지 않고
+  // 현재 화면과 가장 가까운 1개 권역만 먼저 내려받아 첫 폴리곤 표시를 앞당깁니다.
   const c=map?.getCenter?.();
   const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
-  return [...entries].sort((a,b)=>manifestEntryDistanceSq(a,center)-manifestEntryDistanceSq(b,center)).slice(0,1);
+  const box=currentMapBoundsBox(.08);
+  const visible=entries.filter(e=>manifestEntryIntersectsBox(e,box));
+  const pool=visible.length?visible:entries;
+  return [...pool].sort((a,b)=>manifestEntryDistanceSq(a,center)-manifestEntryDistanceSq(b,center)).slice(0,1);
 }
 async function fetchServiceZoneChunk(type,entry){
   const district=canonicalDistrict(entry?.district||'');
@@ -4215,6 +4217,7 @@ function setLayer(layer){
   renderVehicleFilter();hideDongRouteOverlays();for(const t of ['general','recycle'])(serviceZoneOverlays[t]||[]).forEach(z=>z.polygon?.setMap(null));
   const seen=new Set();Object.values(zonePolygons).flat().forEach(item=>{if(!item?.polygon||seen.has(item.polygon))return;seen.add(item.polygon);item.polygon.setMap(null)});
   if(layer==='food'){
+    ensureTestAdminBoundaryLoad();
     zonePolygons.food.forEach(item=>item.polygon.setMap(map));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
   }else{
     syncBoundaryVisibility();
@@ -4679,6 +4682,23 @@ async function buildZonePolygons(){
   // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
   // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
 }
+let testAdminBoundaryLoadStarted=false;
+function scheduleTestAdminBoundaryLoad(delay=1200){
+  if(testAdminBoundaryLoadStarted||SERVICE_ZONE_PRECOMPUTE_ONLY)return;
+  testAdminBoundaryLoadStarted=true;
+  const run=()=>{zoneBuildPromise=buildZonePolygons().catch(e=>console.warn('TEST 행정경계 지연 로드 실패',e));};
+  if(typeof requestIdleCallback==='function'){
+    requestIdleCallback(run,{timeout:Math.max(1200,delay)});
+  }else{
+    setTimeout(run,delay);
+  }
+}
+function ensureTestAdminBoundaryLoad(){
+  if(testAdminBoundaryLoadStarted)return zoneBuildPromise;
+  testAdminBoundaryLoadStarted=true;
+  zoneBuildPromise=buildZonePolygons().catch(e=>console.warn('TEST 행정경계 로드 실패',e));
+  return zoneBuildPromise;
+}
 function init(){
   map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
   marker=new kakao.maps.Marker({map,position:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng)});
@@ -4689,18 +4709,17 @@ function init(){
   kakao.maps.event.addListener(map,'idle',()=>queueActiveServiceLayerRefresh(serviceLayerHardRefresh));
   window.addEventListener('scroll',()=>queueActiveServiceLayerRefresh(false),{passive:true});
   loadManualZones();
-  // v82: 추정권역은 IndexedDB → 정적 manifest/chunk → 실시간 계산 순서로 복원합니다.
-  // 빈 v80 manifest 때문에 전 지역을 무거운 실시간 격자계산으로 보내던 회귀를 막습니다.
+  // TEST FAST PATH:
+  // 기존 IndexedDB에는 생활 전체 권역 수천 개가 들어 있을 수 있으므로 첫 화면에서 전부 복원하지 않습니다.
+  // 정적 district chunk 중 현재 화면에 가장 가까운 1개만 먼저 표시합니다.
   if(!SERVICE_ZONE_PRECOMPUTE_ONLY){
-    hydrateCachedServiceZones('general').then(async cached=>{
-      if(!cached)await hydrateExternalBundledServiceZones('general');
-      if(activeLayer==='general')syncServiceZoneVisibility('general');
-    }).catch(e=>console.warn('생활 추정권역 초기 복원 실패',e));
-    // 테스트페이지: 재활용 권역은 사용자가 재활용 탭을 누를 때만 불러옵니다.
+    hydrateExternalBundledServiceZones('general')
+      .then(()=>{if(activeLayer==='general')syncServiceZoneVisibility('general');})
+      .catch(e=>console.warn('생활 추정권역 초기 부분복원 실패',e));
   }
   setLayer('general');
-  // 저장 노선은 즉시 복원하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
-  zoneBuildPromise=buildZonePolygons();
+  // 행정경계 GeoJSON은 첫 수거권역 표시와 경쟁하지 않도록 브라우저 유휴시간으로 미룹니다.
+  scheduleTestAdminBoundaryLoad(1400);
   document.getElementById('landingInput').focus();
 }
 function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
