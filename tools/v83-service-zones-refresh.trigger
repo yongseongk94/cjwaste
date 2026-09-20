@@ -1,1 +1,1 @@
-refresh v89 dowon pungjeong zones
+refresh v89 dowon pungjeong validated zones
