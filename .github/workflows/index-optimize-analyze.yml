@@ -1,0 +1,22 @@
+name: Analyze index size
+on:
+  push:
+    paths:
+      - 'tools/index-optimize.trigger'
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Analyze current index
+        run: python3 tools/index_optimize_analyze.py
+      - name: Commit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/index-size-report.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Analyze index size before optimization"
+          git push
