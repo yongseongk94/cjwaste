@@ -3297,8 +3297,9 @@ async function ensureDongRoutesForSelection(type){
   if(!specs.length){syncDongRouteVisibility(type);return}
   // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
   await hydrateCachedRouteOverlays(specs);
-  // 2차: 캐시가 비어 있는 새 브라우저에서만 외부 사전계산 묶음을 1회 불러오고 IndexedDB에 저장합니다.
-  if(specs.some(s=>!existingDongRouteOverlay(s)))await hydrateExternalBundledPrecomputedData();
+  // v82: 선택 스펙의 scope가 현재 코드와 달라져도 기존 v76 사전계산 노선 자체는 유효할 수 있습니다.
+  // 외부 번들은 1회 반드시 확인해 복원 가능한 94개 노선을 먼저 살리고, 이후 누락분만 실시간 계산합니다.
+  await hydrateExternalBundledPrecomputedData();
   syncDongRouteVisibility(type);
   // 3차: 사전계산 묶음에도 없는 노선만 실제 도로망으로 계산합니다.
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
@@ -3335,7 +3336,9 @@ async function preloadAllDongRoutes(){
   // IndexedDB를 먼저 복원하고, 새 브라우저처럼 누락 노선이 있을 때만 외부 묶음을 1회 불러옵니다.
   await hydrateCachedRouteOverlays(specs);
   await hydrateExternalBundledServiceZones();
-  if(specs.some(s=>!existingDongRouteOverlay(s)))await hydrateExternalBundledPrecomputedData();
+  // v82: 외부 사전계산 노선은 캐시 유무와 관계없이 1회 병합합니다.
+  // 일부 캐시만 존재할 때 번들 전체 로딩이 건너뛰어져 전지역 노선이 사라지는 회귀를 방지합니다.
+  await hydrateExternalBundledPrecomputedData();
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
   // IndexedDB와 외부 사전계산 묶음에도 없는 노선만 백그라운드에서 실제 계산합니다.
