@@ -1,0 +1,114 @@
+name: Preserve v90 Dowon-only zone change
+
+on:
+  push:
+    paths:
+      - 'tools/v90-dowon-preserve.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build v90 from v88 plus v89 Dowon only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, datetime, re
+
+          root=Path('.')
+          v88g=json.loads((root/'data/service-zones-v88-general-all.json').read_text(encoding='utf-8'))
+          v88r=json.loads((root/'data/service-zones-v88-recycle-all.json').read_text(encoding='utf-8'))
+          v89g=json.loads((root/'data/service-zones-v89-general-all.json').read_text(encoding='utf-8'))
+
+          def is_dowon(z):
+              return z.get('district')=='내수읍' and z.get('riName')=='도원리'
+
+          base_other=[z for z in v88g['zones'] if not is_dowon(z)]
+          old_dowon=[z for z in v88g['zones'] if is_dowon(z)]
+          new_dowon=[z for z in v89g['zones'] if is_dowon(z)]
+
+          assert old_dowon, 'v88 Dowon zones missing'
+          assert new_dowon, 'v89 Dowon zones missing'
+          assert all(str(z.get('vehicle'))=='6138' for z in new_dowon), sorted({str(z.get('vehicle')) for z in new_dowon})
+          vd=sorted({f"{z.get('vehicle')}|{'·'.join(z.get('days') or [])}" for z in new_dowon})
+          assert set(vd).issubset({'6138|월','6138|화','6138|목'}) and vd, vd
+
+          version='zone-v90-dowon-pungjeong-preserve|v76-layer-visibility-refresh'
+          general_zones=base_other+new_dowon
+          recycle_zones=v88r['zones']
+
+          # Strict preservation checks: nothing outside general Dowon changes; recycle is exactly v88.
+          assert [z for z in general_zones if not is_dowon(z)]==base_other
+          assert recycle_zones==v88r['zones']
+
+          def write_chunk(type_,zones):
+              obj={'schemaVersion':2,'zoneVersion':version,'type':type_,'scope':'all','zones':zones}
+              (root/f'data/service-zones-v90-{type_}-all.json').write_text(
+                  json.dumps(obj,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+
+          write_chunk('general',general_zones)
+          write_chunk('recycle',recycle_zones)
+
+          districts=['우암동','내덕1동','내덕2동','오근장동','율량사천동','오창읍','내수읍','북이면']
+          def counts(zones):
+              return {d:sum(1 for z in zones if z.get('district')==d) for d in districts}
+
+          manifest={
+            'schemaVersion':2,
+            'zoneVersion':version,
+            'generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'strategy':'v88-preserved-with-dowon-general-replacement',
+            'types':{
+              'general':[{'scope':'all','path':'data/service-zones-v90-general-all.json','count':len(general_zones)}],
+              'recycle':[{'scope':'all','path':'data/service-zones-v90-recycle-all.json','count':len(recycle_zones)}]
+            },
+            'districtCounts':{'general':counts(general_zones),'recycle':counts(recycle_zones)},
+            'note':'v90 preserves every v88 zone outside Naesu Dowon-ri general waste. Only Dowon-ri general estimated zones are replaced with the v89 Pungjeong-based 6138 route result.'
+          }
+          (root/'data/service-zones-manifest-v2.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          idx=(root/'index.html').read_text(encoding='utf-8')
+          idx=idx.replace('zone-v89-dowon-pungjeong','zone-v90-dowon-pungjeong-preserve')
+          assert 'zone-v90-dowon-pungjeong-preserve' in idx
+          (root/'index.html').write_text(idx,encoding='utf-8')
+
+          report={
+            'version':version,
+            'generalTotal':len(general_zones),
+            'recycleTotal':len(recycle_zones),
+            'v88GeneralTotal':len(v88g['zones']),
+            'v88RecycleTotal':len(v88r['zones']),
+            'oldDowonCount':len(old_dowon),
+            'newDowonCount':len(new_dowon),
+            'dowonVehicleDays':vd,
+            'outsideDowonPreserved':True,
+            'recyclePreservedExactly':True,
+            'districtCounts':manifest['districtCounts']
+          }
+          (root/'tools/v90-dowon-preserve-validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',idx,re.S|re.I))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit v90 preserved bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/v90-dowon-preserve.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html data/service-zones-manifest-v2.json data/service-zones-v90-general-all.json data/service-zones-v90-recycle-all.json tools/v90-dowon-preserve-validation.json tools/v90-dowon-preserve.trigger
+          git commit -m 'Preserve v88 zones and replace only Dowon general zones'
+          git push
