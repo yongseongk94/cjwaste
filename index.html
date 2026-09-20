@@ -4378,10 +4378,17 @@ function init(){
   kakao.maps.event.addListener(map,'idle',()=>queueActiveServiceLayerRefresh(serviceLayerHardRefresh));
   window.addEventListener('scroll',()=>queueActiveServiceLayerRefresh(false),{passive:true});
   loadManualZones();
-  const bundled=hydrateBundledPrecomputedData();
-  if(!bundled){hydrateCachedServiceZones('general').then(()=>setLayer('general'));hydrateCachedServiceZones('recycle');}
+  // v82: 추정권역은 IndexedDB → 정적 manifest/chunk → 실시간 계산 순서로 복원합니다.
+  // 빈 v80 manifest 때문에 전 지역을 무거운 실시간 격자계산으로 보내던 회귀를 막습니다.
+  hydrateCachedServiceZones('general').then(async cached=>{
+    if(!cached)await hydrateExternalBundledServiceZones();
+    if(activeLayer==='general')setLayer('general');
+  }).catch(e=>console.warn('생활 추정권역 초기 복원 실패',e));
+  hydrateCachedServiceZones('recycle').then(async cached=>{
+    if(!cached)await hydrateExternalBundledServiceZones();
+  }).catch(e=>console.warn('재활용 추정권역 초기 복원 실패',e));
   setLayer('general');
-  // 내장 좌표는 즉시 렌더링하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
+  // 저장 노선은 즉시 복원하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
   scheduleDongRoutePreload();
   zoneBuildPromise=buildZonePolygons();
   document.getElementById('landingInput').focus();
