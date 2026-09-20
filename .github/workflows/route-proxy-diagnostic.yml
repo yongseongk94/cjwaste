@@ -1,0 +1,20 @@
+name: Diagnose route proxy
+on:
+  push:
+    paths: ['tools/route-proxy-diagnostic.trigger']
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/route_proxy_diagnostic.py
+      - if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/route-proxy-diagnostic.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Record route proxy diagnostic"
+          git push
