@@ -1,0 +1,49 @@
+name: Inspect latest Jangyang route data
+on:
+  push:
+    paths: ['tools/inspect-jangyang-routes.trigger']
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect affected routes
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=next(Path('data').glob('precomputed-routes-v76-layer-visibility-refresh-*.json'))
+          d=json.loads(p.read_text(encoding='utf-8'))
+          targets={('general','6138','수'),('recycle','6544','수')}
+          out={'bundle':str(p),'version':d.get('version'),'routes':[]}
+          for r in d.get('routes',[]):
+            key=(r.get('type'),str(r.get('vehicle')),r.get('day'))
+            if key not in targets: continue
+            data=r.get('data') or {}
+            segs=data.get('segments') or []
+            pts=[pt for seg in segs for pt in seg]
+            item={
+              'type':r.get('type'),'vehicle':r.get('vehicle'),'day':r.get('day'),
+              'topKeys':list(r.keys()),'dataKeys':list(data.keys()),
+              'segmentCount':len(segs),'vertexCount':len(pts),
+              'first':pts[0] if pts else None,'last':pts[-1] if pts else None,
+              'anchors':data.get('anchors'),
+              'evidencePoints':data.get('evidencePoints'),
+              'terms':data.get('terms'),
+              'districts':data.get('districts'),
+              'text':data.get('text'),
+            }
+            out['routes'].append(item)
+          Path('tools/jangyang-route-inspection.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit report
+        run: |
+          rm -f tools/inspect-jangyang-routes.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/jangyang-route-inspection.json tools/inspect-jangyang-routes.trigger
+          git commit -m 'Inspect affected Jangyang route bundle entries'
+          git push
