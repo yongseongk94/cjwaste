@@ -1,0 +1,18 @@
+name: Diagnose estimated zones
+on:
+  push:
+    paths: ['tools/diagnose-zones.trigger']
+permissions:
+  contents: write
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/diagnose_zones.py > tools/diagnose-zones-report.txt
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/diagnose-zones-report.txt
+          git commit -m "Diagnose missing estimated service zones" || exit 0
+          git push
