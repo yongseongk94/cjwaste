@@ -1725,28 +1725,125 @@ async function deleteCachedServiceZones(type){
     });
   }catch(e){console.warn('수거권역 캐시 삭제 실패',e)}
 }
-const SERVICE_ZONE_RENDER_BATCH=120;
+const SERVICE_ZONE_FIRST_RENDER_BATCH=36;
+const SERVICE_ZONE_BACKGROUND_BATCH=180;
+window.__CJWASTE_ZONE_PERF=window.__CJWASTE_ZONE_PERF||{};
+
 function waitForNextPaint(){
   return new Promise(resolve=>{
     if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>resolve());
     else setTimeout(resolve,0);
   });
 }
+function waitForBrowserIdle(){
+  return new Promise(resolve=>{
+    if(typeof requestIdleCallback==='function'){
+      requestIdleCallback(()=>resolve(),{timeout:90});
+    }else{
+      setTimeout(resolve,12);
+    }
+  });
+}
+function rawZoneBounds(z){
+  if(z?._testBounds)return z._testBounds;
+  const rings=(Array.isArray(z?.rings)&&z.rings.length)?z.rings:[z?.points||[]];
+  let minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
+  for(const ring of rings){
+    for(const p of (ring||[])){
+      const lat=+p.lat,lng=+p.lng;
+      if(!Number.isFinite(lat)||!Number.isFinite(lng))continue;
+      minLat=Math.min(minLat,lat);maxLat=Math.max(maxLat,lat);
+      minLng=Math.min(minLng,lng);maxLng=Math.max(maxLng,lng);
+    }
+  }
+  const out=Number.isFinite(minLat)?{minLat,maxLat,minLng,maxLng}:null;
+  try{Object.defineProperty(z,'_testBounds',{value:out,writable:true,configurable:true})}catch(e){}
+  return out;
+}
+function currentMapBoundsBox(padRatio=.18){
+  if(!map?.getBounds)return null;
+  const b=map.getBounds(),sw=b?.getSouthWest?.(),ne=b?.getNorthEast?.();
+  if(!sw||!ne)return null;
+  let minLat=sw.getLat(),maxLat=ne.getLat(),minLng=sw.getLng(),maxLng=ne.getLng();
+  const latPad=(maxLat-minLat)*padRatio,lngPad=(maxLng-minLng)*padRatio;
+  return {minLat:minLat-latPad,maxLat:maxLat+latPad,minLng:minLng-lngPad,maxLng:maxLng+lngPad};
+}
+function rawZoneIntersectsBox(z,box){
+  if(!box)return true;
+  const b=rawZoneBounds(z);if(!b)return false;
+  return !(b.maxLat<box.minLat||b.minLat>box.maxLat||b.maxLng<box.minLng||b.minLng>box.maxLng);
+}
+function zoneCenterDistanceSq(z,center){
+  const b=rawZoneBounds(z);if(!b||!center)return Infinity;
+  const lat=(b.minLat+b.maxLat)/2,lng=(b.minLng+b.maxLng)/2;
+  const dx=(lng-center.lng)*.8,dy=lat-center.lat;
+  return dx*dx+dy*dy;
+}
+function prioritizeServiceZones(zones){
+  const box=currentMapBoundsBox();
+  const c=map?.getCenter?.();
+  const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
+  const visible=[],rest=[];
+  for(const z of zones)(rawZoneIntersectsBox(z,box)?visible:rest).push(z);
+  visible.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
+  rest.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
+  return {visible,rest};
+}
 async function hydrateServiceZoneArray(type,zones,meta={}){
   if(!Array.isArray(zones)||!zones.length)return false;
+  const started=performance.now();
   clearServiceZoneOverlays(type);
-  for(let i=0;i<zones.length;i+=SERVICE_ZONE_RENDER_BATCH){
-    const batch=zones.slice(i,i+SERVICE_ZONE_RENDER_BATCH);
+
+  // 테스트페이지 최적화: 현재 보이는 지도 영역을 먼저 만들고,
+  // 화면 밖 권역은 idle 시간에 큰 묶음으로 생성합니다.
+  const {visible,rest}=prioritizeServiceZones(zones);
+  const perf=window.__CJWASTE_ZONE_PERF[type]={
+    source:meta.fromCache?'indexeddb':(meta.fromBundle?'bundle':'generated'),
+    total:zones.length,
+    visibleFirst:visible.length,
+    startedAt:started,
+    firstPaintMs:null,
+    completeMs:null
+  };
+
+  for(let i=0;i<visible.length;i+=SERVICE_ZONE_FIRST_RENDER_BATCH){
+    const batch=visible.slice(i,i+SERVICE_ZONE_FIRST_RENDER_BATCH);
     for(const z of batch){
       addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
     }
     if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
     await waitForNextPaint();
+    if(perf.firstPaintMs===null)perf.firstPaintMs=Math.round(performance.now()-started);
   }
+
+  // 현재 화면에 해당 권역이 하나도 없더라도 첫 묶음은 즉시 생성해
+  // 지도 이동 직후 빈 화면이 오래 유지되는 현상을 줄입니다.
+  if(!visible.length&&rest.length){
+    const first=rest.splice(0,Math.min(SERVICE_ZONE_FIRST_RENDER_BATCH,rest.length));
+    for(const z of first){
+      addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
+    }
+    if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
+    await waitForNextPaint();
+    perf.firstPaintMs=Math.round(performance.now()-started);
+  }
+
+  for(let i=0;i<rest.length;i+=SERVICE_ZONE_BACKGROUND_BATCH){
+    await waitForBrowserIdle();
+    const batch=rest.slice(i,i+SERVICE_ZONE_BACKGROUND_BATCH);
+    for(const z of batch){
+      addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
+    }
+    if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
+  }
+
   rebuildManualZoneOverlays(type);
   serviceZoneBuilt[type]=true;
   serviceZoneCacheHydrated[type]=true;
   syncServiceZoneVisibility(type);
+  perf.completeMs=Math.round(performance.now()-started);
+  if(perf.firstPaintMs===null)perf.firstPaintMs=perf.completeMs;
+  console.info('[TEST] service-zone render',type,perf);
   return true;
 }
 async function hydrateCachedServiceZones(type){
