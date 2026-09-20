@@ -1,0 +1,32 @@
+name: Summarize route bundle coverage
+on:
+  push:
+    paths: ['tools/route-bundle-coverage.trigger']
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Summarize
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=next(Path('data').glob('precomputed-routes-v76-layer-visibility-refresh-*.json'))
+          d=json.loads(p.read_text(encoding='utf-8'))
+          by={}
+          for r in d.get('routes',[]):
+            by.setdefault(r.get('type'),{}).setdefault(str(r.get('vehicle')),[]).append(r.get('day'))
+          out={t:{v:sorted(ds) for v,ds in sorted(vs.items())} for t,vs in by.items()}
+          Path('tools/route-bundle-coverage.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          rm -f tools/route-bundle-coverage.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/route-bundle-coverage.json tools/route-bundle-coverage.trigger
+          git commit -m 'Summarize route bundle coverage'
+          git push
