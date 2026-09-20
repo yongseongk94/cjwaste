@@ -1161,6 +1161,11 @@ function routeSearchAlias(term){
 // 6224호처럼 시설 약칭이 많은 코스는 명칭 검색만으로 엉뚱한 동명이소가 잡힐 수 있어
 // 공개/공식 주소로 확인되는 곳은 주소검색을 함께 사용합니다. 좌표는 브라우저에서 카카오 주소검색으로 얻습니다.
 const VERIFIED_ROUTE_ADDRESS_HINTS={
+  // v84: 북이면 장양리 최신 노선 경유 순서(장양2리 → 장양1리 → 장양3리)를
+  // 마을회관/경로당의 확인된 도로명주소로 고정해 동명이소 검색을 막습니다.
+  '장양1리':'청주시 청원구 북이면 장양1길 29-3',
+  '장양2리':'청주시 청원구 북이면 장양2길 81-1',
+  '장양3리':'청주시 청원구 북이면 장양3길 13',
   '아르떼웨딩홀':'청주시 청원구 사천로 33',
   '아르떼 웨딩컨벤션':'청주시 청원구 사천로 33',
   '새터성당':'청주시 청원구 새터로176번길 59',
@@ -1441,7 +1446,8 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v83-route-overlay-based|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v84-latest-route-evidence|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -3210,9 +3216,16 @@ async function buildDongRouteOverlay(spec){
         if(localBase)ruralMovementAnchors[ruralDistrict].push({lat:+localBase.lat,lng:+localBase.lng,name:localBase.name||entry.term,term:entry.term,district:ruralDistrict});
       }
       // 도로선이 만들어지지 않는 시설·마을명도 권역 분할에는 중요한 근거입니다.
-      // 단, 실제 지도에는 별도 원/마커를 그리지 않습니다.
-      if(base && !entry.isRoad){
-        zoneEvidencePoints.push({lat:+base.lat,lng:+base.lng,name:base.name||entry.term,address:base.address||'',term:entry.term,district:base.district||routePointAnyDistrict(base)||''});
+      // zone_only 사전생성에서는 읍·면의 도로명 항목도 근거점으로 사용하고 길찾기 API 호출은 생략합니다.
+      const baseDistrict=canonicalDistrict(base?.district||routePointAnyDistrict(base));
+      const zoneOnlyRural=!!base&&SERVICE_ZONE_PRECOMPUTE_ONLY&&RURAL_INFERRED_ROUTE_DISTRICTS.has(baseDistrict);
+      if(base && (!entry.isRoad||zoneOnlyRural)){
+        zoneEvidencePoints.push({lat:+base.lat,lng:+base.lng,name:base.name||entry.term,address:base.address||'',term:entry.term,district:baseDistrict||''});
+      }
+      if(zoneOnlyRural){
+        serviceTermCount++;
+        if(baseDistrict&&!touchedDistricts.includes(baseDistrict))touchedDistricts.push(baseDistrict);
+        continue;
       }
       const anchors=await serviceAnchorsForEntry(entry,spec);
       let termShown=false;
@@ -3248,7 +3261,7 @@ async function buildDongRouteOverlay(spec){
       }
     }
 
-    const inferredMovement=await inferredRuralMovementSegments(ruralMovementAnchors);
+    const inferredMovement=SERVICE_ZONE_PRECOMPUTE_ONLY?{segments:[],inferredMovementCount:0}:await inferredRuralMovementSegments(ruralMovementAnchors);
     if(inferredMovement.segments.length)segments.push(...inferredMovement.segments);
     const inferredMovementCount=inferredMovement.inferredMovementCount;
 
@@ -3761,11 +3774,13 @@ async function buildServiceZones(type){
   if(serviceZoneBuilt[type]){syncServiceZoneVisibility(type);return}
   if(serviceZoneBuildPromises.has(type))return serviceZoneBuildPromises.get(type);
   const task=(async()=>{
-    // 저장된 자동권역이 있으면 네트워크/재계산 없이 즉시 복원합니다.
-    if(await hydrateCachedServiceZones(type))return;
-    // 새 브라우저는 manifest/chunk를 먼저 복원합니다. 정적 권역이 있으면 무거운 전지역 재계산을 하지 않습니다.
-    if(await hydrateExternalBundledServiceZones()){
-      if(serviceZoneBuilt[type]){syncServiceZoneVisibility(type);return}
+    // 일반 접속은 캐시/정적 번들을 즉시 사용합니다.
+    // zone_only=1 사전생성 작업은 반드시 현재 최신 코스에서 새로 계산하여 과거 권역 재사용을 막습니다.
+    if(!SERVICE_ZONE_PRECOMPUTE_ONLY){
+      if(await hydrateCachedServiceZones(type))return;
+      if(await hydrateExternalBundledServiceZones()){
+        if(serviceZoneBuilt[type]){syncServiceZoneVisibility(type);return}
+      }
     }
     if(!serviceRegionLoadComplete)return;
 
@@ -4426,7 +4441,7 @@ async function buildZonePolygons(){
 
   // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
   // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
-  scheduleDongRoutePreload();
+  if(!SERVICE_ZONE_PRECOMPUTE_ONLY)scheduleDongRoutePreload();
 }
 function init(){
   map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
@@ -4440,16 +4455,18 @@ function init(){
   loadManualZones();
   // v82: 추정권역은 IndexedDB → 정적 manifest/chunk → 실시간 계산 순서로 복원합니다.
   // 빈 v80 manifest 때문에 전 지역을 무거운 실시간 격자계산으로 보내던 회귀를 막습니다.
-  hydrateCachedServiceZones('general').then(async cached=>{
-    if(!cached)await hydrateExternalBundledServiceZones();
-    if(activeLayer==='general')setLayer('general');
-  }).catch(e=>console.warn('생활 추정권역 초기 복원 실패',e));
-  hydrateCachedServiceZones('recycle').then(async cached=>{
-    if(!cached)await hydrateExternalBundledServiceZones();
-  }).catch(e=>console.warn('재활용 추정권역 초기 복원 실패',e));
+  if(!SERVICE_ZONE_PRECOMPUTE_ONLY){
+    hydrateCachedServiceZones('general').then(async cached=>{
+      if(!cached)await hydrateExternalBundledServiceZones();
+      if(activeLayer==='general')setLayer('general');
+    }).catch(e=>console.warn('생활 추정권역 초기 복원 실패',e));
+    hydrateCachedServiceZones('recycle').then(async cached=>{
+      if(!cached)await hydrateExternalBundledServiceZones();
+    }).catch(e=>console.warn('재활용 추정권역 초기 복원 실패',e));
+  }
   setLayer('general');
   // 저장 노선은 즉시 복원하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
-  scheduleDongRoutePreload();
+  if(!SERVICE_ZONE_PRECOMPUTE_ONLY)scheduleDongRoutePreload();
   zoneBuildPromise=buildZonePolygons();
   document.getElementById('landingInput').focus();
 }
