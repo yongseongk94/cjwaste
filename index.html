@@ -1414,7 +1414,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v77-rural-estimated-regions|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v80-route-based-all-regions|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -3708,18 +3708,14 @@ async function buildServiceZones(type){
     let done=0;
     for(const region of regions){
       if(isUnconfirmedRi(type,region.district,region.riName||'')){done++;continue}
-      if(RI_LAYER_DISTRICTS.has(region.district)){
-        // v66: 내수·오창·북이는 법정리 경계 자체를 ① 수거권역으로 사용합니다.
-        // 같은 리 안을 100m 격자로 다시 쪼개지 않습니다.
-        await buildRuralRiServiceZone(type,region);
+      // v80: 오창·내수·북이도 동지역과 동일하게 차량×요일 실제 수거노선을 근거로 추정권역을 생성합니다.
+      // 법정리 경계는 주소/지역 식별용일 뿐, 리 전체를 하나의 수거권역으로 사용하지 않습니다.
+      const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+      const usable=groups.filter(g=>g.items.length);
+      if(!usable.length){
+        // 근거노선 좌표가 없으면 읍·면·동 전체를 임의 수거권역으로 채우지 않습니다.
       }else{
-        const groups=await serviceRouteGroups(type,region.district,region.riName||'');
-        const usable=groups.filter(g=>g.items.length);
-        if(!usable.length){
-          // 근거노선 좌표가 없으면 동 전체를 임의 수거권역으로 채우지 않습니다.
-        }else{
-          await buildGridServiceZonesForRegion(type,region,usable);
-        }
+        await buildGridServiceZonesForRegion(type,region,usable);
       }
       done++;
       // 계산되는 즉시 화면에 추가하되, 사용자에게 별도 '로딩' 상태를 표시하지 않습니다.
