@@ -212,7 +212,7 @@
 </main>
 
 <script id="bundledPrecomputed" type="application/json" data-src="data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json"></script>
-<script id="bundledServiceZones" type="application/json" data-src="data/service-zones-v77-rural-estimated-regions.json"></script>
+<script id="bundledServiceZones" type="application/json" data-manifest="data/service-zones-manifest-v2.json"></script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -1427,13 +1427,30 @@ async function loadExternalBundledServiceZones(){
   if(bundledServiceZonesExternal)return bundledServiceZonesExternal;
   if(bundledServiceZonesExternalPromise)return bundledServiceZonesExternalPromise;
   const el=document.getElementById('bundledServiceZones');
-  const src=el&&el.dataset?el.dataset.src:'';
-  if(!src)return null;
-  bundledServiceZonesExternalPromise=fetch(src,{cache:'force-cache'})
-    .then(r=>{if(!r.ok)throw new Error('service zone bundle '+r.status);return r.json();})
-    .then(data=>bundledServiceZonesExternal=data)
-    .catch(err=>{console.warn('추정권역 데이터 로드 실패',err);return null;})
-    .finally(()=>{bundledServiceZonesExternalPromise=null;});
+  const manifestSrc=String(el?.dataset?.manifest||'').trim();
+  if(!manifestSrc)return null;
+  bundledServiceZonesExternalPromise=(async()=>{
+    try{
+      const mr=await fetch(manifestSrc,{cache:'force-cache'});
+      if(!mr.ok)throw new Error('service zone manifest '+mr.status);
+      const manifest=await mr.json();
+      if(manifest.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)return null;
+      const data={version:DONG_ROUTE_CACHE_VERSION,zoneVersion:manifest.zoneVersion,zones:{general:[],recycle:[]}};
+      for(const type of ['general','recycle']){
+        const entries=Array.isArray(manifest.types?.[type])?manifest.types[type]:[];
+        for(const entry of entries){
+          const r=await fetch(entry.path,{cache:'force-cache'});
+          if(!r.ok)throw new Error('service zone chunk '+r.status);
+          const chunk=await r.json();
+          if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)continue;
+          data.zones[type].push(...(chunk.zones||[]));
+        }
+      }
+      bundledServiceZonesExternal=data;
+      return data;
+    }catch(err){console.warn('추정권역 manifest 로드 실패',err);return null}
+    finally{bundledServiceZonesExternalPromise=null}
+  })();
   return bundledServiceZonesExternalPromise;
 }
 async function hydrateExternalBundledServiceZones(){
