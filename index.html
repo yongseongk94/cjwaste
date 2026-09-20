@@ -416,8 +416,14 @@ function districtFromRiCode(code){
 // 원본에 직접 일정이 없는 리 중 사용자 요청에 따라 주변 차량×요일 노선을 근거로
 // 리 내부를 최근접 분할해 추정권역을 생성하는 대상입니다. 리 전체를 특정 요일로 일괄 지정하지 않습니다.
 const SURROUNDING_ROUTE_INFERENCE_RIS={
-  general:new Set(['내수읍|도원리','내수읍|입동리']),
+  general:new Set(['내수읍|입동리']),
   recycle:new Set(['내수읍|비중리','오창읍|도암리'])
+};
+// 추정권역 생성에서 특정 인접 리의 차량×요일 노선군을 그대로 후보로 사용하는 규칙.
+// 생활 도원리는 풍정리와 경계를 맞대고 실제 동선상 같은 권역으로 보아 풍정리 6138호 노선군만 사용합니다.
+const SERVICE_ZONE_RI_ROUTE_SOURCE={
+  general:{'내수읍|도원리':'풍정리'},
+  recycle:{}
 };
 const UNCONFIRMED_RIS={
   general:new Set(),
@@ -1456,7 +1462,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v88-missing-ri-fill|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v89-dowon-pungjeong|${DONG_ROUTE_CACHE_VERSION}`;
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
@@ -3448,9 +3454,11 @@ function serviceZoneCandidateSpecs(type,district,riName='',riCode=''){
   if((district==='내덕1동'||district==='우암동')&&contractSpecs.length)return uniqueRouteSpecs(contractSpecs);
   let specs=[];
   const useSurrounding=!!SURROUNDING_ROUTE_INFERENCE_RIS[type]?.has(`${district}|${sourceRi}`);
+  const sourceOverride=SERVICE_ZONE_RI_ROUTE_SOURCE[type]?.[`${district}|${sourceRi}`]||'';
+  const candidateRi=sourceOverride||sourceRi;
   // 동명이리인 오창 화산리는 riCode까지 전달해 빛화산/꽃화산의 원본 노선을 정확히 구분합니다.
-  // 주변추정 대상 4개 리는 특정 요일을 강제하지 않고 지역 내 모든 후보 노선을 비교합니다.
-  if(RI_LAYER_DISTRICTS.has(district)&&sourceRi&&!useSurrounding)specs=riCandidateRouteDays(type,district,sourceRi,riCode);
+  // 생활 도원리는 풍정리의 후보 노선군만 사용하고, 나머지 주변추정 대상은 지역 내 전체 후보를 비교합니다.
+  if(RI_LAYER_DISTRICTS.has(district)&&candidateRi&&!useSurrounding)specs=riCandidateRouteDays(type,district,candidateRi,sourceOverride?'':riCode);
   if(!specs.length){
     for(const route of (DIRECT_ROUTES[type]||[])){
       const scope=serviceZoneRouteScope(type,route.vehicle);if(!scope.includes(district))continue;
