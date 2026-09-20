@@ -1,0 +1,167 @@
+name: Refresh v83 service zones
+
+on:
+  push:
+    paths:
+      - 'tools/v83-service-zones-refresh.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for current Pages build
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 120); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/?zone_refresh_check=$RANDOM" -o /tmp/cjwaste-live.html \
+              && grep -q 'zone-v83-route-overlay-based' /tmp/cjwaste-live.html \
+              && grep -q 'v76-layer-visibility-refresh' /tmp/cjwaste-live.html; then
+              echo 'Current v83 service-zone code is deployed'
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'Timed out waiting for current Pages build' >&2
+          exit 1
+
+      - name: Capture current v83 service zones
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat >/tmp/refresh-v83-zones.js <<'NODE'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({
+              headless:true,
+              protocolTimeout:1800000,
+              executablePath:process.env.CHROME_BIN,
+              args:['--no-sandbox','--disable-dev-shm-usage']
+            });
+            const page=await browser.newPage();
+            page.setDefaultTimeout(1800000);
+            const pageErrors=[];
+            page.on('pageerror',e=>{ pageErrors.push(e.message); console.error('PAGEERROR',e.message); });
+            page.on('console',m=>console.log('PAGE',m.text()));
+            await page.goto('https://yongseongk94.github.io/cjwaste/?v83_zone_refresh='+Date.now(),{
+              waitUntil:'domcontentloaded',timeout:180000
+            });
+            await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:180000});
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1800000,polling:1000});
+            await page.waitForFunction(()=>{
+              const d=window.exportCjWastePrecomputed?.();
+              const gs=d?.zones?.general||[], rs=d?.zones?.recycle||[];
+              const rural=new Set(['오창읍','내수읍','북이면']);
+              return gs.length>0 && rs.length>0 &&
+                [...rural].every(x=>gs.some(z=>z.district===x)) &&
+                [...rural].every(x=>rs.some(z=>z.district===x));
+            },{timeout:1800000,polling:2000});
+            const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
+            if(pageErrors.length)throw new Error('Page errors: '+pageErrors.join(' | '));
+            const expected='zone-v83-route-overlay-based|v76-layer-visibility-refresh';
+            if(data?.zoneVersion!==expected)throw new Error('Unexpected zoneVersion: '+data?.zoneVersion);
+            const districts=['우암동','내덕1동','내덕2동','오근장동','율량사천동','오창읍','내수읍','북이면'];
+            const stats={};
+            for(const type of ['general','recycle']){
+              const zones=data?.zones?.[type]||[];
+              if(!zones.length)throw new Error('No '+type+' zones');
+              stats[type]={total:zones.length,byDistrict:{}};
+              for(const d of districts)stats[type].byDistrict[d]=zones.filter(z=>z.district===d).length;
+              for(const d of ['오창읍','내수읍','북이면']){
+                if(!stats[type].byDistrict[d])throw new Error(type+' missing rural district '+d);
+              }
+              fs.writeFileSync('/tmp/service-zones-v83-'+type+'-all.json',JSON.stringify({
+                schemaVersion:2,
+                zoneVersion:expected,
+                type,
+                scope:'all',
+                zones
+              }));
+            }
+            fs.writeFileSync('/tmp/v83-zone-stats.json',JSON.stringify(stats,null,2));
+            console.log('V83_ZONE_STATS',JSON.stringify(stats));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node /tmp/refresh-v83-zones.js
+
+      - name: Publish zone chunks and manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp /tmp/service-zones-v83-general-all.json data/service-zones-v83-general-all.json
+          cp /tmp/service-zones-v83-recycle-all.json data/service-zones-v83-recycle-all.json
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, datetime
+          version='zone-v83-route-overlay-based|v76-layer-visibility-refresh'
+          stats=json.loads(Path('/tmp/v83-zone-stats.json').read_text(encoding='utf-8'))
+          manifest={
+            'schemaVersion':2,
+            'zoneVersion':version,
+            'generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'strategy':'route-overlay-based-all-regions',
+            'types':{
+              'general':[{'scope':'all','path':'data/service-zones-v83-general-all.json','count':stats['general']['total']}],
+              'recycle':[{'scope':'all','path':'data/service-zones-v83-recycle-all.json','count':stats['recycle']['total']}]
+            },
+            'districtCounts':{
+              'general':stats['general']['byDistrict'],
+              'recycle':stats['recycle']['byDistrict']
+            },
+            'note':'v83: current displayed route overlays are the source for precomputed estimated service zones. Includes dong plus Ochang, Naesu and Bugi.'
+          }
+          Path('data/service-zones-manifest-v2.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          Path('tools/v83_service_zone_refresh_report.json').write_text(json.dumps(stats,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Validate refreshed files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re
+          expected='zone-v83-route-overlay-based|v76-layer-visibility-refresh'
+          manifest=json.loads(Path('data/service-zones-manifest-v2.json').read_text(encoding='utf-8'))
+          assert manifest['zoneVersion']==expected
+          for type_ in ['general','recycle']:
+            entry=manifest['types'][type_][0]
+            d=json.loads(Path(entry['path']).read_text(encoding='utf-8'))
+            assert d['zoneVersion']==expected
+            assert len(d['zones'])==entry['count']
+            districts={z.get('district') for z in d['zones']}
+            for required in ['오창읍','내수읍','북이면']:
+              assert required in districts,(type_,required)
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert "const SERVICE_ZONE_CACHE_VERSION=`zone-v83-route-overlay-based|${DONG_ROUTE_CACHE_VERSION}`;" in s
+          scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          print(json.dumps(manifest.get('districtCounts',{}),ensure_ascii=False,indent=2))
+          PY
+          node --check /tmp/index-inline.js
+
+      - name: Commit refreshed v83 service zones
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f tools/v83-service-zones-refresh.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/service-zones-manifest-v2.json data/service-zones-v83-general-all.json data/service-zones-v83-recycle-all.json tools/v83_service_zone_refresh_report.json tools/v83-service-zones-refresh.trigger
+          git commit -m 'Refresh v83 estimated service-zone bundle'
+          git push
