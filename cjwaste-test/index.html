@@ -1475,25 +1475,23 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
 let bundledServiceZoneManifest=null;
 let bundledServiceZoneManifestPromise=null;
-const bundledServiceZonesExternal={general:null,recycle:null};
-const bundledServiceZonesExternalPromise={general:null,recycle:null};
+const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test/data/service-zones-test-manifest.json';
+const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
+const serviceZoneChunkPromises=new Map();
 
 async function loadServiceZoneManifest(){
   if(bundledServiceZoneManifest)return bundledServiceZoneManifest;
   if(bundledServiceZoneManifestPromise)return bundledServiceZoneManifestPromise;
-  const el=document.getElementById('bundledServiceZones');
-  const manifestSrc=String(el?.dataset?.manifest||'').trim();
-  if(!manifestSrc)return null;
   bundledServiceZoneManifestPromise=(async()=>{
     try{
-      const mr=await fetch(manifestSrc,{cache:'force-cache'});
-      if(!mr.ok)throw new Error('service zone manifest '+mr.status);
+      const mr=await fetch(TEST_SERVICE_ZONE_MANIFEST,{cache:'force-cache'});
+      if(!mr.ok)throw new Error('test service zone manifest '+mr.status);
       const manifest=await mr.json();
-      if(manifest.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)return null;
+      if(manifest.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('test service zone version mismatch');
       bundledServiceZoneManifest=manifest;
       return manifest;
     }catch(err){
-      console.warn('추정권역 manifest 로드 실패',err);
+      console.warn('테스트 추정권역 manifest 로드 실패',err);
       return null;
     }finally{
       bundledServiceZoneManifestPromise=null;
@@ -1502,40 +1500,78 @@ async function loadServiceZoneManifest(){
   return bundledServiceZoneManifestPromise;
 }
 
-async function loadExternalBundledServiceZones(type){
-  if(type!=='general'&&type!=='recycle')return null;
-  if(bundledServiceZonesExternal[type])return bundledServiceZonesExternal[type];
-  if(bundledServiceZonesExternalPromise[type])return bundledServiceZonesExternalPromise[type];
-  bundledServiceZonesExternalPromise[type]=(async()=>{
+function manifestEntryIntersectsBox(entry,box){
+  const b=entry?.bbox;if(!b||!box)return true;
+  return !(+b.maxLat<box.minLat||+b.minLat>box.maxLat||+b.maxLng<box.minLng||+b.minLng>box.maxLng);
+}
+function manifestEntryDistanceSq(entry,center){
+  const b=entry?.bbox;if(!b||!center)return Infinity;
+  const lat=(+b.minLat + +b.maxLat)/2,lng=(+b.minLng + +b.maxLng)/2;
+  const dx=(lng-center.lng)*.8,dy=lat-center.lat;
+  return dx*dx+dy*dy;
+}
+function desiredServiceZoneEntries(manifest,type,districts=null){
+  const entries=Array.isArray(manifest?.types?.[type])?manifest.types[type]:[];
+  if(Array.isArray(districts)&&districts.length){
+    const wanted=new Set(districts.map(canonicalDistrict));
+    return entries.filter(e=>wanted.has(canonicalDistrict(e.district)));
+  }
+  const box=currentMapBoundsBox(.22);
+  let visible=entries.filter(e=>manifestEntryIntersectsBox(e,box));
+  if(visible.length)return visible;
+  const c=map?.getCenter?.();
+  const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
+  return [...entries].sort((a,b)=>manifestEntryDistanceSq(a,center)-manifestEntryDistanceSq(b,center)).slice(0,1);
+}
+async function fetchServiceZoneChunk(type,entry){
+  const district=canonicalDistrict(entry?.district||'');
+  if(!district)return [];
+  if(loadedServiceZoneDistricts[type].has(district))return [];
+  const key=`${type}|${district}`;
+  if(serviceZoneChunkPromises.has(key))return serviceZoneChunkPromises.get(key);
+  const promise=(async()=>{
     try{
-      const manifest=await loadServiceZoneManifest();
-      if(!manifest)return null;
-      const data={version:DONG_ROUTE_CACHE_VERSION,zoneVersion:manifest.zoneVersion,zones:{general:[],recycle:[]}};
-      const entries=Array.isArray(manifest.types?.[type])?manifest.types[type]:[];
-      for(const entry of entries){
-        const r=await fetch(entry.path,{cache:'force-cache'});
-        if(!r.ok)throw new Error('service zone chunk '+r.status);
-        const chunk=await r.json();
-        if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)continue;
-        data.zones[type].push(...(chunk.zones||[]));
-      }
-      bundledServiceZonesExternal[type]=data;
-      return data;
+      const res=await fetch(entry.path,{cache:'force-cache'});
+      if(!res.ok)throw new Error('service zone district chunk '+res.status);
+      const chunk=await res.json();
+      if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('service zone district version mismatch');
+      const zones=Array.isArray(chunk.zones)?chunk.zones:[];
+      loadedServiceZoneDistricts[type].add(district);
+      return zones;
     }catch(err){
-      console.warn(type+' 추정권역 번들 로드 실패',err);
-      return null;
+      console.warn(type+' '+district+' 추정권역 청크 로드 실패',err);
+      return [];
     }finally{
-      bundledServiceZonesExternalPromise[type]=null;
+      serviceZoneChunkPromises.delete(key);
     }
   })();
-  return bundledServiceZonesExternalPromise[type];
+  serviceZoneChunkPromises.set(key,promise);
+  return promise;
 }
-
-async function hydrateExternalBundledServiceZones(type){
-  const data=await loadExternalBundledServiceZones(type);
+async function loadExternalBundledServiceZones(type,districts=null){
+  if(type!=='general'&&type!=='recycle')return null;
+  const manifest=await loadServiceZoneManifest();
+  if(!manifest)return null;
+  const entries=desiredServiceZoneEntries(manifest,type,districts);
+  const chunks=await Promise.all(entries.map(e=>fetchServiceZoneChunk(type,e)));
+  const zones=chunks.flat();
+  return {version:DONG_ROUTE_CACHE_VERSION,zoneVersion:manifest.zoneVersion,zones:{general:type==='general'?zones:[],recycle:type==='recycle'?zones:[]},entries};
+}
+async function hydrateExternalBundledServiceZones(type,districts=null){
+  const before=serviceZoneOverlays[type]?.length||0;
+  const data=await loadExternalBundledServiceZones(type,districts);
   const zones=Array.isArray(data?.zones?.[type])?data.zones[type]:[];
-  if(!zones.length)return false;
-  return hydrateServiceZoneArray(type,zones,{fromBundle:true});
+  if(zones.length){
+    return hydrateServiceZoneArray(type,zones,{fromBundle:true,append:before>0,partial:true});
+  }
+  if(Array.isArray(districts)&&districts.length){
+    return districts.every(d=>loadedServiceZoneDistricts[type].has(canonicalDistrict(d)));
+  }
+  return before>0;
+}
+async function ensureVisibleServiceZoneChunks(type){
+  if(type!=='general'&&type!=='recycle')return false;
+  return hydrateExternalBundledServiceZones(type);
 }
 
 let bundledPrecomputedExternal=null;
@@ -1682,7 +1718,8 @@ window.__CJWASTE_PRECOMPUTE_READY=false;
 
 
 function serviceZoneCacheKey(type){
-  return `${SERVICE_ZONE_CACHE_VERSION}|${type}`;
+  // 테스트페이지는 본사이트의 전체권역 IndexedDB 캐시와 분리합니다.
+  return `test-district-v1|${SERVICE_ZONE_CACHE_VERSION}|${type}`;
 }
 async function getCachedServiceZones(type){
   try{
@@ -1792,7 +1829,7 @@ function prioritizeServiceZones(zones){
 async function hydrateServiceZoneArray(type,zones,meta={}){
   if(!Array.isArray(zones)||!zones.length)return false;
   const started=performance.now();
-  clearServiceZoneOverlays(type);
+  if(!meta.append)clearServiceZoneOverlays(type);
 
   // 테스트페이지 최적화: 현재 보이는 지도 영역을 먼저 만들고,
   // 화면 밖 권역은 idle 시간에 큰 묶음으로 생성합니다.
@@ -1873,6 +1910,11 @@ function serviceZoneOverlayMatch(type,ctx){
   return {vehicle:z.vehicle,vehicles:[...(z.vehicles||[])],provider:z.provider||routeCompany(z.vehicle),plate:z.plate||'',days:[...(z.days||[])],distanceKm:Infinity,matchBasis:'displayed-zone',zoneStatus:(z.estimated||dongEstimated)?'estimated':(z.ambiguous?'boundary':'inferred'),estimated:!!z.estimated||dongEstimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,matchedRoads:[],district,riName,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized};
 }
 async function ensureServiceZoneMatch(type,ctx){
+  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  // 주소가 속한 지역 청크가 아직 없으면 그 지역만 우선 내려받습니다.
+  if(district&&!loadedServiceZoneDistricts[type].has(district)){
+    await hydrateExternalBundledServiceZones(type,[district]);
+  }
   let match=serviceZoneOverlayMatch(type,ctx);if(match)return match;
   if(!serviceZoneBuilt[type]){
     const hydrated=await hydrateCachedServiceZones(type);
@@ -4031,8 +4073,12 @@ function queueActiveServiceLayerRefresh(force=false){
   requestAnimationFrame(()=>{
     if(seq!==serviceLayerRefreshSeq)return;
     if(activeLayer!=='general'&&activeLayer!=='recycle')return;
+    const type=activeLayer;
     const hard=serviceLayerHardRefresh;serviceLayerHardRefresh=false;
-    syncServiceZoneVisibility(activeLayer,hard);
+    // 이동/확대 후 새 화면과 겹치는 지역 청크만 추가로 가져옵니다.
+    ensureVisibleServiceZoneChunks(type)
+      .catch(e=>console.warn('가시권역 추가 로드 실패',e))
+      .finally(()=>{if(seq===serviceLayerRefreshSeq&&activeLayer===type)syncServiceZoneVisibility(type,hard)});
   });
 }
 function syncBoundaryVisibility(){
@@ -4173,7 +4219,10 @@ function setLayer(layer){
   }else{
     syncBoundaryVisibility();
     const zoneReady=serviceLayerState.zone
-      ? buildServiceZones(layer).then(()=>syncServiceZoneVisibility(layer)).catch(e=>console.warn('수거권역 생성 실패',e))
+      ? ensureVisibleServiceZoneChunks(layer)
+          .then(()=>buildServiceZones(layer))
+          .then(()=>syncServiceZoneVisibility(layer))
+          .catch(e=>console.warn('수거권역 생성 실패',e))
       : Promise.resolve();
     if(serviceLayerState.route){
       zoneReady.finally(()=>ensureDongRoutesForSelection(layer).catch(e=>console.warn('근거노선 로드 실패',e)));
