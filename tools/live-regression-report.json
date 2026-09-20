@@ -1,312 +1,495 @@
 {
   "url": "https://yongseongk94.github.io/cjwaste/",
-  "startedAt": "2026-09-20T07:52:22Z",
-  "consoleErrors": [
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()",
-    "Failed to load resource: the server responded with a status of 502 ()"
-  ],
+  "startedAt": "2026-09-20T08:14:42Z",
+  "responses": {
+    "errorStatusCounts": {
+      "502": 315
+    },
+    "sampleErrorUrls": {
+      "502": [
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route",
+        "https://cjwaste-route.yseong22.workers.dev/route"
+      ]
+    }
+  },
   "pageErrors": [],
-  "requestFailures": [],
   "cold": {
     "httpStatus": 200,
-    "readyWaitError": "TimeoutError('Page.wait_for_function: Timeout 150000ms exceeded.')",
+    "readyWithin180s": false,
     "snapshot": {
-      "href": "https://yongseongk94.github.io/cjwaste/?regression=cold",
+      "href": "https://yongseongk94.github.io/cjwaste/?regression=v2-cold",
       "title": "청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27",
+      "kakaoLoaded": true,
+      "precomputeReady": false,
       "bundleSrc": "data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
       "bundlePerf": [
         {
-          "name": "https://yongseongk94.github.io/cjwaste/data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
           "transferSize": 548958,
           "encodedBodySize": 548658,
           "decodedBodySize": 3617020,
-          "duration": 532.5
+          "duration": 226.20000000000437
         }
       ],
-      "landingBg": "url(\"https://yongseongk94.github.io/cjwaste/assets/landing-bg.jpg\")",
-      "kakaoLoaded": true,
-      "ready": false,
+      "bundleHydrated": true,
       "routeSpecCount": 123,
-      "routeGeneralCount": 85,
-      "routeRecycleCount": 58,
-      "zoneGeneralCount": 2285,
-      "zoneRecycleCount": 0,
-      "ruralZoneGeneral": 1847,
-      "ruralZoneRecycle": 0,
-      "maxAddressRouteDistanceKm": 0.02,
+      "existingSpecCount": 122,
+      "missingSpecCount": 1,
+      "missingSpecs": [
+        {
+          "type": "general",
+          "vehicle": "6224",
+          "day": "월",
+          "scopeKind": "rural",
+          "scope": "내수읍",
+          "districts": [
+            "내수읍"
+          ],
+          "exists": false
+        }
+      ],
+      "routeStats": {
+        "general": {
+          "total": 84,
+          "unique": 84,
+          "duplicateCount": 0
+        },
+        "recycle": {
+          "total": 78,
+          "unique": 78,
+          "duplicateCount": 0
+        }
+      },
+      "zoneStats": {
+        "general": {
+          "total": 2311,
+          "byDistrict": {
+            "오근장동": 260,
+            "우암동": 18,
+            "내덕1동": 26,
+            "내덕2동": 22,
+            "율량사천동": 138,
+            "내수읍": 763,
+            "오창읍": 1084
+          }
+        },
+        "recycle": {
+          "total": 2610,
+          "byDistrict": {
+            "오근장동": 238,
+            "우암동": 20,
+            "내덕1동": 26,
+            "내덕2동": 27,
+            "율량사천동": 162,
+            "내수읍": 819,
+            "오창읍": 1139,
+            "북이면": 179
+          }
+        }
+      },
+      "serviceZoneBuilt": {
+        "general": false,
+        "recycle": false
+      },
+      "serviceZoneCacheHydrated": {
+        "general": true,
+        "recycle": true
+      },
+      "failedLegCount": 37,
+      "failedLegs": [
+        {
+          "from": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743086173811,
+            "lng": 127.506468196339,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743086173811,
+            "lng": 127.506468196339,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6656129635271,
+            "lng": 127.50892114253,
+            "name": "2순환로",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6721068872559,
+            "lng": 127.512496826622,
+            "name": "2순환로",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6721068872559,
+            "lng": 127.512496826622,
+            "name": "2순환로",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6720106763725,
+            "lng": 127.501953705147,
+            "name": "2순환로",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744595618506,
+            "lng": 127.506996086065,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.734853785340896,
+            "lng": 127.40557544907274,
+            "name": "가영당 한옥팬션",
+            "term": "미래지한옥마을"
+          },
+          "to": {
+            "lat": 36.7476151193569,
+            "lng": 127.380555707194,
+            "name": "후기리",
+            "term": "후기리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743086173811,
+            "lng": 127.506468196339,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6894591403847,
+            "lng": 127.568929431992,
+            "name": "형동리",
+            "term": "형동리"
+          },
+          "to": {
+            "lat": 36.6984292032594,
+            "lng": 127.584849915699,
+            "name": "비상리",
+            "term": "비상리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6984292032594,
+            "lng": 127.584849915699,
+            "name": "비상리",
+            "term": "비상리"
+          },
+          "to": {
+            "lat": 36.7141775807214,
+            "lng": 127.575871950021,
+            "name": "비중리",
+            "term": "비중리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.7168681660264,
+            "lng": 127.576272592937,
+            "name": "비중사거리",
+            "term": "비중사거리"
+          },
+          "to": {
+            "lat": 36.7018191824384,
+            "lng": 127.59898938805,
+            "name": "저곡리",
+            "term": "저곡리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.66686429529947,
+            "lng": 127.47704227113594,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6662968687897,
+            "lng": 127.474942573092,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로에 유고 정보(교통 장애)가 있음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6662968687897,
+            "lng": 127.474942573092,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6654552824708,
+            "lng": 127.475604061163,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로에 유고 정보(교통 장애)가 있음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.7018191824384,
+            "lng": 127.59898938805,
+            "name": "저곡리",
+            "term": "저곡리"
+          },
+          "to": {
+            "lat": 36.7182037046216,
+            "lng": 127.605657843844,
+            "name": "초정어린이집",
+            "term": "초정어린이집"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.66686429529947,
+            "lng": 127.47704227113594,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6662968687897,
+            "lng": 127.474942573092,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로에 유고 정보(교통 장애)가 있음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6662968687897,
+            "lng": 127.474942573092,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6654552824708,
+            "lng": 127.475604061163,
+            "name": "사뜸로61번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로에 유고 정보(교통 장애)가 있음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6656129635271,
+            "lng": 127.50892114253,
+            "name": "2순환로",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6721068872559,
+            "lng": 127.512496826622,
+            "name": "2순환로",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6721068872559,
+            "lng": 127.512496826622,
+            "name": "2순환로",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6720106763725,
+            "lng": 127.501953705147,
+            "name": "2순환로",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6894591403847,
+            "lng": 127.568929431992,
+            "name": "형동리",
+            "term": "형동리"
+          },
+          "to": {
+            "lat": 36.6984292032594,
+            "lng": 127.584849915699,
+            "name": "비상리",
+            "term": "비상리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6984292032594,
+            "lng": 127.584849915699,
+            "name": "비상리",
+            "term": "비상리"
+          },
+          "to": {
+            "lat": 36.7119574824603,
+            "lng": 127.597040045131,
+            "name": "우산리",
+            "term": "우산리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6894591403847,
+            "lng": 127.568929431992,
+            "name": "형동리",
+            "term": "형동리"
+          },
+          "to": {
+            "lat": 36.6984292032594,
+            "lng": 127.584849915699,
+            "name": "비상리",
+            "term": "비상리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6984292032594,
+            "lng": 127.584849915699,
+            "name": "비상리",
+            "term": "비상리"
+          },
+          "to": {
+            "lat": 36.7141775807214,
+            "lng": 127.575871950021,
+            "name": "비중리",
+            "term": "비중리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"시작 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.734853785340896,
+            "lng": 127.40557544907274,
+            "name": "가영당 한옥팬션",
+            "term": "미래지한옥마을"
+          },
+          "to": {
+            "lat": 36.7476151193569,
+            "lng": 127.380555707194,
+            "name": "후기리",
+            "term": "후기리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.734853785340896,
+            "lng": 127.40557544907274,
+            "name": "가영당 한옥팬션",
+            "term": "미래지한옥마을"
+          },
+          "to": {
+            "lat": 36.7476151193569,
+            "lng": 127.380555707194,
+            "name": "후기리",
+            "term": "후기리"
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"도착 지점 주변의 도로를 탐색할 수 없음\"}"
+        }
+      ],
       "limits": {
         "ochang": 0.02,
         "naesu": 0.02,
@@ -314,173 +497,287 @@
         "dong": 0.02
       },
       "activeLayer": "general",
-      "activeDay": "전체",
-      "selectedGeneral": "전체",
-      "selectedRecycle": "전체",
-      "generalBadge": "확인 중",
-      "recycleBadge": "확인 중",
-      "foodBadge": "확인 중",
       "selectedDistrict": "청원구 행정동 확인 중",
-      "selectedAddress": "주소를 검색해주세요."
+      "selectedAddress": "주소를 검색해주세요.",
+      "generalBadge": "확인 중",
+      "recycleBadge": "확인 중"
     },
     "idb": {
-      "count": 124,
-      "keys": [
-        "v76-layer-visibility-refresh|general|3344|금|9ygaog|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|금|9ygaog|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|목|17cfyzh|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|수|ghgnkt|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|수|ghgnkt|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|월|evuwg9|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|월|evuwg9|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|화|wp3rvr|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|화|wp3rvr|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3346|금|8l8m7a",
-        "v76-layer-visibility-refresh|general|3346|목|1w09km8",
-        "v76-layer-visibility-refresh|general|3346|목|1w09km8|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|general|3346|수|2e2p73",
-        "v76-layer-visibility-refresh|general|3346|수|2e2p73|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|general|3346|월|9tycm4",
-        "v76-layer-visibility-refresh|general|3346|월|9tycm4|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|general|3346|화|bap9h3",
-        "v76-layer-visibility-refresh|general|6138|금|kz5ttd|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6138|수|gogtt8|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6138|월|1xeau16|scope-1xqoft0",
-        "v76-layer-visibility-refresh|general|6138|월|1xeau16|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6138|화|1ol1625|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6157|금|1tn6rgm",
-        "v76-layer-visibility-refresh|general|6157|목|imh8cl",
-        "v76-layer-visibility-refresh|general|6157|수|1vu53ee",
-        "v76-layer-visibility-refresh|general|6157|월|1u97oao",
-        "v76-layer-visibility-refresh|general|6157|화|1qjoaxz",
-        "v76-layer-visibility-refresh|general|6224|금|azs7s2",
-        "v76-layer-visibility-refresh|general|6224|금|azs7s2|scope-1k7938h",
-        "v76-layer-visibility-refresh|general|6224|수|2bhu8q",
-        "v76-layer-visibility-refresh|general|6224|수|2bhu8q|scope-1k7938h",
-        "v76-layer-visibility-refresh|general|6224|화|laytj7",
-        "v76-layer-visibility-refresh|general|6224|화|laytj7|scope-1k7938h",
-        "v76-layer-visibility-refresh|general|6244|금|slafpa",
-        "v76-layer-visibility-refresh|general|6244|금|slafpa|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|목|tnto0h",
-        "v76-layer-visibility-refresh|general|6244|목|tnto0h|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|수|17bkizi",
-        "v76-layer-visibility-refresh|general|6244|수|17bkizi|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|월|slafpa",
-        "v76-layer-visibility-refresh|general|6244|월|slafpa|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|화|tnto0h",
-        "v76-layer-visibility-refresh|general|6244|화|tnto0h|scope-989qgx",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|금|kfghs6",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|목|16gpv4q",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|수|kfghs6",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|월|kfghs6",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|토|bttpm1",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|화|16gpv4q",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|금|8pig1z",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|목|rcrr2w",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|수|8pig1z",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|월|8pig1z",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|토|rcrr2w",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|화|rcrr2w",
-        "v76-layer-visibility-refresh|general|제일환경|88저7556|우암동|단독|목|1usscmv",
-        "v76-layer-visibility-refresh|general|제일환경|88저7556|우암동|단독|토|1usscmv",
-        "v76-layer-visibility-refresh|general|제일환경|88저7556|우암동|단독|화|1usscmv",
-        "v76-layer-visibility-refresh|general|제일환경|94고3991|오창읍|단독|목|12s0w7o",
-        "v76-layer-visibility-refresh|general|제일환경|94고3991|오창읍|단독|토|12s0w7o",
-        "v76-layer-visibility-refresh|general|제일환경|94고3991|오창읍|단독|화|12s0w7o",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|금|tdfr5p",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|목|3hvhhn",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|수|tdfr5p",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|월|tdfr5p",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|토|3hvhhn",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|화|3hvhhn",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|금|60enfw",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|목|1xsbhv2",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|수|1eujrwz",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|월|1gra42",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|토|etyayj",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|화|ewllb8",
-        "v76-layer-visibility-refresh|recycle|0261|금|1yibaxv",
-        "v76-layer-visibility-refresh|recycle|0261|목|xmkaem",
-        "v76-layer-visibility-refresh|recycle|0261|수|1yibaxv",
-        "v76-layer-visibility-refresh|recycle|0261|월|1yibaxv",
-        "v76-layer-visibility-refresh|recycle|0261|화|xmkaem",
-        "v76-layer-visibility-refresh|recycle|0262|금|1nu74jl|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0262|목|5yxum5|scope-5p3rua",
-        "v76-layer-visibility-refresh|recycle|0262|수|1jgmysa|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0262|월|1dca80e|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0262|화|1kpsqbc|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0263|금|1yihcw8",
-        "v76-layer-visibility-refresh|recycle|0263|목|8nc99x",
-        "v76-layer-visibility-refresh|recycle|0263|수|18bngke",
-        "v76-layer-visibility-refresh|recycle|0263|월|1agjkkx",
-        "v76-layer-visibility-refresh|recycle|0263|화|1u5tv9l",
-        "v76-layer-visibility-refresh|recycle|0264|목|h38q6n",
-        "v76-layer-visibility-refresh|recycle|0264|수|1c11n9b",
-        "v76-layer-visibility-refresh|recycle|0264|월|1j9b8pq",
-        "v76-layer-visibility-refresh|recycle|0264|화|1omane2",
-        "v76-layer-visibility-refresh|recycle|6544|금|n0bbbt|scope-j5iiaj",
-        "v76-layer-visibility-refresh|recycle|6544|월|1w94pgb|scope-1xqoft0",
-        "v76-layer-visibility-refresh|recycle|6544|화|phn0ww|scope-j5iiaj",
-        "v76-layer-visibility-refresh|recycle|9090|금|lcmh6f",
-        "v76-layer-visibility-refresh|recycle|9090|목|xsbiou",
-        "v76-layer-visibility-refresh|recycle|9090|수|k78gq4",
-        "v76-layer-visibility-refresh|recycle|9090|월|b95fu9",
-        "v76-layer-visibility-refresh|recycle|9090|화|828hbl",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|금|159425w",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|목|1d3pv8s",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|수|159425w",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|월|159425w",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|토|1d3pv8s",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|화|1d3pv8s",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|금|1tfw0z5",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|목|12jw2ee",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|수|1tfw0z5",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|월|1tfw0z5",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|토|12jw2ee",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|화|12jw2ee",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|금|15ii8i3",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|목|1osun97",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|수|15ii8i3",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|월|15ii8i3",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|토|1osun97",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|화|1osun97",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|금|60enfw",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|목|1xsbhv2",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|수|1eujrwz",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|월|1gra42",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|토|etyayj",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|화|ewllb8"
-      ]
-    },
-    "bundleRequests": 1
+      "count": 146,
+      "routeKeys": 146,
+      "zoneKeys": 0
+    }
   },
   "warm": {
     "httpStatus": 200,
-    "readyWaitError": "TimeoutError('Page.wait_for_function: Timeout 120000ms exceeded.')",
+    "readyWithin90s": false,
     "snapshot": {
-      "href": "https://yongseongk94.github.io/cjwaste/?regression=warm",
+      "href": "https://yongseongk94.github.io/cjwaste/?regression=v2-warm",
       "title": "청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27",
+      "kakaoLoaded": true,
+      "precomputeReady": false,
       "bundleSrc": "data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
       "bundlePerf": [
         {
-          "name": "https://yongseongk94.github.io/cjwaste/data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
           "transferSize": 0,
           "encodedBodySize": 548658,
           "decodedBodySize": 3617020,
-          "duration": 17.70000000001164
+          "duration": 13.700000000011642
         }
       ],
-      "landingBg": "url(\"https://yongseongk94.github.io/cjwaste/assets/landing-bg.jpg\")",
-      "kakaoLoaded": true,
-      "ready": false,
+      "bundleHydrated": true,
       "routeSpecCount": 123,
-      "routeGeneralCount": 285,
-      "routeRecycleCount": 74,
-      "zoneGeneralCount": 3299,
-      "zoneRecycleCount": 472,
-      "ruralZoneGeneral": 2861,
-      "ruralZoneRecycle": 0,
-      "maxAddressRouteDistanceKm": 0.02,
+      "existingSpecCount": 122,
+      "missingSpecCount": 1,
+      "missingSpecs": [
+        {
+          "type": "general",
+          "vehicle": "6224",
+          "day": "월",
+          "scopeKind": "rural",
+          "scope": "내수읍",
+          "districts": [
+            "내수읍"
+          ],
+          "exists": false
+        }
+      ],
+      "routeStats": {
+        "general": {
+          "total": 84,
+          "unique": 84,
+          "duplicateCount": 0
+        },
+        "recycle": {
+          "total": 58,
+          "unique": 58,
+          "duplicateCount": 0
+        }
+      },
+      "zoneStats": {
+        "general": {
+          "total": 1990,
+          "byDistrict": {
+            "오근장동": 255,
+            "우암동": 18,
+            "내덕1동": 26,
+            "내덕2동": 22,
+            "율량사천동": 138,
+            "내수읍": 763,
+            "오창읍": 768
+          }
+        },
+        "recycle": {
+          "total": 0,
+          "byDistrict": {}
+        }
+      },
+      "serviceZoneBuilt": {
+        "general": false,
+        "recycle": false
+      },
+      "serviceZoneCacheHydrated": {
+        "general": true,
+        "recycle": true
+      },
+      "failedLegCount": 13,
+      "failedLegs": [
+        {
+          "from": {
+            "lat": 36.66529519214886,
+            "lng": 127.51932504598251,
+            "name": "상리로",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6653285180541,
+            "lng": 127.519328625537,
+            "name": "상리로",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744595618506,
+            "lng": 127.506996086065,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744595618506,
+            "lng": 127.506996086065,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743086173811,
+            "lng": 127.506468196339,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743086173811,
+            "lng": 127.506468196339,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744595618506,
+            "lng": 127.506996086065,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6744233465353,
+            "lng": 127.507036121068,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.6743050938903,
+            "lng": 127.50644915565,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        },
+        {
+          "from": {
+            "lat": 36.674303291697115,
+            "lng": 127.5064491438377,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "to": {
+            "lat": 36.6743086173811,
+            "lng": 127.506468196339,
+            "name": "2순환로160번길",
+            "term": ""
+          },
+          "message": "route proxy 502 {\"error\":\"route_failed\",\"detail\":\"출발지와 도착지가 5 m 이내로 설정된 경우 경로를 탐색할 수 없음\"}"
+        }
+      ],
       "limits": {
         "ochang": 0.02,
         "naesu": 0.02,
@@ -488,217 +785,37 @@
         "dong": 0.02
       },
       "activeLayer": "general",
-      "activeDay": "전체",
-      "selectedGeneral": "전체",
-      "selectedRecycle": "전체",
-      "generalBadge": "확인 중",
-      "recycleBadge": "확인 중",
-      "foodBadge": "확인 중",
       "selectedDistrict": "청원구 행정동 확인 중",
-      "selectedAddress": "주소를 검색해주세요."
+      "selectedAddress": "주소를 검색해주세요.",
+      "generalBadge": "확인 중",
+      "recycleBadge": "확인 중"
     },
     "idb": {
-      "count": 137,
-      "keys": [
-        "v76-layer-visibility-refresh|general|3344|금|9ygaog|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|금|9ygaog|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|목|17cfyzh|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|수|ghgnkt|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|수|ghgnkt|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|월|evuwg9|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|월|evuwg9|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3344|화|wp3rvr|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|general|3344|화|wp3rvr|scope-5p3rua",
-        "v76-layer-visibility-refresh|general|3346|금|8l8m7a",
-        "v76-layer-visibility-refresh|general|3346|목|1w09km8",
-        "v76-layer-visibility-refresh|general|3346|목|1w09km8|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|general|3346|수|2e2p73",
-        "v76-layer-visibility-refresh|general|3346|수|2e2p73|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|general|3346|월|9tycm4",
-        "v76-layer-visibility-refresh|general|3346|월|9tycm4|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|general|3346|화|bap9h3",
-        "v76-layer-visibility-refresh|general|6138|금|kz5ttd|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6138|수|gogtt8|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6138|월|1xeau16|scope-1xqoft0",
-        "v76-layer-visibility-refresh|general|6138|월|1xeau16|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6138|화|1ol1625|scope-j5iiaj",
-        "v76-layer-visibility-refresh|general|6157|금|1tn6rgm",
-        "v76-layer-visibility-refresh|general|6157|목|imh8cl",
-        "v76-layer-visibility-refresh|general|6157|수|1vu53ee",
-        "v76-layer-visibility-refresh|general|6157|월|1u97oao",
-        "v76-layer-visibility-refresh|general|6157|화|1qjoaxz",
-        "v76-layer-visibility-refresh|general|6224|금|azs7s2",
-        "v76-layer-visibility-refresh|general|6224|금|azs7s2|scope-1k7938h",
-        "v76-layer-visibility-refresh|general|6224|수|2bhu8q",
-        "v76-layer-visibility-refresh|general|6224|수|2bhu8q|scope-1k7938h",
-        "v76-layer-visibility-refresh|general|6224|화|laytj7",
-        "v76-layer-visibility-refresh|general|6224|화|laytj7|scope-1k7938h",
-        "v76-layer-visibility-refresh|general|6244|금|slafpa",
-        "v76-layer-visibility-refresh|general|6244|금|slafpa|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|목|tnto0h",
-        "v76-layer-visibility-refresh|general|6244|목|tnto0h|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|수|17bkizi",
-        "v76-layer-visibility-refresh|general|6244|수|17bkizi|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|월|slafpa",
-        "v76-layer-visibility-refresh|general|6244|월|slafpa|scope-989qgx",
-        "v76-layer-visibility-refresh|general|6244|화|tnto0h",
-        "v76-layer-visibility-refresh|general|6244|화|tnto0h|scope-989qgx",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|금|kfghs6",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|목|16gpv4q",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|수|kfghs6",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|월|kfghs6",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|토|bttpm1",
-        "v76-layer-visibility-refresh|general|제일환경|88어1536|우암동|단독|화|16gpv4q",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|금|8pig1z",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|목|rcrr2w",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|수|8pig1z",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|월|8pig1z",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|토|rcrr2w",
-        "v76-layer-visibility-refresh|general|제일환경|88저7478|오창읍|단독|화|rcrr2w",
-        "v76-layer-visibility-refresh|general|제일환경|88저7556|우암동|단독|목|1usscmv",
-        "v76-layer-visibility-refresh|general|제일환경|88저7556|우암동|단독|토|1usscmv",
-        "v76-layer-visibility-refresh|general|제일환경|88저7556|우암동|단독|화|1usscmv",
-        "v76-layer-visibility-refresh|general|제일환경|94고3991|오창읍|단독|목|12s0w7o",
-        "v76-layer-visibility-refresh|general|제일환경|94고3991|오창읍|단독|토|12s0w7o",
-        "v76-layer-visibility-refresh|general|제일환경|94고3991|오창읍|단독|화|12s0w7o",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|금|tdfr5p",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|목|3hvhhn",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|수|tdfr5p",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|월|tdfr5p",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|토|3hvhhn",
-        "v76-layer-visibility-refresh|general|제일환경|95오0147|오창읍|단독|화|3hvhhn",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|금|60enfw",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|목|1xsbhv2",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|수|1eujrwz",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|월|1gra42",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|토|etyayj",
-        "v76-layer-visibility-refresh|general|현대환경|95오0125|내덕1동|단독|화|ewllb8",
-        "v76-layer-visibility-refresh|recycle|0261|금|1yibaxv",
-        "v76-layer-visibility-refresh|recycle|0261|목|xmkaem",
-        "v76-layer-visibility-refresh|recycle|0261|수|1yibaxv",
-        "v76-layer-visibility-refresh|recycle|0261|월|1yibaxv",
-        "v76-layer-visibility-refresh|recycle|0261|화|xmkaem",
-        "v76-layer-visibility-refresh|recycle|0262|금|1nu74jl|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0262|목|5yxum5|scope-5p3rua",
-        "v76-layer-visibility-refresh|recycle|0262|수|1jgmysa|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0262|월|1dca80e|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0262|화|1kpsqbc|scope-1u4ctdx",
-        "v76-layer-visibility-refresh|recycle|0263|금|1yihcw8",
-        "v76-layer-visibility-refresh|recycle|0263|금|1yihcw8|scope-989qgx",
-        "v76-layer-visibility-refresh|recycle|0263|목|8nc99x",
-        "v76-layer-visibility-refresh|recycle|0263|목|8nc99x|scope-989qgx",
-        "v76-layer-visibility-refresh|recycle|0263|수|18bngke",
-        "v76-layer-visibility-refresh|recycle|0263|수|18bngke|scope-989qgx",
-        "v76-layer-visibility-refresh|recycle|0263|월|1agjkkx",
-        "v76-layer-visibility-refresh|recycle|0263|월|1agjkkx|scope-989qgx",
-        "v76-layer-visibility-refresh|recycle|0263|화|1u5tv9l",
-        "v76-layer-visibility-refresh|recycle|0263|화|1u5tv9l|scope-989qgx",
-        "v76-layer-visibility-refresh|recycle|0264|목|h38q6n",
-        "v76-layer-visibility-refresh|recycle|0264|목|h38q6n|scope-1k7938h",
-        "v76-layer-visibility-refresh|recycle|0264|수|1c11n9b",
-        "v76-layer-visibility-refresh|recycle|0264|월|1j9b8pq",
-        "v76-layer-visibility-refresh|recycle|0264|월|1j9b8pq|scope-1k7938h",
-        "v76-layer-visibility-refresh|recycle|0264|화|1omane2",
-        "v76-layer-visibility-refresh|recycle|0264|화|1omane2|scope-1k7938h",
-        "v76-layer-visibility-refresh|recycle|6544|금|n0bbbt|scope-j5iiaj",
-        "v76-layer-visibility-refresh|recycle|6544|월|1w94pgb|scope-1xqoft0",
-        "v76-layer-visibility-refresh|recycle|6544|화|phn0ww|scope-j5iiaj",
-        "v76-layer-visibility-refresh|recycle|9090|금|lcmh6f",
-        "v76-layer-visibility-refresh|recycle|9090|목|xsbiou",
-        "v76-layer-visibility-refresh|recycle|9090|목|xsbiou|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|recycle|9090|수|k78gq4",
-        "v76-layer-visibility-refresh|recycle|9090|수|k78gq4|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|recycle|9090|월|b95fu9",
-        "v76-layer-visibility-refresh|recycle|9090|월|b95fu9|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|recycle|9090|화|828hbl",
-        "v76-layer-visibility-refresh|recycle|9090|화|828hbl|scope-1qfm3v8",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|금|159425w",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|목|1d3pv8s",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|수|159425w",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|월|159425w",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|토|1d3pv8s",
-        "v76-layer-visibility-refresh|recycle|제일환경|81주3418|우암동|단독|화|1d3pv8s",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|금|1tfw0z5",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|목|12jw2ee",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|수|1tfw0z5",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|월|1tfw0z5",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|토|12jw2ee",
-        "v76-layer-visibility-refresh|recycle|제일환경|88어1535|오창읍|단독|화|12jw2ee",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|금|15ii8i3",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|목|1osun97",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|수|15ii8i3",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|월|15ii8i3",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|토|1osun97",
-        "v76-layer-visibility-refresh|recycle|제일환경|95오0187|오창읍|단독|화|1osun97",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|금|60enfw",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|목|1xsbhv2",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|수|1eujrwz",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|월|1gra42",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|토|etyayj",
-        "v76-layer-visibility-refresh|recycle|현대환경|95오0125|내덕1동|단독|2|화|ewllb8",
-        "zone-v77-rural-estimated-regions|v76-layer-visibility-refresh|general"
-      ]
+      "count": 139,
+      "routeKeys": 139,
+      "zoneKeys": 0
     },
-    "bundleRequests": 1
-  },
-  "addressSearch": {
-    "href": "https://yongseongk94.github.io/cjwaste/?regression=cold",
-    "title": "청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27",
-    "bundleSrc": "data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
-    "bundlePerf": [
-      {
-        "name": "https://yongseongk94.github.io/cjwaste/data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
-        "transferSize": 548958,
-        "encodedBodySize": 548658,
-        "decodedBodySize": 3617020,
-        "duration": 532.5
-      }
-    ],
-    "landingBg": "url(\"https://yongseongk94.github.io/cjwaste/assets/landing-bg.jpg\")",
-    "kakaoLoaded": true,
-    "ready": false,
-    "routeSpecCount": 123,
-    "routeGeneralCount": 85,
-    "routeRecycleCount": 67,
-    "zoneGeneralCount": 3299,
-    "zoneRecycleCount": 0,
-    "ruralZoneGeneral": 2861,
-    "ruralZoneRecycle": 0,
-    "maxAddressRouteDistanceKm": 0.02,
-    "limits": {
-      "ochang": 0.02,
-      "naesu": 0.02,
-      "bugi": 0.02,
-      "dong": 0.02
-    },
-    "activeLayer": "general",
-    "activeDay": "전체",
-    "selectedGeneral": "전체",
-    "selectedRecycle": "전체",
-    "generalBadge": "직영 구간 확인",
-    "recycleBadge": "직영 구간 확인",
-    "foodBadge": "화·목·일",
-    "selectedDistrict": "청원구 · 내덕2동 · 내덕동",
-    "selectedAddress": "충북 청주시 청원구 상당로 314",
-    "generalDetail": "청원구 직영 수거구간이 포함된 지역입니다.\n현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.",
-    "recycleDetail": "청원구 직영 재활용 수거구간이 포함된 지역입니다.\n현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.\n\n공동주택 안내: 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다."
+    "newHttpErrors": {
+      "502": 39
+    }
   },
   "checks": {
-    "layerSwitchError": "TimeoutError('Locator.click: Timeout 30000ms exceeded.\\nCall log:\\n  - waiting for locator(\".layer-btn[data-layer=\\\\\"recycle\\\\\"]\")\\n    - locator resolved to <button class=\"layer-btn\" data-layer=\"recycle\">재활용</button>\\n  - attempting click action\\n    2 × waiting for element to be visible, enabled and stable\\n      - element is visible, enabled and stable\\n      - scrolling into view if needed\\n      - done scrolling\\n      - <section id=\"landing\">…</section> intercepts pointer events\\n    - retrying click action\\n    - waiting 20ms\\n    2 × waiting for element to be visible, enabled and stable\\n      - element is visible, enabled and stable\\n      - scrolling into view if needed\\n      - done scrolling\\n      - <section id=\"landing\">…</section> intercepts pointer events\\n    - retrying click action\\n      - waiting 100ms\\n    46 × waiting for element to be visible, enabled and stable\\n       - element is visible, enabled and stable\\n       - scrolling into view if needed\\n       - done scrolling\\n       - <section id=\"landing\">…</section> intercepts pointer events\\n     - retrying click action\\n       - waiting 500ms\\n')",
+    "layerSwitch": {
+      "recycle": "recycle",
+      "general": "general"
+    },
     "liveHttp200": true,
-    "externalBundleReferenced": true,
-    "backgroundExternalized": true,
-    "kakaoLoaded": true,
-    "coldReady": false,
-    "routeBundleColdLoaded": true,
-    "routeBundleWarmSkipped": false,
-    "indexedDbPopulated": true,
-    "warmIndexedDbRetained": true,
-    "routesPresent": true,
-    "zonesPresent": false,
-    "ruralZonesPresent": false,
     "distance20m": true,
-    "layerSwitchOk": null,
-    "addressSearchReachedCheongwon": true
+    "noColdOverlayDuplicates": true,
+    "noWarmOverlayDuplicates": true,
+    "scopeMappingStable": true,
+    "addressSearchReachedCheongwon": "skipped-run3",
+    "layerSwitchOk": true,
+    "coldMissingSpecs": 1,
+    "warmMissingSpecs": 1,
+    "coldFailedLegs": 37,
+    "warmFailedLegs": 13,
+    "coldReady": false,
+    "warmReady": false
   }
 }
