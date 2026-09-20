@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "zoneVersion": "zone-v90-dowon-pungjeong-preserve|v76-layer-visibility-refresh",
+  "strategy": "district-chunks-for-test-page",
+  "types": {
+    "general": [
+      {
+        "district": "내덕1동",
+        "path": "cjwaste-test/data/zones/general/naedeok1.json",
+        "count": 26,
+        "bbox": {
+          "minLat": 36.6524,
+          "maxLat": 36.66464,
+          "minLng": 127.4716,
+          "maxLng": 127.48794
+        }
+      },
+      {
+        "district": "내덕2동",
+        "path": "cjwaste-test/data/zones/general/naedeok2.json",
+        "count": 22,
+        "bbox": {
+          "minLat": 36.6524,
+          "maxLat": 36.665,
+          "minLng": 127.4866,
+          "maxLng": 127.5045
+        }
+      },
+      {
+        "district": "내수읍",
+        "path": "cjwaste-test/data/zones/general/naesu.json",
+        "count": 672,
+        "bbox": {
+          "minLat": 36.6661,
+          "maxLat": 36.7621,
+          "minLng": 127.4851,
+          "maxLng": 127.6187
+        }
+      },
+      {
+        "district": "북이면",
+        "path": "cjwaste-test/data/zones/general/bugi.json",
+        "count": 554,
+        "bbox": {
+          "minLat": 36.7141,
+          "maxLat": 36.7803,
+          "minLng": 127.4783,
+          "maxLng": 127.6106
+        }
+      },
+      {
+        "district": "오근장동",
+        "path": "cjwaste-test/data/zones/general/ogeunjang.json",
+        "count": 268,
+        "bbox": {
+          "minLat": 36.6693,
+          "maxLat": 36.7236,
+          "minLng": 127.4466,
+          "maxLng": 127.51196
+        }
+      },
+      {
+        "district": "오창읍",
+        "path": "cjwaste-test/data/zones/general/ochang.json",
+        "count": 1076,
+        "bbox": {
+          "minLat": 36.6841,
+          "maxLat": 36.78,
+          "minLng": 127.318,
+          "maxLng": 127.5103
+        }
+      },
+      {
+        "district": "우암동",
+        "path": "cjwaste-test/data/zones/general/uam.json",
+        "count": 18,
+        "bbox": {
+          "minLat": 36.64674,
+          "maxLat": 36.6542,
+          "minLng": 127.4757,
+          "maxLng": 127.5051
+        }
+      },
+      {
+        "district": "율량사천동",
+        "path": "cjwaste-test/data/zones/general/yullyang-sacheon.json",
+        "count": 161,
+        "bbox": {
+          "minLat": 36.6501,
+          "maxLat": 36.68002,
+          "minLng": 127.463,
+          "maxLng": 127.53265999999999
+        }
+      }
+    ],
+    "recycle": [
+      {
+        "district": "내덕1동",
+        "path": "cjwaste-test/data/zones/recycle/naedeok1.json",
+        "count": 26,
+        "bbox": {
+          "minLat": 36.6524,
+          "maxLat": 36.66464,
+          "minLng": 127.4716,
+          "maxLng": 127.48794
+        }
+      },
+      {
+        "district": "내덕2동",
+        "path": "cjwaste-test/data/zones/recycle/naedeok2.json",
+        "count": 27,
+        "bbox": {
+          "minLat": 36.6524,
+          "maxLat": 36.665,
+          "minLng": 127.48746,
+          "maxLng": 127.5045
+        }
+      },
+      {
+        "district": "내수읍",
+        "path": "cjwaste-test/data/zones/recycle/naesu.json",
+        "count": 625,
+        "bbox": {
+          "minLat": 36.6661,
+          "maxLat": 36.7621,
+          "minLng": 127.4851,
+          "maxLng": 127.6187
+        }
+      },
+      {
+        "district": "북이면",
+        "path": "cjwaste-test/data/zones/recycle/bugi.json",
+        "count": 573,
+        "bbox": {
+          "minLat": 36.7141,
+          "maxLat": 36.7803,
+          "minLng": 127.4783,
+          "maxLng": 127.6106
+        }
+      },
+      {
+        "district": "오근장동",
+        "path": "cjwaste-test/data/zones/recycle/ogeunjang.json",
+        "count": 246,
+        "bbox": {
+          "minLat": 36.6693,
+          "maxLat": 36.7236,
+          "minLng": 127.4466,
+          "maxLng": 127.51196
+        }
+      },
+      {
+        "district": "오창읍",
+        "path": "cjwaste-test/data/zones/recycle/ochang.json",
+        "count": 988,
+        "bbox": {
+          "minLat": 36.6841,
+          "maxLat": 36.78,
+          "minLng": 127.318,
+          "maxLng": 127.5103
+        }
+      },
+      {
+        "district": "우암동",
+        "path": "cjwaste-test/data/zones/recycle/uam.json",
+        "count": 20,
+        "bbox": {
+          "minLat": 36.64674,
+          "maxLat": 36.6542,
+          "minLng": 127.4757,
+          "maxLng": 127.5051
+        }
+      },
+      {
+        "district": "율량사천동",
+        "path": "cjwaste-test/data/zones/recycle/yullyang-sacheon.json",
+        "count": 181,
+        "bbox": {
+          "minLat": 36.6501,
+          "maxLat": 36.68002,
+          "minLng": 127.463,
+          "maxLng": 127.53265999999999
+        }
+      }
+    ]
+  }
+}
