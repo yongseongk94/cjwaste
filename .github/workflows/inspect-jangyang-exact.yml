@@ -1,0 +1,43 @@
+name: Inspect Jangyang affected routes exact
+on:
+  push:
+    paths: ['tools/inspect-jangyang-exact.trigger']
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect exact entries
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=next(Path('data').glob('precomputed-routes-v76-layer-visibility-refresh-*.json'))
+          d=json.loads(p.read_text(encoding='utf-8'))
+          out=[]
+          for r in d.get('routes',[]):
+            if str(r.get('vehicle')) not in {'6138','6544'}: continue
+            data=r.get('data') or {}
+            segs=data.get('segments') or []
+            pts=[pt for seg in segs for pt in seg]
+            out.append({
+              'type':r.get('type'),'vehicle':str(r.get('vehicle')),'day':r.get('day'),
+              'segmentCount':len(segs),'vertexCount':len(pts),
+              'zoneEvidencePoints':data.get('zoneEvidencePoints'),
+              'termsCount':data.get('termsCount'),'serviceTermCount':data.get('serviceTermCount'),
+              'missingTerms':data.get('missingTerms'),'outsideTerms':data.get('outsideTerms'),
+              'districtLabel':data.get('districtLabel'),'distance':data.get('distance')
+            })
+          Path('tools/jangyang-route-exact.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit
+        run: |
+          rm -f tools/inspect-jangyang-exact.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/jangyang-route-exact.json tools/inspect-jangyang-exact.trigger
+          git commit -m 'Inspect exact Jangyang route entries'
+          git push
