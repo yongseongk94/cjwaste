@@ -1,1 +1,0 @@
-inspect route schema

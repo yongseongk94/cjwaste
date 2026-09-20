@@ -1,0 +1,552 @@
+{
+  "bundle": "data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json",
+  "topKeys": [
+    "version",
+    "generatedAt",
+    "routes",
+    "restoredFrom"
+  ],
+  "routeCount": 94,
+  "samples": [
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "3346",
+        "day": "수"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "3346",
+        "day": "월"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "3346",
+        "day": "목"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "3346",
+        "day": "금"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "3346",
+        "day": "화"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6244",
+        "day": "월"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6244",
+        "day": "화"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6244",
+        "day": "목"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6244",
+        "day": "금"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6244",
+        "day": "수"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6224",
+        "day": "수"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    },
+    {
+      "keys": [
+        "type",
+        "vehicle",
+        "day",
+        "data"
+      ],
+      "summary": {
+        "type": "general",
+        "vehicle": "6224",
+        "day": "월"
+      },
+      "dataKeys": [
+        "segments",
+        "zoneEvidencePoints",
+        "termsCount",
+        "pointsCount",
+        "serviceTermCount",
+        "missingTerms",
+        "outsideTerms",
+        "outOfCheongwonTerms",
+        "rangeTerms",
+        "requiredRoadTerms",
+        "coveredRoadTerms",
+        "missingRoadTerms",
+        "outsideRoadTerms",
+        "addressRangeTerms",
+        "secondaryText",
+        "secondaryKind",
+        "districtLabel",
+        "roadMatchedCount",
+        "roadRequestedCount",
+        "distance"
+      ],
+      "dataPreview": {
+        "type": null,
+        "vehicle": null,
+        "day": null,
+        "routeKey": null,
+        "key": null,
+        "plate": null,
+        "district": null,
+        "districts": null
+      }
+    }
+  ]
+}
