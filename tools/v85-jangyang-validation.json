@@ -1,0 +1,28 @@
+{
+  "general": {
+    "jangyangZoneCount": 24,
+    "matchedCount": 24,
+    "vehicle": "6138",
+    "day": "수",
+    "estimatedCount": 24,
+    "gridMergedCount": 24,
+    "riGroupedCount": 0,
+    "noScheduleCount": 0,
+    "groupKeys": [
+      "6138|진성레미컨,은곡리,신안리,마산리,학평리,내수읍사무소일원,북이면사무소,신대리장양리,다모아산업,용계리,석성초,석성리,화상리,추학리,북이초"
+    ]
+  },
+  "recycle": {
+    "jangyangZoneCount": 24,
+    "matchedCount": 24,
+    "vehicle": "6544",
+    "day": "수",
+    "estimatedCount": 24,
+    "gridMergedCount": 24,
+    "riGroupedCount": 0,
+    "noScheduleCount": 0,
+    "groupKeys": [
+      "6544|내수읍일원,내수로,청암로,북이면사무소,신대리,대율리,내추리,장양리,용계리,석성초석성리,화상리,장양2리,추학리,옥수리,내추리"
+    ]
+  }
+}
