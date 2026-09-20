@@ -1,0 +1,35 @@
+name: Optimize runtime cache hydration
+on:
+  push:
+    paths: ['tools/runtime-optimize.trigger']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/runtime_optimize_patch.py
+      - name: Validate
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert '30m' not in s
+          assert 'let bundledPrecomputedHydrated=false;' in s
+          assert 'function bundleRouteRecordSpec' in s
+          assert 'const already=existingDongRouteOverlay(spec);' in s
+          assert 'scopeSignature:routeScopeSignature(item)' in s
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I)
+          Path('/tmp/cjwaste.js').write_text(max(scripts,key=len),encoding='utf-8')
+          print('VALIDATION_OK',Path('index.html').stat().st_size)
+          PY
+          node --check /tmp/cjwaste.js
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html tools/runtime-optimize-result.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Harden route cache hydration and deduplicate overlays"
+          git push
