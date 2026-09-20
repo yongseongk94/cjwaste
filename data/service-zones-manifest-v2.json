@@ -1,11 +1,23 @@
 {
   "schemaVersion": 2,
   "zoneVersion": "zone-v80-route-based-all-regions|v76-layer-visibility-refresh",
-  "generatedAt": "2026-09-20T09:28:25.710Z",
+  "generatedAt": "2026-09-20T10:13:10.109Z",
   "strategy": "route-based-all-regions",
   "types": {
-    "general": [],
-    "recycle": []
+    "general": [
+      {
+        "scope": "dong",
+        "path": "data/service-zones-v80-general-dong.json",
+        "count": 472
+      }
+    ],
+    "recycle": [
+      {
+        "scope": "dong",
+        "path": "data/service-zones-v80-recycle-dong.json",
+        "count": 479
+      }
+    ]
   },
-  "note": "v80 zones are generated from vehicle×weekday collection routes and persisted to IndexedDB; no ri-boundary zone chunks are accepted."
+  "note": "v82: precomputed dong chunks restore immediate display. Rural 오창·내수·북이 remain excluded from legacy ri-boundary chunks and are generated only from route-based logic."
 }
