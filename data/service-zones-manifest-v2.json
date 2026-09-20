@@ -1,45 +1,45 @@
 {
   "schemaVersion": 2,
-  "zoneVersion": "zone-v83-route-overlay-based|v76-layer-visibility-refresh",
-  "generatedAt": "2026-09-20T13:58:57.314452Z",
-  "strategy": "v83-immediate-seed-v80-dong-plus-v77-rural",
+  "zoneVersion": "zone-v84-latest-route-evidence|v76-layer-visibility-refresh",
+  "generatedAt": "2026-09-20T14:44:40.103681Z",
+  "strategy": "route-overlay-based-all-regions",
   "types": {
     "general": [
       {
         "scope": "all",
-        "path": "data/service-zones-v83-general-all.json",
-        "count": 555
+        "path": "data/service-zones-v84-general-all.json",
+        "count": 2489
       }
     ],
     "recycle": [
       {
         "scope": "all",
-        "path": "data/service-zones-v83-recycle-all.json",
-        "count": 558
+        "path": "data/service-zones-v84-recycle-all.json",
+        "count": 2574
       }
     ]
   },
   "districtCounts": {
     "general": {
-      "오근장동": 266,
       "우암동": 18,
       "내덕1동": 26,
       "내덕2동": 22,
-      "율량사천동": 140,
-      "내수읍": 25,
-      "오창읍": 32,
-      "북이면": 26
+      "오근장동": 270,
+      "율량사천동": 158,
+      "오창읍": 1030,
+      "내수읍": 624,
+      "북이면": 341
     },
     "recycle": {
-      "오근장동": 240,
       "우암동": 20,
       "내덕1동": 26,
       "내덕2동": 27,
-      "율량사천동": 166,
-      "내수읍": 23,
-      "오창읍": 30,
-      "북이면": 26
+      "오근장동": 246,
+      "율량사천동": 172,
+      "오창읍": 901,
+      "내수읍": 611,
+      "북이면": 571
     }
   },
-  "note": "Immediate compatible v83 bundle: v80 validated dong zones plus v77 validated rural zones. Current v83 live capture may replace this bundle after successful validation."
+  "note": "v83: current displayed route overlays are the source for precomputed estimated service zones. Includes dong plus Ochang, Naesu and Bugi."
 }
