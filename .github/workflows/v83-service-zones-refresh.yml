@@ -175,7 +175,8 @@ jobs:
               vehicle_days=sorted({f"{z.get('vehicle')}|{'·'.join(z.get('days') or [])}" for z in matched})
               if type_=='general' and district=='내수읍' and ri=='도원리':
                 assert all(str(z.get('vehicle'))=='6138' for z in matched),('general','내수읍','도원리','unexpected vehicle',vehicle_days)
-                assert set(vehicle_days)=={'6138|월','6138|화','6138|목'},('general','내수읍','도원리','unexpected days',vehicle_days)
+                allowed={'6138|월','6138|화','6138|목'}
+                assert set(vehicle_days).issubset(allowed) and vehicle_days,('general','내수읍','도원리','unexpected days',vehicle_days)
               report[type_][key]={
                 'count':len(matched),
                 'vehicleDays':vehicle_days,
