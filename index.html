@@ -4346,18 +4346,21 @@ async function buildZonePolygons(){
     const missingSummary=Object.entries(OFFICIAL_RI_EXPECTED_COUNTS)
       .filter(([d,c])=>riCounts[d]!==c).map(([d,c])=>`${d} ${riCounts[d]}/${c}`).join(' · ');
     serviceRegionLoadComplete=true;
-    // 이미 IndexedDB에서 복원한 자동권역은 유지합니다. 캐시가 없을 때만 새로 계산합니다.
+    // v81: 경계 로딩 전 조기 호출로 추정권역 생성이 건너뛰어졌더라도,
+    // 경계가 준비된 직후 생활/재활용 권역을 반드시 다시 생성합니다.
     if(!(serviceZoneOverlays.general||[]).some(z=>!z.manual))serviceZoneBuilt.general=false;
     if(!(serviceZoneOverlays.recycle||[]).some(z=>!z.manual))serviceZoneBuilt.recycle=false;
+    await Promise.all([buildServiceZones('general'),buildServiceZones('recycle')]);
     setLayer(activeLayer);
     if(missingSummary)console.warn('법정리 경계 일부 누락:',missingSummary);
   }catch(err){
     console.warn('법정리 레이어 로딩 실패',err);
     // 리 데이터가 실패하면 읍·면 권역은 제한되지만 동지역 권역은 계속 사용할 수 있습니다.
     serviceRegionLoadComplete=true;
-    // 이미 IndexedDB에서 복원한 자동권역은 유지합니다. 캐시가 없을 때만 새로 계산합니다.
+    // 동지역 경계가 이미 준비되어 있다면 읍·면 리 데이터 실패와 무관하게 가능한 권역은 생성합니다.
     if(!(serviceZoneOverlays.general||[]).some(z=>!z.manual))serviceZoneBuilt.general=false;
     if(!(serviceZoneOverlays.recycle||[]).some(z=>!z.manual))serviceZoneBuilt.recycle=false;
+    await Promise.all([buildServiceZones('general'),buildServiceZones('recycle')]);
     setLayer(activeLayer);
   }
 
