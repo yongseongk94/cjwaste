@@ -794,7 +794,9 @@ function cleanRouteTerm(raw){
 // v84: 원본이 법정리 대표명만 적은 경우 실제 행정리 마을까지 경유해 노선 누락을 줄입니다.
 // 현재 현장자료에서 확인이 필요한 항목부터 명시적으로 확장하며, 원본 수거요일 자체는 변경하지 않습니다.
 const ROUTE_VILLAGE_WAYPOINT_EXPANSIONS={
-  '장양리':['장양1리','장양2리','장양3리']
+  // 장양권 도로/대중교통 실제 연결순서를 대조하면 장양2리(진개) → 장양1리 → 장양3리가 자연스럽습니다.
+  // 원본의 '장양리' 대표표기는 이 순서로 확장해 불필요한 되돌림을 줄입니다.
+  '장양리':['장양2리','장양1리','장양3리']
 };
 function expandVillageRouteWaypoints(terms){
   const out=[];
@@ -804,7 +806,14 @@ function expandVillageRouteWaypoints(terms){
     if(expanded?.length)out.push(...expanded);
     else out.push(term);
   }
-  return out.filter((t,i,a)=>i===0||routeNorm(t)!==routeNorm(a[i-1]));
+  // 대표리 확장으로 이미 방문한 동일 행정리가 원문 뒤쪽에 다시 적힌 경우 재방문하지 않습니다.
+  const seen=new Set();
+  return out.filter(t=>{
+    const n=routeNorm(t);
+    if(!n)return false;
+    if(seen.has(n))return false;
+    seen.add(n);return true;
+  });
 }
 function routeTerms(text){
   const src=expandRouteShorthand(text);
