@@ -1,0 +1,48 @@
+name: Inspect existing service-zone assets
+on:
+  push:
+    paths: ['tools/inspect-zone-assets.trigger']
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Summarize zone assets
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          files=[
+            'data/service-zones-v77-rural-estimated-regions.json',
+            'data/service-zones-v80-general-dong.json',
+            'data/service-zones-v80-recycle-dong.json',
+          ]
+          out={}
+          for f in files:
+            d=json.loads(Path(f).read_text(encoding='utf-8'))
+            item={'version':d.get('version'),'zoneVersion':d.get('zoneVersion')}
+            if 'zones' in d and isinstance(d['zones'],dict):
+              for t,zones in d['zones'].items():
+                by={}
+                for z in zones:
+                  by[z.get('district','')]=by.get(z.get('district',''),0)+1
+                item[t]={'count':len(zones),'byDistrict':by}
+            elif isinstance(d.get('zones'),list):
+              zones=d['zones'];by={}
+              for z in zones:
+                by[z.get('district','')]=by.get(z.get('district',''),0)+1
+              item['type']=d.get('type');item['count']=len(zones);item['byDistrict']=by
+            out[f]=item
+          Path('tools/zone-assets-summary.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit summary
+        run: |
+          rm -f tools/inspect-zone-assets.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/zone-assets-summary.json tools/inspect-zone-assets.trigger
+          git commit -m 'Summarize existing service-zone assets'
+          git push
