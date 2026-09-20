@@ -1,0 +1,19 @@
+name: Analyze precomputed payload
+on:
+  push:
+    paths: ['tools/precomputed-size.trigger']
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/precomputed_size_analyze.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/precomputed-size-report.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Analyze external precomputed payload size"
+          git push
