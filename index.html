@@ -1635,7 +1635,7 @@ function exportCjWastePrecomputed(){
   for(const type of ['general','recycle'])zones[type]=(serviceZoneOverlays[type]||[])
     .filter(z=>!z.manual&&Array.isArray(z.points)&&z.points.length>=3)
     .map(z=>({
-      points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),rings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points]).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),hitRings:(Array.isArray(z.hitRings)&&z.hitRings.length?z.hitRings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points])).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
+      points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),rings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points]).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),hitRings:(Array.isArray(z.hitRings)&&z.hitRings.length?z.hitRings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points])).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),district:z.district||'',riName:z.riName||'',riCode:z.riCode||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
       vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
       automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized
     }));
@@ -1666,7 +1666,7 @@ async function putCachedServiceZones(type){
       .filter(z=>!z.manual&&Array.isArray(z.points)&&z.points.length>=3)
       .map(z=>({
         points:z.points.map(p=>({lat:+p.lat,lng:+p.lng})),rings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points]).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),hitRings:(Array.isArray(z.hitRings)&&z.hitRings.length?z.hitRings:(Array.isArray(z.rings)&&z.rings.length?z.rings:[z.points])).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng}))),
-        district:z.district||'',riName:z.riName||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
+        district:z.district||'',riName:z.riName||'',riCode:z.riCode||'',vehicle:z.vehicle||'',provider:z.provider||routeCompany(z.vehicle),
         vehicles:[...(z.vehicles||[])],plate:z.plate||'',days:[...(z.days||[])],groupKey:z.groupKey||'',ambiguous:!!z.ambiguous,estimated:!!z.estimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,
         automatic:true,sourceOnly:!!z.sourceOnly,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized
       }));
