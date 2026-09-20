@@ -1414,7 +1414,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v80-route-based-all-regions|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v83-route-overlay-based|${DONG_ROUTE_CACHE_VERSION}`;
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -3390,7 +3390,22 @@ function serviceZoneCandidateSpecs(type,district,riName=''){
 }
 async function serviceRouteGroups(type,district,riName=''){
   const specs=serviceZoneCandidateSpecs(type,district,riName);
-  const items=await mapWithConcurrency(specs,3,s=>buildDongRouteOverlay(s));
+  // v83: 추정권역은 이미 지도/캐시에 복원된 실제 노선 오버레이를 최우선으로 사용합니다.
+  // buildDongRouteOverlay()를 다시 호출하면 scope가 달라 기존 선을 못 찾고 groups.items가 비는 회귀가 있었습니다.
+  await hydrateExternalBundledPrecomputedData();
+  const items=await mapWithConcurrency(specs,3,async spec=>{
+    let item=existingDongRouteOverlay(spec);
+    if(item)return item;
+    // 구형 v76 번들은 scope 메타데이터가 없으므로 같은 차량×요일 중 현재 지역을 실제로 지나는 오버레이도 허용합니다.
+    const districtName=canonicalDistrict(district);
+    item=(dongRouteOverlays[type]||[]).find(x=>
+      x.vehicle===spec.vehicle&&x.day===spec.day&&
+      (routeAllowedDistricts(x).includes(districtName)||
+       String(x.district||x.districtLabel||'').split(/[·,]/).map(canonicalDistrict).includes(districtName))
+    );
+    if(item)return item;
+    return buildDongRouteOverlay(spec);
+  });
   const groups=new Map();
   specs.forEach((spec,i)=>{
     const key=routePatternKey(spec);
