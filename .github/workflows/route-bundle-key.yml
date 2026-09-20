@@ -1,0 +1,19 @@
+name: Analyze route bundle keys
+on:
+  push:
+    paths: ['tools/route-bundle-key.trigger']
+permissions:
+  contents: write
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/route_bundle_key_analyze.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/route-bundle-key-report.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Analyze route bundle key coverage"
+          git push
