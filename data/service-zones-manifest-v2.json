@@ -1,21 +1,21 @@
 {
   "schemaVersion": 2,
-  "zoneVersion": "zone-v84-latest-route-evidence|v76-layer-visibility-refresh",
-  "generatedAt": "2026-09-20T14:44:40.103681Z",
+  "zoneVersion": "zone-v85-village-waypoints|v76-layer-visibility-refresh",
+  "generatedAt": "2026-09-20T14:53:58.416283Z",
   "strategy": "route-overlay-based-all-regions",
   "types": {
     "general": [
       {
         "scope": "all",
-        "path": "data/service-zones-v84-general-all.json",
-        "count": 2489
+        "path": "data/service-zones-v85-general-all.json",
+        "count": 2703
       }
     ],
     "recycle": [
       {
         "scope": "all",
-        "path": "data/service-zones-v84-recycle-all.json",
-        "count": 2574
+        "path": "data/service-zones-v85-recycle-all.json",
+        "count": 2536
       }
     ]
   },
@@ -24,22 +24,22 @@
       "우암동": 18,
       "내덕1동": 26,
       "내덕2동": 22,
-      "오근장동": 270,
-      "율량사천동": 158,
+      "오근장동": 268,
+      "율량사천동": 161,
       "오창읍": 1030,
       "내수읍": 624,
-      "북이면": 341
+      "북이면": 554
     },
     "recycle": {
       "우암동": 20,
       "내덕1동": 26,
       "내덕2동": 27,
       "오근장동": 246,
-      "율량사천동": 172,
+      "율량사천동": 181,
       "오창읍": 901,
       "내수읍": 611,
-      "북이면": 571
+      "북이면": 524
     }
   },
-  "note": "v83: current displayed route overlays are the source for precomputed estimated service zones. Includes dong plus Ochang, Naesu and Bugi."
+  "note": "v85: estimated service zones use current route evidence and the same village-waypoint expansion as route rendering, including Jangyang 2→1→3."
 }
