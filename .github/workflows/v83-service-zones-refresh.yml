@@ -42,7 +42,7 @@ jobs:
           CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
           test -n "$CHROME_BIN"
           export CHROME_BIN
-          cat >/tmp/refresh-v83-zones.js <<'NODE'
+          cat >refresh-v83-zones.js <<'NODE'
           const fs=require('fs');
           const puppeteer=require('puppeteer-core');
           (async()=>{
@@ -97,7 +97,7 @@ jobs:
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
-          node /tmp/refresh-v83-zones.js
+          node refresh-v83-zones.js
 
       - name: Publish zone chunks and manifest
         shell: bash
@@ -159,7 +159,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f tools/v83-service-zones-refresh.trigger
+          rm -f refresh-v83-zones.js package.json package-lock.json tools/v83-service-zones-refresh.trigger
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/service-zones-manifest-v2.json data/service-zones-v83-general-all.json data/service-zones-v83-recycle-all.json tools/v83_service_zone_refresh_report.json tools/v83-service-zones-refresh.trigger
