@@ -1,0 +1,28 @@
+name: Verify v85 Jangyang zones
+
+on:
+  push:
+    paths:
+      - 'tools/verify-v85-jangyang.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify latest Jangyang zones
+        run: python3 tools/verify_v85_jangyang.py
+      - name: Commit validation report
+        run: |
+          set -euo pipefail
+          rm -f tools/verify-v85-jangyang.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/v85-jangyang-validation.json tools/verify-v85-jangyang.trigger
+          git commit -m 'Validate v85 Jangyang latest-route zones'
+          git push
