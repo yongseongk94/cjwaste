@@ -1,4 +1,4 @@
-name: Refresh v86 service zones
+name: Refresh v87 service zones
 
 on:
   push:
@@ -23,9 +23,9 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/?zone_refresh_check=$RANDOM" -o /tmp/cjwaste-live.html \
-              && grep -q 'zone-v86-surrounding-route-fill' /tmp/cjwaste-live.html \
+              && grep -q 'zone-v87-surrounding-route-fill' /tmp/cjwaste-live.html \
               && grep -q 'v76-layer-visibility-refresh' /tmp/cjwaste-live.html; then
-              echo 'Current v86 service-zone code is deployed'
+              echo 'Current v87 service-zone code is deployed'
               exit 0
             fi
             sleep 5
@@ -33,7 +33,7 @@ jobs:
           echo 'Timed out waiting for current Pages build' >&2
           exit 1
 
-      - name: Capture current v86 service zones
+      - name: Capture current v87 service zones
         shell: bash
         run: |
           set -euo pipefail
@@ -57,7 +57,7 @@ jobs:
             const pageErrors=[];
             page.on('pageerror',e=>{ pageErrors.push(e.message); console.error('PAGEERROR',e.message); });
             page.on('console',m=>console.log('PAGE',m.text()));
-            await page.goto('https://yongseongk94.github.io/cjwaste/?zone_only=1&v86_zone_refresh='+Date.now(),{
+            await page.goto('https://yongseongk94.github.io/cjwaste/?zone_only=1&v87_zone_refresh='+Date.now(),{
               waitUntil:'domcontentloaded',timeout:180000
             });
             await page.waitForFunction(()=>typeof window.exportCjWastePrecomputed==='function',{timeout:180000});
@@ -71,7 +71,7 @@ jobs:
             },{timeout:900000,polling:2000});
             const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
             if(pageErrors.length)console.warn('Non-fatal page errors:',pageErrors.join(' | '));
-            const expected='zone-v86-surrounding-route-fill|v76-layer-visibility-refresh';
+            const expected='zone-v87-surrounding-route-fill|v76-layer-visibility-refresh';
             if(data?.zoneVersion!==expected)throw new Error('Unexpected zoneVersion: '+data?.zoneVersion);
             const districts=['우암동','내덕1동','내덕2동','오근장동','율량사천동','오창읍','내수읍','북이면'];
             const stats={};
@@ -83,7 +83,7 @@ jobs:
               for(const d of ['오창읍','내수읍','북이면']){
                 if(!stats[type].byDistrict[d])throw new Error(type+' missing rural district '+d);
               }
-              fs.writeFileSync('/tmp/service-zones-v86-'+type+'-all.json',JSON.stringify({
+              fs.writeFileSync('/tmp/service-zones-v87-'+type+'-all.json',JSON.stringify({
                 schemaVersion:2,
                 zoneVersion:expected,
                 type,
@@ -91,7 +91,7 @@ jobs:
                 zones
               }));
             }
-            fs.writeFileSync('/tmp/v86-zone-stats.json',JSON.stringify(stats,null,2));
+            fs.writeFileSync('/tmp/v87-zone-stats.json',JSON.stringify(stats,null,2));
             console.log('V86_ZONE_STATS',JSON.stringify(stats));
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
@@ -102,27 +102,27 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp /tmp/service-zones-v86-general-all.json data/service-zones-v86-general-all.json
-          cp /tmp/service-zones-v86-recycle-all.json data/service-zones-v86-recycle-all.json
+          cp /tmp/service-zones-v87-general-all.json data/service-zones-v87-general-all.json
+          cp /tmp/service-zones-v87-recycle-all.json data/service-zones-v87-recycle-all.json
           python3 - <<'PY'
           from pathlib import Path
           import json, datetime
-          version='zone-v86-surrounding-route-fill|v76-layer-visibility-refresh'
-          stats=json.loads(Path('/tmp/v86-zone-stats.json').read_text(encoding='utf-8'))
+          version='zone-v87-surrounding-route-fill|v76-layer-visibility-refresh'
+          stats=json.loads(Path('/tmp/v87-zone-stats.json').read_text(encoding='utf-8'))
           manifest={
             'schemaVersion':2,
             'zoneVersion':version,
             'generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
             'strategy':'route-overlay-based-all-regions',
             'types':{
-              'general':[{'scope':'all','path':'data/service-zones-v86-general-all.json','count':stats['general']['total']}],
-              'recycle':[{'scope':'all','path':'data/service-zones-v86-recycle-all.json','count':stats['recycle']['total']}]
+              'general':[{'scope':'all','path':'data/service-zones-v87-general-all.json','count':stats['general']['total']}],
+              'recycle':[{'scope':'all','path':'data/service-zones-v87-recycle-all.json','count':stats['recycle']['total']}]
             },
             'districtCounts':{
               'general':stats['general']['byDistrict'],
               'recycle':stats['recycle']['byDistrict']
             },
-            'note':'v86: fills requested missing ri areas using surrounding vehicle-day route evidence, while Ochang Hwasan (華山) uses its exact ri-code route mapping.'
+            'note':'v87: fills requested missing ri areas using surrounding vehicle-day route evidence and restores both Ochang Hwasan boundaries from source li codes; Hwasan (華山) uses its exact route mapping.'
           }
           Path('data/service-zones-manifest-v2.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           Path('tools/v83_service_zone_refresh_report.json').write_text(json.dumps(stats,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -135,7 +135,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import json,re
-          expected='zone-v86-surrounding-route-fill|v76-layer-visibility-refresh'
+          expected='zone-v87-surrounding-route-fill|v76-layer-visibility-refresh'
           manifest=json.loads(Path('data/service-zones-manifest-v2.json').read_text(encoding='utf-8'))
           assert manifest['zoneVersion']==expected
           for type_ in ['general','recycle']:
@@ -178,22 +178,22 @@ jobs:
                 'estimated':sum(bool(z.get('estimated')) for z in matched),
                 'gridMerged':sum(bool(z.get('gridMerged')) for z in matched),
               }
-          Path('tools/v86-missing-ri-validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          Path('tools/v87-missing-ri-validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           s=Path('index.html').read_text(encoding='utf-8')
-          assert "const SERVICE_ZONE_CACHE_VERSION=`zone-v86-surrounding-route-fill|${DONG_ROUTE_CACHE_VERSION}`;" in s
+          assert "const SERVICE_ZONE_CACHE_VERSION=`zone-v87-surrounding-route-fill|${DONG_ROUTE_CACHE_VERSION}`;" in s
           scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
           Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
           print(json.dumps(report,ensure_ascii=False,indent=2))
           PY
           node --check /tmp/index-inline.js
 
-      - name: Commit refreshed v86 service zones
+      - name: Commit refreshed v87 service zones
         shell: bash
         run: |
           set -euo pipefail
           rm -f refresh-v83-zones.js package.json package-lock.json tools/v83-service-zones-refresh.trigger
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/service-zones-manifest-v2.json data/service-zones-v86-general-all.json data/service-zones-v86-recycle-all.json tools/v83_service_zone_refresh_report.json tools/v86-missing-ri-validation.json tools/v83-service-zones-refresh.trigger
-          git commit -m 'Refresh v86 missing-ri service-zone bundle'
+          git add data/service-zones-manifest-v2.json data/service-zones-v87-general-all.json data/service-zones-v87-recycle-all.json tools/v83_service_zone_refresh_report.json tools/v87-missing-ri-validation.json tools/v83-service-zones-refresh.trigger
+          git commit -m 'Refresh v87 missing-ri and Hwasan service-zone bundle'
           git push
