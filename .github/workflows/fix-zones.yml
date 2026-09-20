@@ -1,0 +1,42 @@
+name: Restore estimated zones
+on:
+  push:
+    paths: ['tools/fix-zones.trigger']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          python3 - <<'PY'
+          import json, pathlib
+          old=pathlib.Path('data/precomputed-v76-layer-visibility-refresh.json')
+          # old source may have been deleted; recover it from parent commit where Stage 1 kept zones.
+          PY
+          git show 4bff4e5dbcb80762d31d5713a3debacf7c628107:data/precomputed-v76-layer-visibility-refresh.json > /tmp/full.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/full.json',encoding='utf-8'))
+          z={'version':d.get('version'),'zoneVersion':'zone-v77-rural-estimated-regions|v76-layer-visibility-refresh','generatedAt':d.get('generatedAt'),'zones':d.get('zones',{})}
+          open('data/service-zones-v77-rural-estimated-regions.json','w',encoding='utf-8').write(json.dumps(z,ensure_ascii=False,separators=(',',':')))
+          print({k:len(v) for k,v in z['zones'].items()})
+          PY
+      - run: python3 tools/fix_estimated_zones.py
+      - run: |
+          python3 - <<'PY'
+          import re,pathlib
+          s=pathlib.Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I)
+          pathlib.Path('/tmp/main.js').write_text(max(scripts,key=len),encoding='utf-8')
+          assert 'bundledServiceZones' in s
+          assert 'hydrateExternalBundledServiceZones' in s
+          PY
+          node --check /tmp/main.js
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html data/service-zones-v77-rural-estimated-regions.json
+          git commit -m "Restore estimated service zone rendering"
+          git push
