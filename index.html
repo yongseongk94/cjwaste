@@ -3718,6 +3718,10 @@ async function buildServiceZones(type){
   const task=(async()=>{
     // 저장된 자동권역이 있으면 네트워크/재계산 없이 즉시 복원합니다.
     if(await hydrateCachedServiceZones(type))return;
+    // 새 브라우저는 manifest/chunk를 먼저 복원합니다. 정적 권역이 있으면 무거운 전지역 재계산을 하지 않습니다.
+    if(await hydrateExternalBundledServiceZones()){
+      if(serviceZoneBuilt[type]){syncServiceZoneVisibility(type);return}
+    }
     if(!serviceRegionLoadComplete)return;
 
     clearServiceZoneOverlays(type);
