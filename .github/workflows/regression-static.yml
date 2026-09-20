@@ -1,0 +1,28 @@
+name: Regression static validation
+on:
+  push:
+    paths: ['tools/regression-static.trigger']
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tools/regression_static_validate.py
+      - run: node --check /tmp/cjwaste-main.js
+      - run: |
+          grep -q 'landing_bg_exists=True' tools/regression-static-report.txt
+          grep -q 'bundle_exists=True' tools/regression-static-report.txt
+          grep -q 'bundle_routes=94' tools/regression-static-report.txt
+          grep -q 'bundle_has_zones=False' tools/regression-static-report.txt
+          grep -q 'match_20m=True' tools/regression-static-report.txt
+          grep -q 'rural_inferred_three=True' tools/regression-static-report.txt
+          grep -q 'external_on_miss=True' tools/regression-static-report.txt
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/regression-static-report.txt
+          git diff --cached --quiet && exit 0
+          git commit -m "Validate optimized index regression invariants"
+          git push
