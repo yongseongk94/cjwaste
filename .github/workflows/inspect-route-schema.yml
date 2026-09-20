@@ -1,0 +1,37 @@
+name: Inspect route bundle schema
+on:
+  push:
+    paths: ['tools/inspect-route-schema.trigger']
+permissions:
+  contents: write
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect schema
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=next(Path('data').glob('precomputed-routes-v76-layer-visibility-refresh-*.json'))
+          d=json.loads(p.read_text(encoding='utf-8'))
+          rs=d.get('routes') or []
+          out={'bundle':str(p),'topKeys':list(d.keys()),'routeCount':len(rs),'samples':[]}
+          for r in rs[:12]:
+            out['samples'].append({
+              'keys':list(r.keys()),
+              'summary':{k:r.get(k) for k in r.keys() if k!='data'},
+              'dataKeys':list((r.get('data') or {}).keys()),
+              'dataPreview':{k:(r.get('data') or {}).get(k) for k in ['type','vehicle','day','routeKey','key','plate','district','districts']}
+            })
+          Path('tools/route-bundle-schema.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          rm -f tools/inspect-route-schema.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/route-bundle-schema.json tools/inspect-route-schema.trigger
+          git commit -m 'Inspect route bundle schema'
+          git push
