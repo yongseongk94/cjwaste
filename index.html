@@ -401,6 +401,10 @@ const RI_CODE_DISTRICT_PREFIXES=[
 ];
 const RI_CODE_NAME_OVERRIDES={
   '4311425031':'초정리',
+  // 원본 경계 파일은 오창의 동명이리 화산리를 '화산리(22)'/'화산리(50)'로 저장하므로
+  // 법정리코드로 표준명 '화산리'를 복원해 두 경계를 모두 수거권역 생성에 포함합니다.
+  '4311425322':'화산리',
+  '4311425350':'화산리',
   '4311431043':'내둔리',
   '4311431045':'화하리'
 };
@@ -1452,7 +1456,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v86-surrounding-route-fill|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v87-hwasan-boundary-fill|${DONG_ROUTE_CACHE_VERSION}`;
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
