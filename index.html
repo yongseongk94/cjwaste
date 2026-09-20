@@ -1446,7 +1446,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v84-latest-route-evidence|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v85-village-waypoints|${DONG_ROUTE_CACHE_VERSION}`;
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
@@ -2685,8 +2685,28 @@ function routeDescriptorsForMap(raw){
     });
   });
 
-  // 연속 중복만 정리합니다. 원본 순서와 반복 방문은 유지합니다.
-  return out.filter((d,i)=>i===0 || routeNorm(d.term)!==routeNorm(out[i-1].term) || d.scope!==out[i-1].scope);
+  // v85: 수거노선/추정권역 모두 같은 행정리 경유 확장을 사용합니다.
+  // routeTerms()에만 확장을 적용하면 지도노선은 최신인데 추정권역 근거점은 옛 대표리명으로 남는 불일치가 생깁니다.
+  const expanded=[];
+  for(const d of out){
+    const waypoints=ROUTE_VILLAGE_WAYPOINT_EXPANSIONS[String(d.term||'').trim()];
+    if(waypoints?.length){
+      for(const term of waypoints)expanded.push({...d,term,raw:d.raw||d.term,expandedFrom:d.term});
+    }else expanded.push(d);
+  }
+  // 대표리 확장으로 이미 방문한 동일 행정리가 뒤에 다시 등장하면 재방문하지 않습니다.
+  const seenVillage=new Set();
+  const dedupedVillage=expanded.filter(d=>{
+    const n=routeNorm(d.term);
+    if(!n)return false;
+    if(d.expandedFrom||Object.values(ROUTE_VILLAGE_WAYPOINT_EXPANSIONS).some(arr=>arr.some(x=>routeNorm(x)===n))){
+      if(seenVillage.has(n))return false;
+      seenVillage.add(n);
+    }
+    return true;
+  });
+  // 연속 중복도 정리하되 원본 순서는 유지합니다.
+  return dedupedVillage.filter((d,i)=>i===0 || routeNorm(d.term)!==routeNorm(dedupedVillage[i-1].term) || d.scope!==dedupedVillage[i-1].scope);
 }
 function applySourceRoadAudit(spec,descriptors){
   const out=[...(descriptors||[])];
@@ -3218,11 +3238,11 @@ async function buildDongRouteOverlay(spec){
       // 도로선이 만들어지지 않는 시설·마을명도 권역 분할에는 중요한 근거입니다.
       // zone_only 사전생성에서는 읍·면의 도로명 항목도 근거점으로 사용하고 길찾기 API 호출은 생략합니다.
       const baseDistrict=canonicalDistrict(base?.district||routePointAnyDistrict(base));
-      const zoneOnlyRural=!!base&&SERVICE_ZONE_PRECOMPUTE_ONLY&&RURAL_INFERRED_ROUTE_DISTRICTS.has(baseDistrict);
-      if(base && (!entry.isRoad||zoneOnlyRural)){
+      const zoneOnlyEvidence=!!base&&SERVICE_ZONE_PRECOMPUTE_ONLY;
+      if(base && (!entry.isRoad||zoneOnlyEvidence)){
         zoneEvidencePoints.push({lat:+base.lat,lng:+base.lng,name:base.name||entry.term,address:base.address||'',term:entry.term,district:baseDistrict||''});
       }
-      if(zoneOnlyRural){
+      if(zoneOnlyEvidence){
         serviceTermCount++;
         if(baseDistrict&&!touchedDistricts.includes(baseDistrict))touchedDistricts.push(baseDistrict);
         continue;
