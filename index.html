@@ -212,6 +212,7 @@
 </main>
 
 <script id="bundledPrecomputed" type="application/json" data-src="data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json"></script>
+<script id="bundledServiceZones" type="application/json" data-src="data/service-zones-v77-rural-estimated-regions.json"></script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -1420,6 +1421,27 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 
 // 빌드 시 확정된 노선 좌표는 외부 정적 JSON으로 분리합니다.
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
+let bundledServiceZonesExternal=null;
+let bundledServiceZonesExternalPromise=null;
+async function loadExternalBundledServiceZones(){
+  if(bundledServiceZonesExternal)return bundledServiceZonesExternal;
+  if(bundledServiceZonesExternalPromise)return bundledServiceZonesExternalPromise;
+  const el=document.getElementById('bundledServiceZones');
+  const src=el&&el.dataset?el.dataset.src:'';
+  if(!src)return null;
+  bundledServiceZonesExternalPromise=fetch(src,{cache:'force-cache'})
+    .then(r=>{if(!r.ok)throw new Error('service zone bundle '+r.status);return r.json();})
+    .then(data=>bundledServiceZonesExternal=data)
+    .catch(err=>{console.warn('추정권역 데이터 로드 실패',err);return null;})
+    .finally(()=>{bundledServiceZonesExternalPromise=null;});
+  return bundledServiceZonesExternalPromise;
+}
+async function hydrateExternalBundledServiceZones(){
+  const data=await loadExternalBundledServiceZones();
+  if(!data)return false;
+  return hydrateBundledPrecomputedData(data);
+}
+
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
@@ -3295,6 +3317,7 @@ async function preloadAllDongRoutes(){
   // v78: 대용량 사전계산 데이터는 index.html에서 분리합니다.
   // IndexedDB를 먼저 복원하고, 새 브라우저처럼 누락 노선이 있을 때만 외부 묶음을 1회 불러옵니다.
   await hydrateCachedRouteOverlays(specs);
+  await hydrateExternalBundledServiceZones();
   if(specs.some(s=>!existingDongRouteOverlay(s)))await hydrateExternalBundledPrecomputedData();
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
