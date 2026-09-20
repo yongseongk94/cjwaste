@@ -1,0 +1,24 @@
+name: Test page JS check
+
+on:
+  push:
+    paths:
+      - 'cjwaste-test/**'
+      - '.github/workflows/test-page-check.yml'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check inline JavaScript syntax
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('cjwaste-test/index.html').read_text(encoding='utf-8')
+          scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
+          Path('/tmp/cjwaste-test-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/cjwaste-test-inline.js
