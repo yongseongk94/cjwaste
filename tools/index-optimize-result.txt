@@ -1,0 +1,14 @@
+INDEX OPTIMIZATION RESULT
+before_bytes=5880145
+after_bytes=357432
+saved_bytes=5522713
+saved_percent=93.92
+landing_image_bytes=343262
+landing_image_sha256=04b634de56b396765712c9ca383ad3478a438256ff8da39a8275c22903da0635
+bundle_file=data/precomputed-v76-layer-visibility-refresh.json
+bundle_bytes=5066837
+bundle_version=v76-layer-visibility-refresh
+bundle_routes=94
+bundle_general_zones=555
+bundle_recycle_zones=558
+load_order=IndexedDB -> external precomputed JSON on cache miss -> live road build for remaining misses
