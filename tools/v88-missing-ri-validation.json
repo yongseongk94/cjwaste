@@ -1,0 +1,61 @@
+{
+  "general": {
+    "오창읍|화산리|4311425322": {
+      "count": 23,
+      "vehicleDays": [
+        "3344|수"
+      ],
+      "estimated": 23,
+      "gridMerged": 23
+    },
+    "내수읍|입동리|all": {
+      "count": 23,
+      "vehicleDays": [
+        "6138|수",
+        "6138|월",
+        "6224|목"
+      ],
+      "estimated": 23,
+      "gridMerged": 23
+    },
+    "내수읍|도원리|all": {
+      "count": 24,
+      "vehicleDays": [
+        "3346|목",
+        "3346|월",
+        "6138|화"
+      ],
+      "estimated": 24,
+      "gridMerged": 24
+    }
+  },
+  "recycle": {
+    "오창읍|화산리|4311425322": {
+      "count": 23,
+      "vehicleDays": [
+        "0262|화"
+      ],
+      "estimated": 23,
+      "gridMerged": 23
+    },
+    "오창읍|도암리|all": {
+      "count": 35,
+      "vehicleDays": [
+        "0262|수",
+        "0262|화"
+      ],
+      "estimated": 35,
+      "gridMerged": 35
+    },
+    "내수읍|비중리|all": {
+      "count": 14,
+      "vehicleDays": [
+        "6544|목",
+        "6544|월",
+        "6544|화"
+      ],
+      "estimated": 14,
+      "gridMerged": 14
+    }
+  }
+}
