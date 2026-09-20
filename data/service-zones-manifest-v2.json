@@ -1,45 +1,45 @@
 {
   "schemaVersion": 2,
-  "zoneVersion": "zone-v89-dowon-pungjeong|v76-layer-visibility-refresh",
-  "generatedAt": "2026-09-20T16:54:03.383772Z",
-  "strategy": "route-overlay-based-all-regions",
+  "zoneVersion": "zone-v90-dowon-pungjeong-preserve|v76-layer-visibility-refresh",
+  "generatedAt": "2026-09-20T16:56:08.163448Z",
+  "strategy": "v88-preserved-with-dowon-general-replacement",
   "types": {
     "general": [
       {
         "scope": "all",
-        "path": "data/service-zones-v89-general-all.json",
-        "count": 2702
+        "path": "data/service-zones-v90-general-all.json",
+        "count": 2797
       }
     ],
     "recycle": [
       {
         "scope": "all",
-        "path": "data/service-zones-v89-recycle-all.json",
-        "count": 2643
+        "path": "data/service-zones-v90-recycle-all.json",
+        "count": 2686
       }
     ]
   },
   "districtCounts": {
     "general": {
-      "우암동": 23,
-      "내덕1동": 17,
-      "내덕2동": 11,
-      "오근장동": 222,
-      "율량사천동": 164,
-      "오창읍": 1034,
-      "내수읍": 677,
+      "우암동": 18,
+      "내덕1동": 26,
+      "내덕2동": 22,
+      "오근장동": 268,
+      "율량사천동": 161,
+      "오창읍": 1076,
+      "내수읍": 672,
       "북이면": 554
     },
     "recycle": {
-      "우암동": 22,
-      "내덕1동": 17,
-      "내덕2동": 26,
-      "오근장동": 244,
-      "율량사천동": 155,
-      "오창읍": 981,
+      "우암동": 20,
+      "내덕1동": 26,
+      "내덕2동": 27,
+      "오근장동": 246,
+      "율량사천동": 181,
+      "오창읍": 988,
       "내수읍": 625,
       "북이면": 573
     }
   },
-  "note": "v89: keeps the v88 missing-area fixes and constrains Naesu Dowon-ri general-waste estimated zones to the adjacent Pungjeong-ri 6138 Mon/Tue/Thu route group."
+  "note": "v90 preserves every v88 zone outside Naesu Dowon-ri general waste. Only Dowon-ri general estimated zones are replaced with the v89 Pungjeong-based 6138 route result."
 }

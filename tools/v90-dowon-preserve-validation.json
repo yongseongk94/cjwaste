@@ -1,0 +1,37 @@
+{
+  "version": "zone-v90-dowon-pungjeong-preserve|v76-layer-visibility-refresh",
+  "generalTotal": 2797,
+  "recycleTotal": 2686,
+  "v88GeneralTotal": 2796,
+  "v88RecycleTotal": 2686,
+  "oldDowonCount": 24,
+  "newDowonCount": 25,
+  "dowonVehicleDays": [
+    "6138|월",
+    "6138|화"
+  ],
+  "outsideDowonPreserved": true,
+  "recyclePreservedExactly": true,
+  "districtCounts": {
+    "general": {
+      "우암동": 18,
+      "내덕1동": 26,
+      "내덕2동": 22,
+      "오근장동": 268,
+      "율량사천동": 161,
+      "오창읍": 1076,
+      "내수읍": 672,
+      "북이면": 554
+    },
+    "recycle": {
+      "우암동": 20,
+      "내덕1동": 26,
+      "내덕2동": 27,
+      "오근장동": 246,
+      "율량사천동": 181,
+      "오창읍": 988,
+      "내수읍": 625,
+      "북이면": 573
+    }
+  }
+}
