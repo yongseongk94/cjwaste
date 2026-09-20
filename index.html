@@ -409,9 +409,15 @@ function districtFromRiCode(code){
   for(const [prefix,district] of RI_CODE_DISTRICT_PREFIXES){if(s.startsWith(prefix))return district;}
   return '';
 }
-const UNCONFIRMED_RIS={
+// 원본에 직접 일정이 없는 리 중 사용자 요청에 따라 주변 차량×요일 노선을 근거로
+// 리 내부를 최근접 분할해 추정권역을 생성하는 대상입니다. 리 전체를 특정 요일로 일괄 지정하지 않습니다.
+const SURROUNDING_ROUTE_INFERENCE_RIS={
   general:new Set(['내수읍|도원리','내수읍|입동리']),
-  recycle:new Set(['내수읍|비중리','오창읍|도암리','오창읍|상평리'])
+  recycle:new Set(['내수읍|비중리','오창읍|도암리'])
+};
+const UNCONFIRMED_RIS={
+  general:new Set(),
+  recycle:new Set(['오창읍|상평리'])
 };
 function isUnconfirmedRi(type,district,riName){
   return !!riName && !!UNCONFIRMED_RIS[type]?.has(`${canonicalDistrict(district)}|${normalizeRi(riName)}`);
@@ -1446,7 +1452,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v85-village-waypoints|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v86-surrounding-route-fill|${DONG_ROUTE_CACHE_VERSION}`;
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
@@ -2000,8 +2006,8 @@ function isGenericRiDescriptor(desc,riName){
   if(!n||!r)return false;
   return n===r || n===routeNorm(String(riName||'').replace(/리$/,''));
 }
-function riCandidateRouteDays(type,district,riName){
-  const schedule=riScheduleFromSources(type,district,riName,'');
+function riCandidateRouteDays(type,district,riName,riCode=''){
+  const schedule=riScheduleFromSources(type,district,riName,riCode);
   const out=[];
   for(const day of DAYS){
     for(const p of (schedule?.[day]||[])){
@@ -3432,12 +3438,15 @@ function routePatternKey(spec){return `${spec.vehicle}|${routeNorm(expandRouteSh
 function uniqueRouteSpecs(specs){
   const seen=new Set();return (specs||[]).filter(s=>{const k=`${s.type}|${s.vehicle}|${s.day}`;if(seen.has(k))return false;seen.add(k);return true});
 }
-function serviceZoneCandidateSpecs(type,district,riName=''){
+function serviceZoneCandidateSpecs(type,district,riName='',riCode=''){
   let sourceRi=normalizeRi(riName||'');if(district==='북이면'&&sourceRi==='광암리')sourceRi='금암리';
   const contractSpecs=contractorZoneSpecs(type,district);
   if((district==='내덕1동'||district==='우암동')&&contractSpecs.length)return uniqueRouteSpecs(contractSpecs);
   let specs=[];
-  if(RI_LAYER_DISTRICTS.has(district)&&sourceRi)specs=riCandidateRouteDays(type,district,sourceRi);
+  const useSurrounding=!!SURROUNDING_ROUTE_INFERENCE_RIS[type]?.has(`${district}|${sourceRi}`);
+  // 동명이리인 오창 화산리는 riCode까지 전달해 빛화산/꽃화산의 원본 노선을 정확히 구분합니다.
+  // 주변추정 대상 4개 리는 특정 요일을 강제하지 않고 지역 내 모든 후보 노선을 비교합니다.
+  if(RI_LAYER_DISTRICTS.has(district)&&sourceRi&&!useSurrounding)specs=riCandidateRouteDays(type,district,sourceRi,riCode);
   if(!specs.length){
     for(const route of (DIRECT_ROUTES[type]||[])){
       const scope=serviceZoneRouteScope(type,route.vehicle);if(!scope.includes(district))continue;
@@ -3448,8 +3457,8 @@ function serviceZoneCandidateSpecs(type,district,riName=''){
   if(district==='오창읍'&&contractSpecs.length)specs.push(...contractSpecs);
   return uniqueRouteSpecs(specs);
 }
-async function serviceRouteGroups(type,district,riName=''){
-  const specs=serviceZoneCandidateSpecs(type,district,riName);
+async function serviceRouteGroups(type,district,riName='',riCode=''){
+  const specs=serviceZoneCandidateSpecs(type,district,riName,riCode);
   // v83: 추정권역은 이미 지도/캐시에 복원된 실제 노선 오버레이를 최우선으로 사용합니다.
   // buildDongRouteOverlay()를 다시 호출하면 scope가 달라 기존 선을 못 찾고 groups.items가 비는 회귀가 있었습니다.
   await hydrateExternalBundledPrecomputedData();
@@ -3627,7 +3636,7 @@ function bufferedRoutePolygon(path,radiusKm=RURAL_ROUTE_MATCH_KM){
   return [...left,...right.reverse()];
 }
 async function buildRuralRouteBufferZones(type,region){
-  const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+  const groups=await serviceRouteGroups(type,region.district,region.riName||'',region.riCode||'');
   const usable=groups.filter(g=>(g.items||[]).some(item=>(item.segments||[]).length));
   let added=0;
   for(const group of usable){
@@ -3669,7 +3678,7 @@ async function buildRuralRiServiceZone(type,region){
   const meta=ruralRiZoneMeta(type,region);
   if(!meta)return false;
   if(RURAL_ROUTE_LAYER_DISTRICTS.has(region.district)){
-    const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+    const groups=await serviceRouteGroups(type,region.district,region.riName||'',region.riCode||'');
     const usable=groups.filter(g=>g.items.length);
     if(!usable.length)return false;
     await buildGridServiceZonesForRegion(type,region,usable);
@@ -3784,7 +3793,7 @@ async function buildGridServiceZonesForRegion(type,region,groups){
     const left=b.minLng+rect.x0*lngStep,right=Math.min(b.maxLng,b.minLng+(rect.x1+1)*lngStep);
     const bottom=b.minLat+rect.iy0*latStep,top=Math.min(b.maxLat,b.minLat+(rect.iy1+1)*latStep);
     addServiceZonePolygon(type,[{lat:bottom,lng:left},{lat:bottom,lng:right},{lat:top,lng:right},{lat:top,lng:left}],{
-      district:region.district,riName:region.riName||'',vehicle:rect.group.vehicle,provider:rect.group.provider||routeCompany(rect.group.vehicle),days:rect.group.days,groupKey:rect.group.key,
+      district:region.district,riName:region.riName||'',riCode:region.riCode||'',vehicle:rect.group.vehicle,provider:rect.group.provider||routeCompany(rect.group.vehicle),days:rect.group.days,groupKey:rect.group.key,
       ambiguous:false,estimated:true,neighborRatio:+rect.neighborRatio||0,neighborSupport:+rect.neighborSupport||0,neighborTotal:+rect.neighborTotal||0,automatic:true,rural,gridMerged:true,estimateReason:'outside-confirmed-route'
     });
   }
@@ -3814,7 +3823,7 @@ async function buildServiceZones(type){
       if(isUnconfirmedRi(type,region.district,region.riName||'')){done++;continue}
       // v80: 오창·내수·북이도 동지역과 동일하게 차량×요일 실제 수거노선을 근거로 추정권역을 생성합니다.
       // 법정리 경계는 주소/지역 식별용일 뿐, 리 전체를 하나의 수거권역으로 사용하지 않습니다.
-      const groups=await serviceRouteGroups(type,region.district,region.riName||'');
+      const groups=await serviceRouteGroups(type,region.district,region.riName||'',region.riCode||'');
       const usable=groups.filter(g=>g.items.length);
       if(!usable.length){
         // 근거노선 좌표가 없으면 읍·면·동 전체를 임의 수거권역으로 채우지 않습니다.
