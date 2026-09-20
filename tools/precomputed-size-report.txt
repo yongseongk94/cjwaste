@@ -1,0 +1,12 @@
+full_bytes=5066837
+full_gzip_bytes=589558
+routes_bytes=3616831
+routes_gzip_bytes=527261
+zones_bytes=1449729
+zones_gzip_bytes=61755
+zones_general_bytes=738084
+zones_general_gzip_bytes=32271
+zones_recycle_bytes=711622
+zones_recycle_gzip_bytes=29823
+top_keys=['version', 'zoneVersion', 'generatedAt', 'routes', 'zones', 'restoredFrom']
+route_count=94
