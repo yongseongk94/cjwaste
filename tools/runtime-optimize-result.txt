@@ -1,0 +1,6 @@
+RUNTIME OPTIMIZATION
+stale_30m_replacements=8
+bundle_hydration_idempotent=true
+overlay_creation_dedup=true
+bundle_scope_metadata_export=true
+legacy_bundle_scope_matching=true
