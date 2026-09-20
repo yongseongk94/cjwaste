@@ -1,23 +1,45 @@
 {
   "schemaVersion": 2,
-  "zoneVersion": "zone-v80-route-based-all-regions|v76-layer-visibility-refresh",
-  "generatedAt": "2026-09-20T10:13:10.109Z",
-  "strategy": "route-based-all-regions",
+  "zoneVersion": "zone-v83-route-overlay-based|v76-layer-visibility-refresh",
+  "generatedAt": "2026-09-20T13:58:57.314452Z",
+  "strategy": "v83-immediate-seed-v80-dong-plus-v77-rural",
   "types": {
     "general": [
       {
-        "scope": "dong",
-        "path": "data/service-zones-v80-general-dong.json",
-        "count": 472
+        "scope": "all",
+        "path": "data/service-zones-v83-general-all.json",
+        "count": 555
       }
     ],
     "recycle": [
       {
-        "scope": "dong",
-        "path": "data/service-zones-v80-recycle-dong.json",
-        "count": 479
+        "scope": "all",
+        "path": "data/service-zones-v83-recycle-all.json",
+        "count": 558
       }
     ]
   },
-  "note": "v82: precomputed dong chunks restore immediate display. Rural 오창·내수·북이 remain excluded from legacy ri-boundary chunks and are generated only from route-based logic."
+  "districtCounts": {
+    "general": {
+      "오근장동": 266,
+      "우암동": 18,
+      "내덕1동": 26,
+      "내덕2동": 22,
+      "율량사천동": 140,
+      "내수읍": 25,
+      "오창읍": 32,
+      "북이면": 26
+    },
+    "recycle": {
+      "오근장동": 240,
+      "우암동": 20,
+      "내덕1동": 26,
+      "내덕2동": 27,
+      "율량사천동": 166,
+      "내수읍": 23,
+      "오창읍": 30,
+      "북이면": 26
+    }
+  },
+  "note": "Immediate compatible v83 bundle: v80 validated dong zones plus v77 validated rural zones. Current v83 live capture may replace this bundle after successful validation."
 }
