@@ -23,7 +23,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/?zone_refresh_check=$RANDOM" -o /tmp/cjwaste-live.html \
-              && grep -q 'zone-v87-surrounding-route-fill' /tmp/cjwaste-live.html \
+              && grep -q 'zone-v87-hwasan-boundary-fill' /tmp/cjwaste-live.html \
               && grep -q 'v76-layer-visibility-refresh' /tmp/cjwaste-live.html; then
               echo 'Current v87 service-zone code is deployed'
               exit 0
@@ -71,7 +71,7 @@ jobs:
             },{timeout:900000,polling:2000});
             const data=await page.evaluate(()=>window.exportCjWastePrecomputed());
             if(pageErrors.length)console.warn('Non-fatal page errors:',pageErrors.join(' | '));
-            const expected='zone-v87-surrounding-route-fill|v76-layer-visibility-refresh';
+            const expected='zone-v87-hwasan-boundary-fill|v76-layer-visibility-refresh';
             if(data?.zoneVersion!==expected)throw new Error('Unexpected zoneVersion: '+data?.zoneVersion);
             const districts=['우암동','내덕1동','내덕2동','오근장동','율량사천동','오창읍','내수읍','북이면'];
             const stats={};
@@ -107,7 +107,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import json, datetime
-          version='zone-v87-surrounding-route-fill|v76-layer-visibility-refresh'
+          version='zone-v87-hwasan-boundary-fill|v76-layer-visibility-refresh'
           stats=json.loads(Path('/tmp/v87-zone-stats.json').read_text(encoding='utf-8'))
           manifest={
             'schemaVersion':2,
@@ -135,7 +135,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import json,re
-          expected='zone-v87-surrounding-route-fill|v76-layer-visibility-refresh'
+          expected='zone-v87-hwasan-boundary-fill|v76-layer-visibility-refresh'
           manifest=json.loads(Path('data/service-zones-manifest-v2.json').read_text(encoding='utf-8'))
           assert manifest['zoneVersion']==expected
           for type_ in ['general','recycle']:
@@ -180,7 +180,7 @@ jobs:
               }
           Path('tools/v87-missing-ri-validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           s=Path('index.html').read_text(encoding='utf-8')
-          assert "const SERVICE_ZONE_CACHE_VERSION=`zone-v87-surrounding-route-fill|${DONG_ROUTE_CACHE_VERSION}`;" in s
+          assert "const SERVICE_ZONE_CACHE_VERSION=`zone-v87-hwasan-boundary-fill|${DONG_ROUTE_CACHE_VERSION}`;" in s
           scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
           Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
           print(json.dumps(report,ensure_ascii=False,indent=2))
