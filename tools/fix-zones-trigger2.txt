@@ -1,0 +1,1 @@
+restore zones after loader fix
