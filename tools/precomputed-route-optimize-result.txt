@@ -1,0 +1,12 @@
+PRECOMPUTED ROUTE PAYLOAD OPTIMIZATION
+old_bundle_bytes=5066837
+new_route_bundle_bytes=3617020
+saved_bytes=1449817
+saved_percent=28.61
+new_route_bundle_gzip_bytes=527430
+route_count=94
+removed_general_zone_count=555
+removed_recycle_zone_count=558
+bundle_path=data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json
+content_hash=a1e5f19fa4da
+cache_busting=content hash in filename
