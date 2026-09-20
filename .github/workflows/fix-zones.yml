@@ -15,7 +15,13 @@ jobs:
           old=pathlib.Path('data/precomputed-v76-layer-visibility-refresh.json')
           # old source may have been deleted; recover it from parent commit where Stage 1 kept zones.
           PY
-          git show 4bff4e5dbcb80762d31d5713a3debacf7c628107:data/precomputed-v76-layer-visibility-refresh.json > /tmp/full.json
+          git fetch --no-tags --depth=200 origin main
+          FOUND=""
+          for C in $(git rev-list --all -- data/precomputed-v76-layer-visibility-refresh.json); do
+            if git cat-file -e "$C:data/precomputed-v76-layer-visibility-refresh.json" 2>/dev/null; then FOUND="$C"; break; fi
+          done
+          test -n "$FOUND"
+          git show "$FOUND:data/precomputed-v76-layer-visibility-refresh.json" > /tmp/full.json
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/full.json',encoding='utf-8'))
