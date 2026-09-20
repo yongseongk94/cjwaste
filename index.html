@@ -791,6 +791,21 @@ function cleanRouteTerm(raw){
   if(/^(원룸지역|상가지역|주거지역|공동주택|단독주택|주요간선도로|주요간선|원룸|상가)$/.test(t))return '';
   return t;
 }
+// v84: 원본이 법정리 대표명만 적은 경우 실제 행정리 마을까지 경유해 노선 누락을 줄입니다.
+// 현재 현장자료에서 확인이 필요한 항목부터 명시적으로 확장하며, 원본 수거요일 자체는 변경하지 않습니다.
+const ROUTE_VILLAGE_WAYPOINT_EXPANSIONS={
+  '장양리':['장양1리','장양2리','장양3리']
+};
+function expandVillageRouteWaypoints(terms){
+  const out=[];
+  for(const term of (terms||[])){
+    const key=String(term||'').trim();
+    const expanded=ROUTE_VILLAGE_WAYPOINT_EXPANSIONS[key];
+    if(expanded?.length)out.push(...expanded);
+    else out.push(term);
+  }
+  return out.filter((t,i,a)=>i===0||routeNorm(t)!==routeNorm(a[i-1]));
+}
 function routeTerms(text){
   const src=expandRouteShorthand(text);
   const terms=[];
@@ -809,7 +824,8 @@ function routeTerms(text){
     });
   });
   // 실제 코스 순서를 보존하기 위해 전역 중복제거는 하지 않고 연속 중복만 제거합니다.
-  return terms.filter((t,i)=>i===0||routeNorm(t)!==routeNorm(terms[i-1]));
+  const deduped=terms.filter((t,i)=>i===0||routeNorm(t)!==routeNorm(terms[i-1]));
+  return expandVillageRouteWaypoints(deduped);
 }
 function routeMatchScore(text,ctx){
   const raw=routeNorm(text);
@@ -1109,6 +1125,8 @@ const ROUTE_SEARCH_ALIASES={
   '성모사거리':'청주성모병원 사거리','성모병원사거리':'청주성모병원 사거리',
   '외남':'외남동','외하':'외하동','정상':'정상동','정북':'정북동','정하':'정하동','주중':'주중동',
   '입상':'입상리','은곡':'은곡리','원통':'원통리',
+  // 북이면 장양리 대표표기는 실제 장양1·2·3리 경유점으로 확장합니다.
+  '장양1리':'청주시 청원구 북이면 장양1리','장양2리':'청주시 청원구 북이면 장양2리','장양3리':'청주시 청원구 북이면 장양3리',
   // 3346 화요일 원본 코스표에는 '상리18번길'로 기재돼 있으나 실제 도로명 검색은 '상리로18번길'로 보정합니다.
   '상리18번길':'상리로18번길',
   // 청주시 공식 표기는 '2순환로'를 사용하므로 검색에만 보정합니다.
