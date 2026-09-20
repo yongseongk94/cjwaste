@@ -1,0 +1,84 @@
+name: Seed v83 service-zone bundle
+on:
+  push:
+    paths: ['tools/seed-v83-service-zones.trigger']
+permissions:
+  contents: write
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build immediate v83 bundle from validated assets
+        run: |
+          python3 - <<'PY'
+          import json, datetime
+          from pathlib import Path
+          rural={'오창읍','내수읍','북이면'}
+          version='zone-v83-route-overlay-based|v76-layer-visibility-refresh'
+          v77=json.loads(Path('data/service-zones-v77-rural-estimated-regions.json').read_text(encoding='utf-8'))
+          src={
+            'general':json.loads(Path('data/service-zones-v80-general-dong.json').read_text(encoding='utf-8')),
+            'recycle':json.loads(Path('data/service-zones-v80-recycle-dong.json').read_text(encoding='utf-8')),
+          }
+          stats={}
+          entries={}
+          for t in ['general','recycle']:
+            dong=list(src[t].get('zones') or [])
+            rural_z=[z for z in (v77.get('zones',{}).get(t) or []) if z.get('district') in rural]
+            zones=dong+rural_z
+            by={}
+            for z in zones:
+              by[z.get('district','')]=by.get(z.get('district',''),0)+1
+            for d in rural:
+              if not by.get(d):
+                raise SystemExit(f'{t}: missing rural district {d}')
+            out={'schemaVersion':2,'zoneVersion':version,'type':t,'scope':'all','zones':zones}
+            path=f'data/service-zones-v83-{t}-all.json'
+            Path(path).write_text(json.dumps(out,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+            stats[t]={'total':len(zones),'byDistrict':by,'dongCount':len(dong),'ruralCount':len(rural_z)}
+            entries[t]=[{'scope':'all','path':path,'count':len(zones)}]
+          manifest={
+            'schemaVersion':2,
+            'zoneVersion':version,
+            'generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
+            'strategy':'v83-immediate-seed-v80-dong-plus-v77-rural',
+            'types':entries,
+            'districtCounts':{t:stats[t]['byDistrict'] for t in stats},
+            'note':'Immediate compatible v83 bundle: v80 validated dong zones plus v77 validated rural zones. Current v83 live capture may replace this bundle after successful validation.'
+          }
+          Path('data/service-zones-manifest-v2.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          Path('tools/v83_service_zone_seed_report.json').write_text(json.dumps(stats,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(stats,ensure_ascii=False,indent=2))
+          PY
+      - name: Validate bundle
+        run: |
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          expected='zone-v83-route-overlay-based|v76-layer-visibility-refresh'
+          m=json.loads(Path('data/service-zones-manifest-v2.json').read_text(encoding='utf-8'))
+          assert m['zoneVersion']==expected
+          for t in ['general','recycle']:
+            e=m['types'][t][0]
+            d=json.loads(Path(e['path']).read_text(encoding='utf-8'))
+            assert d['zoneVersion']==expected
+            assert len(d['zones'])==e['count']
+            districts={z.get('district') for z in d['zones']}
+            assert {'오창읍','내수읍','북이면'} <= districts
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert "const SERVICE_ZONE_CACHE_VERSION=`zone-v83-route-overlay-based|${DONG_ROUTE_CACHE_VERSION}`;" in s
+          scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
+          Path('/tmp/index-inline.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/index-inline.js
+      - name: Commit seeded bundle
+        run: |
+          rm -f tools/seed-v83-service-zones.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/service-zones-manifest-v2.json data/service-zones-v83-general-all.json data/service-zones-v83-recycle-all.json tools/v83_service_zone_seed_report.json tools/seed-v83-service-zones.trigger
+          git commit -m 'Seed compatible v83 estimated service zones'
+          git push
