@@ -1,7 +1,7 @@
 name: Restore estimated zones
 on:
   push:
-    paths: ['tools/fix-zones.trigger']
+    paths: ['tools/fix-zones.trigger', 'tools/fix-zones-trigger2.txt']
 permissions:
   contents: write
 jobs:
