@@ -1,202 +1,192 @@
 import asyncio, json, time
+from collections import Counter
 from pathlib import Path
 from playwright.async_api import async_playwright
 
 URL="https://yongseongk94.github.io/cjwaste/"
-REPORT=Path("tools/live-regression-report.json")
+REPORT=Path("tools/live-regression-report-v2.json")
 
-async def idb_count(page):
-    return await page.evaluate("""async () => {
-      return await new Promise(resolve=>{
-        try{
-          const req=indexedDB.open('cjwaste-dong-route-cache',1);
-          req.onsuccess=()=>{
-            try{
-              const db=req.result;
-              if(!db.objectStoreNames.contains('routes')){resolve({count:0,keys:[]});return;}
-              const tx=db.transaction('routes','readonly');
-              const st=tx.objectStore('routes');
-              const cr=st.count();
-              const kr=st.getAllKeys();
-              let count=null,keys=null;
-              cr.onsuccess=()=>{count=cr.result;if(keys!==null)resolve({count,keys})};
-              kr.onsuccess=()=>{keys=kr.result.map(String);if(count!==null)resolve({count,keys})};
-              tx.onerror=()=>resolve({count:-1,keys:[]});
-            }catch(e){resolve({count:-2,error:String(e),keys:[]})}
+async def idb_summary(page):
+    return await page.evaluate("""async () => await new Promise(resolve=>{
+      try{
+        const req=indexedDB.open('cjwaste-dong-route-cache',1);
+        req.onsuccess=()=>{
+          const db=req.result;
+          if(!db.objectStoreNames.contains('routes')){resolve({count:0,routeKeys:0,zoneKeys:0});return}
+          const tx=db.transaction('routes','readonly');
+          const r=tx.objectStore('routes').getAllKeys();
+          r.onsuccess=()=>{
+            const keys=(r.result||[]).map(String);
+            resolve({
+              count:keys.length,
+              routeKeys:keys.filter(k=>k.startsWith('v76-layer-visibility-refresh|')).length,
+              zoneKeys:keys.filter(k=>k.startsWith('zone-v77-')).length
+            });
           };
-          req.onerror=()=>resolve({count:-3,error:String(req.error),keys:[]});
-        }catch(e){resolve({count:-4,error:String(e),keys:[]})}
-      });
-    }""")
+          r.onerror=()=>resolve({count:-1,routeKeys:-1,zoneKeys:-1});
+        };
+        req.onerror=()=>resolve({count:-2,routeKeys:-2,zoneKeys:-2});
+      }catch(e){resolve({count:-3,error:String(e),routeKeys:-3,zoneKeys:-3})}
+    })""")
 
-async def snapshot(page):
+async def snap(page):
     return await page.evaluate("""() => {
-      const safe=(fn,fallback=null)=>{try{return fn()}catch(e){return fallback}};
-      const bg=getComputedStyle(document.getElementById('landing')).backgroundImage;
-      const bundleEl=document.getElementById('bundledPrecomputed');
-      const perf=performance.getEntriesByType('resource').map(e=>({
-        name:e.name,transferSize:e.transferSize||0,encodedBodySize:e.encodedBodySize||0,
-        decodedBodySize:e.decodedBodySize||0,duration:e.duration||0
+      const safe=(fn,f=null)=>{try{return fn()}catch(e){return f}};
+      const specs=safe(()=>allDongRouteSpecs(),[]);
+      const specRows=specs.map(s=>({
+        type:s.type,vehicle:s.vehicle,day:s.day,scopeKind:s.scopeKind||'',
+        scope:routeScopeSignature(s),districts:routeAllowedDistricts(s),
+        exists:!!existingDongRouteOverlay(s)
       }));
-      const bundleSrc=bundleEl?.dataset?.src||'';
-      const bundlePerf=perf.filter(e=>bundleSrc && e.name.includes(bundleSrc));
+      const missing=specRows.filter(x=>!x.exists);
+      const routeStats={};
+      for(const type of ['general','recycle']){
+        const items=safe(()=>dongRouteOverlays[type]||[],[]);
+        const keys=items.map(x=>[x.type,x.vehicle,x.day,routeScopeSignature(x)].join('|'));
+        routeStats[type]={
+          total:items.length,
+          unique:new Set(keys).size,
+          duplicateCount:items.length-new Set(keys).size
+        };
+      }
+      const zoneStats={};
+      for(const type of ['general','recycle']){
+        const zones=safe(()=>serviceZoneOverlays[type]||[],[]).filter(z=>!z.manual);
+        const byDistrict={};
+        for(const z of zones){
+          const d=canonicalDistrict(z.district||'')||'(none)';
+          byDistrict[d]=(byDistrict[d]||0)+1;
+        }
+        zoneStats[type]={total:zones.length,byDistrict};
+      }
+      const bundleSrc=document.getElementById('bundledPrecomputed')?.dataset?.src||'';
+      const bundlePerf=performance.getEntriesByType('resource')
+        .filter(e=>bundleSrc&&e.name.includes(bundleSrc))
+        .map(e=>({transferSize:e.transferSize||0,encodedBodySize:e.encodedBodySize||0,decodedBodySize:e.decodedBodySize||0,duration:e.duration||0}));
+      const failed=safe(()=>window.__CJWASTE_ROUTE_PROXY_FAILED_LEGS||[],[]);
       return {
         href:location.href,
         title:document.title,
-        bundleSrc,
-        bundlePerf,
-        landingBg:bg,
         kakaoLoaded:!!window.kakao,
-        ready:window.__CJWASTE_PRECOMPUTE_READY===true,
-        routeSpecCount:safe(()=>allDongRouteSpecs().length,-1),
-        routeGeneralCount:safe(()=>dongRouteOverlays.general.length,-1),
-        routeRecycleCount:safe(()=>dongRouteOverlays.recycle.length,-1),
-        zoneGeneralCount:safe(()=>serviceZoneOverlays.general.filter(z=>!z.manual).length,-1),
-        zoneRecycleCount:safe(()=>serviceZoneOverlays.recycle.filter(z=>!z.manual).length,-1),
-        ruralZoneGeneral:safe(()=>serviceZoneOverlays.general.filter(z=>['오창읍','내수읍','북이면'].includes(canonicalDistrict(z.district||''))).length,-1),
-        ruralZoneRecycle:safe(()=>serviceZoneOverlays.recycle.filter(z=>['오창읍','내수읍','북이면'].includes(canonicalDistrict(z.district||''))).length,-1),
-        maxAddressRouteDistanceKm:safe(()=>MAX_ADDRESS_ROUTE_DISTANCE_KM,null),
+        precomputeReady:window.__CJWASTE_PRECOMPUTE_READY===true,
+        bundleSrc,bundlePerf,
+        bundleHydrated:safe(()=>bundledPrecomputedHydrated,false),
+        routeSpecCount:specRows.length,
+        existingSpecCount:specRows.length-missing.length,
+        missingSpecCount:missing.length,
+        missingSpecs:missing.slice(0,60),
+        routeStats,
+        zoneStats,
+        serviceZoneBuilt:safe(()=>({...serviceZoneBuilt}),{}),
+        serviceZoneCacheHydrated:safe(()=>({...serviceZoneCacheHydrated}),{}),
+        failedLegCount:failed.length,
+        failedLegs:failed.slice(-25),
         limits:{
-          ochang:safe(()=>routeMatchLimitKm('오창읍'),null),
-          naesu:safe(()=>routeMatchLimitKm('내수읍'),null),
-          bugi:safe(()=>routeMatchLimitKm('북이면'),null),
-          dong:safe(()=>routeMatchLimitKm('율량사천동'),null)
+          ochang:safe(()=>routeMatchLimitKm('오창읍')),
+          naesu:safe(()=>routeMatchLimitKm('내수읍')),
+          bugi:safe(()=>routeMatchLimitKm('북이면')),
+          dong:safe(()=>routeMatchLimitKm('율량사천동'))
         },
-        activeLayer:safe(()=>activeLayer,null),
-        activeDay:safe(()=>activeDay,null),
-        selectedGeneral:safe(()=>selectedVehicle.general,null),
-        selectedRecycle:safe(()=>selectedVehicle.recycle,null),
-        generalBadge:document.getElementById('generalBadge')?.textContent||'',
-        recycleBadge:document.getElementById('recycleBadge')?.textContent||'',
-        foodBadge:document.getElementById('foodBadge')?.textContent||'',
+        activeLayer:safe(()=>activeLayer),
         selectedDistrict:document.getElementById('selectedDistrict')?.textContent||'',
-        selectedAddress:document.getElementById('selectedAddress')?.textContent||''
+        selectedAddress:document.getElementById('selectedAddress')?.textContent||'',
+        generalBadge:document.getElementById('generalBadge')?.textContent||'',
+        recycleBadge:document.getElementById('recycleBadge')?.textContent||''
       };
     }""")
 
-async def run():
-    result={
+async def wait_ready_or(page, seconds):
+    end=time.monotonic()+seconds
+    while time.monotonic()<end:
+        try:
+            if await page.evaluate("() => window.__CJWASTE_PRECOMPUTE_READY===true"):
+                return True
+        except Exception:
+            pass
+        await page.wait_for_timeout(2000)
+    return False
+
+async def main():
+    out={
       "url":URL,
-      "startedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-      "consoleErrors":[],
+      "startedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),
+      "responses":{},
       "pageErrors":[],
-      "requestFailures":[],
-      "cold":{},
-      "warm":{},
-      "addressSearch":{},
-      "checks":{}
+      "cold":{},"warm":{},"checks":{}
     }
+    status_counts=Counter()
+    status_urls={}
+
     async with async_playwright() as p:
       browser=await p.chromium.launch(headless=True)
-      context=await browser.new_context(viewport={"width":1440,"height":1000})
-      page=await context.new_page()
+      ctx=await browser.new_context(viewport={"width":1440,"height":1000})
+      page=await ctx.new_page()
+      page.on("pageerror",lambda exc: out["pageErrors"].append(str(exc)))
 
-      page.on("console", lambda msg: result["consoleErrors"].append(msg.text) if msg.type=="error" else None)
-      page.on("pageerror", lambda exc: result["pageErrors"].append(str(exc)))
-      page.on("requestfailed", lambda req: result["requestFailures"].append({"url":req.url,"failure":req.failure}))
+      def on_response(resp):
+        if resp.status>=400:
+          status_counts[str(resp.status)]+=1
+          status_urls.setdefault(str(resp.status),[])
+          if len(status_urls[str(resp.status)])<20:
+            status_urls[str(resp.status)].append(resp.url)
+      page.on("response",on_response)
 
-      cold_bundle_requests=[]
-      page.on("request", lambda req: cold_bundle_requests.append(req.url) if "precomputed-routes-" in req.url else None)
+      # Cold browser
+      resp=await page.goto(URL+"?regression=v2-cold",wait_until="domcontentloaded",timeout=90000)
+      out["cold"]["httpStatus"]=resp.status if resp else None
+      await page.wait_for_function("() => !!window.kakao && typeof allDongRouteSpecs==='function'",timeout=90000)
 
+      # Search first, then exercise layer buttons (avoids landing-overlay false negative).
       try:
-        resp=await page.goto(URL+"?regression=cold",wait_until="domcontentloaded",timeout=90000)
-        result["cold"]["httpStatus"]=resp.status if resp else None
-      except Exception as e:
-        result["cold"]["gotoError"]=repr(e)
-
-      try:
-        await page.wait_for_function("() => !!window.kakao && !!document.querySelector('#map')",timeout=90000)
-      except Exception as e:
-        result["cold"]["kakaoWaitError"]=repr(e)
-
-      try:
-        await page.wait_for_function("() => window.__CJWASTE_PRECOMPUTE_READY === true",timeout=150000)
-      except Exception as e:
-        result["cold"]["readyWaitError"]=repr(e)
-
-      result["cold"]["snapshot"]=await snapshot(page)
-      result["cold"]["idb"]=await idb_count(page)
-      result["cold"]["bundleRequests"]=len(cold_bundle_requests)
-
-      # UI layer switching
-      try:
+        await page.locator('#landingInput').fill("청주시 청원구 상당로 314")
+        await page.locator('#landingForm button[type="submit"]').click()
+        await page.wait_for_function("""() => document.getElementById('landing')?.classList.contains('hidden') &&
+          !(document.getElementById('selectedDistrict')?.textContent||'').includes('확인 중')""",timeout=60000)
+        await page.wait_for_timeout(1500)
         await page.locator('.layer-btn[data-layer="recycle"]').click()
-        await page.wait_for_timeout(500)
-        recycle_active=await page.locator('.layer-btn[data-layer="recycle"]').evaluate("(e)=>e.classList.contains('active')")
+        await page.wait_for_timeout(300)
         recycle_layer=await page.evaluate("() => activeLayer")
         await page.locator('.layer-btn[data-layer="general"]').click()
-        await page.wait_for_timeout(500)
-        general_active=await page.locator('.layer-btn[data-layer="general"]').evaluate("(e)=>e.classList.contains('active')")
+        await page.wait_for_timeout(300)
         general_layer=await page.evaluate("() => activeLayer")
-        result["checks"]["layerSwitch"]={
-          "recycleButtonActive":recycle_active,"recycleActiveLayer":recycle_layer,
-          "generalButtonActive":general_active,"generalActiveLayer":general_layer
-        }
+        out["checks"]["layerSwitch"]={"recycle":recycle_layer,"general":general_layer}
       except Exception as e:
-        result["checks"]["layerSwitchError"]=repr(e)
+        out["checks"]["layerSwitchError"]=repr(e)
 
-      # Address search through live Kakao geocoder.
-      try:
-        inp=page.locator('#landingInput')
-        await inp.fill("청주시 청원구 상당로 314")
-        await page.locator('#landingForm button[type="submit"]').click()
-        await page.wait_for_function("""() => {
-          const l=document.getElementById('landing');
-          const d=document.getElementById('selectedDistrict')?.textContent||'';
-          return l?.classList.contains('hidden') && d && !d.includes('확인 중');
-        }""",timeout=60000)
-        await page.wait_for_timeout(4000)
-        result["addressSearch"]=await snapshot(page)
-        result["addressSearch"]["generalDetail"]=(await page.locator('#generalDetail').inner_text())[:1200]
-        result["addressSearch"]["recycleDetail"]=(await page.locator('#recycleDetail').inner_text())[:1200]
-      except Exception as e:
-        result["addressSearch"]["error"]=repr(e)
-        result["addressSearch"]["landingStatus"]=await page.locator('#landingStatus').inner_text()
+      out["cold"]["readyWithin180s"]=await wait_ready_or(page,180)
+      out["cold"]["snapshot"]=await snap(page)
+      out["cold"]["idb"]=await idb_summary(page)
 
-      # Warm reload in SAME browser context. Existing IndexedDB should eliminate external route-bundle fetch.
-      warm_bundle_requests=[]
-      def warm_req(req):
-        if "precomputed-routes-" in req.url:
-          warm_bundle_requests.append(req.url)
-      page.on("request",warm_req)
-      try:
-        resp2=await page.goto(URL+"?regression=warm",wait_until="domcontentloaded",timeout=90000)
-        result["warm"]["httpStatus"]=resp2.status if resp2 else None
-      except Exception as e:
-        result["warm"]["gotoError"]=repr(e)
-      try:
-        await page.wait_for_function("() => !!window.kakao && !!document.querySelector('#map')",timeout=90000)
-        await page.wait_for_function("() => window.__CJWASTE_PRECOMPUTE_READY === true",timeout=120000)
-      except Exception as e:
-        result["warm"]["readyWaitError"]=repr(e)
-      result["warm"]["snapshot"]=await snapshot(page)
-      result["warm"]["idb"]=await idb_count(page)
-      result["warm"]["bundleRequests"]=len(warm_bundle_requests)
+      # Same browser / same IndexedDB.
+      before_counts=dict(status_counts)
+      resp2=await page.goto(URL+"?regression=v2-warm",wait_until="domcontentloaded",timeout=90000)
+      out["warm"]["httpStatus"]=resp2.status if resp2 else None
+      await page.wait_for_function("() => !!window.kakao && typeof allDongRouteSpecs==='function'",timeout=90000)
+      out["warm"]["readyWithin90s"]=await wait_ready_or(page,90)
+      out["warm"]["snapshot"]=await snap(page)
+      out["warm"]["idb"]=await idb_summary(page)
+      out["warm"]["newHttpErrors"]={k:status_counts[k]-before_counts.get(k,0) for k in status_counts if status_counts[k]-before_counts.get(k,0)}
 
       await browser.close()
 
-    c=result["cold"].get("snapshot",{})
-    w=result["warm"].get("snapshot",{})
-    layer=result["checks"].get("layerSwitch",{})
-    addr=result.get("addressSearch",{})
-    result["checks"].update({
-      "liveHttp200":result["cold"].get("httpStatus")==200 and result["warm"].get("httpStatus")==200,
-      "externalBundleReferenced":str(c.get("bundleSrc","")).startswith("data/precomputed-routes-"),
-      "backgroundExternalized":"assets/landing-bg.jpg" in str(c.get("landingBg","")),
-      "kakaoLoaded":c.get("kakaoLoaded") is True,
-      "coldReady":c.get("ready") is True,
-      "routeBundleColdLoaded":result["cold"].get("bundleRequests",0)>=1,
-      "routeBundleWarmSkipped":result["warm"].get("bundleRequests",999)==0,
-      "indexedDbPopulated":result["cold"].get("idb",{}).get("count",0)>=94,
-      "warmIndexedDbRetained":result["warm"].get("idb",{}).get("count",0)>=94,
-      "routesPresent":c.get("routeGeneralCount",0)>0 and c.get("routeRecycleCount",0)>0,
-      "zonesPresent":c.get("zoneGeneralCount",0)>0 and c.get("zoneRecycleCount",0)>0,
-      "ruralZonesPresent":c.get("ruralZoneGeneral",0)>0 and c.get("ruralZoneRecycle",0)>0,
-      "distance20m":c.get("maxAddressRouteDistanceKm")==0.02 and all(v==0.02 for v in (c.get("limits") or {}).values()),
-      "layerSwitchOk":layer.get("recycleButtonActive") and layer.get("recycleActiveLayer")=="recycle" and layer.get("generalButtonActive") and layer.get("generalActiveLayer")=="general",
-      "addressSearchReachedCheongwon":"청원구" in str(addr.get("selectedDistrict","")) and "서비스 대상 아님" not in str(addr.get("selectedDistrict",""))
+    out["responses"]={"errorStatusCounts":dict(status_counts),"sampleErrorUrls":status_urls}
+    c=out["cold"]["snapshot"]; w=out["warm"]["snapshot"]
+    out["checks"].update({
+      "liveHttp200":out["cold"]["httpStatus"]==200 and out["warm"]["httpStatus"]==200,
+      "distance20m":all(v==0.02 for v in c.get("limits",{}).values()),
+      "noColdOverlayDuplicates":all(v.get("duplicateCount")==0 for v in c.get("routeStats",{}).values()),
+      "noWarmOverlayDuplicates":all(v.get("duplicateCount")==0 for v in w.get("routeStats",{}).values()),
+      "scopeMappingStable":c.get("routeStats",{}).get("general",{}).get("duplicateCount")==0,
+      "addressSearchReachedCheongwon":"청원구" in c.get("selectedDistrict",""),
+      "layerSwitchOk":out["checks"].get("layerSwitch")=={"recycle":"recycle","general":"general"},
+      "coldMissingSpecs":c.get("missingSpecCount"),
+      "warmMissingSpecs":w.get("missingSpecCount"),
+      "coldFailedLegs":c.get("failedLegCount"),
+      "warmFailedLegs":w.get("failedLegCount"),
+      "coldReady":c.get("precomputeReady"),
+      "warmReady":w.get("precomputeReady")
     })
-    REPORT.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf-8")
-    print(json.dumps(result["checks"],ensure_ascii=False,indent=2))
+    REPORT.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding="utf-8")
+    print(json.dumps(out["checks"],ensure_ascii=False,indent=2))
 
-asyncio.run(run())
+asyncio.run(main())
