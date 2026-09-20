@@ -1,1 +1,1 @@
-verify v84 jangyang latest route zones
+diagnose v84 bugi zone ri distribution
