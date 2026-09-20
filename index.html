@@ -4046,7 +4046,7 @@ function updateMapBadge(custom){
   }
   const provider=selectedVehicle[activeLayer]||'전체',dayLabel=activeDay==='전체'?'전체요일':`${activeDay}요일`,providerLabel=provider==='전체'?'전체 수거주체':((provider==='제일환경'||provider==='현대환경')?`${provider} 대행`:`${provider}호 직영`);
   const state=[serviceLayerState.zone?'①수거권역':'',serviceLayerState.route?'②근거노선':''].filter(Boolean).join(' + ');
-  el.innerHTML=`<strong>${labels[activeLayer]} · ${providerLabel} · ${dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong>. 주소 수거일정은 실제 표시 수거노선 20m 이내를 먼저 확정하고, 그 밖의 주소에서만 ① 추정권역 폴리곤을 사용합니다. 추정권역은 확정 노선 범위를 제외한 빈 공간을 원본 차량·요일별 수거노선 기준으로 나눈 범위이며, 저장된 권역·노선은 브라우저 영구 캐시에서 즉시 복원됩니다. ② 근거노선은 원본 코스표에서 실제 도로망으로 확인된 수거구간을 표시합니다. 확인되지 않은 구간을 임의 직선으로 연결하지 않습니다. 수거권역이 실제와 다르면 관리자 편집에서 수동권역을 그려 우선 적용할 수 있습니다.`}</span>`;
+  el.innerHTML=`<strong>${labels[activeLayer]} · ${providerLabel} · ${dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong> · 수거노선 20m 이내는 실제 노선을 우선 적용하고, 그 외 지역은 차량·요일별 추정권역으로 안내합니다.`}</span>`;
 }
 function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
