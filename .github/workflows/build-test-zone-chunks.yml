@@ -1,0 +1,100 @@
+name: Build test zone district chunks
+
+on:
+  push:
+    paths:
+      - 'tools/test-zone-chunks.trigger'
+      - '.github/workflows/build-test-zone-chunks.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Split v90 zones by district
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, math
+
+          root=Path('.')
+          out=root/'cjwaste-test'/'data'/'zones'
+          out.mkdir(parents=True,exist_ok=True)
+
+          district_slug={
+            '우암동':'uam',
+            '내덕1동':'naedeok1',
+            '내덕2동':'naedeok2',
+            '오근장동':'ogeunjang',
+            '율량사천동':'yullyang-sacheon',
+            '오창읍':'ochang',
+            '내수읍':'naesu',
+            '북이면':'bugi',
+          }
+          version='zone-v90-dowon-pungjeong-preserve|v76-layer-visibility-refresh'
+          manifest={'schemaVersion':1,'zoneVersion':version,'strategy':'district-chunks-for-test-page','types':{'general':[],'recycle':[]}}
+
+          def bbox(zones):
+            minlat=minlng=math.inf
+            maxlat=maxlng=-math.inf
+            for z in zones:
+              rings=z.get('rings') or [z.get('points') or []]
+              for ring in rings:
+                for p in ring:
+                  try:
+                    lat=float(p.get('lat')); lng=float(p.get('lng'))
+                  except Exception:
+                    continue
+                  minlat=min(minlat,lat); maxlat=max(maxlat,lat)
+                  minlng=min(minlng,lng); maxlng=max(maxlng,lng)
+            if not math.isfinite(minlat): return None
+            return {'minLat':minlat,'maxLat':maxlat,'minLng':minlng,'maxLng':maxlng}
+
+          for type_ in ('general','recycle'):
+            src=json.loads((root/f'data/service-zones-v90-{type_}-all.json').read_text(encoding='utf-8'))
+            zones=src.get('zones',[])
+            grouped={}
+            for z in zones:
+              d=z.get('district') or 'unknown'
+              grouped.setdefault(d,[]).append(z)
+
+            tdir=out/type_
+            tdir.mkdir(parents=True,exist_ok=True)
+            for d,zs in sorted(grouped.items()):
+              slug=district_slug.get(d,'unknown')
+              path=f'cjwaste-test/data/zones/{type_}/{slug}.json'
+              obj={'schemaVersion':1,'zoneVersion':version,'type':type_,'district':d,'zones':zs}
+              (root/path).write_text(json.dumps(obj,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+              manifest['types'][type_].append({
+                'district':d,
+                'path':path,
+                'count':len(zs),
+                'bbox':bbox(zs)
+              })
+
+          (root/'cjwaste-test'/'data'/'service-zones-test-manifest.json').write_text(
+            json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({
+            t:[{'district':e['district'],'count':e['count'],'path':e['path']} for e in manifest['types'][t]]
+            for t in ('general','recycle')
+          },ensure_ascii=False,indent=2))
+          PY
+
+      - name: Commit test chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cjwaste-test/data
+          if git diff --cached --quiet; then
+            echo "No chunk changes"
+            exit 0
+          fi
+          git commit -m 'Build district service-zone chunks for test page'
+          git push
