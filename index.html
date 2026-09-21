@@ -282,7 +282,8 @@ function buildContractRoutes(type){
     .filter(r=>Object.keys(r.days||{}).length>0);
 }
 function keepOchangContractPoint(row){
-  if(row?.provider!=='제일환경'||canonicalDistrict?.(row?.district||'')!=='오창읍')return true;
+  const district=String(row?.district||'').replace(/\s+/g,'');
+  if(row?.provider!=='제일환경'||district!=='오창읍')return true;
   return isOchangIndustrialContractText(`${row?.address||''} ${row?.name||''}`);
 }
 const CONTRACT_ROUTES={
