@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "zoneVersion": "zone-v90-prod-gapfill-v3|v76-layer-visibility-refresh",
+  "zoneVersion": "zone-v90-test-gapfill-v3|v76-layer-visibility-refresh",
   "strategy": "production-snapshot-from-tested-gapfill-v3",
   "types": {
     "general": [
