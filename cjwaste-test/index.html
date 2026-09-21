@@ -1991,6 +1991,15 @@ function rawZoneCenterPoint(z){
   const b=rawZoneBounds(z);if(!b)return null;
   return {lat:(b.minLat+b.maxLat)/2,lng:(b.minLng+b.maxLng)/2};
 }
+// 추정권역의 빈 공간은 권역 중심점이 아니라 실제 세부권역 외곽까지의 거리로 배정합니다.
+// 길쭉하게 병합된 원본 셀도 가까운 도로/코스 쪽 일정이 우선되도록 하기 위함입니다.
+const TEST_ZONE_ASSIGNMENT_MODE='zone-edge-nearest-v1';
+function rawZoneEdgeDistanceSq(z,lat,lng){
+  const b=rawZoneBounds(z);if(!b)return Infinity;
+  const dx=lng<b.minLng?(b.minLng-lng):lng>b.maxLng?(lng-b.maxLng):0;
+  const dy=lat<b.minLat?(b.minLat-lat):lat>b.maxLat?(lat-b.maxLat):0;
+  return dx*dx*.82*.82+dy*dy;
+}
 function scheduleDisplaySignature(z){
   return DAYS.filter(d=>(z?.days||[]).includes(d)).join('·');
 }
@@ -2010,13 +2019,16 @@ function nearestScheduleDisplayZone(type,district,lat,lng){
   const containing=zones.find(z=>pointInZonePolygon(lat,lng,z));
   if(containing)return containing;
 
-  let best=null,bestD=Infinity;
+  let best=null,bestD=Infinity,bestCenterD=Infinity;
   for(const z of zones){
+    const d=rawZoneEdgeDistanceSq(z,lat,lng);
     const p=z._coarseCenter||(z._coarseCenter=rawZoneCenterPoint(z));
     if(!p)continue;
-    const dx=(p.lng-lng)*.82,dy=p.lat-lat;
-    const d=dx*dx+dy*dy;
-    if(d<bestD){bestD=d;best=z}
+    const cdx=(p.lng-lng)*.82,cdy=p.lat-lat;
+    const centerD=cdx*cdx+cdy*cdy;
+    if(d<bestD-1e-15||(Math.abs(d-bestD)<=1e-15&&centerD<bestCenterD)){
+      bestD=d;bestCenterD=centerD;best=z;
+    }
   }
   return best;
 }
