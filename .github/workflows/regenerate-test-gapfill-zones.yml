@@ -1,0 +1,184 @@
+name: Regenerate test gap-fill service zones
+
+on:
+  push:
+    paths:
+      - '.github/workflows/regenerate-test-gapfill-zones.yml'
+      - 'tools/regenerate-test-gapfill.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for gap-fill test page deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 180); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?gapfill_check=$RANDOM" -o /tmp/test-live.html \
+              && grep -q 'zone-v90-test-gapfill-v1' /tmp/test-live.html \
+              && grep -q 'service-zones-gapfill-manifest.json' /tmp/test-live.html; then
+              echo 'Gap-fill test page is deployed'
+              exit 0
+            fi
+            sleep 5
+          done
+          echo 'Timed out waiting for gap-fill test page deployment' >&2
+          exit 1
+
+      - name: Generate fresh test service zones in browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat > /tmp/regenerate-test-zones.js <<'NODE'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({
+              headless:true,
+              protocolTimeout:2400000,
+              executablePath:process.env.CHROME_BIN,
+              args:['--no-sandbox','--disable-dev-shm-usage']
+            });
+            const page=await browser.newPage();
+            page.setDefaultTimeout(2400000);
+            const pageErrors=[];
+            page.on('pageerror',e=>{pageErrors.push(e.message);console.error('PAGEERROR',e.message)});
+            page.on('console',m=>{
+              const t=m.text();
+              if (/precompute complete|행정동|법정리|실패|error/i.test(t)) console.log('PAGE',t.slice(0,1200));
+            });
+            await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?zone_only=1&gapfill_regen='+Date.now(),{
+              waitUntil:'domcontentloaded',timeout:180000
+            });
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1800000,polling:2000});
+            const payload=await page.evaluate(async()=>{
+              const data=window.exportCjWastePrecomputed();
+              const expected='zone-v90-test-gapfill-v1|v76-layer-visibility-refresh';
+              if(data?.zoneVersion!==expected)throw new Error('Unexpected zoneVersion '+data?.zoneVersion);
+
+              async function coverage(type,district){
+                const feature=districtFeatureMap.get(district);
+                if(!feature)return {district,type,error:'missing feature'};
+                const groups=await serviceRouteGroups(type,district,'','');
+                const b=featureBounds(feature);
+                const stepLat=.00018,stepLng=.00023;
+                let inside=0,route20=0,zone=0,uncovered=0;
+                const samples=[];
+                for(let lat=b.minLat+stepLat/2;lat<b.maxLat;lat+=stepLat){
+                  for(let lng=b.minLng+stepLng/2;lng<b.maxLng;lng+=stepLng){
+                    if(!pointInGeoFeature([lng,lat],feature))continue;
+                    inside++;
+                    const near=groups.some(g=>serviceGroupRouteDistanceKm(g,lat,lng)<=MAX_ADDRESS_ROUTE_DISTANCE_KM);
+                    if(near){route20++;continue}
+                    const hit=serviceZoneOverlayMatch(type,{district,legalEmd:district,legalRi:'',lat,lng});
+                    if(hit)zone++;
+                    else{
+                      uncovered++;
+                      if(samples.length<12)samples.push({lat:+lat.toFixed(6),lng:+lng.toFixed(6)});
+                    }
+                  }
+                }
+                return {district,type,inside,route20,zone,uncovered,uncoveredRate:inside?uncovered/inside:1,samples};
+              }
+
+              const diagnostics={};
+              for(const type of ['general','recycle']){
+                diagnostics[type]={};
+                for(const district of ['우암동','내덕1동','내덕2동','오근장동','율량사천동']){
+                  diagnostics[type][district]=await coverage(type,district);
+                }
+              }
+              return {data,diagnostics};
+            });
+            fs.writeFileSync('/tmp/test-zones.json',JSON.stringify(payload.data));
+            fs.writeFileSync('/tmp/test-zone-diagnostics.json',JSON.stringify(payload.diagnostics,null,2));
+            console.log('DIAGNOSTICS',JSON.stringify(payload.diagnostics));
+            if(pageErrors.length)console.warn('Page errors:',pageErrors.join(' | '));
+            const uam=[payload.diagnostics.general['우암동'],payload.diagnostics.recycle['우암동']];
+            for(const x of uam){
+              if(x.error)throw new Error(x.type+' Uam diagnostic: '+x.error);
+              if(x.uncovered>0)throw new Error(x.type+' Uam uncovered samples: '+JSON.stringify(x));
+            }
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node /tmp/regenerate-test-zones.js
+
+      - name: Split generated zones into test-only district chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, shutil
+
+          root=Path('.')
+          payload=json.loads(Path('/tmp/test-zones.json').read_text(encoding='utf-8'))
+          diagnostics=json.loads(Path('/tmp/test-zone-diagnostics.json').read_text(encoding='utf-8'))
+          version='zone-v90-test-gapfill-v1|v76-layer-visibility-refresh'
+          assert payload['zoneVersion']==version,payload.get('zoneVersion')
+
+          out=root/'cjwaste-test'/'data'/'zones-gapfill'
+          if out.exists(): shutil.rmtree(out)
+          district_slug={'우암동':'uam','내덕1동':'naedeok1','내덕2동':'naedeok2','오근장동':'ogeunjang','율량사천동':'yullyang-sacheon','오창읍':'ochang','내수읍':'naesu','북이면':'bugi'}
+          manifest={'schemaVersion':1,'zoneVersion':version,'strategy':'test-gapfill-fine-urban-grid-v1','types':{'general':[],'recycle':[]}}
+
+          def points(z):
+            rings=z.get('rings') or [z.get('points') or []]
+            for ring in rings:
+              for p in ring:
+                try: yield float(p['lat']),float(p['lng'])
+                except Exception: pass
+          def bbox(zones):
+            pts=[p for z in zones for p in points(z)]
+            if not pts:return None
+            return {'minLat':min(x[0] for x in pts),'maxLat':max(x[0] for x in pts),'minLng':min(x[1] for x in pts),'maxLng':max(x[1] for x in pts)}
+
+          for typ in ('general','recycle'):
+            grouped={}
+            for z in payload.get('zones',{}).get(typ,[]):
+              grouped.setdefault(z.get('district') or 'unknown',[]).append(z)
+            for district in district_slug:
+              zs=grouped.get(district,[])
+              assert zs,(typ,district,'no generated zones')
+              p=f'cjwaste-test/data/zones-gapfill/{typ}/{district_slug[district]}.json'
+              fp=root/p;fp.parent.mkdir(parents=True,exist_ok=True)
+              fp.write_text(json.dumps({'schemaVersion':1,'zoneVersion':version,'type':typ,'district':district,'zones':zs},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+              manifest['types'][typ].append({'district':district,'path':p,'count':len(zs),'bbox':bbox(zs)})
+
+          (root/'cjwaste-test/data/service-zones-gapfill-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          (root/'cjwaste-test/data/service-zones-gapfill-diagnostics.json').write_text(json.dumps(diagnostics,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          for typ in ('general','recycle'):
+            print(typ,{e['district']:e['count'] for e in manifest['types'][typ]})
+          print('UAM',json.dumps({'general':diagnostics['general']['우암동'],'recycle':diagnostics['recycle']['우암동']},ensure_ascii=False))
+          PY
+
+      - name: Commit regenerated test-only chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f package.json package-lock.json tools/regenerate-test-gapfill.trigger
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cjwaste-test/data/service-zones-gapfill-manifest.json \
+                  cjwaste-test/data/service-zones-gapfill-diagnostics.json \
+                  cjwaste-test/data/zones-gapfill \
+                  tools/regenerate-test-gapfill.trigger
+          if git diff --cached --quiet; then echo 'No generated changes'; exit 0; fi
+          git commit -m 'Regenerate test-only gap-fill service zones'
+          git push
