@@ -54,6 +54,27 @@ jobs:
               raise SystemExit('confirmed schedule regression missing: '+', '.join(missing))
           print('confirmed schedule regression rules: OK')
           PY
+      - name: Check production service-zone version consistency
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          html=Path('index.html').read_text(encoding='utf-8')
+          m=re.search(r"const SERVICE_ZONE_CACHE_VERSION=`([^\`]+)\|\$\{DONG_ROUTE_CACHE_VERSION\}`;",html)
+          if not m:
+              raise SystemExit('production service-zone version constant missing')
+          expected=m.group(1)+'|v76-layer-visibility-refresh'
+          manifest=json.loads(Path('data/service-zones-production-gapfill-v3-manifest.json').read_text(encoding='utf-8'))
+          if manifest.get('zoneVersion')!=expected:
+              raise SystemExit(f'manifest version mismatch: {manifest.get("zoneVersion")} != {expected}')
+          for type_name in ('general','recycle'):
+              for row in manifest['types'][type_name]:
+                  data=json.loads(Path(row['path']).read_text(encoding='utf-8'))
+                  if data.get('zoneVersion')!=expected:
+                      raise SystemExit(f'chunk version mismatch: {row["path"]}: {data.get("zoneVersion")} != {expected}')
+          print('production service-zone versions: OK')
+          PY
       - name: Check disjoint display geometry and filter stability
         shell: bash
         run: |
