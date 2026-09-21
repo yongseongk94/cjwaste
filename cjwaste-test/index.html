@@ -672,22 +672,61 @@ function riScheduleFromSources(type,district,riName,riCode=''){
   return byDay;
 }
 
-// 오창산업단지 제일환경 대행구역.
-// 청주시 지역별 수거일 자료의 오창읍 대행권역(장대·창·주성·송대·양청·각·구룡리)을
-// 생활·재활용 지도에서 하나의 대행구역 체계로 표시합니다.
-// 직영 코스 문자열보다 이 확정 대행구역 판정을 우선하여 주소 안내와 지도 레이어가 서로 다르게 보이지 않게 합니다.
+// 오창 제일환경 대행은 법정리 전체가 아니라 실제 오창산업단지 수거노선 주변으로만 판정합니다.
+// 과거 7개 리 전체를 대행으로 강제하던 규칙은 제거하고, 원본 대행노선과 가까운 구간만 추정 대행권역으로 인정합니다.
 const OCHANG_SCIENCE_SCHEDULE=['월','수','금'];
 const OCHANG_SCIENCE_OPERATOR={name:'제일환경',phone:'043-286-0997'};
-const OCHANG_SCIENCE_SCHEDULE_RIS=new Set(['장대리','창리','주성리','송대리','양청리','각리','구룡리']);
-const OCHANG_WHOLE_CONTRACT_RIS=new Set(['장대리','창리','주성리','송대리','양청리','각리','구룡리']);
+const OCHANG_SCIENCE_SCHEDULE_RIS=new Set();
+const OCHANG_WHOLE_CONTRACT_RIS=new Set();
 const OCHANG_MIXED_CONTRACT_RIS=new Set();
-const OCHANG_AIRPORT_SOUTH_CONTRACT_RIS=new Set(['창리','주성리']);
+const OCHANG_AIRPORT_SOUTH_CONTRACT_RIS=new Set();
 const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로','중심상업','양청택지','구룡택지','오창호수공원','호수공원'];
 const OCHANG_CONTRACT_COLOR='#0f766e';
+// 산업단지 블록 안 빈 공간을 메우기 위한 최대 추정거리. 리 전체로 번지는 것을 막기 위해 실제 대행노선에서 180m 이내만 허용합니다.
+const OCHANG_CONTRACT_ESTIMATE_MAX_KM=0.180;
+const OCHANG_INDUSTRIAL_HINT_RIS=new Set(['각리','양청리','구룡리']);
 
-function isContractLayerRi(district,riName){return district==='오창읍'&&OCHANG_WHOLE_CONTRACT_RIS.has(normalizeRi(riName||''))}
+function isContractLayerRi(district,riName){return false}
+function isOchangContractZone(z){
+  return canonicalDistrict(z?.district||'')==='오창읍' &&
+    (!!z?.contractLayer || (z?.provider||routeCompany(z?.vehicle))==='제일환경');
+}
+function isOchangContractRouteItem(item){
+  const provider=item?.provider||routeCompany(item?.vehicle);
+  return provider==='제일환경' && routeAllowedDistricts(item).includes('오창읍');
+}
+function ochangContractRouteDistanceKm(type,lat,lng){
+  let best=Infinity;
+  for(const item of (dongRouteOverlays[type]||[])){
+    if(!isOchangContractRouteItem(item))continue;
+    best=Math.min(best,routeItemDistanceKm(item,lat,lng));
+  }
+  return best;
+}
+function ochangContractZoneAllowedAtPoint(type,z,lat,lng){
+  if(!isOchangContractZone(z))return true;
+  return ochangContractRouteDistanceKm(type,lat,lng)<=OCHANG_CONTRACT_ESTIMATE_MAX_KM;
+}
+async function ensureOchangContractRouteItems(type){
+  const specs=uniqueRouteSpecs(contractorZoneSpecs(type,'오창읍'));
+  if(!specs.length)return [];
+  await mapWithConcurrency(specs,3,s=>buildDongRouteOverlay(s));
+  return (dongRouteOverlays[type]||[]).filter(isOchangContractRouteItem);
+}
+function contractorSpecMatchesOchangRi(spec,riName,riCode=''){
+  const ri=normalizeRi(riName||'');
+  if(!ri)return true;
+  const nraw=routeNorm(spec?.raw||'');
+  const candidates=normalizedRiTextCandidates(ri,riCode).concat(extraRiTextAliases('오창읍',ri)).filter(Boolean);
+  if(candidates.some(x=>nraw.includes(x)))return true;
+  if(OCHANG_INDUSTRIAL_HINT_RIS.has(ri)){
+    return OCHANG_SCIENCE_ROAD_HINTS.some(t=>nraw.includes(routeNorm(t))) ||
+      nraw.includes(routeNorm('2산단')) || nraw.includes(routeNorm('산단'));
+  }
+  return false;
+}
 
-function isOchangScienceContractArea(ctx,directMatches=[]){return false} // v66: 구형 고정 월·수·금 판정은 사용하지 않고, 리 단위 대행 레이어 + 최신 대행노선표 일정으로 판정
+function isOchangScienceContractArea(ctx,directMatches=[]){return false} // 고정 리 전체 판정은 사용하지 않고 실제 대행노선 기반으로만 판정
 
 function renderOchangScienceContract(type,ctx){
   const days=OCHANG_SCIENCE_SCHEDULE;
@@ -1709,6 +1748,7 @@ async function hydrateExternalBundledServiceZones(type,districts=null){
 async function ensureVisibleServiceZoneChunks(type){
   if(type!=='general'&&type!=='recycle')return false;
   const ok=await hydrateExternalBundledServiceZones(type);
+  if(loadedServiceZoneDistricts[type].has('오창읍'))await ensureOchangContractRouteItems(type);
   scheduleVisibleServiceZoneMaterialization(type);
   return ok;
 }
@@ -2059,7 +2099,9 @@ function assignmentDisplaySignature(z){
 function nearestScheduleDisplayZone(type,district,lat,lng){
   const zones=rawServiceZonesForDistrict(type,district).filter(z=>{
     const sig=scheduleDisplaySignature(z);
-    return !!sig; // 소속은 전체 노선으로 결정하고 요일/차량 필터는 표시만 제한합니다.
+    if(!sig)return false; // 소속은 전체 노선으로 결정하고 요일/차량 필터는 표시만 제한합니다.
+    // 과거 정적 청크에 남아 있는 '오창 7개 리 전체 대행' 셀도 실제 제일환경 노선 180m 밖이면 표시하지 않습니다.
+    return ochangContractZoneAllowedAtPoint(type,z,lat,lng);
   });
   if(!zones.length)return null;
 
@@ -2410,14 +2452,26 @@ function serviceZoneOverlayMatch(type,ctx){
   // 주소 판정은 Kakao Polygon 생성 여부와 분리합니다. 정밀 raw JSON을 먼저 검사합니다.
   let hits=rawServiceZonesForDistrict(type,district).filter(z=>{
     if(riName && normalizeRi(z.riName||'')!==riName)return false;
-    return pointInZonePolygon(lat,lng,z);
+    if(!pointInZonePolygon(lat,lng,z))return false;
+    return ochangContractZoneAllowedAtPoint(type,z,lat,lng);
   });
   if(!hits.length)hits=(serviceZoneOverlays[type]||[]).filter(z=>{
     if(z.manual||z.displayOnly||z.displayBase)return false;
     if(z.district&&canonicalDistrict(z.district)!==district)return false;
     if(riName && normalizeRi(z.riName||'')!==riName)return false;
-    return pointInZonePolygon(lat,lng,z);
+    if(!pointInZonePolygon(lat,lng,z))return false;
+    return ochangContractZoneAllowedAtPoint(type,z,lat,lng);
   });
+  // 구형 오창 청크에서 넓게 생성된 대행셀을 제외한 뒤 빈칸이 생기면,
+  // 같은 리의 가장 가까운 직영 추정셀을 사용해 화면/주소 일정이 공백으로 빠지지 않게 합니다.
+  if(!hits.length&&district==='오창읍'){
+    const fallback=rawServiceZonesForDistrict(type,district)
+      .filter(z=>(!riName||normalizeRi(z.riName||'')===riName)&&!isOchangContractZone(z)&&scheduleDisplaySignature(z))
+      .map(z=>({z,d:rawZoneEdgeDistanceSq(z,lat,lng)}))
+      .filter(x=>Number.isFinite(x.d))
+      .sort((a,b)=>a.d-b.d);
+    if(fallback.length)hits=[fallback[0].z];
+  }
   if(!hits.length)return null;
   hits.sort((a,b)=>(a.ambiguous?2:(a.estimated?1:0))-(b.ambiguous?2:(b.estimated?1:0)));
   const z=hits[0];
@@ -2430,6 +2484,7 @@ async function ensureServiceZoneMatch(type,ctx){
   if(district&&!loadedServiceZoneDistricts[type].has(district)){
     await hydrateExternalBundledServiceZones(type,[district]);
   }
+  if(district==='오창읍')await ensureOchangContractRouteItems(type);
   let match=serviceZoneOverlayMatch(type,ctx);if(match)return match;
   if(!serviceZoneBuilt[type]){
     const hydrated=await hydrateCachedServiceZones(type);
@@ -4273,7 +4328,11 @@ function serviceZoneCandidateSpecs(type,district,riName='',riCode=''){
     }
   }
   specs=specs.map(s=>({...s,districts:Array.isArray(s.districts)&&s.districts.length?s.districts:[...serviceZoneRouteScope(type,s.vehicle)]}));
-  if(district==='오창읍'&&contractSpecs.length)specs.push(...contractSpecs);
+  if(district==='오창읍'&&contractSpecs.length){
+    // 오창은 모든 리에 대행노선을 후보로 섞지 않습니다.
+    // 해당 리가 원본 대행노선에 직접 등장하거나 산업단지 도로 힌트가 있는 경우만 후보로 추가합니다.
+    specs.push(...contractSpecs.filter(s=>contractorSpecMatchesOchangRi(s,sourceRi,riCode)));
+  }
   return uniqueRouteSpecs(specs);
 }
 async function serviceRouteGroups(type,district,riName='',riCode=''){
@@ -4398,8 +4457,16 @@ function wholeFeatureZone(type,feature,meta){
   const polys=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
   polys.forEach(poly=>{const ring=poly?.[0]||[];if(ring.length>=3)addServiceZonePolygon(type,ring.map(([lng,lat])=>({lat,lng})),meta)});
 }
-function classifyServiceGroups(groups,lat,lng){
-  const ranked=(groups||[]).map(g=>({group:g,distanceKm:serviceGroupDistanceKm(g,lat,lng)})).filter(x=>Number.isFinite(x.distanceKm)).sort((a,b)=>a.distanceKm-b.distanceKm);
+function classifyServiceGroups(groups,lat,lng,region=null){
+  let ranked=(groups||[]).map(g=>({group:g,distanceKm:serviceGroupDistanceKm(g,lat,lng)})).filter(x=>Number.isFinite(x.distanceKm));
+  if(canonicalDistrict(region?.district||'')==='오창읍'){
+    ranked=ranked.filter(x=>{
+      const provider=x.group?.provider||routeCompany(x.group?.vehicle);
+      if(provider!=='제일환경')return true;
+      return serviceGroupRouteDistanceKm(x.group,lat,lng)<=OCHANG_CONTRACT_ESTIMATE_MAX_KM;
+    });
+  }
+  ranked.sort((a,b)=>a.distanceKm-b.distanceKm);
   if(!ranked.length)return null;
   const best=ranked[0],second=ranked[1]||null;
   const delta=second?second.distanceKm-best.distanceKm:Infinity;
@@ -4596,7 +4663,7 @@ async function buildGridServiceZonesForRegion(type,region,groups){
           classLng=insideSamples.reduce((s,p)=>s+p[1],0)/insideSamples.length;
         }
       }else if(!centerInside)continue;
-      const cls=classifyServiceGroups(groups,classLat,classLng);if(!cls)continue;
+      const cls=classifyServiceGroups(groups,classLat,classLng,region);if(!cls)continue;
       if(touchesConfirmedRoute(lat0,lat1,lng0,lng1))continue;
       grid[iy][ix]={ix,iy,key:cls.group.key,ambiguous:cls.ambiguous,estimated:true,group:cls.group,lng0,lng1,lat0,lat1};
     }
