@@ -75,6 +75,26 @@ jobs:
                       raise SystemExit(f'chunk version mismatch: {row["path"]}: {data.get("zoneVersion")} != {expected}')
           print('production service-zone versions: OK')
           PY
+      - name: Audit rural precomputed routes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json')
+          data=json.loads(p.read_text(encoding='utf-8'))
+          routes=data.get('routes',[])
+          print('precomputed route records:',len(routes))
+          for district in ('내수읍','북이면'):
+              hits=[]
+              for r in routes:
+                  scope=list(r.get('districts') or [])
+                  label=str((r.get('data') or {}).get('districtLabel') or '')
+                  if district in scope or district in label:
+                      hits.append((r.get('type'),r.get('vehicle'),r.get('day'),scope,label))
+              print(district,'precomputed records:',len(hits))
+              for row in hits[:20]: print(' ',row)
+          PY
       - name: Check disjoint display geometry and filter stability
         shell: bash
         run: |
