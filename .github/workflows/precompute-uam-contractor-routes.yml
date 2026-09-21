@@ -178,6 +178,8 @@ jobs:
           rm -f precompute-uam.js package.json package-lock.json
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin main
+          git rebase origin/main
           git add cjwaste-test/data/precomputed-uam-contractor-routes-v1.json
           git commit -m 'Precompute Uam contractor evidence routes'
           git push
