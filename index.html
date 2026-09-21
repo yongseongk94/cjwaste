@@ -673,6 +673,9 @@ function verifiedRiDisplayName(district,riName,riCode=''){
 }
 
 function riScheduleFromSources(type,district,riName,riCode=''){
+  if(type==='general'&&canonicalDistrict(district)==='내수읍'&&normalizeRi(riName)==='도원리'){
+    return {월:[{key:'6138',label:providerDisplay('6138')}]};
+  }
   const byDay={};
   const displayName=verifiedRiDisplayName(district,riName,riCode);
   const keys=[`${district}|${riName}`,`${district}|${displayName}`];
@@ -1059,6 +1062,38 @@ function renderDirectSchedule(type,matches,ctx){
     : '';
   document.getElementById(type+'Detail').innerHTML=
     `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br>${rows}${secondary}<br><span style="color:#6b7280">※ 2026년 6월 직영 코스표의 도로명·법정동·리 명칭과 검색주소를 자동 매칭한 결과입니다.</span>${inheritNote}${apartmentNotice}</div>`;
+}
+
+const FORCED_RI_SCHEDULE_OVERRIDES={
+  general:{
+    '내수읍|도원리':{
+      vehicle:'6138',
+      days:['월'],
+      ruleId:'naesu-dowon-general-monday',
+      note:'내수읍 도원리 생활쓰레기는 2026년 6월 6138호 코스표에서 풍정리 월요일 노선을 우선 근거로 적용했습니다.'
+    }
+  },
+  recycle:{}
+};
+function forcedRiScheduleOverride(type,ctx){
+  const district=serviceDistrictForContext(ctx);
+  const ri=normalizeRi(ctx?.legalRi||'');
+  if(!district||!ri)return null;
+  const row=FORCED_RI_SCHEDULE_OVERRIDES[type]?.[`${district}|${ri}`];
+  return row?{...row,district,riName:ri}:null;
+}
+function renderForcedRiSchedule(type,row,ctx){
+  const days=DAYS.filter(d=>(row.days||[]).includes(d));
+  selectedVehicle[type]=row.vehicle||'전체';
+  preferredRouteVehicle[type]=row.vehicle||'';
+  setAddressLayerFocus(type,ctx,{vehicle:row.vehicle||'',days,source:'forced-ri'});
+  document.getElementById(type+'Badge').textContent=`보정 · ${days.join('·')}`;
+  renderDays(type+'Days',days);
+  const apartmentNotice=type==='recycle'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    : '';
+  document.getElementById(type+'Detail').innerHTML=
+    `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(row.vehicle)}호:</strong> ${days.join(' · ')}<br><span style="color:#6b7280">※ ${escapeHtml(row.note||'리 단위 보정 일정을 우선 적용했습니다.')}</span>${apartmentNotice}</div>`;
 }
 
 const CONFIRMED_ADDRESS_SCHEDULE_OVERRIDES=[
@@ -1720,6 +1755,23 @@ let legacyDisplayZoneManifest=null;
 let legacyDisplayZoneManifestPromise=null;
 const legacyDisplayZones={general:new Map(),recycle:new Map()};
 const legacyDisplayZonePromises=new Map();
+function normalizeProductionZoneSchedule(type,z){
+  if(!z||type!=='general')return z;
+  if(canonicalDistrict(z.district||'')!=='내수읍'||normalizeRi(z.riName||'')!=='도원리')return z;
+  return {
+    ...z,
+    vehicle:'6138',
+    provider:'',
+    vehicles:[],
+    plate:'',
+    days:['월'],
+    groupKey:'prod-override|내수읍|도원리|general|6138|월',
+    ambiguous:false,
+    estimated:true,
+    productionOverride:'naesu-dowon-general-monday'
+  };
+}
+
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
 
@@ -1756,7 +1808,8 @@ async function ensureLegacyDisplayZoneDistricts(type,districts=null){
         const res=await fetch(entry.path,{cache:'force-cache'});
         if(!res.ok)throw new Error('legacy display chunk '+res.status);
         const data=await res.json();
-        legacyDisplayZones[type].set(district,Array.isArray(data?.zones)?data.zones:[]);
+        const zones=Array.isArray(data?.zones)?data.zones.map(z=>normalizeProductionZoneSchedule(type,z)):[];
+        legacyDisplayZones[type].set(district,zones);
       }catch(err){
         console.warn(type+' '+district+' 과거 추정권역 표시 청크 로드 실패',err);
       }finally{
@@ -2039,7 +2092,7 @@ window.__CJWASTE_PRECOMPUTE_READY=false;
 
 function serviceZoneCacheKey(type){
   // 본페이지 production 권역 캐시는 테스트페이지 캐시와 분리합니다.
-  return `prod-district-v2-ochang-strict|${SERVICE_ZONE_CACHE_VERSION}|${type}`;
+  return `prod-district-v3-dowon-monday|${SERVICE_ZONE_CACHE_VERSION}|${type}`;
 }
 async function getCachedServiceZones(type){
   try{
@@ -2537,6 +2590,7 @@ function scheduleVisibleServiceZoneMaterialization(type){
 }
 async function hydrateServiceZoneArray(type,zones,meta={}){
   if(!Array.isArray(zones)||!zones.length)return false;
+  zones=zones.map(z=>normalizeProductionZoneSchedule(type,z));
   const started=performance.now();
   if(!meta.append)clearServiceZoneOverlays(type);
   const added=registerRawServiceZones(type,zones);
@@ -3124,6 +3178,7 @@ async function refreshNearbyRouteSchedules(ctx){
 
   for(const type of ['general','recycle']){
     const confirmed=confirmedAddressScheduleOverride(type,ctx);if(confirmed){renderConfirmedAddressSchedule(type,confirmed,ctx);continue}
+    const forcedRi=forcedRiScheduleOverride(type,ctx);if(forcedRi){renderForcedRiSchedule(type,forcedRi,ctx);continue}
     const exact=contractExactScheduleMatch(type,ctx);if(exact){renderContractExactSchedule(type,exact,ctx);continue}
     if(isUnconfirmedRi(type,district,ctx.legalRi||''))continue;
     if(RURAL_ROUTE_LAYER_DISTRICTS.has(district)){
