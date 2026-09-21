@@ -60,20 +60,20 @@ jobs:
             await page.type('#landingInput','청주시 청원구 상당로 230');
             await page.click('#landingForm button[type=submit]');
             await page.waitForFunction(()=>document.getElementById('landing').classList.contains('hidden'),{timeout:120000});
-            await page.waitForFunction(()=>{
-              const txt=document.getElementById('generalBadge')?.textContent||'';
-              return txt && !txt.includes('확인 중');
-            },{timeout:120000});
-            await new Promise(r=>setTimeout(r,1800));
+            await page.waitForFunction(()=>(rawServiceZones.general.get('우암동')||[]).length>=500,{timeout:120000});
+            await page.waitForFunction(()=>(serviceZoneOverlays.general||[]).filter(z=>!z.manual&&z.polygon?.getMap?.()).length>0,{timeout:120000});
+            await new Promise(r=>setTimeout(r,500));
 
             const result=await page.evaluate(()=>({
               ms:Date.now(),
               district:document.getElementById('selectedDistrict')?.textContent||'',
               badge:document.getElementById('generalBadge')?.textContent||'',
               detail:document.getElementById('generalDetail')?.textContent||'',
-              display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
+              display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual&&z.polygon?.getMap?.()).length,
+              objects:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0),
-              uamRaw:(rawServiceZones.general.get('우암동')||[]).length
+              uamRaw:(rawServiceZones.general.get('우암동')||[]).length,
+              rawMatch:!!serviceZoneOverlayMatch('general',{district:'우암동',legalEmd:'우암동',legalRi:'',lat:currentLat,lng:currentLng})
             }));
             result.elapsedMs=Date.now()-t0;
             console.log('LAZY_ZONE_RESULT',JSON.stringify(result));
@@ -81,7 +81,9 @@ jobs:
             if(result.badge.includes('미확정')||result.detail.includes('권역 미확정'))throw new Error('Uam still unresolved: '+JSON.stringify(result));
             if(result.uamRaw<500)throw new Error('Uam raw precision data missing: '+JSON.stringify(result));
             if(result.display<=0)throw new Error('No viewport polygons rendered: '+JSON.stringify(result));
-            if(result.display>=result.raw)throw new Error('All raw zones were materialized: '+JSON.stringify(result));
+            if(result.display>=250)throw new Error('Too many visible polygons materialized: '+JSON.stringify(result));
+            if(result.objects>=320)throw new Error('Too many polygon objects created: '+JSON.stringify(result));
+            if(!result.rawMatch)throw new Error('Raw-zone address match failed: '+JSON.stringify(result));
             if(errors.length)throw new Error('Page errors: '+errors.join(' | '));
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
