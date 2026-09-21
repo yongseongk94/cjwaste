@@ -74,7 +74,12 @@ jobs:
               objects:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0),
               uamRaw:(rawServiceZones.general.get('우암동')||[]).length,
-              rawMatch:!!serviceZoneOverlayMatch('general',{district:'우암동',legalEmd:'우암동',legalRi:'',lat:currentLat,lng:currentLng})
+              rawMatch:!!serviceZoneOverlayMatch('general',{district:'우암동',legalEmd:'우암동',legalRi:'',lat:currentLat,lng:currentLng}),
+              routeObjects:(dongRouteOverlays.general||[]).length,
+              routeVisible:(dongRouteOverlays.general||[]).filter(item=>routeItemPolylines(item).some(pl=>pl?.getMap?.())).length,
+              routeSelection:routeCandidatesForSelection('general').map(s=>({vehicle:s.vehicle,day:s.day,districts:s.districts,provider:s.provider})).slice(0,50),
+              selectedVehicle:selectedVehicle.general,
+              activeDay
             }));
             result.elapsedMs=Date.now()-t0;
             console.log('LAZY_ZONE_RESULT',JSON.stringify(result));
@@ -85,6 +90,7 @@ jobs:
             if(result.display>=250)throw new Error('Too many visible polygons materialized: '+JSON.stringify(result));
             if(result.objects>=320)throw new Error('Too many polygon objects created: '+JSON.stringify(result));
             if(!result.rawMatch)throw new Error('Raw-zone address match failed: '+JSON.stringify(result));
+            console.log('ROUTE_DIAG',JSON.stringify({routeObjects:result.routeObjects,routeVisible:result.routeVisible,selectedVehicle:result.selectedVehicle,activeDay:result.activeDay,routeSelection:result.routeSelection}));
             if(errors.length)throw new Error('Page errors: '+errors.join(' | '));
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
