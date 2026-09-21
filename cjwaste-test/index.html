@@ -4208,7 +4208,10 @@ function forceActiveServiceLayerVisibility(layer){
     if(serviceLayerState.route)syncDongRouteVisibility(layer);
   }catch(e){console.warn('레이어 강제 재표시 실패',e)}
 }
+let layerRequestSeq=0;
 function setLayer(layer){
+  const requestSeq=++layerRequestSeq;
+  const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===layer;
   hideZoneTooltip();activeLayer=layer;
   document.querySelectorAll('.layer-btn').forEach(b=>b.classList.toggle('active',b.dataset.layer===layer));
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('active',c.dataset.layer===layer));
@@ -4221,21 +4224,23 @@ function setLayer(layer){
     zonePolygons.food.forEach(item=>item.polygon.setMap(map));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
   }else{
     syncBoundaryVisibility();
-    const zoneReady=serviceLayerState.zone
-      ? ensureVisibleServiceZoneChunks(layer)
-          .then(()=>buildServiceZones(layer))
-          .then(()=>syncServiceZoneVisibility(layer))
-          .catch(e=>console.warn('수거권역 생성 실패',e))
-      : Promise.resolve();
+    if(serviceLayerState.zone){
+      ensureVisibleServiceZoneChunks(layer)
+        .then(()=>isCurrent()?buildServiceZones(layer):null)
+        .then(()=>{if(isCurrent())syncServiceZoneVisibility(layer)})
+        .catch(e=>console.warn('수거권역 생성 실패',e));
+    }
     if(serviceLayerState.route){
-      zoneReady.finally(()=>ensureDongRoutesForSelection(layer).catch(e=>console.warn('근거노선 로드 실패',e)));
+      ensureDongRoutesForSelection(layer)
+        .then(()=>{if(isCurrent())syncDongRouteVisibility(layer)})
+        .catch(e=>console.warn('근거노선 로드 실패',e));
     }else hideDongRouteOverlays();
   }
   updateMapBadge();
   if(service){
     forceActiveServiceLayerVisibility(layer);
-    setTimeout(()=>{if(activeLayer===layer)forceActiveServiceLayerVisibility(layer)},120);
-    setTimeout(()=>{if(activeLayer===layer)forceActiveServiceLayerVisibility(layer)},700);
+    setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},120);
+    setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},700);
   }
 }
 function updateMapBadge(custom){
