@@ -1465,7 +1465,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v90-dowon-pungjeong-preserve|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v90-test-gapfill-v1|${DONG_ROUTE_CACHE_VERSION}`;
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
@@ -1475,7 +1475,7 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
 let bundledServiceZoneManifest=null;
 let bundledServiceZoneManifestPromise=null;
-const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test/data/service-zones-test-manifest.json';
+const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test/data/service-zones-gapfill-manifest.json';
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
 
@@ -3908,9 +3908,11 @@ async function buildRuralRiServiceZone(type,region){
 async function buildGridServiceZonesForRegion(type,region,groups){
   const b=featureBounds(region.feature);if(!b||!groups.length)return;
   const rural=RI_LAYER_DISTRICTS.has(region.district);
-  // 동지역 추정권역은 확정 표시노선 주변을 빼고 남은 공간만 채웁니다.
-  // 약 70~85m 격자로 샘플링해 확정노선이 지나가는 셀을 추정폴리곤에서 제외합니다.
-  const latStep=.00068,lngStep=.00086;
+  // TEST GAP-FILL:
+  // 읍·면은 기존 격자를 그대로 유지합니다. 동지역은 약 25m 격자로 세분화하여
+  // 20m 확정노선 경계에 걸친 70~85m 셀 전체가 삭제되던 빈틈을 줄입니다.
+  const latStep=rural?.00068:.00023;
+  const lngStep=rural?.00086:.00029;
   const ny=Math.max(1,Math.ceil((b.maxLat-b.minLat)/latStep));
   const nx=Math.max(1,Math.ceil((b.maxLng-b.minLng)/lngStep));
   const grid=Array.from({length:ny},()=>Array(nx).fill(null));
@@ -3922,12 +3924,18 @@ async function buildGridServiceZonesForRegion(type,region,groups){
       [lat,lng],[lat0,lng0],[lat0,lng1],[lat1,lng0],[lat1,lng1],
       [lat0,lng],[lat1,lng],[lat,lng0],[lat,lng1]
     ];
-    for(const [y,x] of samples){
-      for(const g of groups){
-        if(serviceGroupRouteDistanceKm(g,y,x)<=MAX_ADDRESS_ROUTE_DISTANCE_KM)return true;
+    if(rural){
+      // 읍·면은 기존 방식 보존.
+      for(const [y,x] of samples){
+        for(const g of groups){
+          if(serviceGroupRouteDistanceKm(g,y,x)<=MAX_ADDRESS_ROUTE_DISTANCE_KM)return true;
+        }
       }
+      return false;
     }
-    return false;
+    // 동지역은 셀 전체가 20m 확정구간 안에 있을 때만 추정권역에서 제외합니다.
+    // 경계에 일부만 걸친 셀은 남겨 주소가 '노선 20m 밖 + 추정권역 밖'으로 빠지는 공백을 방지합니다.
+    return samples.every(([y,x])=>groups.some(g=>serviceGroupRouteDistanceKm(g,y,x)<=MAX_ADDRESS_ROUTE_DISTANCE_KM));
   }
 
   // 1) 확정 수거선 20m 범위를 제외한 빈 공간만 추정 셀로 만듭니다.
@@ -4703,7 +4711,6 @@ async function buildZonePolygons(){
 let testAdminBoundaryLoadStarted=false;
 let testAdminBoundaryLoadScheduled=false;
 function startTestAdminBoundaryLoad(reason='즉시'){
-  if(SERVICE_ZONE_PRECOMPUTE_ONLY)return Promise.resolve();
   if(zoneBuildPromise)return zoneBuildPromise;
   testAdminBoundaryLoadStarted=true;
   zoneBuildPromise=buildZonePolygons().catch(e=>console.warn(`TEST 행정경계 ${reason} 로드 실패`,e));
@@ -4735,17 +4742,28 @@ function init(){
   kakao.maps.event.addListener(map,'idle',()=>queueActiveServiceLayerRefresh(serviceLayerHardRefresh));
   window.addEventListener('scroll',()=>queueActiveServiceLayerRefresh(false),{passive:true});
   loadManualZones();
-  // TEST FAST PATH:
-  // 기존 IndexedDB에는 생활 전체 권역 수천 개가 들어 있을 수 있으므로 첫 화면에서 전부 복원하지 않습니다.
-  // 정적 district chunk 중 현재 화면에 가장 가까운 1개만 먼저 표시합니다.
-  if(!SERVICE_ZONE_PRECOMPUTE_ONLY){
+  if(SERVICE_ZONE_PRECOMPUTE_ONLY){
+    // 정적 청크 재생성 전용: 캐시/기존 청크를 사용하지 않고 현재 테스트 로직으로 생활·재활용을 모두 새로 계산합니다.
+    window.__CJWASTE_PRECOMPUTE_READY=false;
+    startTestAdminBoundaryLoad('사전생성').then(async()=>{
+      serviceZoneBuilt.general=false;serviceZoneBuilt.recycle=false;
+      serviceZoneBuildPromises.delete('general');serviceZoneBuildPromises.delete('recycle');
+      await buildServiceZones('general');
+      await buildServiceZones('recycle');
+      window.__CJWASTE_PRECOMPUTE_READY=true;
+      console.info('[TEST] gap-fill service-zone precompute complete',window.exportCjWastePrecomputed());
+    }).catch(e=>console.error('TEST 수거권역 사전생성 실패',e));
+  }else{
+    // TEST FAST PATH:
+    // 기존 IndexedDB에는 생활 전체 권역 수천 개가 들어 있을 수 있으므로 첫 화면에서 전부 복원하지 않습니다.
+    // 정적 district chunk 중 현재 화면에 가장 가까운 1개만 먼저 표시합니다.
     hydrateExternalBundledServiceZones('general')
       .then(()=>{if(activeLayer==='general')syncServiceZoneVisibility('general');})
       .catch(e=>console.warn('생활 추정권역 초기 부분복원 실패',e));
+    setLayer('general');
+    // 행정경계 GeoJSON은 첫 수거권역 표시와 경쟁하지 않도록 브라우저 유휴시간으로 미룹니다.
+    scheduleTestAdminBoundaryLoad(1400);
   }
-  setLayer('general');
-  // 행정경계 GeoJSON은 첫 수거권역 표시와 경쟁하지 않도록 브라우저 유휴시간으로 미룹니다.
-  scheduleTestAdminBoundaryLoad(1400);
   document.getElementById('landingInput').focus();
 }
 function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
