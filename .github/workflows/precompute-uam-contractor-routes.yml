@@ -1,0 +1,181 @@
+name: Precompute Uam contractor evidence routes
+
+on:
+  push:
+    paths:
+      - '.github/workflows/precompute-uam-contractor-routes.yml'
+      - 'tools/precompute-uam-routes.trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  precompute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for address-first test page deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 180); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?uam_route_precompute_check=$RANDOM" -o /tmp/test-live.html \
+              && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v1'" /tmp/test-live.html; then
+              echo 'Address-first test page deployed'
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+
+      - name: Compute unique Uam contractor road geometries
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat > precompute-uam.js <<'NODE'
+          const fs=require('fs');
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({
+              headless:true,
+              protocolTimeout:2100000,
+              executablePath:process.env.CHROME_BIN,
+              args:['--no-sandbox','--disable-dev-shm-usage']
+            });
+            const page=await browser.newPage();
+            page.setDefaultTimeout(2100000);
+            page.on('console',m=>{
+              const t=m.text();
+              if(/도로망 미해결|최종 수거노선|PRECOMPUTE/i.test(t)) console.log('PAGE',t.slice(0,1800));
+            });
+            page.on('pageerror',e=>console.error('PAGEERROR',e.message));
+            await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?uam_route_precompute='+Date.now(),{
+              waitUntil:'domcontentloaded',timeout:180000
+            });
+            await page.waitForFunction(()=>typeof geocoder!=='undefined'&&!!geocoder&&typeof buildDongRouteOverlay==='function',{timeout:180000});
+
+            const result=await page.evaluate(async()=>{
+              const district='우암동';
+              const all=allDongRouteSpecs().filter(s=>
+                (s.type==='general'||s.type==='recycle') &&
+                (s.districts||[]).map(canonicalDistrict).includes(district) &&
+                routeCompany(s.vehicle)==='제일환경'
+              );
+              if(!all.length)throw new Error('No Uam contractor specs');
+
+              // Same vehicle + same raw course is computed once, then reused for its repeated weekdays.
+              const groups=new Map();
+              for(const s of all){
+                const key=routePatternKey(s)+'|'+routeScopeSignature(s);
+                if(!groups.has(key))groups.set(key,[]);
+                groups.get(key).push(s);
+              }
+              const reps=[...groups.values()].map(xs=>xs[0]);
+              console.log('PRECOMPUTE reps='+reps.length+' specs='+all.length);
+
+              const buildResults=await mapWithConcurrency(reps,2,async spec=>{
+                const started=Date.now();
+                const item=await buildDongRouteOverlay(spec);
+                return {
+                  type:spec.type,vehicle:spec.vehicle,day:spec.day,key:routePatternKey(spec)+'|'+routeScopeSignature(spec),
+                  elapsedMs:Date.now()-started,
+                  ok:!!item,
+                  segments:item?.segments?.length||0
+                };
+              });
+              console.log('PRECOMPUTE_BUILD '+JSON.stringify(buildResults));
+
+              const exported=exportCjWastePrecomputed();
+              const byKey=new Map();
+              for(const r of (exported.routes||[])){
+                const spec=all.find(s=>s.type===r.type&&s.vehicle===r.vehicle&&s.day===r.day);
+                if(!spec)continue;
+                byKey.set(routePatternKey(spec)+'|'+routeScopeSignature(spec),r);
+              }
+
+              const routes=[];
+              const missing=[];
+              for(const [key,specs] of groups){
+                const base=byKey.get(key);
+                if(!base||(base.data?.segments||[]).length===0){
+                  missing.push({key,specs:specs.map(s=>({type:s.type,vehicle:s.vehicle,day:s.day}))});
+                  continue;
+                }
+                for(const s of specs){
+                  routes.push({
+                    ...base,
+                    type:s.type,
+                    vehicle:s.vehicle,
+                    day:s.day,
+                    districts:[...routeAllowedDistricts(s)],
+                    scopeKind:s.scopeKind||'',
+                    scopeSignature:routeScopeSignature(s),
+                    data:{...base.data,districtLabel:district}
+                  });
+                }
+              }
+              return {
+                version:DONG_ROUTE_CACHE_VERSION,
+                generatedAt:new Date().toISOString(),
+                district,
+                provider:'제일환경',
+                routes,
+                buildResults,
+                missing
+              };
+            });
+
+            console.log('PRECOMPUTE_RESULT routes='+result.routes.length+' missing='+result.missing.length);
+            if(!result.routes.length)throw new Error('No Uam route geometry generated');
+            const core=result.routes.filter(r=>r.type==='general'&&String(r.vehicle).includes('88어1536')&&['월','수','금'].includes(r.day));
+            if(core.length!==3||core.some(r=>(r.data?.segments||[]).length===0)){
+              throw new Error('Core 88어1536 M/W/F routes missing');
+            }
+            fs.writeFileSync('/tmp/uam-contractor-routes.json',JSON.stringify(result));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node precompute-uam.js
+
+      - name: Publish test-only Uam route bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp /tmp/uam-contractor-routes.json cjwaste-test/data/precomputed-uam-contractor-routes-v1.json
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('cjwaste-test/data/precomputed-uam-contractor-routes-v1.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d['version']=='v76-layer-visibility-refresh'
+          assert d['district']=='우암동'
+          assert d['routes']
+          core=[r for r in d['routes'] if r['type']=='general' and '88어1536' in str(r['vehicle']) and r['day'] in ['월','수','금']]
+          assert len(core)==3
+          assert all(any(len(seg)>=2 for seg in r['data'].get('segments',[])) for r in core)
+          print('UAM_ROUTE_BUNDLE',json.dumps({
+            'routes':len(d['routes']),
+            'missing':len(d.get('missing',[])),
+            'coreSegments':{r['day']:len(r['data'].get('segments',[])) for r in core}
+          },ensure_ascii=False))
+          PY
+
+      - name: Commit test-only route bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f precompute-uam.js package.json package-lock.json
+          git config user.name 'ChatGPT Update Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cjwaste-test/data/precomputed-uam-contractor-routes-v1.json
+          git commit -m 'Precompute Uam contractor evidence routes'
+          git push
