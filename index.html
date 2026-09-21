@@ -2515,6 +2515,8 @@ function materializeVisibleRawServiceZones(type){
     addServiceZonePolygon(type,meta.points,meta);
   }
   syncServiceZoneVisibility(type);
+  // 과거 레이어가 로드된 뒤 근거노선 색도 동일 일정색으로 다시 맞춥니다.
+  if(serviceLayerState.route)syncDongRouteVisibility(type);
   updateMapBadge();
   return false;
 }
@@ -4300,6 +4302,41 @@ async function buildDongRouteOverlay(spec){
   try{return await task}
   finally{dongRouteBuildPromises.delete(buildKey)}
 }
+function routeLayerMatchedColor(type,item){
+  const day=activeDay||'전체';
+  // 특정 요일을 선택했을 때는 추정권역과 근거노선 모두 같은 요일색을 사용합니다.
+  if(day!=='전체')return DAY_COLORS[day]||'#64748b';
+
+  const districts=(item?.districts||[]).map(canonicalDistrict).filter(Boolean);
+  const token=focusVehicleToken(item?.vehicle||item?.plate||'');
+  const provider=item?.provider||routeCompany(item?.vehicle)||'';
+  const signatureCounts=new Map();
+
+  for(const district of districts){
+    for(const z of (legacyDisplayZones?.[type]?.get?.(district)||[])){
+      const zoneVehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean);
+      const sameVehicle=token&&zoneVehicles.some(v=>focusVehicleToken(v)===token);
+      const zoneProvider=z?.provider||routeCompany(z?.vehicle)||'';
+      if(!sameVehicle && !(provider&&zoneProvider===provider))continue;
+      if(item?.day && !(z?.days||[]).includes(item.day))continue;
+      const days=DAYS.filter(d=>(z?.days||[]).includes(d));
+      if(!days.length)continue;
+      const sig=days.join('·');
+      signatureCounts.set(sig,(signatureCounts.get(sig)||0)+1);
+    }
+  }
+
+  if(signatureCounts.size){
+    const sig=[...signatureCounts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0][0];
+    const days=sig.split('·').filter(Boolean);
+    return serviceZoneColor(days,type);
+  }
+
+  // 오창산단 대행노선은 레이어 전용색과 동일하게 유지합니다.
+  if(provider==='제일환경'&&routeAllowedDistricts(item).includes('오창읍'))return OCHANG_CONTRACT_COLOR;
+  // 레이어를 아직 읽지 못한 순간에는 기존 요일색으로 안전하게 표시합니다.
+  return DAY_COLORS[item?.day]||'#64748b';
+}
 function syncDongRouteVisibility(type){
   Object.values(dongRouteOverlays).flat().forEach(item=>setRouteItemMap(item,null));
   if(activeLayer!==type||(type!=='general'&&type!=='recycle')||!serviceLayerState.route)return;
@@ -4312,7 +4349,7 @@ function syncDongRouteVisibility(type){
     const geometry=item.geometryKey||routeGeometryKey(item);
     if(shownGeometry.has(geometry))continue;
     shownGeometry.add(geometry);
-    setRouteItemOptions(item,{strokeColor:DAY_COLORS[item.day]||'#334155'});
+    setRouteItemOptions(item,{strokeColor:routeLayerMatchedColor(type,item)});
     setRouteItemMap(item,map);
   }
 }
