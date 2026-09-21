@@ -1457,7 +1457,7 @@ let nearbyScheduleRequestSeq=0;
 let zoneBuildPromise=null;
 // 검색주소에 실제로 매칭된 차량을 근거노선 생성 최우선 순위로 사용합니다.
 const preferredRouteVehicle={general:'',recycle:''};
-const TEST_ROUTE_PRIORITY_MODE='address-first-v2-boundary-ready';
+const TEST_ROUTE_PRIORITY_MODE='address-first-v3-static-uam';
 
 // 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
 const serviceLayerState={zone:true,route:true};
@@ -1590,6 +1590,7 @@ async function ensureVisibleServiceZoneChunks(type){
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
+const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test/data/precomputed-uam-contractor-routes-v1.json'];
 function bundledPrecomputedData(){
   try{
     if(bundledPrecomputedExternal)return bundledPrecomputedExternal;
@@ -1613,8 +1614,18 @@ async function loadExternalBundledPrecomputedData(){
       const res=await fetch(src,{cache:'force-cache'});
       if(!res.ok)throw new Error('HTTP '+res.status);
       const data=await res.json();
-      bundledPrecomputedExternal=data;
-      return data;
+      const mergedRoutes=[...(data?.routes||[])];
+      for(const extraSrc of TEST_EXTRA_ROUTE_BUNDLES){
+        try{
+          const er=await fetch(extraSrc,{cache:'force-cache'});
+          if(!er.ok)continue;
+          const extra=await er.json();
+          if(extra?.version!==DONG_ROUTE_CACHE_VERSION||!Array.isArray(extra.routes))continue;
+          mergedRoutes.push(...extra.routes);
+        }catch(e){console.warn('테스트 추가 근거노선 묶음 로드 실패',extraSrc,e)}
+      }
+      bundledPrecomputedExternal={...data,routes:mergedRoutes};
+      return bundledPrecomputedExternal;
     }catch(e){
       console.warn('외부 사전계산 데이터 로드 실패',e);
       return null;
