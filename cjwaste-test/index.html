@@ -1490,7 +1490,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='coarse-cover-v2';
+const TEST_ZONE_RENDER_MODE='coarse-cover-v3';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1916,7 +1916,7 @@ function resultMapVisible(){
 }
 const COARSE_ZONE_LAT_STEP=.00225;  // 약 250m
 const COARSE_ZONE_LNG_STEP=.00285; // 청주 위도 기준 약 250m
-const COARSE_ZONE_MAX_POLYGONS=24;
+const COARSE_ZONE_MAX_POLYGONS=36;
 function coarseZoneSignature(z){
   const vehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean).slice().sort();
   const days=DAYS.filter(d=>(z?.days||[]).includes(d));
@@ -1926,7 +1926,7 @@ function coarseZoneSignature(z){
   ].join('|');
 }
 function coarseDisplayZones(type){
-  const box=currentMapBoundsBox(-.05);
+  const box=currentMapBoundsBox(.18);
   const centerObj=map?.getCenter?.();
   const center=centerObj?{lat:centerObj.getLat(),lng:centerObj.getLng()}:null;
   const tiles=new Map();
@@ -1993,7 +1993,7 @@ function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
-  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 약 250m 대표권역만 최대 24개 표시합니다.
+  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 약 250m 대표권역을 화면보다 넓게 최대 36개 표시합니다.
   // 기존 자동 표시 폴리곤은 제거해 지도 이동 중 객체가 누적되지 않도록 합니다.
   const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
   for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
