@@ -1457,7 +1457,7 @@ let nearbyScheduleRequestSeq=0;
 let zoneBuildPromise=null;
 // 검색주소에 실제로 매칭된 차량을 근거노선 생성 최우선 순위로 사용합니다.
 const preferredRouteVehicle={general:'',recycle:''};
-const TEST_ROUTE_PRIORITY_MODE='address-first-v1';
+const TEST_ROUTE_PRIORITY_MODE='address-first-v2-boundary-ready';
 
 // 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
 const serviceLayerState={zone:true,route:true};
@@ -3648,6 +3648,9 @@ async function hydrateCachedRouteOverlays(specs){
   });
 }
 async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
+  // 근거노선은 최종 좌표를 담당 읍면동 경계로 잘라 검증하므로 행정경계가 반드시 필요합니다.
+  // 주소/권역 판정은 이 로딩을 기다리지 않고, ② 근거노선 준비 단계에서만 비동기로 확보합니다.
+  try{await ensureTestAdminBoundaryLoad()}catch(e){console.warn('근거노선 경계 준비 실패',e)}
   const providerSnapshot=selectedVehicle[type]||'전체';
   const daySnapshot=activeDay||'전체';
   const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===type&&(selectedVehicle[type]||'전체')===providerSnapshot&&(activeDay||'전체')===daySnapshot;
