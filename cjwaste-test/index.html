@@ -1490,7 +1490,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='coarse-cover-v3';
+const TEST_ZONE_RENDER_MODE='coarse-cover-v4-basefill';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1989,16 +1989,49 @@ function coarseDisplayZones(type){
   out.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
   return out.slice(0,COARSE_ZONE_MAX_POLYGONS);
 }
+function coarseDisplayBaseZones(type){
+  const box=currentMapBoundsBox(.22);
+  const out=[];
+  for(const [district,zones] of rawServiceZones[type].entries()){
+    if(!zones?.length||!zones.some(z=>rawZoneIntersectsBox(z,box)))continue;
+    const feature=districtFeatureMap.get(district);
+    const g=feature?.geometry;if(!g)continue;
+    const polys=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
+    for(const poly of polys){
+      if(!poly?.length||!poly[0]?.length)continue;
+      const rings=poly.map(r=>r.map(([lng,lat])=>({lat:+lat,lng:+lng}))).filter(r=>r.length>=3);
+      if(!rings.length)continue;
+      out.push({
+        points:rings[0],rings,hitRings:rings,
+        district,automatic:true,fromBundle:true,
+        displayOnly:true,displayBase:true,coarseCover:true,
+        estimated:true,gridMerged:true,ambiguous:false,
+        vehicle:'',vehicles:[],provider:'',days:[]
+      });
+    }
+  }
+  return out;
+}
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
-  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 약 250m 대표권역을 화면보다 넓게 최대 36개 표시합니다.
-  // 기존 자동 표시 폴리곤은 제거해 지도 이동 중 객체가 누적되지 않도록 합니다.
+  // 행정경계는 주소 판정을 막지 않고 백그라운드로 준비합니다.
+  // 준비되면 동일 화면을 한 번 더 그려 흰 빈틈을 중립 기본권역으로 채웁니다.
+  if(!testAdminBoundaryLoadStarted){
+    ensureTestAdminBoundaryLoad()
+      .then(()=>{if(activeLayer===type&&resultMapVisible())scheduleVisibleServiceZoneMaterialization(type)})
+      .catch(e=>console.warn('표시용 기본권역 경계 준비 실패',e));
+  }
+
+  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 큰 대표권역만 표시합니다.
   const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
   for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
   serviceZoneOverlays[type]=manual;
 
+  // 1) 읍면동 전체를 연한 중립 기본권역으로 먼저 채움
+  for(const z of coarseDisplayBaseZones(type))addServiceZonePolygon(type,z.points,z);
+  // 2) 그 위에 일정별 대표권역을 표시
   const zones=coarseDisplayZones(type);
   for(const z of zones)addServiceZonePolygon(type,z.points,z);
   syncServiceZoneVisibility(type);
@@ -2068,7 +2101,7 @@ function serviceZoneOverlayMatch(type,ctx){
     return pointInZonePolygon(lat,lng,z);
   });
   if(!hits.length)hits=(serviceZoneOverlays[type]||[]).filter(z=>{
-    if(z.manual||z.displayOnly)return false;
+    if(z.manual||z.displayOnly||z.displayBase)return false;
     if(z.district&&canonicalDistrict(z.district)!==district)return false;
     if(riName && normalizeRi(z.riName||'')!==riName)return false;
     return pointInZonePolygon(lat,lng,z);
@@ -3977,9 +4010,9 @@ function addServiceZonePolygon(type,points,meta={}){
   const contract=!!meta.contractLayer;
   const outline=!!meta.groupOutline;
   const buffer=!!meta.routeBuffer;
-  const color=meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type)));
+  const color=meta.displayBase?'#cbd5e1':(meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type))));
   const rural=!!meta.rural;
-  const baseFill=meta.displayOnly?.19:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22))))));
+  const baseFill=meta.displayBase?.11:(meta.displayOnly?.19:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22)))))));
   const displayRings=(Array.isArray(meta.rings)&&meta.rings.length?meta.rings:[points]).filter(r=>Array.isArray(r)&&r.length>=3);
   if(!displayRings.length)return null;
   const normalizedDisplayRings=displayRings.map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -3989,7 +4022,8 @@ function addServiceZonePolygon(type,points,meta={}){
   const polygon=new kakao.maps.Polygon({
     path:polygonPath,
     strokeWeight:(meta.displayOnly||meta.gridMerged)?0:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:(meta.displayOnly||meta.gridMerged)?0:meta.manual?.95:(contract?.86:(rural?.42:0)),
-    fillColor:color,fillOpacity:baseFill
+    fillColor:color,fillOpacity:baseFill,
+    zIndex:meta.displayBase?1:(meta.displayOnly?2:3)
   });
   polygon.setMap(null);
   const exactRings=(Array.isArray(meta.hitRings)&&meta.hitRings.length?meta.hitRings:normalizedDisplayRings).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -3997,17 +4031,25 @@ function addServiceZonePolygon(type,points,meta={}){
   kakao.maps.event.addListener(polygon,'mouseover',e=>{
     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
     const ratioText=meta.estimated&&Number.isFinite(+meta.neighborRatio)&&+meta.neighborRatio>0?` · 인접권역 ${Math.round(+meta.neighborRatio*100)}% 우세`:'';
-    const detail=meta.displayOnly
+    const detail=meta.displayBase
+      ?'수거일정 표시의 빈틈을 막기 위한 읍면동 기본 추정권역'
+      :(meta.displayOnly
       ?'큰 범위로 단순화한 대표 추정권역'
-      :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`));
-    const basis=meta.displayOnly
+      :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`)));
+    const basis=meta.displayBase
+      ?'읍면동 행정경계 전체 기본표시 · 일정 판정에는 사용하지 않음'
+      :(meta.displayOnly
       ?`지도 성능을 위한 약 250m 단순화 표시 · 실제 수거일정은 주소 검색 시 정밀권역으로 별도 판정`
-      :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할'))));
+      :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할')))));
     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
   });
   kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
   kakao.maps.event.addListener(polygon,'mouseout',()=>{polygon.setOptions({fillOpacity:baseFill});hideZoneTooltip()});
   kakao.maps.event.addListener(polygon,'click',()=>{
+    if(meta.displayBase){
+      updateMapBadge((meta.district||'')+' · 기본 추정권역 · 실제 일정은 주소 검색 결과 기준');
+      return;
+    }
     if(meta.displayOnly){
       updateMapBadge((meta.district||'')+' · 단순화 추정권역 표시 · 실제 일정은 주소 검색 결과 기준');
       return;
@@ -4354,8 +4396,8 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
   for(const t of ['general','recycle']){
     for(const z of (serviceZoneOverlays[t]||[])){
       const zoneVehicles=(z.vehicles||[]).length?z.vehicles:[z.vehicle];
-      const providerOk=provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
-      const dayOk=day==='전체'||(z.days||[]).includes(day);
+      const providerOk=z.displayBase||provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
+      const dayOk=z.displayBase||day==='전체'||(z.days||[]).includes(day);
       const viewportOk=z.displayOnly||z.manual||!z.fromBundle||!renderBox||rawZoneIntersectsBox(z,renderBox);
       const visible=t===type&&activeLayer===type&&serviceLayerState.zone&&providerOk&&dayOk&&viewportOk;
       if(!visible){if(z.polygon?.getMap())z.polygon.setMap(null);continue}
