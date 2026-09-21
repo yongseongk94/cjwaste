@@ -1172,7 +1172,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v2';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v3';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1630,7 +1630,7 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-test2-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v90-test-gapfill-v3|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION='zone-v90-test-gapfill-v3|v76-layer-visibility-refresh';
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
 const SERVICE_ZONE_PRECOMPUTE_DISTRICT=canonicalDistrict(new URLSearchParams(location.search).get('zone_district')||'');
 const serviceZoneCacheHydrated={general:false,recycle:false};
@@ -1903,7 +1903,7 @@ window.__CJWASTE_PRECOMPUTE_READY=false;
 
 function serviceZoneCacheKey(type){
   // 테스트페이지는 본사이트의 전체권역 IndexedDB 캐시와 분리합니다.
-  return `test2-village-hall|${SERVICE_ZONE_CACHE_VERSION}|${type}`;
+  return `test2-village-hall|${DONG_ROUTE_CACHE_VERSION}|${SERVICE_ZONE_CACHE_VERSION}|${type}`;
 }
 async function getCachedServiceZones(type){
   try{
@@ -2612,6 +2612,27 @@ async function mapWithConcurrency(items,limit,worker){
   await Promise.all(Array.from({length:Math.min(limit,items.length)},()=>run()));
   return out;
 }
+async function ensureAddressRouteItems(type,ctx){
+  const district=serviceDistrictForContext(ctx);
+  const riName=normalizeRi(ctx?.legalRi||'');
+  if(!district)return [];
+  // TEST2: 현재 검색주소의 법정리에 실제 후보로 잡힌 차량×요일만 먼저 계산합니다.
+  // 예: 내수읍 저곡리 생활은 6138 화요일만 우선 계산합니다.
+  let specs=serviceZoneCandidateSpecs(type,district,riName,'');
+  if(!specs.length)specs=routeSpecsForDistrict(type,district);
+  const seen=new Set();
+  specs=specs.filter(spec=>{
+    const key=spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeScopeSignature(spec);
+    if(seen.has(key))return false;seen.add(key);return true;
+  });
+  await hydrateCachedRouteOverlays(specs);
+  const built=await mapWithConcurrency(specs,2,async spec=>{
+    try{return await buildDongRouteOverlay(spec)}
+    catch(e){console.warn('TEST2 현재주소 노선 생성 실패',spec,e);return null}
+  });
+  if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
+  return built.filter(Boolean);
+}
 async function ensureDistrictRouteItems(type,district){
   const specs=routeSpecsForDistrict(type,district);
   if(!specs.length)return [];
@@ -3046,9 +3067,9 @@ async function refreshNearbyRouteSchedules(ctx){
   for(const type of ['general','recycle']){
     if(isUnconfirmedRi(type,district,ctx.legalRi||'')){renderReviewedSchedule(type,null,ctx);continue;}
     try{
-      await ensureDistrictRouteItems(type,district);
+      await ensureAddressRouteItems(type,ctx);
       localScheduleIndexes[type]=null;
-    }catch(e){console.warn('TEST2 주소지역 근거노선 준비 실패',type,district,e)}
+    }catch(e){console.warn('TEST2 주소 근거노선 준비 실패',type,district,e)}
     if(seq!==nearbyScheduleRequestSeq)return;
     const manual=manualZoneMatch(type,+ctx.lat,+ctx.lng);
     const fixed=manual?{...manual,matchBasis:manual.published?'published-zone':'manual-zone',estimated:!manual.published}:userConfirmedSchedule(type,ctx);
@@ -3061,7 +3082,10 @@ async function refreshNearbyRouteSchedules(ctx){
   }
   if(seq!==nearbyScheduleRequestSeq)return;
   renderVehicleFilter();
-  if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
+  if(activeLayer==='general'||activeLayer==='recycle'){
+    syncDongRouteVisibility(activeLayer);
+    setLayer(activeLayer);
+  }
 }
 
 function renderVehicleFilter(){
