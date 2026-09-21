@@ -4344,6 +4344,10 @@ async function buildRouteSpecsGeometryGrouped(specs,type,isCurrent){
     if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
   });
 }
+function isNaesuBugiRouteSpec(spec){
+  const ds=(spec?.districts||[]).map(canonicalDistrict);
+  return ds.includes('내수읍')||ds.includes('북이면');
+}
 async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
   // 근거노선은 최종 좌표를 담당 읍면동 경계로 잘라 검증하므로 행정경계가 반드시 필요합니다.
   // 주소/권역 판정은 이 로딩을 기다리지 않고, ② 근거노선 준비 단계에서만 비동기로 확보합니다.
@@ -4366,12 +4370,16 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
     return local&&exact;
   });
   const local=missing.filter(s=>!urgent.includes(s)&&here&&(s.districts||[]).map(canonicalDistrict).includes(here));
-  const rest=missing.filter(s=>!urgent.includes(s)&&!local.includes(s));
+  // v91: 외부 사전계산 번들에는 내수·북이 노선이 없으므로 두 읍면은 백그라운드 맨 뒤로 보내지 않습니다.
+  // 선택한 생활/재활용 레이어에서 누락된 내수·북이 노선을 먼저 계산해 즉시 표시하고 IndexedDB에 저장합니다.
+  const ruralPriority=missing.filter(s=>!urgent.includes(s)&&!local.includes(s)&&isNaesuBugiRouteSpec(s));
+  const rest=missing.filter(s=>!urgent.includes(s)&&!local.includes(s)&&!ruralPriority.includes(s));
 
-  // 검색주소의 실제 매칭 차량부터 먼저 만들어 근거노선이 일정 카드보다 늦게 뜨는 현상을 막습니다.
+  // 검색주소의 실제 매칭 차량 → 현재 지역 → 내수·북이 순으로 먼저 준비합니다.
   if(urgent.length)await buildRouteSpecsGeometryGrouped(urgent,type,isCurrent);
   if(local.length)await buildRouteSpecsGeometryGrouped(local,type,isCurrent);
-  // 다른 읍면동의 같은 수거주체 노선은 현재 주소 표시를 막지 않도록 뒤에서 준비합니다.
+  if(ruralPriority.length)await buildRouteSpecsGeometryGrouped(ruralPriority,type,isCurrent);
+  // 그 밖의 비가시 노선만 뒤에서 준비합니다.
   if(rest.length){
     buildRouteSpecsGeometryGrouped(rest,type,isCurrent)
       .catch(e=>console.warn('비가시 근거노선 백그라운드 준비 실패',e));
@@ -4409,10 +4417,17 @@ async function preloadAllDongRoutes(){
   await hydrateExternalBundledPrecomputedData();
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
 
-  // IndexedDB와 외부 사전계산 묶음에도 없는 노선만 백그라운드에서 실제 계산합니다.
+  // IndexedDB와 외부 사전계산 묶음에도 없는 노선을 계산합니다.
+  // 외부 번들에 0건인 내수·북이 노선을 먼저 만들어 사용자가 레이어를 열었을 때 사라져 보이지 않게 합니다.
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
-  await mapWithConcurrency(missing,3,async spec=>{
-    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('동지역 수거노선 준비 실패',spec,e)}
+  const ruralFirst=missing.filter(isNaesuBugiRouteSpec);
+  const otherMissing=missing.filter(s=>!ruralFirst.includes(s));
+  await mapWithConcurrency(ruralFirst,4,async spec=>{
+    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('내수·북이 수거노선 준비 실패',spec,e)}
+    if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
+  });
+  await mapWithConcurrency(otherMissing,3,async spec=>{
+    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('수거노선 준비 실패',spec,e)}
     if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
   });
 
