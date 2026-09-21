@@ -999,8 +999,32 @@ function routeScopeCacheSuffix(spec){
   const scope=routeAllowedDistricts(spec).slice().sort();
   return base.join('|')===scope.join('|')?'':`|scope-${routeTextHash(scope.join('|'))}`;
 }
+function contractorRouteGeometryKey(spec){
+  const provider=spec?.provider||routeCompany(spec?.vehicle);
+  if(!provider)return '';
+  const rawKey=routeNorm(expandRouteShorthand(spec?.raw||''));
+  return DONG_ROUTE_CACHE_VERSION+'|contract-geometry|'+spec.type+'|'+spec.vehicle+'|'+routeScopeSignature(spec)+'|'+routeTextHash(rawKey);
+}
+function routeGeometryKey(spec){
+  return contractorRouteGeometryKey(spec)||(DONG_ROUTE_CACHE_VERSION+'|route-geometry|'+spec?.type+'|'+spec?.vehicle+'|'+spec?.day+'|'+routeScopeSignature(spec)+'|'+routeTextHash(spec?.raw||''));
+}
+function contractorGeometryDays(spec){
+  const key=contractorRouteGeometryKey(spec);
+  if(!key)return [spec?.day].filter(Boolean);
+  const days=[];
+  for(const route of routeCatalog(spec.type)){
+    if(route.vehicle!==spec.vehicle)continue;
+    for(const [day,raw] of Object.entries(route.days||{})){
+      const s={...spec,day,raw,districts:spec.districts||route.districts||[]};
+      if(contractorRouteGeometryKey(s)===key&&!days.includes(day))days.push(day);
+    }
+  }
+  return DAYS.filter(d=>days.includes(d));
+}
 function routeCacheKey(spec){
-  return `${DONG_ROUTE_CACHE_VERSION}|${spec.type}|${spec.vehicle}|${spec.day}|${routeTextHash(spec.raw)}${routeScopeCacheSuffix(spec)}`;
+  const shared=contractorRouteGeometryKey(spec);
+  if(shared)return shared;
+  return DONG_ROUTE_CACHE_VERSION+'|'+spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeTextHash(spec.raw)+routeScopeCacheSuffix(spec);
 }
 function openDongRouteCache(){
   return new Promise((resolve,reject)=>{
@@ -1457,7 +1481,7 @@ let nearbyScheduleRequestSeq=0;
 let zoneBuildPromise=null;
 // 검색주소에 실제로 매칭된 차량을 근거노선 생성 최우선 순위로 사용합니다.
 const preferredRouteVehicle={general:'',recycle:''};
-const TEST_ROUTE_PRIORITY_MODE='address-first-v3-static-uam';
+const TEST_ROUTE_PRIORITY_MODE='address-first-v4-shared-geometry';
 
 // 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
 const serviceLayerState={zone:true,route:true};
@@ -3313,6 +3337,28 @@ function existingDongRouteOverlay(spec){
   const scope=routeScopeSignature(spec);
   return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day&&routeScopeSignature(x)===scope)||null;
 }
+function sharedGeometryRouteOverlay(spec){
+  const key=contractorRouteGeometryKey(spec);
+  if(!key)return null;
+  return (dongRouteOverlays[spec.type]||[]).find(x=>x.geometryKey===key&&routeItemPolylines(x).length)||null;
+}
+function reusableRouteData(item){
+  if(!item)return null;
+  return {
+    segments:(item.segments||[]).map(seg=>seg.map(p=>({lat:+p.lat,lng:+p.lng}))),
+    zoneEvidencePoints:(item.zoneEvidencePoints||[]).map(p=>({...p,lat:+p.lat,lng:+p.lng})),
+    termsCount:item.termsCount,pointsCount:item.pointsCount,serviceTermCount:item.serviceTermCount,
+    missingTerms:[...(item.missingTerms||[])],outsideTerms:[...(item.outsideTerms||[])],
+    outOfCheongwonTerms:[...(item.outOfCheongwonTerms||[])],rangeTerms:[...(item.rangeTerms||[])],
+    requiredRoadTerms:[...(item.requiredRoadTerms||[])],coveredRoadTerms:[...(item.coveredRoadTerms||[])],
+    missingRoadTerms:[...(item.missingRoadTerms||[])],outsideRoadTerms:[...(item.outsideRoadTerms||[])],
+    addressRangeTerms:[...(item.addressRangeTerms||[])],secondaryText:item.secondaryText||'',
+    secondaryKind:item.secondaryKind||'',districtLabel:item.district||item.districtLabel||'',
+    roadMatchedCount:item.roadMatchedCount||0,roadRequestedCount:item.roadRequestedCount||0,
+    inferredMovementCount:item.inferredMovementCount||0,distance:Number(item.roadResult?.distance)||0,
+    fromCache:true,fromSharedGeometry:true
+  };
+}
 function createDongRouteOverlay(spec,data){
   // 캐시·외부번들·백그라운드 계산이 동시에 끝나도 같은 차량×요일×권역을 중복 생성하지 않습니다.
   const already=existingDongRouteOverlay(spec);
@@ -3350,8 +3396,23 @@ function createDongRouteOverlay(spec,data){
   const fromCache=!!data.fromCache;
   const color=DAY_COLORS[spec.day]||'#334155';
 
+  const geometryKey=contractorRouteGeometryKey(spec)||routeGeometryKey(spec);
+  const sharedOwner=contractorRouteGeometryKey(spec)?sharedGeometryRouteOverlay(spec):null;
+  if(sharedOwner){
+    const item={
+      ...spec,district:districtLabel,pointsCount,termsCount,serviceTermCount,
+      missingTerms,outsideTerms,outOfCheongwonTerms,rangeTerms,requiredRoadTerms,coveredRoadTerms,outsideRoadTerms,missingRoadTerms,addressRangeTerms,secondaryText,secondaryKind,
+      roadMatchedCount,roadRequestedCount,inferredMovementCount,roadResult:{distance},cached:true,
+      segments:sharedOwner.segments,servicePoints:[],zoneEvidencePoints:sharedOwner.zoneEvidencePoints,
+      polylines:sharedOwner.polylines,circles:[],polyline:sharedOwner.polyline||sharedOwner.polylines?.[0]||null,
+      geometryKey,sharedGeometry:true,geometryOwnerDay:sharedOwner.day
+    };
+    dongRouteOverlays[spec.type].push(item);
+    return item;
+  }
+
   // ② 근거노선 레이어에서는 읍·면·동 모두 원본 코스에서 계산된 실제 도로구간을 표시합니다.
-  // 기본값은 OFF라서 권역 확인 화면은 복잡하지 않게 유지됩니다.
+  // 대행업체의 동일 코스 요일은 같은 Polyline 객체를 공유합니다.
   const displaySegments=segments;
   const polylines=displaySegments.map(seg=>new kakao.maps.Polyline({
     path:seg.map(p=>new kakao.maps.LatLng(+p.lat,+p.lng)),
@@ -3378,7 +3439,9 @@ function createDongRouteOverlay(spec,data){
   };
   const mouseover=e=>{
     emphasize();
-    showZoneTooltip(e.latLng,`${spec.vehicle}호 · ${spec.day}요일`,`${districtLabel} 수거구간`,basisText());
+    const groupedDays=contractorGeometryDays(spec);
+    const dayText=(groupedDays.length>1?groupedDays.join('·'):spec.day)+'요일';
+    showZoneTooltip(e.latLng,spec.vehicle+'호 · '+dayText,districtLabel+' 수거구간',basisText());
   };
   const mousemove=e=>moveZoneTooltip(e.latLng);
   const mouseout=()=>{normalize();hideZoneTooltip()};
@@ -3410,7 +3473,8 @@ function createDongRouteOverlay(spec,data){
     segments:segments.map(seg=>seg.map(p=>({lat:+p.lat,lng:+p.lng}))),
     servicePoints:[],
     zoneEvidencePoints:zoneEvidencePoints.map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:p.district||routePointAnyDistrict(p)||''})),
-    polylines,circles,polyline:polylines[0]||null
+    polylines,circles,polyline:polylines[0]||null,
+    geometryKey,sharedGeometry:false
   };
   dongRouteOverlays[spec.type].push(item);
   return item;
@@ -3454,9 +3518,11 @@ async function inferredRuralMovementSegments(anchorMap){
 }
 
 async function buildDongRouteOverlay(spec){
-  const buildKey=`${spec.type}|${spec.vehicle}|${spec.day}|${routeScopeSignature(spec)}`;
+  const buildKey=spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeScopeSignature(spec);
   const existing=existingDongRouteOverlay(spec);
   if(existing)return existing;
+  const sharedOwner=sharedGeometryRouteOverlay(spec);
+  if(sharedOwner)return createDongRouteOverlay(spec,reusableRouteData(sharedOwner));
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
 
   const task=(async()=>{
@@ -3644,9 +3710,13 @@ function syncDongRouteVisibility(type){
   if(activeLayer!==type||(type!=='general'&&type!=='recycle')||!serviceLayerState.route)return;
   const provider=selectedVehicle[type]||'전체';
   const day=activeDay||'전체';
+  const shownGeometry=new Set();
   for(const item of dongRouteOverlays[type]){
     if(provider!=='전체'&&!routeSelectedBy(provider,item.vehicle))continue;
     if(day!=='전체'&&item.day!==day)continue;
+    const geometry=item.geometryKey||routeGeometryKey(item);
+    if(shownGeometry.has(geometry))continue;
+    shownGeometry.add(geometry);
     setRouteItemOptions(item,{strokeColor:DAY_COLORS[item.day]||'#334155'});
     setRouteItemMap(item,map);
   }
@@ -3656,6 +3726,27 @@ async function hydrateCachedRouteOverlays(specs){
     if(existingDongRouteOverlay(spec))return;
     const cached=await getCachedDongRoute(spec);
     if(cached)createDongRouteOverlay(spec,{...cached,fromCache:true});
+  });
+}
+async function buildRouteSpecsGeometryGrouped(specs,type,isCurrent){
+  if(!specs?.length)return;
+  const groups=new Map();
+  for(const spec of specs){
+    const key=contractorRouteGeometryKey(spec)||routeGeometryKey(spec);
+    if(!groups.has(key))groups.set(key,[]);
+    groups.get(key).push(spec);
+  }
+  const reps=[...groups.values()].map(g=>g[0]);
+  await mapWithConcurrency(reps,3,async rep=>{
+    const item=await buildDongRouteOverlay(rep);
+    if(item){
+      const key=contractorRouteGeometryKey(rep)||routeGeometryKey(rep);
+      const group=groups.get(key)||[];
+      for(const sibling of group.slice(1)){
+        if(!existingDongRouteOverlay(sibling))await buildDongRouteOverlay(sibling);
+      }
+    }
+    if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
   });
 }
 async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
@@ -3683,24 +3774,12 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
   const rest=missing.filter(s=>!urgent.includes(s)&&!local.includes(s));
 
   // 검색주소의 실제 매칭 차량부터 먼저 만들어 근거노선이 일정 카드보다 늦게 뜨는 현상을 막습니다.
-  if(urgent.length){
-    await mapWithConcurrency(urgent,3,async spec=>{
-      await buildDongRouteOverlay(spec);
-      if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
-    });
-  }
-  if(local.length){
-    await mapWithConcurrency(local,3,async spec=>{
-      await buildDongRouteOverlay(spec);
-      if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
-    });
-  }
+  if(urgent.length)await buildRouteSpecsGeometryGrouped(urgent,type,isCurrent);
+  if(local.length)await buildRouteSpecsGeometryGrouped(local,type,isCurrent);
   // 다른 읍면동의 같은 수거주체 노선은 현재 주소 표시를 막지 않도록 뒤에서 준비합니다.
   if(rest.length){
-    mapWithConcurrency(rest,3,async spec=>{
-      await buildDongRouteOverlay(spec);
-      if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
-    }).catch(e=>console.warn('비가시 근거노선 백그라운드 준비 실패',e));
+    buildRouteSpecsGeometryGrouped(rest,type,isCurrent)
+      .catch(e=>console.warn('비가시 근거노선 백그라운드 준비 실패',e));
   }
   if(isCurrent())syncDongRouteVisibility(type);
 }
