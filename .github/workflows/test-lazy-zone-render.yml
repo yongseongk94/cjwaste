@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v4-basefill'" /tmp/test-live.html \
+              && grep -q "TEST_ZONE_RENDER_MODE='schedule-map-v1'" /tmp/test-live.html \
               && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v4-shared-geometry'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
               exit 0
@@ -55,7 +55,7 @@ jobs:
               display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0)
             }));
-            if(landing.mode!=='coarse-cover-v4-basefill')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
+            if(landing.mode!=='schedule-map-v1')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
             if(landing.display!==0)throw new Error('Landing created non-manual polygons: '+JSON.stringify(landing));
 
             const t0=Date.now();
@@ -123,19 +123,36 @@ jobs:
               }:null,
               focusTileCount:(serviceZoneOverlays.general||[]).filter(z=>z.addressFocus).length,
               focusTileAtAddress:(serviceZoneOverlays.general||[]).filter(z=>z.addressFocus).some(z=>pointInZonePolygon(currentLat,currentLng,z)),
-              wrongColoredScheduleCount:(serviceZoneOverlays.general||[]).filter(z=>z.displayOnly&&!z.displayBase&&!z.addressFocus&&DAYS.filter(d=>(z.days||[]).includes(d)).join('·')!==(addressLayerFocus.general?.signature||'')).length,
-              coloredScheduleSignatures:[...new Set((serviceZoneOverlays.general||[]).filter(z=>z.displayOnly&&!z.displayBase).map(z=>DAYS.filter(d=>(z.days||[]).includes(d)).join('·')))]
+              schedulePolygonCount:(serviceZoneOverlays.general||[]).filter(z=>z.displaySchedule).length,
+              coloredScheduleSignatures:[...new Set((serviceZoneOverlays.general||[]).filter(z=>z.displaySchedule).map(z=>DAYS.filter(d=>(z.days||[]).includes(d)).join('·')).filter(Boolean))],
+              addressSchedulePolygon:((serviceZoneOverlays.general||[]).find(z=>z.displaySchedule&&pointInZonePolygon(currentLat,currentLng,z))||null)?.days||[],
+              scheduleCoverage:(()=>{
+                const feature=districtFeatureMap.get('우암동');
+                const view=currentMapBoundsBox(0);
+                const sched=(serviceZoneOverlays.general||[]).filter(z=>z.displaySchedule);
+                let total=0,hit=0;
+                const latStep=Math.max((view.maxLat-view.minLat)/20,.00012);
+                const lngStep=Math.max((view.maxLng-view.minLng)/20,.00015);
+                for(let lat=view.minLat+latStep/2;lat<view.maxLat;lat+=latStep){
+                  for(let lng=view.minLng+lngStep/2;lng<view.maxLng;lng+=lngStep){
+                    if(!feature||!pointInGeoFeature([lng,lat],feature))continue;
+                    total++;
+                    if(sched.some(z=>pointInZonePolygon(lat,lng,z)))hit++;
+                  }
+                }
+                return {total,hit,ratio:total?hit/total:1};
+              })()
             }));
             result.routeReadyMs=routeReadyMs;
             result.elapsedMs=Date.now()-t0;
             console.log('LAZY_ZONE_RESULT',JSON.stringify(result));
-            console.log('ADDRESS_LAYER_FOCUS',JSON.stringify({focus:result.addressFocus,focusTileCount:result.focusTileCount,focusTileAtAddress:result.focusTileAtAddress,coloredScheduleSignatures:result.coloredScheduleSignatures,wrongColoredScheduleCount:result.wrongColoredScheduleCount}));
+            console.log('ADDRESS_LAYER_FOCUS',JSON.stringify({focus:result.addressFocus,focusTileCount:result.focusTileCount,focusTileAtAddress:result.focusTileAtAddress,schedulePolygonCount:result.schedulePolygonCount,coloredScheduleSignatures:result.coloredScheduleSignatures,addressSchedulePolygon:result.addressSchedulePolygon,scheduleCoverage:result.scheduleCoverage}));
             if(!result.district.includes('우암동'))throw new Error('Address did not resolve to Uam: '+JSON.stringify(result));
             if(result.badge.includes('미확정')||result.detail.includes('권역 미확정'))throw new Error('Uam still unresolved: '+JSON.stringify(result));
             if(result.uamRaw<500)throw new Error('Uam raw precision data missing: '+JSON.stringify(result));
             if(result.display<=0)throw new Error('No viewport polygons rendered: '+JSON.stringify(result));
-            if(result.display>36)throw new Error('Too many coarse cover polygons: '+JSON.stringify(result));
-            if(result.objects>40)throw new Error('Too many coarse cover polygon objects created: '+JSON.stringify(result));
+            if(result.display>80)throw new Error('Too many schedule-map polygons: '+JSON.stringify(result));
+            if(result.objects>90)throw new Error('Too many schedule-map polygon objects created: '+JSON.stringify(result));
             if(result.coarseCoverCount<=0)throw new Error('No coarse cover polygons rendered: '+JSON.stringify(result));
             if((result.coarseCoverage?.visibleRatio||0)<0.96)throw new Error('Coarse cover leaves too many visible-map gaps: '+JSON.stringify(result.coarseCoverage));
             if(!result.rawMatch)throw new Error('Raw-zone address match failed: '+JSON.stringify(result));
@@ -143,9 +160,11 @@ jobs:
             if(result.addressFocus.signature!=='월·수·금')throw new Error('Wrong address focus schedule: '+JSON.stringify(result.addressFocus));
             if(result.addressFocus.provider!=='제일환경')throw new Error('Wrong address focus provider: '+JSON.stringify(result.addressFocus));
             if(!result.addressFocus.vehicles.some(v=>String(v).includes('88어1536')))throw new Error('Wrong address focus vehicle: '+JSON.stringify(result.addressFocus));
-            if(result.focusTileCount<=0||!result.focusTileAtAddress)throw new Error('Address focus tile does not cover searched point: '+JSON.stringify(result));
-            if(result.wrongColoredScheduleCount!==0)throw new Error('Map is showing colored zones from a different schedule: '+JSON.stringify(result));
-            if(result.coloredScheduleSignatures.some(s=>s!=='월·수·금'))throw new Error('Colored layer schedule mismatch: '+JSON.stringify(result.coloredScheduleSignatures));
+            if(result.focusTileCount<=0||!result.focusTileAtAddress)throw new Error('Address focus region does not cover searched point: '+JSON.stringify(result));
+            if(result.schedulePolygonCount<=1)throw new Error('Schedule map did not create multiple regions: '+JSON.stringify(result));
+            if(result.coloredScheduleSignatures.length<2)throw new Error('Schedule map does not expose multiple schedules: '+JSON.stringify(result.coloredScheduleSignatures));
+            if(DAYS.filter(d=>result.addressSchedulePolygon.includes(d)).join('·')!=='월·수·금')throw new Error('Address point is not inside MWF schedule region: '+JSON.stringify(result.addressSchedulePolygon));
+            if((result.scheduleCoverage?.ratio||0)<0.96)throw new Error('Schedule-colored regions leave too many visible gaps: '+JSON.stringify(result.scheduleCoverage));
             console.log('ROUTE_DIAG',JSON.stringify({routeObjects:result.routeObjects,routeVisible:result.routeVisible,routePolylineRefs:result.routePolylineRefs,routeUniquePolylineObjects:result.routeUniquePolylineObjects,routeUniqueVisiblePolylines:result.routeUniqueVisiblePolylines,routeGeometryGroups:result.routeGeometryGroups,uam1536Groups:result.uam1536Groups,uam1536Days:result.uam1536Days,selectedVehicle:result.selectedVehicle,activeDay:result.activeDay,routeReadyMs:result.routeReadyMs,routeSelection:result.routeSelection}));
             if(result.routePriorityMode!=='address-first-v4-shared-geometry')throw new Error('Wrong route loader version: '+JSON.stringify(result));
             if(result.routeVisible<=0)throw new Error('Evidence route is not visible: '+JSON.stringify(result));
