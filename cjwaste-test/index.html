@@ -1972,6 +1972,13 @@ function resultMapVisible(){
 const COARSE_ZONE_LAT_STEP=.00115;  // 약 128m
 const COARSE_ZONE_LNG_STEP=.00148; // 청주 위도 기준 약 130m
 const COARSE_ZONE_MAX_POLYGONS=120;
+// 큰 대표격자는 유지하되 서로 다른 차량·요일 경계가 한 칸 안에 섞일 때만 2×2로 세분화합니다.
+// 전체를 촘촘하게 만들지 않아 로딩 부담을 억제하면서 일정 경계 오차를 줄입니다.
+const TEST_ZONE_DETAIL_MODE='adaptive-boundary-v1';
+const COARSE_ZONE_DETAIL_SPLIT=2;
+const COARSE_ZONE_DETAIL_PROBES=[
+  [.22,.22],[.22,.78],[.50,.50],[.78,.22],[.78,.78]
+];
 function coarseZoneSignature(z){
   const vehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean).slice().sort();
   const days=DAYS.filter(d=>(z?.days||[]).includes(d));
@@ -2016,18 +2023,27 @@ function nearestScheduleDisplayZone(type,district,lat,lng){
 function mergeScheduleDisplayCells(cells){
   const rows=new Map();
   for(const cell of cells){
-    if(!rows.has(cell.iy))rows.set(cell.iy,[]);
-    rows.get(cell.iy).push(cell);
+    const scale=cell.scale||1;
+    const rowKey=scale+'|'+cell.iy;
+    if(!rows.has(rowKey))rows.set(rowKey,[]);
+    rows.get(rowKey).push({...cell,scale});
   }
 
   const runs=[];
-  for(const [iy,row] of [...rows.entries()].sort((a,b)=>a[0]-b[0])){
+  const orderedRows=[...rows.entries()].sort((a,b)=>{
+    const [sa,ia]=a[0].split('|').map(Number);
+    const [sb,ib]=b[0].split('|').map(Number);
+    return (ia/sa)-(ib/sb)||sa-sb;
+  });
+  for(const [,row] of orderedRows){
     row.sort((a,b)=>a.ix-b.ix);
     let run=null;
     for(const cell of row){
-      if(!run||run.district!==cell.district||run.sig!==cell.sig||cell.ix!==run.x1+1){
+      if(!run||run.scale!==cell.scale||run.district!==cell.district||run.sig!==cell.sig||cell.ix!==run.x1+1){
         if(run)runs.push(run);
-        run={iy0:iy,iy1:iy,x0:cell.ix,x1:cell.ix,sig:cell.sig,scheduleSig:cell.scheduleSig,rep:cell.rep,addressFocus:!!cell.addressFocus,district:cell.district,count:1};
+        run={iy0:cell.iy,iy1:cell.iy,x0:cell.ix,x1:cell.ix,scale:cell.scale,
+          sig:cell.sig,scheduleSig:cell.scheduleSig,rep:cell.rep,addressFocus:!!cell.addressFocus,
+          district:cell.district,count:1};
       }else{
         run.x1=cell.ix;
         run.count++;
@@ -2038,10 +2054,10 @@ function mergeScheduleDisplayCells(cells){
   }
 
   const active=new Map(),merged=[];
-  for(const run of runs.sort((a,b)=>a.iy0-b.iy0||a.x0-b.x0)){
-    const key=run.district+'|'+run.sig+'|'+run.x0+'|'+run.x1;
+  for(const run of runs.sort((a,b)=>(a.iy0/a.scale)-(b.iy0/b.scale)||a.scale-b.scale||a.x0-b.x0)){
+    const key=run.district+'|'+run.sig+'|'+run.scale+'|'+run.x0+'|'+run.x1;
     const prev=active.get(key);
-    if(prev&&run.iy0===prev.iy1+1){
+    if(prev&&run.scale===prev.scale&&run.iy0===prev.iy1+1){
       prev.iy1=run.iy1;
       prev.count+=run.count;
       prev.addressFocus=prev.addressFocus||run.addressFocus;
@@ -2148,6 +2164,51 @@ function coarseDisplayZones(type){
         let rep=nearestScheduleDisplayZone(type,district,classLat,classLng);
         if(!rep)continue;
 
+        // 큰 격자 안의 여러 지점을 원본 세부권역에 대입해 서로 다른 차량/요일이 함께 잡히는지 확인합니다.
+        // 혼합 셀만 2×2로 세분화하고, 단일 일정 셀은 기존 큰 격자를 그대로 유지합니다.
+        const probeAssignments=[];
+        for(const [fy,fx] of COARSE_ZONE_DETAIL_PROBES){
+          const plat=lat0+(lat1-lat0)*fy,plng=lng0+(lng1-lng0)*fx;
+          if(!pointInGeoFeature([plng,plat],feature))continue;
+          const prep=nearestScheduleDisplayZone(type,district,plat,plng);
+          const psig=prep?assignmentDisplaySignature(prep):'';
+          if(psig)probeAssignments.push({rep:prep,sig:psig});
+        }
+        const probeSigs=new Set(probeAssignments.map(x=>x.sig));
+        if(probeSigs.size>1){
+          const split=COARSE_ZONE_DETAIL_SPLIT;
+          const childLat=(lat1-lat0)/split,childLng=(lng1-lng0)/split;
+          for(let sy=0;sy<split;sy++)for(let sx=0;sx<split;sx++){
+            const clat0=lat0+childLat*sy,clat1=clat0+childLat;
+            const clng0=lng0+childLng*sx,clng1=clng0+childLng;
+            const midLat=(clat0+clat1)/2,midLng=(clng0+clng1)/2;
+            if(!pointInGeoFeature([midLng,midLat],feature)){
+              const childClip=polygonClipping.intersection(mask,[[[clng0,clat0],[clng1,clat0],[clng1,clat1],[clng0,clat1],[clng0,clat0]]]);
+              if(!childClip.length)continue;
+            }
+            let childRep=nearestScheduleDisplayZone(type,district,midLat,midLng)||rep;
+            let addressFocus=false;
+            if(focus&&focus.district===district&&
+               +focus.lat>=clat0&&+focus.lat<clat1&&+focus.lng>=clng0&&+focus.lng<clng1){
+              childRep={
+                ...childRep,
+                district,
+                vehicle:(focus.vehicles||[])[0]||childRep.vehicle,
+                vehicles:[...(focus.vehicles||[])],
+                provider:focus.provider||childRep.provider||'',
+                days:[...(focus.days||[])],
+                estimated:true
+              };
+              addressFocus=true;
+            }
+            const scheduleSig=scheduleDisplaySignature(childRep);
+            if(!scheduleSig||!rawZoneMatchesCurrentFilter(type,childRep))continue;
+            const sig=assignmentDisplaySignature(childRep);
+            cells.push({district,iy:iy*split+sy,ix:ix*split+sx,scale:split,sig,scheduleSig,rep:childRep,addressFocus});
+          }
+          continue;
+        }
+
         let addressFocus=false;
         if(focus&&focus.district===district&&
            +focus.lat>=lat0&&+focus.lat<lat1&&+focus.lng>=lng0&&+focus.lng<lng1){
@@ -2166,17 +2227,19 @@ function coarseDisplayZones(type){
         const scheduleSig=scheduleDisplaySignature(rep);
         if(!scheduleSig||!rawZoneMatchesCurrentFilter(type,rep))continue;
         const sig=assignmentDisplaySignature(rep);
-        cells.push({district,iy,ix,sig,scheduleSig,rep,addressFocus});
+        cells.push({district,iy,ix,scale:1,sig,scheduleSig,rep,addressFocus});
       }
     }
   }
 
   const merged=mergeScheduleDisplayCells(cells);
   return merged.flatMap(m=>{
-    const lat0=m.iy0*COARSE_ZONE_LAT_STEP;
-    const lat1=(m.iy1+1)*COARSE_ZONE_LAT_STEP;
-    const lng0=m.x0*COARSE_ZONE_LNG_STEP;
-    const lng1=(m.x1+1)*COARSE_ZONE_LNG_STEP;
+    const scale=m.scale||1;
+    const latStep=COARSE_ZONE_LAT_STEP/scale,lngStep=COARSE_ZONE_LNG_STEP/scale;
+    const lat0=m.iy0*latStep;
+    const lat1=(m.iy1+1)*latStep;
+    const lng0=m.x0*lngStep;
+    const lng1=(m.x1+1)*lngStep;
     const points=[
       {lat:lat0,lng:lng0},{lat:lat0,lng:lng1},
       {lat:lat1,lng:lng1},{lat:lat1,lng:lng0}
@@ -2193,7 +2256,8 @@ function coarseDisplayZones(type){
       provider:m.rep.provider||routeCompany(m.rep.vehicle),
       days:[...(m.rep.days||[])],
       coarseMembers:m.count,
-      coarseMixed:false,
+      coarseScale:m.scale||1,
+      coarseMixed:(m.scale||1)>1,
       coarseKey:m.district+'|'+m.sig+'|'+m.iy0+'-'+m.iy1+'|'+m.x0+'-'+m.x1,
       assignmentKey:m.sig,
       scheduleSignature:m.scheduleSig||scheduleDisplaySignature(m.rep),
