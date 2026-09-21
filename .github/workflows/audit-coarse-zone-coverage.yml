@@ -79,39 +79,61 @@ jobs:
                     results[type][district]={error:'no raw zones'};
                     continue;
                   }
+                  const rawCenters=raw.map(z=>{
+                    const zb=rawZoneBounds(z);if(!zb)return null;
+                    return {lat:(zb.minLat+zb.maxLat)/2,lng:(zb.minLng+zb.maxLng)/2};
+                  }).filter(Boolean);
                   const b=featureBounds(feature);
-                  map.setCenter(new kakao.maps.LatLng((b.minLat+b.maxLat)/2,(b.minLng+b.maxLng)/2));
-                  map.setLevel(4);
-                  map.relayout();
-                  await sleep(120);
+                  const candidates=[
+                    {lat:(b.minLat+b.maxLat)/2,lng:(b.minLng+b.maxLng)/2,label:'center'},
+                    rawCenters.reduce((a,p)=>!a||p.lat<a.lat?p:a,null),
+                    rawCenters.reduce((a,p)=>!a||p.lat>a.lat?p:a,null),
+                    rawCenters.reduce((a,p)=>!a||p.lng<a.lng?p:a,null),
+                    rawCenters.reduce((a,p)=>!a||p.lng>a.lng?p:a,null)
+                  ].filter(Boolean);
+                  const samples=[];
+                  for(let si=0;si<candidates.length;si++){
+                    const p=candidates[si];
+                    map.setCenter(new kakao.maps.LatLng(p.lat,p.lng));
+                    map.setLevel(4);
+                    map.relayout();
+                    await sleep(80);
 
-                  // Only keep this type's manual items; rebuild display from raw for current viewport.
-                  const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
-                  for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
-                  serviceZoneOverlays[type]=manual;
-                  materializeVisibleRawServiceZones(type);
-                  await sleep(60);
+                    const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
+                    for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
+                    serviceZoneOverlays[type]=manual;
+                    materializeVisibleRawServiceZones(type);
+                    await sleep(40);
 
-                  const cover=(serviceZoneOverlays[type]||[]).filter(z=>z.displayOnly&&z.coarseCover);
-                  const view=currentMapBoundsBox(0);
-                  let total=0,hit=0,visibleTotal=0,visibleHit=0;
-                  for(const z of raw){
-                    const zb=rawZoneBounds(z);if(!zb)continue;
-                    const lat=(zb.minLat+zb.maxLat)/2,lng=(zb.minLng+zb.maxLng)/2;
-                    total++;
-                    const covered=cover.some(c=>pointInZonePolygon(lat,lng,c));
-                    if(covered)hit++;
-                    const visible=lat>=view.minLat&&lat<=view.maxLat&&lng>=view.minLng&&lng<=view.maxLng;
-                    if(visible){
+                    const cover=(serviceZoneOverlays[type]||[]).filter(z=>z.displayOnly&&z.coarseCover);
+                    const view=currentMapBoundsBox(0);
+                    let visibleTotal=0,visibleHit=0;
+                    for(const q of rawCenters){
+                      const visible=q.lat>=view.minLat&&q.lat<=view.maxLat&&q.lng>=view.minLng&&q.lng<=view.maxLng;
+                      if(!visible)continue;
                       visibleTotal++;
-                      if(covered)visibleHit++;
+                      if(cover.some(c=>pointInZonePolygon(q.lat,q.lng,c)))visibleHit++;
                     }
+                    samples.push({
+                      label:p.label||['center','south','north','west','east'][si]||String(si),
+                      polygons:cover.length,visibleTotal,visibleHit,
+                      visibleRatio:visibleTotal?visibleHit/visibleTotal:1
+                    });
+                  }
+
+                  // Whole-district ratio is informational only; display is deliberately viewport-driven.
+                  const finalCover=(serviceZoneOverlays[type]||[]).filter(z=>z.displayOnly&&z.coarseCover);
+                  let total=0,hit=0;
+                  for(const q of rawCenters){
+                    total++;
+                    if(finalCover.some(c=>pointInZonePolygon(q.lat,q.lng,c)))hit++;
                   }
                   results[type][district]={
                     raw:raw.length,
-                    polygons:cover.length,
+                    maxPolygons:Math.max(...samples.map(s=>s.polygons),0),
                     total,hit,ratio:total?hit/total:1,
-                    visibleTotal,visibleHit,visibleRatio:visibleTotal?visibleHit/visibleTotal:1
+                    minVisibleRatio:Math.min(...samples.map(s=>s.visibleRatio)),
+                    samples
                   };
                 }
               }
@@ -122,7 +144,7 @@ jobs:
             for(const type of ['general','recycle']){
               for(const [district,r] of Object.entries(result[type]||{})){
                 if(r.error)failures.push(type+' '+district+' '+r.error);
-                else if((r.visibleRatio??0)<0.96)failures.push(type+' '+district+' visibleRatio='+r.visibleRatio);
+                else if((r.minVisibleRatio??0)<0.96)failures.push(type+' '+district+' minVisibleRatio='+r.minVisibleRatio);
               }
             }
             if(failures.length)throw new Error('Coverage failures: '+failures.join(' | '));
