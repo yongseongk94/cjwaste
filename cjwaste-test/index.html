@@ -561,6 +561,10 @@ const VERIFIED_ROUTE_RI_RULES=[
   {district:'북이면',ri:'내추리',terms:['북이초','북이초등학교','굿모닝요양원','다모아패키지']},
   {district:'북이면',ri:'옥수리',terms:['가구대통령']},
   {district:'북이면',ri:'대길리',terms:['대길2리경로당']},
+  // 현지 지명 '화죽리'는 화상·화하리 일대의 수거 경유지로 사용합니다.
+  // 법정리로 새로 만들지 않고 원본 코스의 화죽리 표기를 두 법정리의 근거로 연결합니다.
+  {district:'북이면',ri:'화상리',terms:['화죽리','화죽리버스정류장']},
+  {district:'북이면',ri:'화하리',terms:['화죽리','화죽리버스정류장']},
 ];
 
 // 코스표에 '리' 없이 적힌 법정리 약칭 예외.
@@ -1116,6 +1120,12 @@ const routePlaceSearchCache=new Map();
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache';
 const DONG_ROUTE_CACHE_STORE='routes';
 const DONG_ROUTE_CACHE_VERSION='v76-layer-visibility-refresh';
+// 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
+// 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
+const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
+function routeCachePatchKey(spec){return `${spec?.type||''}|${spec?.vehicle||''}|${spec?.day||''}`}
+function routeNeedsPatchedGeometry(spec){return ROUTE_CACHE_PATCH_KEYS.has(routeCachePatchKey(spec))}
+function routeCachePatchSuffix(spec){return routeNeedsPatchedGeometry(spec)?'|hwajuk-v1':''}
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1157,7 +1167,7 @@ function contractorGeometryDays(spec){
 function routeCacheKey(spec){
   const shared=contractorRouteGeometryKey(spec);
   if(shared)return shared;
-  return DONG_ROUTE_CACHE_VERSION+'|'+spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeTextHash(spec.raw)+routeScopeCacheSuffix(spec);
+  return DONG_ROUTE_CACHE_VERSION+'|'+spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeTextHash(spec.raw)+routeScopeCacheSuffix(spec)+routeCachePatchSuffix(spec);
 }
 function openDongRouteCache(){
   return new Promise((resolve,reject)=>{
@@ -1310,6 +1320,9 @@ const ROUTE_SEARCH_ALIASES={
   '성모사거리':'청주성모병원 사거리','성모병원사거리':'청주성모병원 사거리',
   '외남':'외남동','외하':'외하동','정상':'정상동','정북':'정북동','정하':'정하동','주중':'주중동',
   '입상':'입상리','은곡':'은곡리','원통':'원통리',
+  // 북이면 현지 지명 화죽리는 카카오 장소검색에서 실제 정류장을 우선 잡아
+  // 3344/0262 목요일 노선이 화상·화하리 일대를 실제 도로 경유하도록 합니다.
+  '화죽리':'화죽리 버스정류장','화죽리버스정류장':'화죽리 버스정류장',
   // 북이면 장양리 대표표기는 실제 장양1·2·3리 경유점으로 확장합니다.
   '장양1리':'청주시 청원구 북이면 장양1리','장양2리':'청주시 청원구 북이면 장양2리','장양3리':'청주시 청원구 북이면 장양3리',
   // 3346 화요일 원본 코스표에는 '상리18번길'로 기재돼 있으나 실제 도로명 검색은 '상리로18번길'로 보정합니다.
@@ -1847,6 +1860,8 @@ function hydrateBundledPrecomputedData(dataOverride=null){
       for(const r of (data.routes||[])){
         const spec=bundleRouteRecordSpec(r,specs);
         if(!spec||existingDongRouteOverlay(spec))continue;
+        // 화죽리 경유 보강 대상은 구형 사전계산 좌표를 복원하지 않고 브라우저에서 새로 계산합니다.
+        if(routeNeedsPatchedGeometry(spec))continue;
         const bundleRouteData={...(r.data||{})};
         const audit=finalRouteCoordinateAudit(spec,bundleRouteData);
         if(!audit.ok){
