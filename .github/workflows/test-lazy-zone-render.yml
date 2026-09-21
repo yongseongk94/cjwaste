@@ -84,9 +84,9 @@ jobs:
               routeSelection:routeCandidatesForSelection('general').map(s=>({vehicle:s.vehicle,day:s.day,districts:s.districts,provider:s.provider})).slice(0,50),
               selectedVehicle:selectedVehicle.general,
               activeDay,
-              routePriorityMode:TEST_ROUTE_PRIORITY_MODE,
-              routeReadyMs
+              routePriorityMode:TEST_ROUTE_PRIORITY_MODE
             }));
+            result.routeReadyMs=routeReadyMs;
             result.elapsedMs=Date.now()-t0;
             console.log('LAZY_ZONE_RESULT',JSON.stringify(result));
             if(!result.district.includes('우암동'))throw new Error('Address did not resolve to Uam: '+JSON.stringify(result));
