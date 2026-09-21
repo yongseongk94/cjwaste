@@ -4989,15 +4989,15 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
       // 전체요일은 지도를 덜 복잡하게 보이도록 면색을 낮추고,
       // 검색주소와 일치한 권역 또는 사용자가 고른 요일은 강하게 강조합니다.
       const fillOpacity=z.manual?.28:(z.ambiguous
-        ?(daySelected||focusMatch?.25:.10)
+        ?(daySelected||focusMatch ? .25 : .10)
         :(daySelected
-          ?(contract?.42:(rural?.35:.31))
+          ?(contract ? .42 : (rural ? .35 : .31))
           :(focus
-            ?(focusMatch?(contract?.46:(rural?.42:.38)):(contract?.12:(rural?.10:.08)))
-            :(contract?.20:(rural?.16:.13)))));
+            ?(focusMatch ? (contract ? .46 : (rural ? .42 : .38)) : (contract ? .12 : (rural ? .10 : .08)))
+            :(contract ? .20 : (rural ? .16 : .13)))));
       const strokeOpacity=z.gridMerged?0:(z.manual?.95:(daySelected||focusMatch
-        ?(contract?.90:(rural?.68:.55))
-        :(contract?.46:(rural?.26:.18))));
+        ?(contract ? .90 : (rural ? .68 : .55))
+        :(contract ? .46 : (rural ? .26 : .18))));
       z.polygon.setOptions({
         fillColor:color,
         fillOpacity,
