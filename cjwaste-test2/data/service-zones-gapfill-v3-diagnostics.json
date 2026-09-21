@@ -1,0 +1,22 @@
+{
+  "general": {
+    "district": "우암동",
+    "type": "general",
+    "inside": 4606,
+    "route20": 1602,
+    "zone": 3004,
+    "uncovered": 0,
+    "uncoveredRate": 0,
+    "samples": []
+  },
+  "recycle": {
+    "district": "우암동",
+    "type": "recycle",
+    "inside": 4606,
+    "route20": 1407,
+    "zone": 3199,
+    "uncovered": 0,
+    "uncoveredRate": 0,
+    "samples": []
+  }
+}
