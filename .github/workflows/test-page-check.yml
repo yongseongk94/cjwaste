@@ -3,6 +3,7 @@ name: Test page JS check
 on:
   push:
     paths:
+      - 'index.html'
       - 'cjwaste-test/**'
       - '.github/workflows/test-page-check.yml'
 
@@ -17,10 +18,12 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
-          s=Path('cjwaste-test/index.html').read_text(encoding='utf-8')
-          scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
-          Path('/tmp/cjwaste-test-inline.js').write_text(scripts,encoding='utf-8')
+          for src,dst in [('index.html','/tmp/cjwaste-main-inline.js'),('cjwaste-test/index.html','/tmp/cjwaste-test-inline.js')]:
+              s=Path(src).read_text(encoding='utf-8')
+              scripts='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
+              Path(dst).write_text(scripts,encoding='utf-8')
           PY
+          node --check /tmp/cjwaste-main-inline.js
           node --check /tmp/cjwaste-test-inline.js
       - name: Check confirmed schedule regression rules
         shell: bash
@@ -42,6 +45,9 @@ jobs:
               '화죽리→화하리 근거': "{district:'북이면',ri:'화하리',terms:['화죽리','화죽리버스정류장']}",
               '3344 목요일 선택 캐시 갱신': "'general|3344|목'",
               '0262 목요일 선택 캐시 갱신': "'recycle|0262|목'",
+              '오창 산단 구간 필터': "function filterOchangIndustrialContractRaw(raw)",
+              '오창 산단 허용어': "const OCHANG_CONTRACT_INDUSTRIAL_TERMS=[",
+              '오창 구형 대행번들 차단': "routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec)",
           }
           missing=[name for name,needle in required.items() if needle not in s]
           if missing:
