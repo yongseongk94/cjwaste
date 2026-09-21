@@ -19,7 +19,7 @@ jobs:
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
               && grep -q "TEST_ZONE_RENDER_MODE='center-tile-v1'" /tmp/test-live.html \
-              && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v1'" /tmp/test-live.html; then
+              && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v2-boundary-ready'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
               exit 0
             fi
@@ -97,7 +97,7 @@ jobs:
             if(result.objects>=320)throw new Error('Too many polygon objects created: '+JSON.stringify(result));
             if(!result.rawMatch)throw new Error('Raw-zone address match failed: '+JSON.stringify(result));
             console.log('ROUTE_DIAG',JSON.stringify({routeObjects:result.routeObjects,routeVisible:result.routeVisible,selectedVehicle:result.selectedVehicle,activeDay:result.activeDay,routeReadyMs:result.routeReadyMs,routeSelection:result.routeSelection}));
-            if(result.routePriorityMode!=='address-first-v1')throw new Error('Wrong route loader version: '+JSON.stringify(result));
+            if(result.routePriorityMode!=='address-first-v2-boundary-ready')throw new Error('Wrong route loader version: '+JSON.stringify(result));
             if(result.routeVisible<=0)throw new Error('Evidence route is not visible: '+JSON.stringify(result));
             if(!result.routeSelection?.length||!result.routeSelection[0].districts?.includes('우암동')||!String(result.routeSelection[0].vehicle).includes('88어1536'))throw new Error('Address route is not first priority: '+JSON.stringify(result.routeSelection?.slice(0,6)));
             if(errors.length)throw new Error('Page errors: '+errors.join(' | '));
