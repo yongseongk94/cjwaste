@@ -1465,8 +1465,9 @@ const serviceZoneRegions=[];
 let serviceRegionLoadComplete=false;
 const ADMIN_ZONE_STORAGE_KEY='cjwaste-admin-service-zones-v1';
 const PUBLISHED_SERVICE_ZONES=[]; // 추후 검증 완료 권역을 코드에 영구 반영할 때 사용
-const SERVICE_ZONE_CACHE_VERSION=`zone-v90-test-gapfill-v1|${DONG_ROUTE_CACHE_VERSION}`;
+const SERVICE_ZONE_CACHE_VERSION=`zone-v90-test-gapfill-v2|${DONG_ROUTE_CACHE_VERSION}`;
 const SERVICE_ZONE_PRECOMPUTE_ONLY=new URLSearchParams(location.search).get('zone_only')==='1';
+const SERVICE_ZONE_PRECOMPUTE_DISTRICT=canonicalDistrict(new URLSearchParams(location.search).get('zone_district')||'');
 const serviceZoneCacheHydrated={general:false,recycle:false};
 let manualServiceZones=[];
 let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,adminDraftPolygon=null;
@@ -1475,7 +1476,7 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
 let bundledServiceZoneManifest=null;
 let bundledServiceZoneManifestPromise=null;
-const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test/data/service-zones-gapfill-manifest.json';
+const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test/data/service-zones-gapfill-v2-manifest.json';
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
 
@@ -4603,7 +4604,7 @@ async function buildZonePolygons(){
       matched++;
       districtFeatures.set(district,f);
       districtFeatureMap.set(district,f);
-      if(!RI_LAYER_DISTRICTS.has(district))serviceZoneRegions.push({district,riName:'',riCode:'',feature:f});
+      if(!RI_LAYER_DISTRICTS.has(district)&&(!SERVICE_ZONE_PRECOMPUTE_ONLY||!SERVICE_ZONE_PRECOMPUTE_DISTRICT||district===SERVICE_ZONE_PRECOMPUTE_DISTRICT))serviceZoneRegions.push({district,riName:'',riCode:'',feature:f});
       addDistrictOutlineGeometry(f,district);
       // 음식물: 동 지역은 행정동 경계, 읍·면은 아래 법정리 단계에서 정확한 시행/제외 범위를 생성합니다.
       if(!RI_LAYER_DISTRICTS.has(district))addFoodGeometry(f,district);
@@ -4649,7 +4650,7 @@ async function buildZonePolygons(){
       seenOfficialRi[district].add(district==='오창읍'&&riName==='화산리'?`${riName}|${riCode}`:riName);
       riFeatureMap.set(`${district}|${riName}|${riCode}`,f);
       if(!riFeatureMap.has(`${district}|${riName}`))riFeatureMap.set(`${district}|${riName}`,f);
-      serviceZoneRegions.push({district,riName,riCode,feature:f});
+      if(!SERVICE_ZONE_PRECOMPUTE_ONLY||!SERVICE_ZONE_PRECOMPUTE_DISTRICT||district===SERVICE_ZONE_PRECOMPUTE_DISTRICT)serviceZoneRegions.push({district,riName,riCode,feature:f});
 
       // 생활·재활용: 법정리별 일정표 + 시설/도로명 실제 주소대조 규칙을 붙여 생성.
       // 오창의 동명이리 화산리는 li_cd로 꽃화산/빛화산을 구분합니다.
