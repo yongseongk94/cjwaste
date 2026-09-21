@@ -177,7 +177,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -f regenerate-test-zones.js package.json package-lock.json tools/regenerate-test-gapfill.trigger
+          rm -f regenerate-test-zones.js package.json package-lock.json
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add cjwaste-test/data/service-zones-gapfill-v3-manifest.json \
