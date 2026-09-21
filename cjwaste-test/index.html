@@ -361,7 +361,7 @@ function contractExactScheduleMatch(type,ctx){
   return best;
 }
 function renderContractExactSchedule(type,row,ctx){
-  const days=DAYS.filter(d=>(row.days||[]).includes(d));selectedVehicle[type]=row.provider||'전체';const badge=document.getElementById(type+'Badge');badge.textContent=`대행 · ${days.join('·')}`;renderDays(type+'Days',days);
+  const days=DAYS.filter(d=>(row.days||[]).includes(d));selectedVehicle[type]=row.provider||'전체';preferredRouteVehicle[type]=row.vehicle||'';const badge=document.getElementById(type+'Badge');badge.textContent=`대행 · ${days.join('·')}`;renderDays(type+'Days',days);
   const phone=CONTRACT_OPERATOR_INFO[row.provider]?.phone||'';const place=[ctx?.legalEmd||ctx?.district,ctx?.legalRi].filter(Boolean).join(' ');const name=row.name?` (${escapeHtml(row.name)})`:'';
   document.getElementById(type+'Detail').innerHTML=`<div class="verified">${place?`<strong>판정지역:</strong> ${escapeHtml(place)}<br>`:''}<strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${escapeHtml(row.provider)}${phone?' · '+phone:''}<br><strong>차량:</strong> ${escapeHtml(row.vehicle||'확인')}<br><strong>수거일:</strong> ${days.join(' · ')}${row.time&&row.time!=='"'?`<br><strong>수거시간:</strong> ${escapeHtml(row.time)}`:''}<br><strong>원자료 위치:</strong> ${escapeHtml(row.address||'')}${name}${type==='general'?contractorIncombustibleSummary(ctx):''}<br><span style="color:#6b7280">※ 대행업체 수거노선표의 해당 주소 행과 직접 매칭한 일정입니다.</span></div>`;
 }
@@ -1447,7 +1447,7 @@ function resolveDistrict(lat,lng,done){
     refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
   });
 }
-function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
+function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';preferredRouteVehicle.general='';preferredRouteVehicle.recycle='';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
 function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
 function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
 
@@ -1455,6 +1455,8 @@ function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const ad
 
 let nearbyScheduleRequestSeq=0;
 let zoneBuildPromise=null;
+// 검색주소에 실제로 매칭된 차량을 근거노선 생성 최우선 순위로 사용합니다.
+const preferredRouteVehicle={general:'',recycle:''};
 
 // 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
 const serviceLayerState={zone:true,route:true};
@@ -2121,6 +2123,7 @@ function renderNearbyRouteSchedule(type,matches,ctx){
   const limitM=Math.round(routeMatchLimitKm(district)*1000);
   const company=match.provider||routeCompany(match.vehicle);
   selectedVehicle[type]=company||match.vehicle;
+  preferredRouteVehicle[type]=match.vehicle||'';
 
   const orderedDays=DAYS.filter(d=>match.days.includes(d));
   const badge=document.getElementById(type+'Badge');
@@ -2539,6 +2542,7 @@ function renderVehicleFilter(){
 function setVehicle(vehicle){
   if(activeLayer!=='general'&&activeLayer!=='recycle')return;
   selectedVehicle[activeLayer]=vehicle||'전체';
+  preferredRouteVehicle[activeLayer]='';
   renderVehicleFilter();
   setLayer(activeLayer);
 }
@@ -2572,7 +2576,22 @@ function routeCandidatesForSelection(type){
       if(rural.length)out.push({...common,districts:rural,scopeKind:'rural'});
     }
   }
-  return out;
+  const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
+  const preferred=String(preferredRouteVehicle[type]||'').trim();
+  const preferredDays=new Set();
+  if(currentAddress&&here){
+    const exact=contractExactScheduleMatch(type,{address:currentAddress,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi});
+    (exact?.days||[]).forEach(d=>preferredDays.add(d));
+  }
+  const score=s=>{
+    let n=0;
+    const districts=(s.districts||[]).map(canonicalDistrict);
+    if(here&&districts.includes(here))n-=1000;
+    if(preferred&&(String(s.vehicle)===preferred||routePlate(s.vehicle)===preferred))n-=500;
+    if(preferredDays.has(s.day))n-=50;
+    return n;
+  };
+  return out.map((s,i)=>({s,i,n:score(s)})).sort((a,b)=>a.n-b.n||a.i-b.i).map(x=>x.s);
 }
 function simplifyRoutePlaceTerm(term){
   let t=String(term||'').trim();
@@ -3638,10 +3657,36 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
   await hydrateExternalBundledPrecomputedData();
   if(isCurrent())syncDongRouteVisibility(type);
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
-  await mapWithConcurrency(missing,3,async spec=>{
-    await buildDongRouteOverlay(spec);
-    if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
+  const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
+  const preferred=String(preferredRouteVehicle[type]||'').trim();
+  const urgent=missing.filter(s=>{
+    const local=here&&(s.districts||[]).map(canonicalDistrict).includes(here);
+    const exact=preferred&&(String(s.vehicle)===preferred||routePlate(s.vehicle)===preferred);
+    return local&&exact;
   });
+  const local=missing.filter(s=>!urgent.includes(s)&&here&&(s.districts||[]).map(canonicalDistrict).includes(here));
+  const rest=missing.filter(s=>!urgent.includes(s)&&!local.includes(s));
+
+  // 검색주소의 실제 매칭 차량부터 먼저 만들어 근거노선이 일정 카드보다 늦게 뜨는 현상을 막습니다.
+  if(urgent.length){
+    await mapWithConcurrency(urgent,3,async spec=>{
+      await buildDongRouteOverlay(spec);
+      if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
+    });
+  }
+  if(local.length){
+    await mapWithConcurrency(local,3,async spec=>{
+      await buildDongRouteOverlay(spec);
+      if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
+    });
+  }
+  // 다른 읍면동의 같은 수거주체 노선은 현재 주소 표시를 막지 않도록 뒤에서 준비합니다.
+  if(rest.length){
+    mapWithConcurrency(rest,3,async spec=>{
+      await buildDongRouteOverlay(spec);
+      if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
+    }).catch(e=>console.warn('비가시 근거노선 백그라운드 준비 실패',e));
+  }
   if(isCurrent())syncDongRouteVisibility(type);
 }
 
@@ -4215,7 +4260,10 @@ function renderServiceZoneSchedule(type,match,ctx,options={}){
   const company=match.provider||routeCompany(match.vehicle);
   const vehicles=(match.vehicles||[]).length?match.vehicles:[match.vehicle].filter(Boolean);
   const plate=match.plate||((vehicles.length===1)?routePlate(vehicles[0]):'');
-  if(!options.fromMap)selectedVehicle[type]=company||match.vehicle||'전체';
+  if(!options.fromMap){
+    selectedVehicle[type]=company||match.vehicle||'전체';
+    preferredRouteVehicle[type]=match.vehicle||'';
+  }
   const days=DAYS.filter(d=>(match.days||[]).includes(d));const badge=document.getElementById(type+'Badge');
   const estimated=match.zoneStatus==='estimated'||!!match.estimated;
   const estimateMark=estimated?' (추정)':'';
