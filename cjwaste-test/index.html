@@ -1302,7 +1302,7 @@ function getFoodExclusion(legalEmd,legalRi,riCode=''){
   return {excluded:false,label:[emd,ri].filter(Boolean).join(' '),reason:'음식물류 폐기물 분류배출 시행지역'};
 }
 function setLandingStatus(msg,error=false){const el=document.getElementById('landingStatus');el.textContent=msg;el.classList.toggle('error',error)}
-function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>{if(!map)return;map.relayout();queueActiveServiceLayerRefresh(true);scheduleVisibleServiceZoneMaterialization(activeLayer)},120)}
+function showResult(){document.getElementById('landing').classList.add('hidden');setTimeout(()=>{if(!map)return;map.relayout();setLayer(activeLayer);queueActiveServiceLayerRefresh(true)},180)}
 function showLanding(){document.getElementById('landing').classList.remove('hidden');document.getElementById('landingInput').focus()}
 function updateLocation(address,lat,lng){nearbyScheduleRequestSeq++;currentAddress=address||'';currentLat=+lat;currentLng=+lng;document.getElementById('selectedAddress').textContent=address;document.getElementById('selectedCoords').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`}
 
@@ -2476,8 +2476,8 @@ async function refreshNearbyRouteSchedules(ctx){
   // 북이면 광암리는 사용자가 지정한 금암리 일정 상속을 그대로 유지합니다.
   if(district==='북이면'&&normalizeRi(ctx.legalRi||'')==='광암리')return;
   const seq=++nearbyScheduleRequestSeq;
-  // 주소 검색은 첫 화면 지연 로딩보다 우선합니다. 예약만 된 상태라도 필요한 행정경계를 즉시 준비합니다.
-  try{await ensureTestAdminBoundaryLoad()}catch(e){}
+  // TEST FAST PATH: 생활·재활용 주소 판정은 정적 raw 권역/실제노선을 직접 사용하므로
+  // 대용량 행정경계 GeoJSON 로딩을 기다리지 않습니다. 경계는 음식물/관리 기능에서만 필요할 때 로드합니다.
   if(seq!==nearbyScheduleRequestSeq)return;
 
   for(const type of ['general','recycle']){
@@ -4315,25 +4315,26 @@ function setLayer(layer){
   document.getElementById('vehicleFilter').classList.toggle('show',service);document.getElementById('dayFilter').classList.toggle('show',service);document.getElementById('structureControl').classList.toggle('show',service);
   renderVehicleFilter();hideDongRouteOverlays();for(const t of ['general','recycle'])(serviceZoneOverlays[t]||[]).forEach(z=>z.polygon?.setMap(null));
   const seen=new Set();Object.values(zonePolygons).flat().forEach(item=>{if(!item?.polygon||seen.has(item.polygon))return;seen.add(item.polygon);item.polygon.setMap(null)});
+  const allowHeavyMapWork=SERVICE_ZONE_PRECOMPUTE_ONLY||resultMapVisible();
   if(layer==='food'){
-    ensureTestAdminBoundaryLoad();
-    zonePolygons.food.forEach(item=>item.polygon.setMap(map));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
+    if(allowHeavyMapWork)ensureTestAdminBoundaryLoad();
+    zonePolygons.food.forEach(item=>item.polygon.setMap(allowHeavyMapWork?map:null));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(allowHeavyMapWork?map:null));
   }else{
     syncBoundaryVisibility();
-    if(serviceLayerState.zone){
+    if(serviceLayerState.zone&&allowHeavyMapWork){
       ensureVisibleServiceZoneChunks(layer)
         .then(()=>isCurrent()?buildServiceZones(layer):null)
-        .then(()=>{if(isCurrent())syncServiceZoneVisibility(layer)})
+        .then(()=>{if(isCurrent()){scheduleVisibleServiceZoneMaterialization(layer);syncServiceZoneVisibility(layer)}})
         .catch(e=>console.warn('수거권역 생성 실패',e));
     }
-    if(serviceLayerState.route){
+    if(serviceLayerState.route&&allowHeavyMapWork){
       ensureDongRoutesForSelection(layer,requestSeq)
         .then(()=>{if(isCurrent())syncDongRouteVisibility(layer)})
         .catch(e=>console.warn('근거노선 로드 실패',e));
     }else hideDongRouteOverlays();
   }
   updateMapBadge();
-  if(service){
+  if(service&&allowHeavyMapWork){
     forceActiveServiceLayerVisibility(layer);
     setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},120);
     setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},700);
@@ -4829,15 +4830,9 @@ function init(){
       console.info('[TEST] gap-fill service-zone precompute complete',window.exportCjWastePrecomputed());
     }).catch(e=>console.error('TEST 수거권역 사전생성 실패',e));
   }else{
-    // TEST FAST PATH:
-    // 기존 IndexedDB에는 생활 전체 권역 수천 개가 들어 있을 수 있으므로 첫 화면에서 전부 복원하지 않습니다.
-    // 정적 district chunk 중 현재 화면에 가장 가까운 1개만 먼저 표시합니다.
-    hydrateExternalBundledServiceZones('general')
-      .then(()=>{if(activeLayer==='general')syncServiceZoneVisibility('general');})
-      .catch(e=>console.warn('생활 추정권역 초기 부분복원 실패',e));
+    // TEST FAST PATH: 랜딩에서는 지도 데이터 네트워크/Polygon/노선 계산을 시작하지 않습니다.
+    // 주소 검색으로 결과 화면이 열린 뒤 해당 주소·현재 viewport에 필요한 데이터만 로드합니다.
     setLayer('general');
-    // 행정경계 GeoJSON은 첫 수거권역 표시와 경쟁하지 않도록 브라우저 유휴시간으로 미룹니다.
-    scheduleTestAdminBoundaryLoad(1400);
   }
   document.getElementById('landingInput').focus();
 }
