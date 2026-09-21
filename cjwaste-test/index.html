@@ -1544,7 +1544,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='coarse-cover-v4-basefill';
+const TEST_ZONE_RENDER_MODE='schedule-map-v1';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1979,98 +1979,159 @@ function coarseZoneSignature(z){
     z?.contractLayer?'C':'',z?.riGrouped?'R':''
   ].join('|');
 }
+function rawZoneCenterPoint(z){
+  const b=rawZoneBounds(z);if(!b)return null;
+  return {lat:(b.minLat+b.maxLat)/2,lng:(b.minLng+b.maxLng)/2};
+}
+function scheduleDisplaySignature(z){
+  return DAYS.filter(d=>(z?.days||[]).includes(d)).join('·');
+}
+function nearestScheduleDisplayZone(type,district,lat,lng){
+  const zones=rawServiceZonesForDistrict(type,district).filter(z=>{
+    const sig=scheduleDisplaySignature(z);
+    return !!sig&&rawZoneMatchesCurrentFilter(type,z);
+  });
+  if(!zones.length)return null;
+
+  const containing=zones.find(z=>pointInZonePolygon(lat,lng,z));
+  if(containing)return containing;
+
+  let best=null,bestD=Infinity;
+  for(const z of zones){
+    const p=z._coarseCenter||(z._coarseCenter=rawZoneCenterPoint(z));
+    if(!p)continue;
+    const dx=(p.lng-lng)*.82,dy=p.lat-lat;
+    const d=dx*dx+dy*dy;
+    if(d<bestD){bestD=d;best=z}
+  }
+  return best;
+}
+function mergeScheduleDisplayCells(cells){
+  const rows=new Map();
+  for(const cell of cells){
+    if(!rows.has(cell.iy))rows.set(cell.iy,[]);
+    rows.get(cell.iy).push(cell);
+  }
+
+  const runs=[];
+  for(const [iy,row] of [...rows.entries()].sort((a,b)=>a[0]-b[0])){
+    row.sort((a,b)=>a.ix-b.ix);
+    let run=null;
+    for(const cell of row){
+      if(!run||run.sig!==cell.sig||cell.ix!==run.x1+1){
+        if(run)runs.push(run);
+        run={iy0:iy,iy1:iy,x0:cell.ix,x1:cell.ix,sig:cell.sig,rep:cell.rep,addressFocus:!!cell.addressFocus,district:cell.district,count:1};
+      }else{
+        run.x1=cell.ix;
+        run.count++;
+        run.addressFocus=run.addressFocus||!!cell.addressFocus;
+      }
+    }
+    if(run)runs.push(run);
+  }
+
+  const active=new Map(),merged=[];
+  for(const run of runs.sort((a,b)=>a.iy0-b.iy0||a.x0-b.x0)){
+    const key=run.district+'|'+run.sig+'|'+run.x0+'|'+run.x1;
+    const prev=active.get(key);
+    if(prev&&run.iy0===prev.iy1+1){
+      prev.iy1=run.iy1;
+      prev.count+=run.count;
+      prev.addressFocus=prev.addressFocus||run.addressFocus;
+    }else{
+      const item={...run};
+      active.set(key,item);
+      merged.push(item);
+    }
+  }
+  return merged;
+}
 function coarseDisplayZones(type){
-  const box=currentMapBoundsBox(.18);
-  const centerObj=map?.getCenter?.();
-  const center=centerObj?{lat:centerObj.getLat(),lng:centerObj.getLng()}:null;
+  const box=currentMapBoundsBox(.16);
   const focus=addressLayerFocus[type];
-  const tiles=new Map();
+  const cells=[];
 
   for(const [district,zones] of rawServiceZones[type].entries()){
-    for(const z of zones){
-      if(!rawZoneMatchesCurrentFilter(type,z)||!rawZoneIntersectsBox(z,box))continue;
-      if(focus&&!zoneMatchesAddressFocus(type,z))continue;
-      const b=rawZoneBounds(z);if(!b)continue;
-      const lat=(b.minLat+b.maxLat)/2,lng=(b.minLng+b.maxLng)/2;
-      const iy=Math.floor(lat/COARSE_ZONE_LAT_STEP),ix=Math.floor(lng/COARSE_ZONE_LNG_STEP);
-      const key=district+'|'+iy+'|'+ix;
-      let t=tiles.get(key);
-      if(!t){
-        t={
-          key,district,iy,ix,count:0,minLat:Infinity,maxLat:-Infinity,minLng:Infinity,maxLng:-Infinity,
-          signatures:new Map()
-        };
-        tiles.set(key,t);
+    if(!zones?.length)continue;
+    const feature=districtFeatureMap.get(district);
+    const fb=featureBounds(feature);
+    if(!feature||!fb)continue;
+    if(fb.maxLat<box.minLat||fb.minLat>box.maxLat||fb.maxLng<box.minLng||fb.minLng>box.maxLng)continue;
+
+    const minLat=Math.max(fb.minLat,box.minLat),maxLat=Math.min(fb.maxLat,box.maxLat);
+    const minLng=Math.max(fb.minLng,box.minLng),maxLng=Math.min(fb.maxLng,box.maxLng);
+    const iy0=Math.floor(minLat/COARSE_ZONE_LAT_STEP)-1;
+    const iy1=Math.floor(maxLat/COARSE_ZONE_LAT_STEP)+1;
+    const ix0=Math.floor(minLng/COARSE_ZONE_LNG_STEP)-1;
+    const ix1=Math.floor(maxLng/COARSE_ZONE_LNG_STEP)+1;
+
+    for(let iy=iy0;iy<=iy1;iy++){
+      const lat0=iy*COARSE_ZONE_LAT_STEP,lat1=(iy+1)*COARSE_ZONE_LAT_STEP;
+      for(let ix=ix0;ix<=ix1;ix++){
+        const lng0=ix*COARSE_ZONE_LNG_STEP,lng1=(ix+1)*COARSE_ZONE_LNG_STEP;
+        if(lat1<box.minLat||lat0>box.maxLat||lng1<box.minLng||lng0>box.maxLng)continue;
+
+        const samples=[
+          [(lat0+lat1)/2,(lng0+lng1)/2],
+          [lat0,lng0],[lat0,lng1],[lat1,lng0],[lat1,lng1],
+          [lat0,(lng0+lng1)/2],[lat1,(lng0+lng1)/2],
+          [(lat0+lat1)/2,lng0],[(lat0+lat1)/2,lng1]
+        ];
+        const inside=samples.filter(([lat,lng])=>pointInGeoFeature([lng,lat],feature));
+        if(!inside.length)continue;
+        const classLat=inside.reduce((s,p)=>s+p[0],0)/inside.length;
+        const classLng=inside.reduce((s,p)=>s+p[1],0)/inside.length;
+
+        let rep=nearestScheduleDisplayZone(type,district,classLat,classLng);
+        if(!rep)continue;
+
+        let addressFocus=false;
+        if(focus&&focus.district===district&&
+           +focus.lat>=lat0&&+focus.lat<=lat1&&+focus.lng>=lng0&&+focus.lng<=lng1){
+          rep={
+            ...rep,
+            district,
+            vehicle:(focus.vehicles||[])[0]||rep.vehicle,
+            vehicles:[...(focus.vehicles||[])],
+            provider:focus.provider||rep.provider||'',
+            days:[...(focus.days||[])],
+            estimated:true
+          };
+          addressFocus=true;
+        }
+
+        const sig=scheduleDisplaySignature(rep);
+        if(!sig)continue;
+        cells.push({district,iy,ix,sig,rep,addressFocus});
       }
-      t.count++;
-      t.minLat=Math.min(t.minLat,b.minLat);t.maxLat=Math.max(t.maxLat,b.maxLat);
-      t.minLng=Math.min(t.minLng,b.minLng);t.maxLng=Math.max(t.maxLng,b.maxLng);
-      const sig=coarseZoneSignature(z);
-      const stat=t.signatures.get(sig)||{count:0,zone:z};
-      stat.count++;t.signatures.set(sig,stat);
     }
   }
 
-  if(focus&&Number.isFinite(+focus.lat)&&Number.isFinite(+focus.lng)){
-    const iy=Math.floor(+focus.lat/COARSE_ZONE_LAT_STEP),ix=Math.floor(+focus.lng/COARSE_ZONE_LNG_STEP);
-    const key=focus.district+'|'+iy+'|'+ix;
-    const focusZone={
-      district:focus.district,
-      vehicle:(focus.vehicles||[])[0]||'',
-      vehicles:[...(focus.vehicles||[])],
-      provider:focus.provider||'',
-      days:[...(focus.days||[])],
-      estimated:true,
-      automatic:true
-    };
-    let t=tiles.get(key);
-    if(!t){
-      t={
-        key,district:focus.district,iy,ix,count:1,
-        minLat:+focus.lat,maxLat:+focus.lat,minLng:+focus.lng,maxLng:+focus.lng,
-        signatures:new Map()
-      };
-      tiles.set(key,t);
-    }
-    const sig='__ADDRESS_FOCUS__';
-    t.signatures=new Map([[sig,{count:Number.MAX_SAFE_INTEGER,zone:focusZone}]]);
-    t.addressFocus=true;
-  }
-
-  const out=[];
-  for(const t of tiles.values()){
-    const ranked=[...t.signatures.values()].sort((a,b)=>b.count-a.count);
-    const rep=ranked[0]?.zone;if(!rep)continue;
-    const mixed=ranked.length>1;
-    // 표시용 레이어는 raw 셀의 작은 bbox가 아니라 대표 타일 전체를 채웁니다.
-    // 20m 확정노선 주변의 빈틈도 시각적으로 이어져 보이지만 실제 일정 판정에는 사용하지 않습니다.
-    const lat0=t.iy*COARSE_ZONE_LAT_STEP;
-    const lat1=(t.iy+1)*COARSE_ZONE_LAT_STEP;
-    const lng0=t.ix*COARSE_ZONE_LNG_STEP;
-    const lng1=(t.ix+1)*COARSE_ZONE_LNG_STEP;
-    if(!(lat1>lat0&&lng1>lng0))continue;
+  const merged=mergeScheduleDisplayCells(cells);
+  return merged.map(m=>{
+    const lat0=m.iy0*COARSE_ZONE_LAT_STEP;
+    const lat1=(m.iy1+1)*COARSE_ZONE_LAT_STEP;
+    const lng0=m.x0*COARSE_ZONE_LNG_STEP;
+    const lng1=(m.x1+1)*COARSE_ZONE_LNG_STEP;
     const points=[
       {lat:lat0,lng:lng0},{lat:lat0,lng:lng1},
       {lat:lat1,lng:lng1},{lat:lat1,lng:lng0}
     ];
-    out.push({
-      ...rep,points,rings:[points],hitRings:[points],
-      district:t.district,automatic:true,fromBundle:true,
-      displayOnly:true,coarseDisplay:true,coarseCover:true,gridMerged:true,
+    return {
+      ...m.rep,
+      points,rings:[points],hitRings:[points],
+      district:m.district,automatic:true,fromBundle:true,
+      displayOnly:true,displaySchedule:true,coarseDisplay:true,coarseCover:true,gridMerged:true,
       ambiguous:false,estimated:true,
-      // 혼합 타일도 가장 많이 포함된 대표 일정의 색으로 표시합니다.
-      // 실제 주소 일정은 정밀 raw 권역으로 별도 판정하므로 이 값은 시각화 전용입니다.
-      vehicle:rep.vehicle,vehicles:[...(rep.vehicles||[])],
-      provider:rep.provider||routeCompany(rep.vehicle),
-      days:[...(rep.days||[])],
-      coarseMembers:t.count,
-      coarseMixed:mixed,
-      coarseKey:t.key,
-      addressFocus:!!t.addressFocus
-    });
-  }
-  out.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
-  return out.slice(0,COARSE_ZONE_MAX_POLYGONS);
+      vehicle:m.rep.vehicle,vehicles:[...(m.rep.vehicles||[])],
+      provider:m.rep.provider||routeCompany(m.rep.vehicle),
+      days:[...(m.rep.days||[])],
+      coarseMembers:m.count,
+      coarseMixed:false,
+      coarseKey:m.district+'|'+m.sig+'|'+m.iy0+'-'+m.iy1+'|'+m.x0+'-'+m.x1,
+      addressFocus:!!m.addressFocus
+    };
+  });
 }
 function coarseDisplayBaseZones(type){
   const box=currentMapBoundsBox(.22);
@@ -2118,6 +2179,7 @@ function materializeVisibleRawServiceZones(type){
   const zones=coarseDisplayZones(type);
   for(const z of zones)addServiceZonePolygon(type,z.points,z);
   syncServiceZoneVisibility(type);
+  updateMapBadge();
   return false;
 }
 function scheduleVisibleServiceZoneMaterialization(type){
@@ -4099,7 +4161,7 @@ function addServiceZonePolygon(type,points,meta={}){
   const buffer=!!meta.routeBuffer;
   const color=meta.displayBase?'#cbd5e1':(meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type))));
   const rural=!!meta.rural;
-  const baseFill=meta.displayBase?.11:(meta.addressFocus?.34:(meta.displayOnly?.19:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22))))))));
+  const baseFill=meta.displayBase?.07:(meta.addressFocus?.42:(meta.displaySchedule?.27:(meta.displayOnly?.19:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22)))))))));
   const displayRings=(Array.isArray(meta.rings)&&meta.rings.length?meta.rings:[points]).filter(r=>Array.isArray(r)&&r.length>=3);
   if(!displayRings.length)return null;
   const normalizedDisplayRings=displayRings.map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -4121,12 +4183,12 @@ function addServiceZonePolygon(type,points,meta={}){
     const detail=meta.displayBase
       ?'수거일정 표시의 빈틈을 막기 위한 읍면동 기본 추정권역'
       :(meta.displayOnly
-      ?'큰 범위로 단순화한 대표 추정권역'
+      ?(meta.displaySchedule?'요일별 단순화 추정권역':'큰 범위로 단순화한 대표 추정권역')
       :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`)));
     const basis=meta.displayBase
       ?'읍면동 행정경계 전체 기본표시 · 일정 판정에는 사용하지 않음'
       :(meta.displayOnly
-      ?`지도 성능을 위한 약 250m 단순화 표시 · 실제 수거일정은 주소 검색 시 정밀권역으로 별도 판정`
+      ?`약 250m 격자에서 가장 가까운 정밀 수거권역의 요일을 상속하고 같은 요일 셀을 병합한 표시 · 실제 주소 일정은 정밀권역/20m 노선으로 별도 판정`
       :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할')))));
     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
   });
@@ -4483,8 +4545,9 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
   for(const t of ['general','recycle']){
     for(const z of (serviceZoneOverlays[t]||[])){
       const zoneVehicles=(z.vehicles||[]).length?z.vehicles:[z.vehicle];
-      const providerOk=z.displayBase||provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
-      const dayOk=z.displayBase||day==='전체'||(z.days||[]).includes(day);
+      const autoScheduleView=!!addressLayerFocus[type]&&!!z.displaySchedule;
+      const providerOk=z.displayBase||autoScheduleView||provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
+      const dayOk=z.displayBase||autoScheduleView||day==='전체'||(z.days||[]).includes(day);
       const viewportOk=z.displayOnly||z.manual||!z.fromBundle||!renderBox||rawZoneIntersectsBox(z,renderBox);
       const visible=t===type&&activeLayer===type&&serviceLayerState.zone&&providerOk&&dayOk&&viewportOk;
       if(!visible){if(z.polygon?.getMap())z.polygon.setMap(null);continue}
@@ -4689,6 +4752,23 @@ function setLayer(layer){
     setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},700);
   }
 }
+function scheduleLegendHtml(type){
+  if(type!=='general'&&type!=='recycle')return '';
+  const sigs=[...new Set((serviceZoneOverlays[type]||[])
+    .filter(z=>z.displaySchedule&&z.polygon?.getMap?.())
+    .map(z=>scheduleDisplaySignature(z))
+    .filter(Boolean))];
+  if(!sigs.length)return '';
+  sigs.sort((a,b)=>{
+    const da=a.split('·'),db=b.split('·');
+    return DAYS.indexOf(da[0])-DAYS.indexOf(db[0]) || da.length-db.length || a.localeCompare(b,'ko');
+  });
+  return '<div class="food-legend">'+sigs.map(sig=>{
+    const days=sig.split('·').filter(Boolean);
+    const color=serviceZoneColor(days,type);
+    return '<span class="legend-item"><i class="legend-dot" style="background:'+color+'"></i>'+escapeHtml(sig)+'</span>';
+  }).join('')+'</div>';
+}
 function updateMapBadge(custom){
   const el=document.getElementById('mapBadge');const labels={general:'생활쓰레기',food:'음식물쓰레기',recycle:'재활용쓰레기'};
   if(activeLayer==='food'){
@@ -4697,8 +4777,11 @@ function updateMapBadge(custom){
   const provider=selectedVehicle[activeLayer]||'전체',dayLabel=activeDay==='전체'?'전체요일':`${activeDay}요일`,providerLabel=provider==='전체'?'전체 수거주체':((provider==='제일환경'||provider==='현대환경')?`${provider} 대행`:`${provider}호 직영`);
   const state=[serviceLayerState.zone?'①수거권역':'',serviceLayerState.route?'②근거노선':''].filter(Boolean).join(' + ');
   const focus=addressLayerFocus[activeLayer];
-  const focusText=focus?`검색주소 일정권역 · ${focus.days.join('·')}`:'';
-  el.innerHTML=`<strong>${labels[activeLayer]} · ${focusText||providerLabel+' · '+dayLabel}</strong><span>${custom||`표시: <strong>${state||'없음'}</strong> · ${focus?'검색주소와 같은 차량·요일의 추정권역을 강조합니다.':'수거노선 20m 이내는 실제 노선을 우선 적용하고, 그 외 지역은 차량·요일별 추정권역으로 안내합니다.'}`}</span>`;
+  const focusText=focus?`검색주소 · ${focus.days.join('·')}`:'';
+  const text=custom||(focus
+    ?`검색주소 일정은 <strong>${focus.days.join('·')}</strong>입니다. 지도 전체는 실제 정밀권역을 단순화한 요일별 추정권역이며, 검색주소 권역은 진하게 표시합니다.`
+    :`표시: <strong>${state||'없음'}</strong> · 색상별로 추정 수거요일을 구분합니다. 실제 주소 판정은 수거노선 20m 이내를 우선 적용합니다.`);
+  el.innerHTML=`<strong>${labels[activeLayer]} · ${focusText||providerLabel+' · '+dayLabel}</strong><span>${text}</span>${scheduleLegendHtml(activeLayer)}`;
 }
 function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
