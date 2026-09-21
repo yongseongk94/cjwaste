@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내 v27</title>
+<title>청원구 환경위생과 | 청원구 쓰레기 수거일 안내</title>
 <!-- v67: 내수읍·북이면은 원본 차량×요일 수거코스의 항목 순서를 따라 도로망 차량이동경로를 추정해 ② 근거노선에 포함하고, 주소는 표시 수거노선 20m 이내에서만 일정을 확정합니다. 오창·내수·북이는 리 단위로 시각 그룹을 유지하되 내수·북이 전체 리를 수거대상으로 보지 않습니다. 오창산업단지는 제일환경 대행구간으로 별도 표시하며, 대행업체 공동주택(아파트) 노선·주소일정은 전부 제외합니다. -->
 <style>
 :root{
@@ -124,9 +124,11 @@
   .hero p{font-size:14px;margin-bottom:22px}
   .layer-control{max-width:calc(100% - 86px);overflow:auto}.layer-btn{white-space:nowrap}.vehicle-filter{max-width:calc(100% - 30px)}.day-filter{max-width:calc(100% - 30px);overflow-x:auto}.structure-control{max-width:calc(100% - 30px);overflow-x:auto;top:164px}.admin-panel{top:58px}
 }
+#testBadge{position:fixed;right:12px;top:12px;z-index:99999;background:#111827;color:#fff;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.22)}
 </style>
 </head>
 <body>
+<div id="testBadge">TEST · FAST ZONES</div>
 <section id="landing">
   <div class="hero">
     <div class="brand">청원구 환경위생과</div>
@@ -1363,9 +1365,9 @@ function renderSchedule(district,legalEmd='',legalRi=''){
         renderDirectSchedule('general',directGeneral,directGeneralCtx);
       }else if(renderRestoredRuralRiSchedule('general',ctx)){
       }else if(districtHasDirectCoverage('general',district)){
-        document.getElementById('generalBadge').textContent='직영 구간 확인';
+        document.getElementById('generalBadge').textContent='수거일정 확인 중';
         renderDays('generalDays',[]);
-        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>청원구 직영 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.</div>`;
+        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>검색주소의 생활쓰레기 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.</div>`;
       }else{
         const generals=findRegionEntries('general',district);
         if(generals.length){
@@ -1402,9 +1404,9 @@ function renderSchedule(district,legalEmd='',legalRi=''){
         renderDirectSchedule('recycle',directRecycle,directRecycleCtx);
       }else if(renderRestoredRuralRiSchedule('recycle',ctx)){
       }else if(districtHasDirectCoverage('recycle',district)){
-        document.getElementById('recycleBadge').textContent='직영 구간 확인';
+        document.getElementById('recycleBadge').textContent='수거일정 확인 중';
         renderDays('recycleDays',[]);
-        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>청원구 직영 재활용 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>검색주소의 재활용품 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
       }else{
         const recycles=findRegionEntries('recycle',district);
         if(recycles.length){
@@ -1470,42 +1472,107 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 
 // 빌드 시 확정된 노선 좌표는 외부 정적 JSON으로 분리합니다.
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
-let bundledServiceZonesExternal=null;
-let bundledServiceZonesExternalPromise=null;
-async function loadExternalBundledServiceZones(){
-  if(bundledServiceZonesExternal)return bundledServiceZonesExternal;
-  if(bundledServiceZonesExternalPromise)return bundledServiceZonesExternalPromise;
-  const el=document.getElementById('bundledServiceZones');
-  const manifestSrc=String(el?.dataset?.manifest||'').trim();
-  if(!manifestSrc)return null;
-  bundledServiceZonesExternalPromise=(async()=>{
+let bundledServiceZoneManifest=null;
+let bundledServiceZoneManifestPromise=null;
+const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test/data/service-zones-test-manifest.json';
+const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
+const serviceZoneChunkPromises=new Map();
+
+async function loadServiceZoneManifest(){
+  if(bundledServiceZoneManifest)return bundledServiceZoneManifest;
+  if(bundledServiceZoneManifestPromise)return bundledServiceZoneManifestPromise;
+  bundledServiceZoneManifestPromise=(async()=>{
     try{
-      const mr=await fetch(manifestSrc,{cache:'force-cache'});
-      if(!mr.ok)throw new Error('service zone manifest '+mr.status);
+      const mr=await fetch(TEST_SERVICE_ZONE_MANIFEST,{cache:'force-cache'});
+      if(!mr.ok)throw new Error('test service zone manifest '+mr.status);
       const manifest=await mr.json();
-      if(manifest.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)return null;
-      const data={version:DONG_ROUTE_CACHE_VERSION,zoneVersion:manifest.zoneVersion,zones:{general:[],recycle:[]}};
-      for(const type of ['general','recycle']){
-        const entries=Array.isArray(manifest.types?.[type])?manifest.types[type]:[];
-        for(const entry of entries){
-          const r=await fetch(entry.path,{cache:'force-cache'});
-          if(!r.ok)throw new Error('service zone chunk '+r.status);
-          const chunk=await r.json();
-          if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)continue;
-          data.zones[type].push(...(chunk.zones||[]));
-        }
-      }
-      bundledServiceZonesExternal=data;
-      return data;
-    }catch(err){console.warn('추정권역 manifest 로드 실패',err);return null}
-    finally{bundledServiceZonesExternalPromise=null}
+      if(manifest.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('test service zone version mismatch');
+      bundledServiceZoneManifest=manifest;
+      return manifest;
+    }catch(err){
+      console.warn('테스트 추정권역 manifest 로드 실패',err);
+      return null;
+    }finally{
+      bundledServiceZoneManifestPromise=null;
+    }
   })();
-  return bundledServiceZonesExternalPromise;
+  return bundledServiceZoneManifestPromise;
 }
-async function hydrateExternalBundledServiceZones(){
-  const data=await loadExternalBundledServiceZones();
-  if(!data)return false;
-  return hydrateBundledPrecomputedData(data);
+
+function manifestEntryIntersectsBox(entry,box){
+  const b=entry?.bbox;if(!b||!box)return true;
+  return !(+b.maxLat<box.minLat||+b.minLat>box.maxLat||+b.maxLng<box.minLng||+b.minLng>box.maxLng);
+}
+function manifestEntryDistanceSq(entry,center){
+  const b=entry?.bbox;if(!b||!center)return Infinity;
+  const lat=(+b.minLat + +b.maxLat)/2,lng=(+b.minLng + +b.maxLng)/2;
+  const dx=(lng-center.lng)*.8,dy=lat-center.lat;
+  return dx*dx+dy*dy;
+}
+function desiredServiceZoneEntries(manifest,type,districts=null){
+  const entries=Array.isArray(manifest?.types?.[type])?manifest.types[type]:[];
+  if(Array.isArray(districts)&&districts.length){
+    const wanted=new Set(districts.map(canonicalDistrict));
+    return entries.filter(e=>wanted.has(canonicalDistrict(e.district)));
+  }
+  // TEST FAST PATH: 첫 화면에서는 여러 읍면동을 한꺼번에 만들지 않고
+  // 현재 화면과 가장 가까운 1개 권역만 먼저 내려받아 첫 폴리곤 표시를 앞당깁니다.
+  const c=map?.getCenter?.();
+  const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
+  const box=currentMapBoundsBox(.08);
+  const visible=entries.filter(e=>manifestEntryIntersectsBox(e,box));
+  const pool=visible.length?visible:entries;
+  return [...pool].sort((a,b)=>manifestEntryDistanceSq(a,center)-manifestEntryDistanceSq(b,center)).slice(0,1);
+}
+async function fetchServiceZoneChunk(type,entry){
+  const district=canonicalDistrict(entry?.district||'');
+  if(!district)return [];
+  if(loadedServiceZoneDistricts[type].has(district))return [];
+  const key=`${type}|${district}`;
+  if(serviceZoneChunkPromises.has(key))return serviceZoneChunkPromises.get(key);
+  const promise=(async()=>{
+    try{
+      const res=await fetch(entry.path,{cache:'force-cache'});
+      if(!res.ok)throw new Error('service zone district chunk '+res.status);
+      const chunk=await res.json();
+      if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('service zone district version mismatch');
+      const zones=Array.isArray(chunk.zones)?chunk.zones:[];
+      loadedServiceZoneDistricts[type].add(district);
+      return zones;
+    }catch(err){
+      console.warn(type+' '+district+' 추정권역 청크 로드 실패',err);
+      return [];
+    }finally{
+      serviceZoneChunkPromises.delete(key);
+    }
+  })();
+  serviceZoneChunkPromises.set(key,promise);
+  return promise;
+}
+async function loadExternalBundledServiceZones(type,districts=null){
+  if(type!=='general'&&type!=='recycle')return null;
+  const manifest=await loadServiceZoneManifest();
+  if(!manifest)return null;
+  const entries=desiredServiceZoneEntries(manifest,type,districts);
+  const chunks=await Promise.all(entries.map(e=>fetchServiceZoneChunk(type,e)));
+  const zones=chunks.flat();
+  return {version:DONG_ROUTE_CACHE_VERSION,zoneVersion:manifest.zoneVersion,zones:{general:type==='general'?zones:[],recycle:type==='recycle'?zones:[]},entries};
+}
+async function hydrateExternalBundledServiceZones(type,districts=null){
+  const before=serviceZoneOverlays[type]?.length||0;
+  const data=await loadExternalBundledServiceZones(type,districts);
+  const zones=Array.isArray(data?.zones?.[type])?data.zones[type]:[];
+  if(zones.length){
+    return hydrateServiceZoneArray(type,zones,{fromBundle:true,append:before>0,partial:true});
+  }
+  if(Array.isArray(districts)&&districts.length){
+    return districts.every(d=>loadedServiceZoneDistricts[type].has(canonicalDistrict(d)));
+  }
+  return before>0;
+}
+async function ensureVisibleServiceZoneChunks(type){
+  if(type!=='general'&&type!=='recycle')return false;
+  return hydrateExternalBundledServiceZones(type);
 }
 
 let bundledPrecomputedExternal=null;
@@ -1652,7 +1719,8 @@ window.__CJWASTE_PRECOMPUTE_READY=false;
 
 
 function serviceZoneCacheKey(type){
-  return `${SERVICE_ZONE_CACHE_VERSION}|${type}`;
+  // 테스트페이지는 본사이트의 전체권역 IndexedDB 캐시와 분리합니다.
+  return `test-district-v1|${SERVICE_ZONE_CACHE_VERSION}|${type}`;
 }
 async function getCachedServiceZones(type){
   try{
@@ -1695,17 +1763,145 @@ async function deleteCachedServiceZones(type){
     });
   }catch(e){console.warn('수거권역 캐시 삭제 실패',e)}
 }
+const SERVICE_ZONE_FIRST_RENDER_BATCH=36;
+const SERVICE_ZONE_BACKGROUND_BATCH=180;
+window.__CJWASTE_ZONE_PERF=window.__CJWASTE_ZONE_PERF||{};
+
+function waitForNextPaint(){
+  return new Promise(resolve=>{
+    if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>resolve());
+    else setTimeout(resolve,0);
+  });
+}
+function waitForBrowserIdle(){
+  return new Promise(resolve=>{
+    if(typeof requestIdleCallback==='function'){
+      requestIdleCallback(()=>resolve(),{timeout:90});
+    }else{
+      setTimeout(resolve,12);
+    }
+  });
+}
+function rawZoneBounds(z){
+  if(z?._testBounds)return z._testBounds;
+  const rings=(Array.isArray(z?.rings)&&z.rings.length)?z.rings:[z?.points||[]];
+  let minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
+  for(const ring of rings){
+    for(const p of (ring||[])){
+      const lat=+p.lat,lng=+p.lng;
+      if(!Number.isFinite(lat)||!Number.isFinite(lng))continue;
+      minLat=Math.min(minLat,lat);maxLat=Math.max(maxLat,lat);
+      minLng=Math.min(minLng,lng);maxLng=Math.max(maxLng,lng);
+    }
+  }
+  const out=Number.isFinite(minLat)?{minLat,maxLat,minLng,maxLng}:null;
+  try{Object.defineProperty(z,'_testBounds',{value:out,writable:true,configurable:true})}catch(e){}
+  return out;
+}
+function currentMapBoundsBox(padRatio=.18){
+  if(!map?.getBounds)return null;
+  const b=map.getBounds(),sw=b?.getSouthWest?.(),ne=b?.getNorthEast?.();
+  if(!sw||!ne)return null;
+  let minLat=sw.getLat(),maxLat=ne.getLat(),minLng=sw.getLng(),maxLng=ne.getLng();
+  const latPad=(maxLat-minLat)*padRatio,lngPad=(maxLng-minLng)*padRatio;
+  return {minLat:minLat-latPad,maxLat:maxLat+latPad,minLng:minLng-lngPad,maxLng:maxLng+lngPad};
+}
+function rawZoneIntersectsBox(z,box){
+  if(!box)return true;
+  const b=rawZoneBounds(z);if(!b)return false;
+  return !(b.maxLat<box.minLat||b.minLat>box.maxLat||b.maxLng<box.minLng||b.minLng>box.maxLng);
+}
+function zoneCenterDistanceSq(z,center){
+  const b=rawZoneBounds(z);if(!b||!center)return Infinity;
+  const lat=(b.minLat+b.maxLat)/2,lng=(b.minLng+b.maxLng)/2;
+  const dx=(lng-center.lng)*.8,dy=lat-center.lat;
+  return dx*dx+dy*dy;
+}
+function prioritizeServiceZones(zones){
+  const box=currentMapBoundsBox();
+  const c=map?.getCenter?.();
+  const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
+  const visible=[],rest=[];
+  for(const z of zones)(rawZoneIntersectsBox(z,box)?visible:rest).push(z);
+  visible.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
+  rest.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
+  return {visible,rest};
+}
+async function hydrateServiceZoneArray(type,zones,meta={}){
+  if(!Array.isArray(zones)||!zones.length)return false;
+  const renderSeq=layerRequestSeq;
+  const shouldContinue=()=>meta.forceComplete||activeLayer===type||renderSeq===layerRequestSeq;
+  const started=performance.now();
+  if(!meta.append)clearServiceZoneOverlays(type);
+
+  // 테스트페이지 최적화: 현재 보이는 지도 영역을 먼저 만들고,
+  // 화면 밖 권역은 idle 시간에 큰 묶음으로 생성합니다.
+  const {visible,rest}=prioritizeServiceZones(zones);
+  const perf=window.__CJWASTE_ZONE_PERF[type]={
+    source:meta.fromCache?'indexeddb':(meta.fromBundle?'bundle':'generated'),
+    total:zones.length,
+    visibleFirst:visible.length,
+    startedAt:started,
+    firstPaintMs:null,
+    completeMs:null
+  };
+
+  for(let i=0;i<visible.length;i+=SERVICE_ZONE_FIRST_RENDER_BATCH){
+    const batch=visible.slice(i,i+SERVICE_ZONE_FIRST_RENDER_BATCH);
+    for(const z of batch){
+      addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
+    }
+    if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
+    await waitForNextPaint();
+    if(perf.firstPaintMs===null)perf.firstPaintMs=Math.round(performance.now()-started);
+  }
+
+  // 현재 화면에 해당 권역이 하나도 없더라도 첫 묶음은 즉시 생성해
+  // 지도 이동 직후 빈 화면이 오래 유지되는 현상을 줄입니다.
+  if(!visible.length&&rest.length){
+    const first=rest.splice(0,Math.min(SERVICE_ZONE_FIRST_RENDER_BATCH,rest.length));
+    for(const z of first){
+      addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
+    }
+    if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
+    await waitForNextPaint();
+    perf.firstPaintMs=Math.round(performance.now()-started);
+  }
+
+  for(let i=0;i<rest.length;){
+    await waitForBrowserIdle();
+    if(!shouldContinue()){
+      perf.cancelled=true;
+      perf.completeMs=Math.round(performance.now()-started);
+      console.info('[TEST] service-zone background render cancelled',type,perf);
+      return false;
+    }
+    // 고정 180개 일괄 생성 대신 한 idle 구간에서 약 10ms만 사용해 UI 스레드 점유를 줄입니다.
+    const sliceStarted=performance.now();
+    let made=0;
+    while(i<rest.length&&made<SERVICE_ZONE_BACKGROUND_BATCH&&(performance.now()-sliceStarted)<10){
+      const z=rest[i++];
+      addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
+      made++;
+    }
+    if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
+  }
+
+  rebuildManualZoneOverlays(type);
+  serviceZoneBuilt[type]=true;
+  serviceZoneCacheHydrated[type]=true;
+  syncServiceZoneVisibility(type);
+  perf.completeMs=Math.round(performance.now()-started);
+  if(perf.firstPaintMs===null)perf.firstPaintMs=perf.completeMs;
+  console.info('[TEST] service-zone render',type,perf);
+  return true;
+}
 async function hydrateCachedServiceZones(type){
   if(serviceZoneCacheHydrated[type]||serviceZoneBuilt[type])return serviceZoneBuilt[type];
   serviceZoneCacheHydrated[type]=true;
   const cached=await getCachedServiceZones(type);
   if(!cached?.length)return false;
-  clearServiceZoneOverlays(type);
-  for(const z of cached)addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:true});
-  rebuildManualZoneOverlays(type);
-  serviceZoneBuilt[type]=true;
-  syncServiceZoneVisibility(type);
-  return true;
+  return hydrateServiceZoneArray(type,cached,{fromCache:true});
 }
 function serviceZoneOverlayMatch(type,ctx){
   const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
@@ -1727,6 +1923,11 @@ function serviceZoneOverlayMatch(type,ctx){
   return {vehicle:z.vehicle,vehicles:[...(z.vehicles||[])],provider:z.provider||routeCompany(z.vehicle),plate:z.plate||'',days:[...(z.days||[])],distanceKm:Infinity,matchBasis:'displayed-zone',zoneStatus:(z.estimated||dongEstimated)?'estimated':(z.ambiguous?'boundary':'inferred'),estimated:!!z.estimated||dongEstimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,matchedRoads:[],district,riName,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized};
 }
 async function ensureServiceZoneMatch(type,ctx){
+  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  // 주소가 속한 지역 청크가 아직 없으면 그 지역만 우선 내려받습니다.
+  if(district&&!loadedServiceZoneDistricts[type].has(district)){
+    await hydrateExternalBundledServiceZones(type,[district]);
+  }
   let match=serviceZoneOverlayMatch(type,ctx);if(match)return match;
   if(!serviceZoneBuilt[type]){
     const hydrated=await hydrateCachedServiceZones(type);
@@ -2221,7 +2422,8 @@ async function refreshNearbyRouteSchedules(ctx){
   // 북이면 광암리는 사용자가 지정한 금암리 일정 상속을 그대로 유지합니다.
   if(district==='북이면'&&normalizeRi(ctx.legalRi||'')==='광암리')return;
   const seq=++nearbyScheduleRequestSeq;
-  if(zoneBuildPromise){try{await zoneBuildPromise}catch(e){}}
+  // 주소 검색은 첫 화면 지연 로딩보다 우선합니다. 예약만 된 상태라도 필요한 행정경계를 즉시 준비합니다.
+  try{await ensureTestAdminBoundaryLoad()}catch(e){}
   if(seq!==nearbyScheduleRequestSeq)return;
 
   for(const type of ['general','recycle']){
@@ -3368,22 +3570,22 @@ async function hydrateCachedRouteOverlays(specs){
     if(cached)createDongRouteOverlay(spec,{...cached,fromCache:true});
   });
 }
-async function ensureDongRoutesForSelection(type){
+async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
+  const providerSnapshot=selectedVehicle[type]||'전체';
+  const daySnapshot=activeDay||'전체';
+  const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===type&&(selectedVehicle[type]||'전체')===providerSnapshot&&(activeDay||'전체')===daySnapshot;
   const specs=routeCandidatesForSelection(type);
-  if(!specs.length){syncDongRouteVisibility(type);return}
-  // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
+  if(!specs.length){if(isCurrent())syncDongRouteVisibility(type);return}
+  // 오래된 요청도 캐시 준비는 끝낼 수 있지만 지도 갱신은 현재 선택일 때만 수행합니다.
   await hydrateCachedRouteOverlays(specs);
-  // v82: 선택 스펙의 scope가 현재 코드와 달라져도 기존 v76 사전계산 노선 자체는 유효할 수 있습니다.
-  // 외부 번들은 1회 반드시 확인해 복원 가능한 94개 노선을 먼저 살리고, 이후 누락분만 실시간 계산합니다.
   await hydrateExternalBundledPrecomputedData();
-  syncDongRouteVisibility(type);
-  // 3차: 사전계산 묶음에도 없는 노선만 실제 도로망으로 계산합니다.
+  if(isCurrent())syncDongRouteVisibility(type);
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   await mapWithConcurrency(missing,3,async spec=>{
     await buildDongRouteOverlay(spec);
-    if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
+    if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
   });
-  syncDongRouteVisibility(type);
+  if(isCurrent())syncDongRouteVisibility(type);
 }
 
 function allDongRouteSpecs(){
@@ -3411,7 +3613,6 @@ async function preloadAllDongRoutes(){
   // v78: 대용량 사전계산 데이터는 index.html에서 분리합니다.
   // IndexedDB를 먼저 복원하고, 새 브라우저처럼 누락 노선이 있을 때만 외부 묶음을 1회 불러옵니다.
   await hydrateCachedRouteOverlays(specs);
-  await hydrateExternalBundledServiceZones();
   // v82: 외부 사전계산 노선은 캐시 유무와 관계없이 1회 병합합니다.
   // 일부 캐시만 존재할 때 번들 전체 로딩이 건너뛰어져 전지역 노선이 사라지는 회귀를 방지합니다.
   await hydrateExternalBundledPrecomputedData();
@@ -3424,10 +3625,8 @@ async function preloadAllDongRoutes(){
     if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
   });
 
-  // 생활/재활용 수거권역은 별도 구조로 유지합니다. 근거노선 사전계산 자체는 동지역에만 집중합니다.
-  await buildServiceZones('general');
-  await buildServiceZones('recycle');
-  if(activeLayer==='general'||activeLayer==='recycle')setLayer(activeLayer);
+  // 테스트페이지: 수거권역은 레이어 선택 시 개별 로드하고 전체 사전로딩과 분리합니다.
+  if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
   window.__CJWASTE_PRECOMPUTE_READY=true;
 }
 
@@ -3819,7 +4018,7 @@ async function buildServiceZones(type){
     // zone_only=1 사전생성 작업은 반드시 현재 최신 코스에서 새로 계산하여 과거 권역 재사용을 막습니다.
     if(!SERVICE_ZONE_PRECOMPUTE_ONLY){
       if(await hydrateCachedServiceZones(type))return;
-      if(await hydrateExternalBundledServiceZones()){
+      if(await hydrateExternalBundledServiceZones(type)){
         if(serviceZoneBuilt[type]){syncServiceZoneVisibility(type);return}
       }
     }
@@ -3888,8 +4087,12 @@ function queueActiveServiceLayerRefresh(force=false){
   requestAnimationFrame(()=>{
     if(seq!==serviceLayerRefreshSeq)return;
     if(activeLayer!=='general'&&activeLayer!=='recycle')return;
+    const type=activeLayer;
     const hard=serviceLayerHardRefresh;serviceLayerHardRefresh=false;
-    syncServiceZoneVisibility(activeLayer,hard);
+    // 이동/확대 후 새 화면과 겹치는 지역 청크만 추가로 가져옵니다.
+    ensureVisibleServiceZoneChunks(type)
+      .catch(e=>console.warn('가시권역 추가 로드 실패',e))
+      .finally(()=>{if(seq===serviceLayerRefreshSeq&&activeLayer===type)syncServiceZoneVisibility(type,hard)});
   });
 }
 function syncBoundaryVisibility(){
@@ -4017,7 +4220,10 @@ function forceActiveServiceLayerVisibility(layer){
     if(serviceLayerState.route)syncDongRouteVisibility(layer);
   }catch(e){console.warn('레이어 강제 재표시 실패',e)}
 }
+let layerRequestSeq=0;
 function setLayer(layer){
+  const requestSeq=++layerRequestSeq;
+  const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===layer;
   hideZoneTooltip();activeLayer=layer;
   document.querySelectorAll('.layer-btn').forEach(b=>b.classList.toggle('active',b.dataset.layer===layer));
   document.querySelectorAll('.card').forEach(c=>c.classList.toggle('active',c.dataset.layer===layer));
@@ -4026,17 +4232,27 @@ function setLayer(layer){
   renderVehicleFilter();hideDongRouteOverlays();for(const t of ['general','recycle'])(serviceZoneOverlays[t]||[]).forEach(z=>z.polygon?.setMap(null));
   const seen=new Set();Object.values(zonePolygons).flat().forEach(item=>{if(!item?.polygon||seen.has(item.polygon))return;seen.add(item.polygon);item.polygon.setMap(null)});
   if(layer==='food'){
+    ensureTestAdminBoundaryLoad();
     zonePolygons.food.forEach(item=>item.polygon.setMap(map));zonePolygons.foodExclusion.forEach(item=>item.polygon.setMap(map));
   }else{
     syncBoundaryVisibility();
-    if(serviceLayerState.zone)buildServiceZones(layer).then(()=>syncServiceZoneVisibility(layer)).catch(e=>console.warn('수거권역 생성 실패',e));
-    if(serviceLayerState.route)ensureDongRoutesForSelection(layer);else hideDongRouteOverlays();
+    if(serviceLayerState.zone){
+      ensureVisibleServiceZoneChunks(layer)
+        .then(()=>isCurrent()?buildServiceZones(layer):null)
+        .then(()=>{if(isCurrent())syncServiceZoneVisibility(layer)})
+        .catch(e=>console.warn('수거권역 생성 실패',e));
+    }
+    if(serviceLayerState.route){
+      ensureDongRoutesForSelection(layer,requestSeq)
+        .then(()=>{if(isCurrent())syncDongRouteVisibility(layer)})
+        .catch(e=>console.warn('근거노선 로드 실패',e));
+    }else hideDongRouteOverlays();
   }
   updateMapBadge();
   if(service){
     forceActiveServiceLayerVisibility(layer);
-    setTimeout(()=>{if(activeLayer===layer)forceActiveServiceLayerVisibility(layer)},120);
-    setTimeout(()=>{if(activeLayer===layer)forceActiveServiceLayerVisibility(layer)},700);
+    setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},120);
+    setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},700);
   }
 }
 function updateMapBadge(custom){
@@ -4462,7 +4678,7 @@ async function buildZonePolygons(){
     await sleepMs(0);
     serviceZoneBuildPromises.delete('general');
     serviceZoneBuildPromises.delete('recycle');
-    await Promise.all([buildServiceZones('general'),buildServiceZones('recycle')]);
+    if(activeLayer==='general'||activeLayer==='recycle')await buildServiceZones(activeLayer);
     setLayer(activeLayer);
     if(missingSummary)console.warn('법정리 경계 일부 누락:',missingSummary);
   }catch(err){
@@ -4476,13 +4692,37 @@ async function buildZonePolygons(){
     await sleepMs(0);
     serviceZoneBuildPromises.delete('general');
     serviceZoneBuildPromises.delete('recycle');
-    await Promise.all([buildServiceZones('general'),buildServiceZones('recycle')]);
+    if(activeLayer==='general'||activeLayer==='recycle')await buildServiceZones(activeLayer);
     setLayer(activeLayer);
   }
 
   // 행정동/법정리 경계가 준비된 뒤 모든 차량×요일 노선을 조용히 사전 계산·저장합니다.
   // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
-  if(!SERVICE_ZONE_PRECOMPUTE_ONLY)scheduleDongRoutePreload();
+}
+let testAdminBoundaryLoadStarted=false;
+let testAdminBoundaryLoadScheduled=false;
+function startTestAdminBoundaryLoad(reason='즉시'){
+  if(SERVICE_ZONE_PRECOMPUTE_ONLY)return Promise.resolve();
+  if(zoneBuildPromise)return zoneBuildPromise;
+  testAdminBoundaryLoadStarted=true;
+  zoneBuildPromise=buildZonePolygons().catch(e=>console.warn(`TEST 행정경계 ${reason} 로드 실패`,e));
+  return zoneBuildPromise;
+}
+function scheduleTestAdminBoundaryLoad(delay=1200){
+  if(testAdminBoundaryLoadStarted||testAdminBoundaryLoadScheduled||SERVICE_ZONE_PRECOMPUTE_ONLY)return;
+  testAdminBoundaryLoadScheduled=true;
+  const run=()=>{
+    testAdminBoundaryLoadScheduled=false;
+    startTestAdminBoundaryLoad('지연');
+  };
+  if(typeof requestIdleCallback==='function'){
+    requestIdleCallback(run,{timeout:Math.max(1200,delay)});
+  }else{
+    setTimeout(run,delay);
+  }
+}
+function ensureTestAdminBoundaryLoad(){
+  return startTestAdminBoundaryLoad('주소판정');
 }
 function init(){
   map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
@@ -4494,21 +4734,17 @@ function init(){
   kakao.maps.event.addListener(map,'idle',()=>queueActiveServiceLayerRefresh(serviceLayerHardRefresh));
   window.addEventListener('scroll',()=>queueActiveServiceLayerRefresh(false),{passive:true});
   loadManualZones();
-  // v82: 추정권역은 IndexedDB → 정적 manifest/chunk → 실시간 계산 순서로 복원합니다.
-  // 빈 v80 manifest 때문에 전 지역을 무거운 실시간 격자계산으로 보내던 회귀를 막습니다.
+  // TEST FAST PATH:
+  // 기존 IndexedDB에는 생활 전체 권역 수천 개가 들어 있을 수 있으므로 첫 화면에서 전부 복원하지 않습니다.
+  // 정적 district chunk 중 현재 화면에 가장 가까운 1개만 먼저 표시합니다.
   if(!SERVICE_ZONE_PRECOMPUTE_ONLY){
-    hydrateCachedServiceZones('general').then(async cached=>{
-      if(!cached)await hydrateExternalBundledServiceZones();
-      if(activeLayer==='general')setLayer('general');
-    }).catch(e=>console.warn('생활 추정권역 초기 복원 실패',e));
-    hydrateCachedServiceZones('recycle').then(async cached=>{
-      if(!cached)await hydrateExternalBundledServiceZones();
-    }).catch(e=>console.warn('재활용 추정권역 초기 복원 실패',e));
+    hydrateExternalBundledServiceZones('general')
+      .then(()=>{if(activeLayer==='general')syncServiceZoneVisibility('general');})
+      .catch(e=>console.warn('생활 추정권역 초기 부분복원 실패',e));
   }
   setLayer('general');
-  // 저장 노선은 즉시 복원하고, 행정경계/누락분 점검은 뒤에서 진행합니다.
-  if(!SERVICE_ZONE_PRECOMPUTE_ONLY)scheduleDongRoutePreload();
-  zoneBuildPromise=buildZonePolygons();
+  // 행정경계 GeoJSON은 첫 수거권역 표시와 경쟁하지 않도록 브라우저 유휴시간으로 미룹니다.
+  scheduleTestAdminBoundaryLoad(1400);
   document.getElementById('landingInput').focus();
 }
 function loadSdk(){const s=document.createElement('script');s.src=`https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;s.onload=()=>kakao.maps.load(init);s.onerror=()=>setLandingStatus('카카오맵 API를 불러오지 못했습니다. 등록 도메인을 확인해주세요.',true);document.head.appendChild(s)}
