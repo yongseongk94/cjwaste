@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q 'raw-zone loaded / viewport-only render' /tmp/test-live.html; then
+              && grep -q "TEST_ZONE_RENDER_MODE='center-tile-v1'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
               exit 0
             fi
@@ -50,10 +50,11 @@ jobs:
             });
             await page.waitForFunction(()=>typeof geocoder!=='undefined'&&!!geocoder,{timeout:120000});
             await new Promise(r=>setTimeout(r,1200));
-            const landing=await page.evaluate(()=>({
+            const landing=await page.evaluate(()=>({mode:TEST_ZONE_RENDER_MODE,
               display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0)
             }));
+            if(landing.mode!=='center-tile-v1')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
             if(landing.display!==0)throw new Error('Landing created non-manual polygons: '+JSON.stringify(landing));
 
             const t0=Date.now();
