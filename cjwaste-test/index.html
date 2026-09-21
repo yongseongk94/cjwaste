@@ -1366,9 +1366,9 @@ function renderSchedule(district,legalEmd='',legalRi=''){
         renderDirectSchedule('general',directGeneral,directGeneralCtx);
       }else if(renderRestoredRuralRiSchedule('general',ctx)){
       }else if(districtHasDirectCoverage('general',district)){
-        document.getElementById('generalBadge').textContent='직영 구간 확인';
+        document.getElementById('generalBadge').textContent='수거일정 확인 중';
         renderDays('generalDays',[]);
-        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>청원구 직영 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.</div>`;
+        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>검색주소의 생활쓰레기 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.</div>`;
       }else{
         const generals=findRegionEntries('general',district);
         if(generals.length){
@@ -1405,9 +1405,9 @@ function renderSchedule(district,legalEmd='',legalRi=''){
         renderDirectSchedule('recycle',directRecycle,directRecycleCtx);
       }else if(renderRestoredRuralRiSchedule('recycle',ctx)){
       }else if(districtHasDirectCoverage('recycle',district)){
-        document.getElementById('recycleBadge').textContent='직영 구간 확인';
+        document.getElementById('recycleBadge').textContent='수거일정 확인 중';
         renderDays('recycleDays',[]);
-        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>청원구 직영 재활용 수거구간이 포함된 지역입니다.</strong><br>현재 검색주소와 코스표가 명확히 일치하지 않아 수거요일을 추정하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>검색주소의 재활용품 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
       }else{
         const recycles=findRegionEntries('recycle',district);
         if(recycles.length){
@@ -2423,7 +2423,8 @@ async function refreshNearbyRouteSchedules(ctx){
   // 북이면 광암리는 사용자가 지정한 금암리 일정 상속을 그대로 유지합니다.
   if(district==='북이면'&&normalizeRi(ctx.legalRi||'')==='광암리')return;
   const seq=++nearbyScheduleRequestSeq;
-  if(zoneBuildPromise){try{await zoneBuildPromise}catch(e){}}
+  // 주소 검색은 첫 화면 지연 로딩보다 우선합니다. 예약만 된 상태라도 필요한 행정경계를 즉시 준비합니다.
+  try{await ensureTestAdminBoundaryLoad()}catch(e){}
   if(seq!==nearbyScheduleRequestSeq)return;
 
   for(const type of ['general','recycle']){
@@ -4700,10 +4701,21 @@ async function buildZonePolygons(){
   // v63 내장본이 있으면 첫 접속부터 즉시 표시되며, 이 호출은 누락분 점검/재생성용입니다.
 }
 let testAdminBoundaryLoadStarted=false;
-function scheduleTestAdminBoundaryLoad(delay=1200){
-  if(testAdminBoundaryLoadStarted||SERVICE_ZONE_PRECOMPUTE_ONLY)return;
+let testAdminBoundaryLoadScheduled=false;
+function startTestAdminBoundaryLoad(reason='즉시'){
+  if(SERVICE_ZONE_PRECOMPUTE_ONLY)return Promise.resolve();
+  if(zoneBuildPromise)return zoneBuildPromise;
   testAdminBoundaryLoadStarted=true;
-  const run=()=>{zoneBuildPromise=buildZonePolygons().catch(e=>console.warn('TEST 행정경계 지연 로드 실패',e));};
+  zoneBuildPromise=buildZonePolygons().catch(e=>console.warn(`TEST 행정경계 ${reason} 로드 실패`,e));
+  return zoneBuildPromise;
+}
+function scheduleTestAdminBoundaryLoad(delay=1200){
+  if(testAdminBoundaryLoadStarted||testAdminBoundaryLoadScheduled||SERVICE_ZONE_PRECOMPUTE_ONLY)return;
+  testAdminBoundaryLoadScheduled=true;
+  const run=()=>{
+    testAdminBoundaryLoadScheduled=false;
+    startTestAdminBoundaryLoad('지연');
+  };
   if(typeof requestIdleCallback==='function'){
     requestIdleCallback(run,{timeout:Math.max(1200,delay)});
   }else{
@@ -4711,10 +4723,7 @@ function scheduleTestAdminBoundaryLoad(delay=1200){
   }
 }
 function ensureTestAdminBoundaryLoad(){
-  if(testAdminBoundaryLoadStarted)return zoneBuildPromise;
-  testAdminBoundaryLoadStarted=true;
-  zoneBuildPromise=buildZonePolygons().catch(e=>console.warn('TEST 행정경계 로드 실패',e));
-  return zoneBuildPromise;
+  return startTestAdminBoundaryLoad('주소판정');
 }
 function init(){
   map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(DEFAULT.lat,DEFAULT.lng),level:7});
