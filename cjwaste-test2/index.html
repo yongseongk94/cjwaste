@@ -1172,7 +1172,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v3';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v4';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1641,7 +1641,7 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
 let bundledServiceZoneManifest=null;
 let bundledServiceZoneManifestPromise=null;
-const TEST_SERVICE_ZONE_MANIFEST='data/service-zones-gapfill-v3-manifest.json';
+const TEST_SERVICE_ZONE_MANIFEST='data/service-zones-gapfill-v3-manifest.json?v=test2-zonefix-1';
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
 
@@ -1650,7 +1650,7 @@ async function loadServiceZoneManifest(){
   if(bundledServiceZoneManifestPromise)return bundledServiceZoneManifestPromise;
   bundledServiceZoneManifestPromise=(async()=>{
     try{
-      const mr=await fetch(TEST_SERVICE_ZONE_MANIFEST,{cache:'force-cache'});
+      const mr=await fetch(TEST_SERVICE_ZONE_MANIFEST,{cache:'no-cache'});
       if(!mr.ok)throw new Error('test service zone manifest '+mr.status);
       const manifest=await mr.json();
       if(manifest.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('test service zone version mismatch');
@@ -1699,7 +1699,7 @@ async function fetchServiceZoneChunk(type,entry){
   if(serviceZoneChunkPromises.has(key))return serviceZoneChunkPromises.get(key);
   const promise=(async()=>{
     try{
-      const res=await fetch(entry.path,{cache:'force-cache'});
+      const res=await fetch(entry.path+(entry.path.includes('?')?'&':'?')+'v=test2-zonefix-1',{cache:'no-cache'});
       if(!res.ok)throw new Error('service zone district chunk '+res.status);
       const chunk=await res.json();
       if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('service zone district version mismatch');
