@@ -216,6 +216,7 @@
 
 <script id="bundledPrecomputed" type="application/json" data-src="data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json"></script>
 <script id="bundledServiceZones" type="application/json" data-manifest="data/service-zones-manifest-v2.json"></script>
+<script src="cjwaste-test/vendor/polygon-clipping-0.15.7.min.js"></script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -1544,7 +1545,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='schedule-map-v2-detailed';
+const TEST_ZONE_RENDER_MODE='schedule-map-v3-disjoint';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1995,7 +1996,7 @@ function assignmentDisplaySignature(z){
 function nearestScheduleDisplayZone(type,district,lat,lng){
   const zones=rawServiceZonesForDistrict(type,district).filter(z=>{
     const sig=scheduleDisplaySignature(z);
-    return !!sig&&rawZoneMatchesCurrentFilter(type,z);
+    return !!sig; // 소속은 전체 노선으로 결정하고 요일/차량 필터는 표시만 제한합니다.
   });
   if(!zones.length)return null;
 
@@ -2024,7 +2025,7 @@ function mergeScheduleDisplayCells(cells){
     row.sort((a,b)=>a.ix-b.ix);
     let run=null;
     for(const cell of row){
-      if(!run||run.sig!==cell.sig||cell.ix!==run.x1+1){
+      if(!run||run.district!==cell.district||run.sig!==cell.sig||cell.ix!==run.x1+1){
         if(run)runs.push(run);
         run={iy0:iy,iy1:iy,x0:cell.ix,x1:cell.ix,sig:cell.sig,scheduleSig:cell.scheduleSig,rep:cell.rep,addressFocus:!!cell.addressFocus,district:cell.district,count:1};
       }else{
@@ -2052,8 +2053,58 @@ function mergeScheduleDisplayCells(cells){
   }
   return merged;
 }
+// 행정경계와 수동권역을 먼저 서로 겹치지 않는 마스크로 만듭니다.
+// 필터/청크 로딩 순서가 바뀌어도 이미 정해진 경계는 이동하지 않습니다.
+let displayPartitionCache=null;
+function featureMultiPolygon(feature){
+  const g=feature?.geometry;
+  return g?.type==='Polygon'?[g.coordinates]:(g?.type==='MultiPolygon'?g.coordinates:[]);
+}
+function zoneMultiPolygon(zone){
+  const rings=zone.hitRings?.length?zone.hitRings:(zone.rings?.length?zone.rings:[zone.points||[]]);
+  return [rings.filter(r=>r.length>=3).map(r=>r.map(p=>[+p.lng,+p.lat]))].filter(p=>p.length);
+}
+function displayPartitionMasks(type){
+  const entries=[...districtFeatureMap.entries()].sort(([a],[b])=>a.localeCompare(b,'ko'));
+  const manual=allAdminZones().filter(z=>z.type===type);
+  const manualKey=JSON.stringify(manual);
+  if(displayPartitionCache?.type===type&&displayPartitionCache.manualKey===manualKey&&
+     entries.length===displayPartitionCache.entries.length&&
+     entries.every(([d,f],i)=>d===displayPartitionCache.entries[i][0]&&f===displayPartitionCache.entries[i][1]))return displayPartitionCache;
+  const districts=new Map();let covered=[];
+  for(const [district,feature] of entries){
+    const geometry=featureMultiPolygon(feature);if(!geometry.length)continue;
+    const exclusive=covered.length?polygonClipping.difference(geometry,covered):geometry;
+    districts.set(district,exclusive);
+    covered=covered.length?polygonClipping.union(covered,geometry):geometry;
+  }
+  // 주소판정과 같은 마지막 수동편집 우선순위. 다른 수동권역 및 자동권역에서 차감합니다.
+  const manualParts=[];let manualCovered=[];
+  for(let i=manual.length-1;i>=0;i--){
+    let geometry=zoneMultiPolygon(manual[i]);
+    if(!geometry.length||!covered.length)continue;
+    geometry=polygonClipping.intersection(geometry,covered);
+    const exclusive=manualCovered.length?polygonClipping.difference(geometry,manualCovered):geometry;
+    manualParts.push({zone:manual[i],geometry:exclusive});
+    manualCovered=manualCovered.length?polygonClipping.union(manualCovered,geometry):geometry;
+  }
+  if(manualCovered.length)for(const [district,geometry] of districts){
+    districts.set(district,polygonClipping.difference(geometry,manualCovered));
+  }
+  displayPartitionCache={type,entries,manualKey,districts,manualParts};
+  return displayPartitionCache;
+}
+function displayGeometryZones(meta,geometry){
+  return geometry.map((poly,part)=>{
+    const rings=poly.map(r=>r.map(([lng,lat])=>({lat,lng})));
+    return {...meta,points:rings[0],rings,hitRings:rings,
+      coarseKey:(meta.coarseKey||'manual')+'|part:'+part};
+  });
+}
 function coarseDisplayZones(type){
   const box=currentMapBoundsBox(.16);
+  if(!box)return [];
+  const masks=displayPartitionMasks(type).districts;
   const focus=addressLayerFocus[type];
   const cells=[];
 
@@ -2061,7 +2112,8 @@ function coarseDisplayZones(type){
     if(!zones?.length)continue;
     const feature=districtFeatureMap.get(district);
     const fb=featureBounds(feature);
-    if(!feature||!fb)continue;
+    const mask=masks.get(district);
+    if(!feature||!fb||!mask?.length)continue;
     if(fb.maxLat<box.minLat||fb.minLat>box.maxLat||fb.maxLng<box.minLng||fb.minLng>box.maxLng)continue;
 
     const minLat=Math.max(fb.minLat,box.minLat),maxLat=Math.min(fb.maxLat,box.maxLat);
@@ -2084,7 +2136,12 @@ function coarseDisplayZones(type){
           [(lat0+lat1)/2,lng0],[(lat0+lat1)/2,lng1]
         ];
         const inside=samples.filter(([lat,lng])=>pointInGeoFeature([lng,lat],feature));
-        if(!inside.length)continue;
+        // 좁은 경계 조각은 9개 표본 모두 밖일 수 있으므로 실제 교차도 확인합니다.
+        if(!inside.length){
+          const sliver=polygonClipping.intersection(mask,[[[lng0,lat0],[lng1,lat0],[lng1,lat1],[lng0,lat1],[lng0,lat0]]]);
+          if(!sliver.length)continue;
+          const [lng,lat]=sliver[0][0][0];inside.push([lat,lng]);
+        }
         const classLat=inside.reduce((s,p)=>s+p[0],0)/inside.length;
         const classLng=inside.reduce((s,p)=>s+p[1],0)/inside.length;
 
@@ -2093,7 +2150,7 @@ function coarseDisplayZones(type){
 
         let addressFocus=false;
         if(focus&&focus.district===district&&
-           +focus.lat>=lat0&&+focus.lat<=lat1&&+focus.lng>=lng0&&+focus.lng<=lng1){
+           +focus.lat>=lat0&&+focus.lat<lat1&&+focus.lng>=lng0&&+focus.lng<lng1){
           rep={
             ...rep,
             district,
@@ -2107,7 +2164,7 @@ function coarseDisplayZones(type){
         }
 
         const scheduleSig=scheduleDisplaySignature(rep);
-        if(!scheduleSig)continue;
+        if(!scheduleSig||!rawZoneMatchesCurrentFilter(type,rep))continue;
         const sig=assignmentDisplaySignature(rep);
         cells.push({district,iy,ix,sig,scheduleSig,rep,addressFocus});
       }
@@ -2115,7 +2172,7 @@ function coarseDisplayZones(type){
   }
 
   const merged=mergeScheduleDisplayCells(cells);
-  return merged.map(m=>{
+  return merged.flatMap(m=>{
     const lat0=m.iy0*COARSE_ZONE_LAT_STEP;
     const lat1=(m.iy1+1)*COARSE_ZONE_LAT_STEP;
     const lng0=m.x0*COARSE_ZONE_LNG_STEP;
@@ -2124,7 +2181,9 @@ function coarseDisplayZones(type){
       {lat:lat0,lng:lng0},{lat:lat0,lng:lng1},
       {lat:lat1,lng:lng1},{lat:lat1,lng:lng0}
     ];
-    return {
+    const geometry=polygonClipping.intersection(
+      [points.map(p=>[p.lng,p.lat])],masks.get(m.district));
+    return displayGeometryZones({
       ...m.rep,
       points,rings:[points],hitRings:[points],
       district:m.district,automatic:true,fromBundle:true,
@@ -2139,38 +2198,15 @@ function coarseDisplayZones(type){
       assignmentKey:m.sig,
       scheduleSignature:m.scheduleSig||scheduleDisplaySignature(m.rep),
       addressFocus:!!m.addressFocus
-    };
+    },geometry);
   });
-}
-function coarseDisplayBaseZones(type){
-  const box=currentMapBoundsBox(.22);
-  const out=[];
-  for(const [district,zones] of rawServiceZones[type].entries()){
-    if(!zones?.length||!zones.some(z=>rawZoneIntersectsBox(z,box)))continue;
-    const feature=districtFeatureMap.get(district);
-    const g=feature?.geometry;if(!g)continue;
-    const polys=g.type==='Polygon'?[g.coordinates]:(g.type==='MultiPolygon'?g.coordinates:[]);
-    for(const poly of polys){
-      if(!poly?.length||!poly[0]?.length)continue;
-      const rings=poly.map(r=>r.map(([lng,lat])=>({lat:+lat,lng:+lng}))).filter(r=>r.length>=3);
-      if(!rings.length)continue;
-      out.push({
-        points:rings[0],rings,hitRings:rings,
-        district,automatic:true,fromBundle:true,
-        displayOnly:true,displayBase:true,coarseCover:true,
-        estimated:true,gridMerged:true,ambiguous:false,
-        vehicle:'',vehicles:[],provider:'',days:[]
-      });
-    }
-  }
-  return out;
 }
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
   // 행정경계는 주소 판정을 막지 않고 백그라운드로 준비합니다.
-  // 준비되면 동일 화면을 한 번 더 그려 흰 빈틈을 중립 기본권역으로 채웁니다.
+  // 준비되면 행정경계로 자른 단일 추정권역을 다시 표시합니다.
   if(!testAdminBoundaryLoadStarted){
     ensureTestAdminBoundaryLoad()
       .then(()=>{if(activeLayer===type&&resultMapVisible())scheduleVisibleServiceZoneMaterialization(type)})
@@ -2182,9 +2218,8 @@ function materializeVisibleRawServiceZones(type){
   for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
   serviceZoneOverlays[type]=manual;
 
-  // 1) 읍면동 전체를 연한 중립 기본권역으로 먼저 채움
-  for(const z of coarseDisplayBaseZones(type))addServiceZonePolygon(type,z.points,z);
-  // 2) 그 위에 일정별 대표권역을 표시
+  // 바탕 면을 중복해서 깔지 않고, 실제 경계로 자른 추정권역만 한 번 표시합니다.
+  rebuildManualZoneOverlays(type,false);
   const zones=coarseDisplayZones(type);
   for(const z of zones)addServiceZonePolygon(type,z.points,z);
   syncServiceZoneVisibility(type);
@@ -4564,9 +4599,8 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
   for(const t of ['general','recycle']){
     for(const z of (serviceZoneOverlays[t]||[])){
       const zoneVehicles=(z.vehicles||[]).length?z.vehicles:[z.vehicle];
-      const autoScheduleView=!!addressLayerFocus[type]&&!!z.displaySchedule;
-      const providerOk=z.displayBase||autoScheduleView||provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
-      const dayOk=z.displayBase||autoScheduleView||day==='전체'||(z.days||[]).includes(day);
+      const providerOk=provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
+      const dayOk=day==='전체'||(z.days||[]).includes(day);
       const viewportOk=z.displayOnly||z.manual||!z.fromBundle||!renderBox||rawZoneIntersectsBox(z,renderBox);
       const visible=t===type&&activeLayer===type&&serviceLayerState.zone&&providerOk&&dayOk&&viewportOk;
       if(!visible){if(z.polygon?.getMap())z.polygon.setMap(null);continue}
@@ -4671,8 +4705,13 @@ function saveManualZones(){localStorage.setItem(ADMIN_ZONE_STORAGE_KEY,JSON.stri
 function removeManualZoneOverlays(type){
   const keep=[];for(const z of serviceZoneOverlays[type]){if(z.manual){z.polygon?.setMap(null)}else keep.push(z)}serviceZoneOverlays[type]=keep;
 }
-function rebuildManualZoneOverlays(type){
-  removeManualZoneOverlays(type);for(const z of allAdminZones().filter(z=>z.type===type))addServiceZonePolygon(type,z.points,{...z,manual:true});syncServiceZoneVisibility(type)
+function rebuildManualZoneOverlays(type,refresh=true){
+  removeManualZoneOverlays(type);
+  for(const {zone,geometry} of displayPartitionMasks(type).manualParts){
+    for(const z of displayGeometryZones({...zone,manual:true},geometry))addServiceZonePolygon(type,z.points,z);
+  }
+  syncServiceZoneVisibility(type);
+  if(refresh&&resultMapVisible()&&activeLayer===type)scheduleVisibleServiceZoneMaterialization(type);
 }
 function updateAdminVehicleOptions(){
   const type=document.getElementById('adminType')?.value||activeLayer;const sel=document.getElementById('adminVehicle');if(!sel)return;
