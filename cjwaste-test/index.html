@@ -1457,6 +1457,7 @@ let nearbyScheduleRequestSeq=0;
 let zoneBuildPromise=null;
 // 검색주소에 실제로 매칭된 차량을 근거노선 생성 최우선 순위로 사용합니다.
 const preferredRouteVehicle={general:'',recycle:''};
+const TEST_ROUTE_PRIORITY_MODE='address-first-v1';
 
 // 2단계 구조: ① 자동/수동 수거권역 ② 원본 수거노선. 행정경계는 계산용으로만 사용하고 지도에는 표시하지 않습니다.
 const serviceLayerState={zone:true,route:true};
