@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v3'" /tmp/test-live.html \
+              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v4-basefill'" /tmp/test-live.html \
               && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v4-shared-geometry'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
               exit 0
@@ -55,7 +55,7 @@ jobs:
               display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0)
             }));
-            if(landing.mode!=='coarse-cover-v3')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
+            if(landing.mode!=='coarse-cover-v4-basefill')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
             if(landing.display!==0)throw new Error('Landing created non-manual polygons: '+JSON.stringify(landing));
 
             const t0=Date.now();
