@@ -17,7 +17,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?coverage_audit=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v3'" /tmp/test-live.html; then
+              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v4-basefill'" /tmp/test-live.html; then
               exit 0
             fi
             sleep 5
@@ -108,11 +108,14 @@ jobs:
                     const cover=(serviceZoneOverlays[type]||[]).filter(z=>z.displayOnly&&z.coarseCover);
                     const view=currentMapBoundsBox(0);
                     let visibleTotal=0,visibleHit=0;
-                    for(const q of rawCenters){
-                      const visible=q.lat>=view.minLat&&q.lat<=view.maxLat&&q.lng>=view.minLng&&q.lng<=view.maxLng;
-                      if(!visible)continue;
-                      visibleTotal++;
-                      if(cover.some(c=>pointInZonePolygon(q.lat,q.lng,c)))visibleHit++;
+                    const latStep=Math.max((view.maxLat-view.minLat)/22,.00012);
+                    const lngStep=Math.max((view.maxLng-view.minLng)/22,.00015);
+                    for(let lat=view.minLat+latStep/2;lat<view.maxLat;lat+=latStep){
+                      for(let lng=view.minLng+lngStep/2;lng<view.maxLng;lng+=lngStep){
+                        if(!pointInGeoFeature([lng,lat],feature))continue;
+                        visibleTotal++;
+                        if(cover.some(c=>pointInZonePolygon(lat,lng,c)))visibleHit++;
+                      }
                     }
                     samples.push({
                       label:p.label||['center','south','north','west','east'][si]||String(si),
