@@ -1172,7 +1172,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v1';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v2';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -2175,8 +2175,11 @@ async function ensureLocalScheduleIndex(type){
   if(localSchedulePromises[type])return localSchedulePromises[type];
   localSchedulePromises[type]=(async()=>{
     const data=await loadExternalBundledPrecomputedData();
-    if(!data?.routes?.length)return null;
-    localScheduleIndexes[type]=buildLocalScheduleIndex(type,{routes:[...data.routes,...(dongRouteOverlays[type]||[]).map(item=>({type,vehicle:item.vehicle,day:item.day,data:item,liveSpec:item}))]});
+    const externalRoutes=Array.isArray(data?.routes)?data.routes:[];
+    const liveRoutes=(dongRouteOverlays[type]||[]).map(item=>({type,vehicle:item.vehicle,day:item.day,data:item,liveSpec:item}));
+    // TEST2는 기존 사전계산 번들을 의도적으로 쓰지 않으므로, 새 기준으로 방금 계산된 live 노선만으로도 주소판정 인덱스를 만듭니다.
+    if(!externalRoutes.length&&!liveRoutes.length)return null;
+    localScheduleIndexes[type]=buildLocalScheduleIndex(type,{routes:[...externalRoutes,...liveRoutes]});
     if(resultMapVisible()&&activeLayer===type)scheduleVisibleServiceZoneMaterialization(type);
     return localScheduleIndexes[type];
   })();
@@ -3042,6 +3045,11 @@ async function refreshNearbyRouteSchedules(ctx){
   if(seq!==nearbyScheduleRequestSeq)return;
   for(const type of ['general','recycle']){
     if(isUnconfirmedRi(type,district,ctx.legalRi||'')){renderReviewedSchedule(type,null,ctx);continue;}
+    try{
+      await ensureDistrictRouteItems(type,district);
+      localScheduleIndexes[type]=null;
+    }catch(e){console.warn('TEST2 주소지역 근거노선 준비 실패',type,district,e)}
+    if(seq!==nearbyScheduleRequestSeq)return;
     const manual=manualZoneMatch(type,+ctx.lat,+ctx.lng);
     const fixed=manual?{...manual,matchBasis:manual.published?'published-zone':'manual-zone',estimated:!manual.published}:userConfirmedSchedule(type,ctx);
     if(fixed){renderReviewedSchedule(type,fixed,ctx);continue;}
@@ -4343,42 +4351,54 @@ function isNaesuBugiRouteSpec(spec){
   return ds.includes('내수읍')||ds.includes('북이면');
 }
 async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
-  // 근거노선은 최종 좌표를 담당 읍면동 경계로 잘라 검증하므로 행정경계가 반드시 필요합니다.
-  // 주소/권역 판정은 이 로딩을 기다리지 않고, ② 근거노선 준비 단계에서만 비동기로 확보합니다.
+  // TEST2: 주소가 확정되기 전 전체 읍면 노선을 한꺼번에 계산하지 않습니다.
+  // 검색주소가 확정되면 해당 읍면의 차량×요일 노선부터 계산하여 즉시 표시하고,
+  // 나머지는 뒤에서 캐시에 준비합니다.
   try{await ensureTestAdminBoundaryLoad()}catch(e){console.warn('근거노선 경계 준비 실패',e)}
   const providerSnapshot=selectedVehicle[type]||'전체';
   const daySnapshot=activeDay||'전체';
   const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===type&&(selectedVehicle[type]||'전체')===providerSnapshot&&(activeDay||'전체')===daySnapshot;
   const specs=routeCandidatesForSelection(type);
   if(!specs.length){if(isCurrent())syncDongRouteVisibility(type);return}
-  // 오래된 요청도 캐시 준비는 끝낼 수 있지만 지도 갱신은 현재 선택일 때만 수행합니다.
+
   await hydrateCachedRouteOverlays(specs);
   await hydrateExternalBundledPrecomputedData();
   if(isCurrent())syncDongRouteVisibility(type);
-  const missing=specs.filter(s=>!existingDongRouteOverlay(s));
+
   const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
+  // 랜딩→결과 전환 직후에는 resolveDistrict가 아직 끝나지 않을 수 있습니다.
+  // 이때 전체 내수·북이 노선을 계산하면 첫 노선 표시가 지나치게 늦어지므로 캐시 복원만 하고 종료합니다.
+  if(!here){
+    if(isCurrent())syncDongRouteVisibility(type);
+    return;
+  }
+
+  const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   const preferred=String(preferredRouteVehicle[type]||'').trim();
   const urgent=missing.filter(s=>{
-    const local=here&&(s.districts||[]).map(canonicalDistrict).includes(here);
+    const local=(s.districts||[]).map(canonicalDistrict).includes(here);
     const exact=preferred&&(String(s.vehicle)===preferred||routePlate(s.vehicle)===preferred);
     return local&&exact;
   });
-  const local=missing.filter(s=>!urgent.includes(s)&&here&&(s.districts||[]).map(canonicalDistrict).includes(here));
-  // v91: 외부 사전계산 번들에는 내수·북이 노선이 없으므로 두 읍면은 백그라운드 맨 뒤로 보내지 않습니다.
-  // 선택한 생활/재활용 레이어에서 누락된 내수·북이 노선을 먼저 계산해 즉시 표시하고 IndexedDB에 저장합니다.
+  const local=missing.filter(s=>!urgent.includes(s)&&(s.districts||[]).map(canonicalDistrict).includes(here));
   const ruralPriority=missing.filter(s=>!urgent.includes(s)&&!local.includes(s)&&isNaesuBugiRouteSpec(s));
   const rest=missing.filter(s=>!urgent.includes(s)&&!local.includes(s)&&!ruralPriority.includes(s));
 
-  // 검색주소의 실제 매칭 차량 → 현재 지역 → 내수·북이 순으로 먼저 준비합니다.
   if(urgent.length)await buildRouteSpecsGeometryGrouped(urgent,type,isCurrent);
+  if(isCurrent())syncDongRouteVisibility(type);
+
   if(local.length)await buildRouteSpecsGeometryGrouped(local,type,isCurrent);
-  if(ruralPriority.length)await buildRouteSpecsGeometryGrouped(ruralPriority,type,isCurrent);
-  // 그 밖의 비가시 노선만 뒤에서 준비합니다.
+  if(isCurrent())syncDongRouteVisibility(type);
+
+  // 현재 주소와 무관한 노선은 화면 표시를 막지 않고 백그라운드에서 준비합니다.
+  if(ruralPriority.length){
+    buildRouteSpecsGeometryGrouped(ruralPriority,type,isCurrent)
+      .catch(e=>console.warn('내수·북이 비가시 근거노선 백그라운드 준비 실패',e));
+  }
   if(rest.length){
     buildRouteSpecsGeometryGrouped(rest,type,isCurrent)
       .catch(e=>console.warn('비가시 근거노선 백그라운드 준비 실패',e));
   }
-  if(isCurrent())syncDongRouteVisibility(type);
 }
 
 function allDongRouteSpecs(){
