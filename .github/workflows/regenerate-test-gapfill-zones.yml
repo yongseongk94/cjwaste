@@ -12,29 +12,29 @@ permissions:
 jobs:
   regenerate:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Wait for gap-fill test page deployment
+      - name: Wait for Uam gap-fill test page deployment
         shell: bash
         run: |
           set -euo pipefail
           for i in $(seq 1 180); do
-            if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?gapfill_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q 'zone-v90-test-gapfill-v1' /tmp/test-live.html \
-              && grep -q 'service-zones-gapfill-manifest.json' /tmp/test-live.html; then
-              echo 'Gap-fill test page is deployed'
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?gapfill_v2_check=$RANDOM" -o /tmp/test-live.html \
+              && grep -q 'zone-v90-test-gapfill-v2' /tmp/test-live.html \
+              && grep -q 'service-zones-gapfill-v2-manifest.json' /tmp/test-live.html; then
+              echo 'Uam gap-fill v2 test page is deployed'
               exit 0
             fi
             sleep 5
           done
-          echo 'Timed out waiting for gap-fill test page deployment' >&2
+          echo 'Timed out waiting for Uam gap-fill v2 deployment' >&2
           exit 1
 
-      - name: Generate fresh test service zones in browser
+      - name: Regenerate Uam zones in browser
         shell: bash
         run: |
           set -euo pipefail
@@ -49,33 +49,34 @@ jobs:
           (async()=>{
             const browser=await puppeteer.launch({
               headless:true,
-              protocolTimeout:2400000,
+              protocolTimeout:1200000,
               executablePath:process.env.CHROME_BIN,
               args:['--no-sandbox','--disable-dev-shm-usage']
             });
             const page=await browser.newPage();
-            page.setDefaultTimeout(2400000);
+            page.setDefaultTimeout(1200000);
             const pageErrors=[];
             page.on('pageerror',e=>{pageErrors.push(e.message);console.error('PAGEERROR',e.message)});
             page.on('console',m=>{
               const t=m.text();
               if (/precompute complete|행정동|법정리|실패|error/i.test(t)) console.log('PAGE',t.slice(0,1200));
             });
-            await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?zone_only=1&gapfill_regen='+Date.now(),{
+            await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?zone_only=1&zone_district='+encodeURIComponent('우암동')+'&gapfill_v2='+Date.now(),{
               waitUntil:'domcontentloaded',timeout:180000
             });
-            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:1800000,polling:2000});
+            await page.waitForFunction(()=>window.__CJWASTE_PRECOMPUTE_READY===true,{timeout:900000,polling:1500});
             const payload=await page.evaluate(async()=>{
               const data=window.exportCjWastePrecomputed();
-              const expected='zone-v90-test-gapfill-v1|v76-layer-visibility-refresh';
+              const expected='zone-v90-test-gapfill-v2|v76-layer-visibility-refresh';
               if(data?.zoneVersion!==expected)throw new Error('Unexpected zoneVersion '+data?.zoneVersion);
 
-              async function coverage(type,district){
+              async function coverage(type){
+                const district='우암동';
                 const feature=districtFeatureMap.get(district);
                 if(!feature)return {district,type,error:'missing feature'};
                 const groups=await serviceRouteGroups(type,district,'','');
                 const b=featureBounds(feature);
-                const stepLat=.00018,stepLng=.00023;
+                const stepLat=.00016,stepLng=.00020;
                 let inside=0,route20=0,zone=0,uncovered=0;
                 const samples=[];
                 for(let lat=b.minLat+stepLat/2;lat<b.maxLat;lat+=stepLat){
@@ -88,37 +89,34 @@ jobs:
                     if(hit)zone++;
                     else{
                       uncovered++;
-                      if(samples.length<12)samples.push({lat:+lat.toFixed(6),lng:+lng.toFixed(6)});
+                      if(samples.length<20)samples.push({lat:+lat.toFixed(6),lng:+lng.toFixed(6)});
                     }
                   }
                 }
                 return {district,type,inside,route20,zone,uncovered,uncoveredRate:inside?uncovered/inside:1,samples};
               }
 
-              const diagnostics={};
-              for(const type of ['general','recycle']){
-                diagnostics[type]={};
-                for(const district of ['우암동','내덕1동','내덕2동','오근장동','율량사천동']){
-                  diagnostics[type][district]=await coverage(type,district);
-                }
-              }
+              const diagnostics={general:await coverage('general'),recycle:await coverage('recycle')};
               return {data,diagnostics};
             });
-            fs.writeFileSync('/tmp/test-zones.json',JSON.stringify(payload.data));
-            fs.writeFileSync('/tmp/test-zone-diagnostics.json',JSON.stringify(payload.diagnostics,null,2));
-            console.log('DIAGNOSTICS',JSON.stringify(payload.diagnostics));
+            fs.writeFileSync('/tmp/test-zones-uam.json',JSON.stringify(payload.data));
+            fs.writeFileSync('/tmp/test-zone-uam-diagnostics.json',JSON.stringify(payload.diagnostics,null,2));
+            console.log('UAM_DIAGNOSTICS',JSON.stringify(payload.diagnostics));
             if(pageErrors.length)console.warn('Page errors:',pageErrors.join(' | '));
-            const uam=[payload.diagnostics.general['우암동'],payload.diagnostics.recycle['우암동']];
-            for(const x of uam){
-              if(x.error)throw new Error(x.type+' Uam diagnostic: '+x.error);
-              if(x.uncovered>0)throw new Error(x.type+' Uam uncovered samples: '+JSON.stringify(x));
+
+            for(const type of ['general','recycle']){
+              const zones=(payload.data?.zones?.[type]||[]).filter(z=>z.district==='우암동');
+              if(!zones.length)throw new Error(type+' Uam zones missing');
+              const d=payload.diagnostics[type];
+              if(d.error)throw new Error(type+' Uam diagnostic: '+d.error);
+              if(d.uncovered>0)throw new Error(type+' Uam uncovered samples: '+JSON.stringify(d));
             }
             await browser.close();
           })().catch(e=>{console.error(e);process.exit(1)});
           NODE
           node regenerate-test-zones.js
 
-      - name: Split generated zones into test-only district chunks
+      - name: Build isolated v2 test chunks
         shell: bash
         run: |
           set -euo pipefail
@@ -127,15 +125,15 @@ jobs:
           import json, shutil
 
           root=Path('.')
-          payload=json.loads(Path('/tmp/test-zones.json').read_text(encoding='utf-8'))
-          diagnostics=json.loads(Path('/tmp/test-zone-diagnostics.json').read_text(encoding='utf-8'))
-          version='zone-v90-test-gapfill-v1|v76-layer-visibility-refresh'
-          assert payload['zoneVersion']==version,payload.get('zoneVersion')
+          fresh=json.loads(Path('/tmp/test-zones-uam.json').read_text(encoding='utf-8'))
+          diagnostics=json.loads(Path('/tmp/test-zone-uam-diagnostics.json').read_text(encoding='utf-8'))
+          version='zone-v90-test-gapfill-v2|v76-layer-visibility-refresh'
+          assert fresh['zoneVersion']==version
+          slugs={'우암동':'uam','내덕1동':'naedeok1','내덕2동':'naedeok2','오근장동':'ogeunjang','율량사천동':'yullyang-sacheon','오창읍':'ochang','내수읍':'naesu','북이면':'bugi'}
 
-          out=root/'cjwaste-test'/'data'/'zones-gapfill'
+          out=root/'cjwaste-test'/'data'/'zones-gapfill-v2'
           if out.exists(): shutil.rmtree(out)
-          district_slug={'우암동':'uam','내덕1동':'naedeok1','내덕2동':'naedeok2','오근장동':'ogeunjang','율량사천동':'yullyang-sacheon','오창읍':'ochang','내수읍':'naesu','북이면':'bugi'}
-          manifest={'schemaVersion':1,'zoneVersion':version,'strategy':'test-gapfill-fine-urban-grid-v1','types':{'general':[],'recycle':[]}}
+          manifest={'schemaVersion':1,'zoneVersion':version,'strategy':'uam-gapfill-v2-with-v90-preserved-others','types':{'general':[],'recycle':[]}}
 
           def points(z):
             rings=z.get('rings') or [z.get('points') or []]
@@ -149,36 +147,43 @@ jobs:
             return {'minLat':min(x[0] for x in pts),'maxLat':max(x[0] for x in pts),'minLng':min(x[1] for x in pts),'maxLng':max(x[1] for x in pts)}
 
           for typ in ('general','recycle'):
-            grouped={}
-            for z in payload.get('zones',{}).get(typ,[]):
-              grouped.setdefault(z.get('district') or 'unknown',[]).append(z)
-            for district in district_slug:
-              zs=grouped.get(district,[])
-              assert zs,(typ,district,'no generated zones')
-              p=f'cjwaste-test/data/zones-gapfill/{typ}/{district_slug[district]}.json'
+            fresh_uam=[z for z in fresh.get('zones',{}).get(typ,[]) if z.get('district')=='우암동']
+            assert fresh_uam,(typ,'fresh Uam missing')
+            for district,slug in slugs.items():
+              if district=='우암동':
+                zs=fresh_uam
+              else:
+                old_path=root/f'cjwaste-test/data/zones/{typ}/{slug}.json'
+                old=json.loads(old_path.read_text(encoding='utf-8'))
+                zs=old.get('zones',[])
+                assert zs,(typ,district,'preserved chunk empty')
+              p=f'cjwaste-test/data/zones-gapfill-v2/{typ}/{slug}.json'
               fp=root/p;fp.parent.mkdir(parents=True,exist_ok=True)
               fp.write_text(json.dumps({'schemaVersion':1,'zoneVersion':version,'type':typ,'district':district,'zones':zs},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
               manifest['types'][typ].append({'district':district,'path':p,'count':len(zs),'bbox':bbox(zs)})
 
-          (root/'cjwaste-test/data/service-zones-gapfill-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          (root/'cjwaste-test/data/service-zones-gapfill-diagnostics.json').write_text(json.dumps(diagnostics,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          (root/'cjwaste-test/data/service-zones-gapfill-v2-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          (root/'cjwaste-test/data/service-zones-gapfill-v2-diagnostics.json').write_text(json.dumps(diagnostics,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 
-          for typ in ('general','recycle'):
-            print(typ,{e['district']:e['count'] for e in manifest['types'][typ]})
-          print('UAM',json.dumps({'general':diagnostics['general']['우암동'],'recycle':diagnostics['recycle']['우암동']},ensure_ascii=False))
+          oldg=json.loads((root/'cjwaste-test/data/zones/general/uam.json').read_text(encoding='utf-8'))['zones']
+          oldr=json.loads((root/'cjwaste-test/data/zones/recycle/uam.json').read_text(encoding='utf-8'))['zones']
+          newg=[z for z in fresh['zones']['general'] if z.get('district')=='우암동']
+          newr=[z for z in fresh['zones']['recycle'] if z.get('district')=='우암동']
+          print('UAM_COUNTS',{'general':{'old':len(oldg),'new':len(newg)},'recycle':{'old':len(oldr),'new':len(newr)}})
+          print('UAM_DIAGNOSTICS',json.dumps(diagnostics,ensure_ascii=False))
           PY
 
-      - name: Commit regenerated test-only chunks
+      - name: Commit regenerated test-only v2 chunks
         shell: bash
         run: |
           set -euo pipefail
           rm -f regenerate-test-zones.js package.json package-lock.json tools/regenerate-test-gapfill.trigger
           git config user.name 'ChatGPT Update Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add cjwaste-test/data/service-zones-gapfill-manifest.json \
-                  cjwaste-test/data/service-zones-gapfill-diagnostics.json \
-                  cjwaste-test/data/zones-gapfill \
+          git add cjwaste-test/data/service-zones-gapfill-v2-manifest.json \
+                  cjwaste-test/data/service-zones-gapfill-v2-diagnostics.json \
+                  cjwaste-test/data/zones-gapfill-v2 \
                   tools/regenerate-test-gapfill.trigger
           if git diff --cached --quiet; then echo 'No generated changes'; exit 0; fi
-          git commit -m 'Regenerate test-only gap-fill service zones'
+          git commit -m 'Regenerate Uam gap-fill zones for test page'
           git push
