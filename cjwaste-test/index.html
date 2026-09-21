@@ -285,7 +285,7 @@ function contractAddressNorm(s){return String(s||'').toLowerCase().replace(/충�
 function contractAddressCandidates(s){return String(s||'').split(/[,/]/).map(contractAddressNorm).filter(x=>x.length>=5)}
 
 function contractIncombustibleRowsFor(ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   if(!district)return [];
   return CONTRACT_INCOMBUSTIBLE.filter(x=>canonicalDistrict(x.district)===district);
 }
@@ -307,7 +307,7 @@ function contractorIncombustibleSummary(ctx){
   return `<br><strong>불연성:</strong> ${days.join(' · ')}${note}`;
 }
 function contractExactScheduleMatch(type,ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const target=contractAddressNorm(ctx?.address||'');
   if(!target)return null;
   let best=null,bestLen=0;
@@ -577,7 +577,7 @@ function extraRiTextAliases(district,riName){
   return (RI_TEXT_ALIASES[`${district}|${riName}`]||[]).map(routeNorm);
 }
 function inheritedScheduleContext(ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const originalRi=normalizeRi(ctx?.legalRi||'');
   const inherited=RI_SCHEDULE_INHERIT[`${district}|${originalRi}`];
   if(!inherited)return ctx;
@@ -966,7 +966,46 @@ function renderDirectSchedule(type,matches,ctx){
     `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br>${rows}${secondary}<br><span style="color:#6b7280">※ 2026년 6월 직영 코스표의 도로명·법정동·리 명칭과 검색주소를 자동 매칭한 결과입니다.</span>${inheritNote}${apartmentNotice}</div>`;
 }
 
-let map,marker,geocoder,places,currentDistrict='',currentLegalEmd='',currentLegalRi='',currentAddress='',currentLat=null,currentLng=null,currentFoodExclusion=null,activeLayer='general',activeDay='전체';
+const CONFIRMED_ADDRESS_SCHEDULE_OVERRIDES=[
+  {
+    id:'jujung-304-1',
+    district:'오근장동',
+    addressTokens:['주중동3041'],
+    schedules:{
+      general:{vehicle:'6224',days:['화']},
+      recycle:{vehicle:'0264',days:['수']}
+    }
+  }
+];
+function confirmedAddressScheduleOverride(type,ctx){
+  const district=serviceDistrictForContext(ctx);
+  const target=[ctx?.address,ctx?.jibunAddress,ctx?.lookupText,currentJibunAddress,currentLookupText]
+    .map(routeNorm).filter(Boolean).join('|');
+  if(!target)return null;
+  for(const rule of CONFIRMED_ADDRESS_SCHEDULE_OVERRIDES){
+    if(rule.district&&canonicalDistrict(rule.district)!==district)continue;
+    if(!(rule.addressTokens||[]).some(token=>target.includes(routeNorm(token))))continue;
+    const schedule=rule.schedules?.[type];
+    if(schedule?.vehicle&&(schedule.days||[]).length)return {...schedule,ruleId:rule.id,district};
+  }
+  return null;
+}
+function renderConfirmedAddressSchedule(type,row,ctx){
+  const days=DAYS.filter(d=>(row.days||[]).includes(d));
+  selectedVehicle[type]=row.vehicle||'전체';
+  preferredRouteVehicle[type]=row.vehicle||'';
+  setAddressLayerFocus(type,ctx,{vehicle:row.vehicle||'',days,source:'confirmed-address'});
+  document.getElementById(type+'Badge').textContent=`직영 · ${days.join('·')}`;
+  renderDays(type+'Days',days);
+  const apartmentNotice=type==='recycle'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    : '';
+  document.getElementById(type+'Detail').innerHTML=
+    `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(row.vehicle)}호:</strong> ${days.join(' · ')}<br><span style="color:#6b7280">※ 주소별로 확인된 수거일정을 우선 적용했습니다. 주변의 다른 차량·요일 노선이나 추정권역은 이 주소 일정에 합산하지 않습니다.</span>${apartmentNotice}</div>`;
+}
+
+
+let map,marker,geocoder,places,currentDistrict='',currentLegalEmd='',currentLegalRi='',currentAddress='',currentJibunAddress='',currentLookupText='',currentLat=null,currentLng=null,currentFoodExclusion=null,activeLayer='general',activeDay='전체';
 const selectedVehicle={general:'전체',recycle:'전체'};
 // 주소 검색 결과와 지도 추정권역 색을 일치시키기 위한 포커스.
 // 일정 판정에는 사용하지 않고 표시용 coarse layer만 제한·강조합니다.
@@ -978,7 +1017,7 @@ function focusVehicleToken(v){
 }
 function setAddressLayerFocus(type,ctx,data={}){
   if(type!=='general'&&type!=='recycle')return;
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const days=DAYS.filter(d=>(data.days||[]).includes(d));
   const vehicles=[...new Set([...(data.vehicles||[]),data.vehicle].filter(Boolean).map(String))];
   const provider=data.provider||routeCompany(data.vehicle)||'';
@@ -1365,6 +1404,14 @@ function sourceAddressRangeTermsForSpec(spec){
 
 function norm(s){return String(s||'').replace(/[\s·.]/g,'')}
 function canonicalDistrict(name){const n=norm(name);for(const [alias,canonical] of Object.entries(DISTRICT_ALIASES)){if(norm(alias)===n)return canonical}return name||''}
+function serviceDistrictForContext(ctx){
+  const known=new Set(['내수읍','오창읍','북이면','우암동','내덕1동','내덕2동','오근장동','율량사천동']);
+  const legal=canonicalDistrict(ctx?.legalEmd||'');
+  const admin=canonicalDistrict(ctx?.district||'');
+  if(known.has(legal))return legal;
+  if(known.has(admin))return admin;
+  return legal||admin||'';
+}
 function normalizeRi(name){return String(name||'').replace(/\s+/g,'').trim()}
 function getFoodExclusion(legalEmd,legalRi,riCode=''){
   const emd=canonicalDistrict(legalEmd); const ri=normalizeRi(legalRi);
@@ -1521,14 +1568,14 @@ function resolveDistrict(lat,lng,done){
     currentLegalEmd=canonicalDistrict(b.region_3depth_name||currentDistrict);
     currentLegalRi=normalizeRi(b.region_4depth_name||'');
     renderSchedule(currentDistrict,currentLegalEmd,currentLegalRi);
-    const nearbyCtx={address:currentAddress,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi,lat:currentLat,lng:currentLng};
+    const nearbyCtx={address:currentAddress,jibunAddress:currentJibunAddress,lookupText:currentLookupText,district:currentDistrict,legalEmd:currentLegalEmd,legalRi:currentLegalRi,lat:currentLat,lng:currentLng};
     done&&done();
     refreshNearbyRouteSchedules(nearbyCtx).catch(e=>console.warn('주소 인접 수거노선 연동 실패',e));
   });
 }
-function moveTo(lat,lng,address){const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';addressLayerFocus.general=null;addressLayerFocus.recycle=null;preferredRouteVehicle.general='';preferredRouteVehicle.recycle='';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
-function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address);return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address)}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
-function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const address=(s===kakao.maps.services.Status.OK&&r.length)?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
+function moveTo(lat,lng,address,lookupText='',jibunAddress=''){currentLookupText=lookupText||'';currentJibunAddress=jibunAddress||'';const pos=new kakao.maps.LatLng(lat,lng);marker.setPosition(pos);map.setLevel(4);map.panTo(pos);updateLocation(address,lat,lng);activeLayer='general';activeDay='전체';selectedVehicle.general='전체';addressLayerFocus.general=null;addressLayerFocus.recycle=null;preferredRouteVehicle.general='';preferredRouteVehicle.recycle='';document.querySelectorAll('#dayFilter button').forEach(b=>b.classList.toggle('active',b.dataset.day==='전체'));showResult();resolveDistrict(lat,lng)}
+function searchAddress(q){const keyword=q.trim();if(!keyword){setLandingStatus('주소를 입력해주세요.',true);return}setLandingStatus('주소와 수거구역을 확인하는 중입니다…');geocoder.addressSearch(keyword,(r,s)=>{if(s===kakao.maps.services.Status.OK&&r.length){const a=r[0],lat=+a.y,lng=+a.x,address=a.road_address?.address_name||a.address_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address,keyword,a.address_name||'');return}places.keywordSearch(keyword,(rr,ss)=>{if(ss===kakao.maps.services.Status.OK&&rr.length){const a=rr[0],lat=+a.y,lng=+a.x,address=a.road_address_name||a.address_name||a.place_name||keyword;document.getElementById('landingInput').value=address;setLandingStatus('');moveTo(lat,lng,address,keyword,a.address_name||'')}else setLandingStatus('주소를 찾지 못했습니다. 청원구 도로명 주소를 조금 더 자세히 입력해주세요.',true)})})}
+function reverseGeocode(lat,lng){geocoder.coord2Address(lng,lat,(r,s)=>{const ok=s===kakao.maps.services.Status.OK&&r.length;const address=ok?(r[0].road_address?.address_name||r[0].address?.address_name):'지도에서 선택한 위치';currentLookupText='';currentJibunAddress=ok?(r[0].address?.address_name||''):'';updateLocation(address,lat,lng);document.getElementById('landingInput').value=address;resolveDistrict(lat,lng)})}
 
 
 
@@ -2354,7 +2401,7 @@ async function hydrateCachedServiceZones(type){
   return hydrateServiceZoneArray(type,cached,{fromCache:true});
 }
 function serviceZoneOverlayMatch(type,ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const riName=normalizeRi(ctx?.legalRi||'');
   const lat=+ctx?.lat,lng=+ctx?.lng;
   if(!Number.isFinite(lat)||!Number.isFinite(lng))return null;
@@ -2378,7 +2425,7 @@ function serviceZoneOverlayMatch(type,ctx){
   return {vehicle:z.vehicle,vehicles:[...(z.vehicles||[])],provider:z.provider||routeCompany(z.vehicle),plate:z.plate||'',days:[...(z.days||[])],distanceKm:Infinity,matchBasis:'displayed-zone',zoneStatus:(z.estimated||dongEstimated)?'estimated':(z.ambiguous?'boundary':'inferred'),estimated:!!z.estimated||dongEstimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,matchedRoads:[],district,riName,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized};
 }
 async function ensureServiceZoneMatch(type,ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   // 주소가 속한 지역 청크가 아직 없으면 그 지역만 우선 내려받습니다.
   if(district&&!loadedServiceZoneDistricts[type].has(district)){
     await hydrateExternalBundledServiceZones(type,[district]);
@@ -2515,7 +2562,7 @@ function renderNearbyRouteSchedule(type,matches,ctx){
   if(!matches.length)return;
   const isGeneral=type==='general';
   const match=matches[0];
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const limitM=Math.round(routeMatchLimitKm(district)*1000);
   const company=match.provider||routeCompany(match.vehicle);
   selectedVehicle[type]=company||match.vehicle;
@@ -2551,7 +2598,7 @@ function renderNearbyRouteSchedule(type,matches,ctx){
     `${secondary}<br><span style="color:#6b7280">※ ${basisText} 주소점에서 실제 표시 수거선까지 ${limitM}m 이내인 경우에만 수거요일을 인정하며, 다른 차량의 인접노선 요일을 섞지 않습니다.${RURAL_INFERRED_ROUTE_DISTRICTS.has(district)?' 내수·북이는 원본 코스 순서를 따라 추정한 차량이동 도로구간도 수거노선에 포함합니다.':''}</span>${apartmentNotice}</div>`;
 }
 function restoredRuralRiSchedule(type,ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   if(!RURAL_INFERRED_ROUTE_DISTRICTS.has(district))return null;
   let ri=normalizeRi(ctx?.legalRi||'');
   if(!ri)return null;
@@ -2600,7 +2647,7 @@ function renderNoNearbyRouteSchedule(type,district){
     `현재 자동 수거권역을 확정할 수 있는 근거노선이 부족해 이 주소의 ${type==='general'?'생활':'재활용'} 수거요일을 자동 지정하지 않습니다. 관리자 수거권역을 확인하거나 원본 코스를 추가 확인해주세요.${apartmentNotice}</div>`;
 }
 async function nearestRouteMatchesForAddress(type,ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   if(!DONG_ROUTE_DISTRICTS.has(district)&&!RURAL_INFERRED_ROUTE_DISTRICTS.has(district))return null;
   if(!Number.isFinite(+ctx.lat)||!Number.isFinite(+ctx.lng))return null;
 
@@ -2661,7 +2708,7 @@ async function nearestRouteMatchesForAddress(type,ctx){
 const ruralSubzoneProfileCache=new Map();
 
 function riFeatureForContext(ctx){
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const ri=normalizeRi(ctx?.legalRi||'');
   if(!district||!ri)return null;
   // 동명이리(오창 화산리)는 현재 주소에서 li_cd를 갖고 있지 않으므로 일반 키를 우선 사용합니다.
@@ -2820,7 +2867,7 @@ function renderRuralSubzoneMatch(type,ctx,profile,distanceKm){
     `<br><span style="color:#6b7280">※ 같은 법정리에 여러 요일이 적혀 있어도 모두 합산하지 않고, 검색주소에서 20m 이내인 세부 도로·시설 코스의 요일만 적용했습니다.</span>${apartmentNotice}</div>`;
 }
 async function refreshRuralSubzoneSchedules(ctx){ // v66 호환용: 현재 호출하지 않음. 읍·면 판정은 리 단위 ① 수거권역 사용
-  const district=canonicalDistrict(ctx?.legalEmd||ctx?.district||'');
+  const district=serviceDistrictForContext(ctx);
   const riName=normalizeRi(ctx?.legalRi||'');
   if(!RI_LAYER_DISTRICTS.has(district)||!riName)return;
 
@@ -2877,7 +2924,7 @@ async function refreshRuralSubzoneSchedules(ctx){ // v66 호환용: 현재 호�
 
 async function refreshNearbyRouteSchedules(ctx){
   if(!ctx)return;
-  const district=canonicalDistrict(ctx.legalEmd||ctx.district);if(!CHEONGWON_ROUTE_DISTRICTS.has(district))return;
+  const district=serviceDistrictForContext(ctx);if(!CHEONGWON_ROUTE_DISTRICTS.has(district))return;
   // 북이면 광암리는 사용자가 지정한 금암리 일정 상속을 그대로 유지합니다.
   if(district==='북이면'&&normalizeRi(ctx.legalRi||'')==='광암리')return;
   const seq=++nearbyScheduleRequestSeq;
@@ -2886,6 +2933,7 @@ async function refreshNearbyRouteSchedules(ctx){
   if(seq!==nearbyScheduleRequestSeq)return;
 
   for(const type of ['general','recycle']){
+    const confirmed=confirmedAddressScheduleOverride(type,ctx);if(confirmed){renderConfirmedAddressSchedule(type,confirmed,ctx);continue}
     const exact=contractExactScheduleMatch(type,ctx);if(exact){renderContractExactSchedule(type,exact,ctx);continue}
     if(isUnconfirmedRi(type,district,ctx.legalRi||''))continue;
     if(RURAL_ROUTE_LAYER_DISTRICTS.has(district)){
