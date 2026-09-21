@@ -1710,8 +1710,70 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 let bundledServiceZoneManifest=null;
 let bundledServiceZoneManifestPromise=null;
 const TEST_SERVICE_ZONE_MANIFEST='data/service-zones-production-gapfill-v3-manifest.json';
+const LEGACY_DISPLAY_ZONE_MANIFEST='cjwaste-test/data/service-zones-test-manifest.json';
+let legacyDisplayZoneManifest=null;
+let legacyDisplayZoneManifestPromise=null;
+const legacyDisplayZones={general:new Map(),recycle:new Map()};
+const legacyDisplayZonePromises=new Map();
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
+
+async function loadLegacyDisplayZoneManifest(){
+  if(legacyDisplayZoneManifest)return legacyDisplayZoneManifest;
+  if(legacyDisplayZoneManifestPromise)return legacyDisplayZoneManifestPromise;
+  legacyDisplayZoneManifestPromise=(async()=>{
+    try{
+      const res=await fetch(LEGACY_DISPLAY_ZONE_MANIFEST,{cache:'force-cache'});
+      if(!res.ok)throw new Error('legacy display manifest '+res.status);
+      legacyDisplayZoneManifest=await res.json();
+      return legacyDisplayZoneManifest;
+    }catch(err){
+      console.warn('과거 추정권역 표시 manifest 로드 실패',err);
+      return null;
+    }finally{
+      legacyDisplayZoneManifestPromise=null;
+    }
+  })();
+  return legacyDisplayZoneManifestPromise;
+}
+async function ensureLegacyDisplayZoneDistricts(type,districts=null){
+  if(type!=='general'&&type!=='recycle')return false;
+  const manifest=await loadLegacyDisplayZoneManifest();
+  if(!manifest)return false;
+  const entries=desiredServiceZoneEntries(manifest,type,districts);
+  await Promise.all(entries.map(entry=>{
+    const district=canonicalDistrict(entry?.district||'');
+    if(!district||legacyDisplayZones[type].has(district))return Promise.resolve();
+    const key=type+'|'+district;
+    if(legacyDisplayZonePromises.has(key))return legacyDisplayZonePromises.get(key);
+    const task=(async()=>{
+      try{
+        const res=await fetch(entry.path,{cache:'force-cache'});
+        if(!res.ok)throw new Error('legacy display chunk '+res.status);
+        const data=await res.json();
+        legacyDisplayZones[type].set(district,Array.isArray(data?.zones)?data.zones:[]);
+      }catch(err){
+        console.warn(type+' '+district+' 과거 추정권역 표시 청크 로드 실패',err);
+      }finally{
+        legacyDisplayZonePromises.delete(key);
+      }
+    })();
+    legacyDisplayZonePromises.set(key,task);
+    return task;
+  }));
+  return true;
+}
+function legacyDisplayZonesForView(type){
+  const box=currentMapBoundsBox(.18);
+  const out=[];
+  for(const zones of legacyDisplayZones[type].values()){
+    for(const z of (zones||[])){
+      if(box&&!rawZoneIntersectsBox(z,box))continue;
+      out.push(z);
+    }
+  }
+  return out;
+}
 
 async function loadServiceZoneManifest(){
   if(bundledServiceZoneManifest)return bundledServiceZoneManifest;
@@ -1808,6 +1870,7 @@ async function hydrateExternalBundledServiceZones(type,districts=null){
 async function ensureVisibleServiceZoneChunks(type){
   if(type!=='general'&&type!=='recycle')return false;
   const ok=await hydrateExternalBundledServiceZones(type);
+  await ensureLegacyDisplayZoneDistricts(type);
   if(loadedServiceZoneDistricts[type].has('오창읍'))await ensureOchangContractRouteItems(type);
   scheduleVisibleServiceZoneMaterialization(type);
   return ok;
@@ -2432,23 +2495,25 @@ function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
-  // 행정경계는 주소 판정을 막지 않고 백그라운드로 준비합니다.
-  // 준비되면 행정경계로 자른 단일 추정권역을 다시 표시합니다.
-  if(!testAdminBoundaryLoadStarted){
-    ensureTestAdminBoundaryLoad()
-      .then(()=>{if(activeLayer===type&&resultMapVisible())scheduleVisibleServiceZoneMaterialization(type)})
-      .catch(e=>console.warn('표시용 기본권역 경계 준비 실패',e));
-  }
-
-  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 큰 대표권역만 표시합니다.
+  // 지도 표시만 과거 정상 수거권역으로 복원합니다.
+  // 현재 정밀 raw 권역은 주소 일정 판정에만 사용하고 지도에는 직접 표시하지 않습니다.
   const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
   for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
   serviceZoneOverlays[type]=manual;
-
-  // 바탕 면을 중복해서 깔지 않고, 실제 경계로 자른 추정권역만 한 번 표시합니다.
   rebuildManualZoneOverlays(type,false);
-  const zones=coarseDisplayZones(type);
-  for(const z of zones)addServiceZonePolygon(type,z.points,z);
+
+  const zones=legacyDisplayZonesForView(type);
+  for(const z of zones){
+    const district=canonicalDistrict(z?.district||'');
+    const meta={...z,automatic:true,fromBundle:true,legacyDisplay:true,
+      rural:!!z?.rural||RI_LAYER_DISTRICTS.has(district)};
+    // 과거 오창 레이어를 복원하되 제일환경은 현재 규칙대로 오창산단 주변만 허용합니다.
+    if(isOchangContractZone(meta)){
+      const p=rawZoneCenterPoint(meta);
+      if(!p||!ochangContractZoneAllowedAtPoint(type,meta,p.lat,p.lng))continue;
+    }
+    addServiceZonePolygon(type,meta.points,meta);
+  }
   syncServiceZoneVisibility(type);
   updateMapBadge();
   return false;
@@ -2546,6 +2611,7 @@ async function ensureServiceZoneMatch(type,ctx){
   if(district&&!loadedServiceZoneDistricts[type].has(district)){
     await hydrateExternalBundledServiceZones(type,[district]);
   }
+  if(district)await ensureLegacyDisplayZoneDistricts(type,[district]);
   if(district==='오창읍')await ensureOchangContractRouteItems(type);
   let match=serviceZoneOverlayMatch(type,ctx);if(match)return match;
   if(!serviceZoneBuilt[type]){
