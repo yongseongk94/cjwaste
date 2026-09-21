@@ -1490,7 +1490,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='center-tile-v1';
+const TEST_ZONE_RENDER_MODE='coarse-display-v1';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1914,33 +1914,91 @@ function resultMapVisible(){
   const landing=document.getElementById('landing');
   return !!landing&&landing.classList.contains('hidden');
 }
+const COARSE_ZONE_LAT_STEP=.00155;  // 약 170m
+const COARSE_ZONE_LNG_STEP=.00195; // 청주 위도 기준 약 170m
+const COARSE_ZONE_MAX_POLYGONS=28;
+function coarseZoneSignature(z){
+  const vehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean).slice().sort();
+  const days=DAYS.filter(d=>(z?.days||[]).includes(d));
+  return [
+    z?.provider||routeCompany(z?.vehicle)||'',vehicles.join(','),days.join('·'),
+    z?.contractLayer?'C':'',z?.riGrouped?'R':''
+  ].join('|');
+}
+function coarseDisplayZones(type){
+  const box=currentMapBoundsBox(-.05);
+  const centerObj=map?.getCenter?.();
+  const center=centerObj?{lat:centerObj.getLat(),lng:centerObj.getLng()}:null;
+  const tiles=new Map();
+
+  for(const [district,zones] of rawServiceZones[type].entries()){
+    for(const z of zones){
+      if(!rawZoneMatchesCurrentFilter(type,z)||!rawZoneIntersectsBox(z,box))continue;
+      const b=rawZoneBounds(z);if(!b)continue;
+      const lat=(b.minLat+b.maxLat)/2,lng=(b.minLng+b.maxLng)/2;
+      const iy=Math.floor(lat/COARSE_ZONE_LAT_STEP),ix=Math.floor(lng/COARSE_ZONE_LNG_STEP);
+      const key=district+'|'+iy+'|'+ix;
+      let t=tiles.get(key);
+      if(!t){
+        t={
+          key,district,iy,ix,count:0,minLat:Infinity,maxLat:-Infinity,minLng:Infinity,maxLng:-Infinity,
+          signatures:new Map()
+        };
+        tiles.set(key,t);
+      }
+      t.count++;
+      t.minLat=Math.min(t.minLat,b.minLat);t.maxLat=Math.max(t.maxLat,b.maxLat);
+      t.minLng=Math.min(t.minLng,b.minLng);t.maxLng=Math.max(t.maxLng,b.maxLng);
+      const sig=coarseZoneSignature(z);
+      const stat=t.signatures.get(sig)||{count:0,zone:z};
+      stat.count++;t.signatures.set(sig,stat);
+    }
+  }
+
+  const out=[];
+  for(const t of tiles.values()){
+    const ranked=[...t.signatures.values()].sort((a,b)=>b.count-a.count);
+    const rep=ranked[0]?.zone;if(!rep)continue;
+    const mixed=ranked.length>1;
+    const lat0=Math.max(t.minLat,t.iy*COARSE_ZONE_LAT_STEP);
+    const lat1=Math.min(t.maxLat,(t.iy+1)*COARSE_ZONE_LAT_STEP);
+    const lng0=Math.max(t.minLng,t.ix*COARSE_ZONE_LNG_STEP);
+    const lng1=Math.min(t.maxLng,(t.ix+1)*COARSE_ZONE_LNG_STEP);
+    if(!(lat1>lat0&&lng1>lng0))continue;
+    const points=[
+      {lat:lat0,lng:lng0},{lat:lat0,lng:lng1},
+      {lat:lat1,lng:lng1},{lat:lat1,lng:lng0}
+    ];
+    out.push({
+      ...rep,points,rings:[points],hitRings:[points],
+      district:t.district,automatic:true,fromBundle:true,
+      displayOnly:true,coarseDisplay:true,gridMerged:false,
+      ambiguous:mixed,estimated:true,
+      vehicle:mixed?'':rep.vehicle,vehicles:mixed?[]:[...(rep.vehicles||[])],
+      provider:mixed?'':(rep.provider||routeCompany(rep.vehicle)),
+      days:mixed?[]:[...(rep.days||[])],
+      coarseMembers:t.count,
+      coarseMixed:mixed,
+      coarseKey:t.key
+    });
+  }
+  out.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
+  return out.slice(0,COARSE_ZONE_MAX_POLYGONS);
+}
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
-  // 화면 전체가 아니라 중앙 작업타일(가로·세로 약 36%)만 Polygon으로 만듭니다.
-  // 주소 판정은 raw JSON 전체를 사용하므로 화면 가장자리 미생성 영역도 일정 정확도에는 영향이 없습니다.
-  const box=currentMapBoundsBox(-.32),c=map?.getCenter?.();
-  const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
-  const candidates=[];
-  for(const zones of rawServiceZones[type].values()){
-    for(const z of zones){
-      if(z?._testMaterialized||!rawZoneMatchesCurrentFilter(type,z)||!rawZoneIntersectsBox(z,box))continue;
-      candidates.push(z);
-    }
-  }
-  candidates.sort((a,b)=>zoneCenterDistanceSq(a,center)-zoneCenterDistanceSq(b,center));
-  const started=performance.now();
-  let made=0;
-  while(candidates.length&&made<90&&(performance.now()-started)<8){
-    const z=candidates.shift();
-    const zone=addServiceZonePolygon(type,z.points,{...z,automatic:true,fromBundle:true});
-    if(zone){
-      try{Object.defineProperty(z,'_testMaterialized',{value:true,writable:true,configurable:true})}catch(e){z._testMaterialized=true}
-      made++;
-    }
-  }
-  if(made)syncServiceZoneVisibility(type);
-  return candidates.length>0;
+
+  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 약 170m 대표권역만 최대 28개 표시합니다.
+  // 기존 자동 표시 폴리곤은 제거해 지도 이동 중 객체가 누적되지 않도록 합니다.
+  const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
+  for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
+  serviceZoneOverlays[type]=manual;
+
+  const zones=coarseDisplayZones(type);
+  for(const z of zones)addServiceZonePolygon(type,z.points,z);
+  syncServiceZoneVisibility(type);
+  return false;
 }
 function scheduleVisibleServiceZoneMaterialization(type){
   if(type!=='general'&&type!=='recycle')return;
@@ -2006,7 +2064,7 @@ function serviceZoneOverlayMatch(type,ctx){
     return pointInZonePolygon(lat,lng,z);
   });
   if(!hits.length)hits=(serviceZoneOverlays[type]||[]).filter(z=>{
-    if(z.manual)return false;
+    if(z.manual||z.displayOnly)return false;
     if(z.district&&canonicalDistrict(z.district)!==district)return false;
     if(riName && normalizeRi(z.riName||'')!==riName)return false;
     return pointInZonePolygon(lat,lng,z);
@@ -3917,7 +3975,7 @@ function addServiceZonePolygon(type,points,meta={}){
   const buffer=!!meta.routeBuffer;
   const color=meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type)));
   const rural=!!meta.rural;
-  const baseFill=outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22)))));
+  const baseFill=meta.displayOnly?.13:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22))))));
   const displayRings=(Array.isArray(meta.rings)&&meta.rings.length?meta.rings:[points]).filter(r=>Array.isArray(r)&&r.length>=3);
   if(!displayRings.length)return null;
   const normalizedDisplayRings=displayRings.map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -3935,13 +3993,21 @@ function addServiceZonePolygon(type,points,meta={}){
   kakao.maps.event.addListener(polygon,'mouseover',e=>{
     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
     const ratioText=meta.estimated&&Number.isFinite(+meta.neighborRatio)&&+meta.neighborRatio>0?` · 인접권역 ${Math.round(+meta.neighborRatio*100)}% 우세`:'';
-    const detail=meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`);
-    const basis=meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할')));
+    const detail=meta.displayOnly
+      ?(meta.coarseMixed?'단순화 표시용 혼합 추정권역':'단순화 표시용 대표 추정권역')
+      :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`));
+    const basis=meta.displayOnly
+      ?`지도 성능을 위한 약 170m 단순화 표시 · 실제 수거일정은 주소 검색 시 정밀권역으로 별도 판정`
+      :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할'))));
     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
   });
   kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
   kakao.maps.event.addListener(polygon,'mouseout',()=>{polygon.setOptions({fillOpacity:baseFill});hideZoneTooltip()});
   kakao.maps.event.addListener(polygon,'click',()=>{
+    if(meta.displayOnly){
+      updateMapBadge((meta.district||'')+' · 단순화 추정권역 표시 · 실제 일정은 주소 검색 결과 기준');
+      return;
+    }
     if(meta.noSchedule){updateMapBadge(`${meta.district||''}${meta.riName?' '+meta.riName:''} · 리 단위 구분 · 실제 수거일정은 표시 수거노선 20m 이내에서만 판정`);return}
     updateMapBadge(`${meta.district||''}${meta.riName?' '+meta.riName:''} · ${serviceZoneLabel(zone)} · ${contract?'제일환경 대행업체 구간':(meta.riGrouped?'리 단위 수거권역':(meta.manual?'관리자 수동권역':'수거노선 근거 자동추정권역'))}${meta.estimated?' · (추정)':(meta.ambiguous?' · 경계부 확인 필요':'')}`);
     if(activeLayer===type){
@@ -4280,7 +4346,7 @@ async function buildServiceZones(type){
 
 function syncServiceZoneVisibility(type,forceRedraw=false){
   const provider=selectedVehicle[type]||'전체',day=activeDay||'전체';
-  const renderBox=resultMapVisible()?currentMapBoundsBox(-.32):null;
+  const renderBox=resultMapVisible()?currentMapBoundsBox(-.05):null;
   for(const t of ['general','recycle']){
     for(const z of (serviceZoneOverlays[t]||[])){
       const zoneVehicles=(z.vehicles||[]).length?z.vehicles:[z.vehicle];
