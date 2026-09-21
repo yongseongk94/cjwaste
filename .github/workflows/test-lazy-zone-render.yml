@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ZONE_RENDER_MODE='coarse-display-v1'" /tmp/test-live.html \
+              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v2'" /tmp/test-live.html \
               && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v4-shared-geometry'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
               exit 0
@@ -55,7 +55,7 @@ jobs:
               display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0)
             }));
-            if(landing.mode!=='coarse-display-v1')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
+            if(landing.mode!=='coarse-cover-v2')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
             if(landing.display!==0)throw new Error('Landing created non-manual polygons: '+JSON.stringify(landing));
 
             const t0=Date.now();
@@ -78,6 +78,19 @@ jobs:
               objects:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0),
               uamRaw:(rawServiceZones.general.get('우암동')||[]).length,
+              coarseCoverCount:(serviceZoneOverlays.general||[]).filter(z=>z.displayOnly&&z.coarseCover).length,
+              coarseCoverage:(()=>{
+                const raw=(rawServiceZones.general.get('우암동')||[]);
+                const cover=(serviceZoneOverlays.general||[]).filter(z=>z.displayOnly&&z.coarseCover);
+                let total=0,hit=0;
+                for(const z of raw){
+                  const b=rawZoneBounds(z);if(!b)continue;
+                  total++;
+                  const lat=(b.minLat+b.maxLat)/2,lng=(b.minLng+b.maxLng)/2;
+                  if(cover.some(c=>pointInZonePolygon(lat,lng,c)))hit++;
+                }
+                return {total,hit,ratio:total?hit/total:0};
+              })(),
               rawMatch:!!serviceZoneOverlayMatch('general',{district:'우암동',legalEmd:'우암동',legalRi:'',lat:currentLat,lng:currentLng}),
               routeObjects:(dongRouteOverlays.general||[]).length,
               routeVisible:(dongRouteOverlays.general||[]).filter(item=>routeItemPolylines(item).some(pl=>pl?.getMap?.())).length,
@@ -99,8 +112,10 @@ jobs:
             if(result.badge.includes('미확정')||result.detail.includes('권역 미확정'))throw new Error('Uam still unresolved: '+JSON.stringify(result));
             if(result.uamRaw<500)throw new Error('Uam raw precision data missing: '+JSON.stringify(result));
             if(result.display<=0)throw new Error('No viewport polygons rendered: '+JSON.stringify(result));
-            if(result.display>28)throw new Error('Too many coarse display polygons: '+JSON.stringify(result));
-            if(result.objects>32)throw new Error('Too many coarse polygon objects created: '+JSON.stringify(result));
+            if(result.display>24)throw new Error('Too many coarse cover polygons: '+JSON.stringify(result));
+            if(result.objects>28)throw new Error('Too many coarse cover polygon objects created: '+JSON.stringify(result));
+            if(result.coarseCoverCount<=0)throw new Error('No coarse cover polygons rendered: '+JSON.stringify(result));
+            if((result.coarseCoverage?.ratio||0)<0.92)throw new Error('Coarse cover leaves too many visual gaps: '+JSON.stringify(result.coarseCoverage));
             if(!result.rawMatch)throw new Error('Raw-zone address match failed: '+JSON.stringify(result));
             console.log('ROUTE_DIAG',JSON.stringify({routeObjects:result.routeObjects,routeVisible:result.routeVisible,routePolylineRefs:result.routePolylineRefs,routeUniquePolylineObjects:result.routeUniquePolylineObjects,routeUniqueVisiblePolylines:result.routeUniqueVisiblePolylines,routeGeometryGroups:result.routeGeometryGroups,uam1536Groups:result.uam1536Groups,uam1536Days:result.uam1536Days,selectedVehicle:result.selectedVehicle,activeDay:result.activeDay,routeReadyMs:result.routeReadyMs,routeSelection:result.routeSelection}));
             if(result.routePriorityMode!=='address-first-v4-shared-geometry')throw new Error('Wrong route loader version: '+JSON.stringify(result));
