@@ -163,7 +163,7 @@ jobs:
             if(result.focusTileCount<=0||!result.focusTileAtAddress)throw new Error('Address focus region does not cover searched point: '+JSON.stringify(result));
             if(result.schedulePolygonCount<=1)throw new Error('Schedule map did not create multiple regions: '+JSON.stringify(result));
             if(result.coloredScheduleSignatures.length<2)throw new Error('Schedule map does not expose multiple schedules: '+JSON.stringify(result.coloredScheduleSignatures));
-            if(DAYS.filter(d=>result.addressSchedulePolygon.includes(d)).join('·')!=='월·수·금')throw new Error('Address point is not inside MWF schedule region: '+JSON.stringify(result.addressSchedulePolygon));
+            if((result.addressSchedulePolygon||[]).join('·')!=='월·수·금')throw new Error('Address point is not inside MWF schedule region: '+JSON.stringify(result.addressSchedulePolygon));
             if((result.scheduleCoverage?.ratio||0)<0.96)throw new Error('Schedule-colored regions leave too many visible gaps: '+JSON.stringify(result.scheduleCoverage));
             console.log('ROUTE_DIAG',JSON.stringify({routeObjects:result.routeObjects,routeVisible:result.routeVisible,routePolylineRefs:result.routePolylineRefs,routeUniquePolylineObjects:result.routeUniquePolylineObjects,routeUniqueVisiblePolylines:result.routeUniqueVisiblePolylines,routeGeometryGroups:result.routeGeometryGroups,uam1536Groups:result.uam1536Groups,uam1536Days:result.uam1536Days,selectedVehicle:result.selectedVehicle,activeDay:result.activeDay,routeReadyMs:result.routeReadyMs,routeSelection:result.routeSelection}));
             if(result.routePriorityMode!=='address-first-v4-shared-geometry')throw new Error('Wrong route loader version: '+JSON.stringify(result));
