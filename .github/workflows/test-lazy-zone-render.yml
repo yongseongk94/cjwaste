@@ -49,7 +49,7 @@ jobs:
               waitUntil:'domcontentloaded',timeout:120000
             });
             await page.waitForFunction(()=>typeof geocoder!=='undefined'&&!!geocoder,{timeout:120000});
-            await page.waitForTimeout(1200);
+            await new Promise(r=>setTimeout(r,1200));
             const landing=await page.evaluate(()=>({
               display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0)
@@ -64,7 +64,7 @@ jobs:
               const txt=document.getElementById('generalBadge')?.textContent||'';
               return txt && !txt.includes('확인 중');
             },{timeout:120000});
-            await page.waitForTimeout(1800);
+            await new Promise(r=>setTimeout(r,1800));
 
             const result=await page.evaluate(()=>({
               ms:Date.now(),
