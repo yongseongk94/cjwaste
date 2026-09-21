@@ -1830,6 +1830,8 @@ function prioritizeServiceZones(zones){
 }
 async function hydrateServiceZoneArray(type,zones,meta={}){
   if(!Array.isArray(zones)||!zones.length)return false;
+  const renderSeq=layerRequestSeq;
+  const shouldContinue=()=>meta.forceComplete||activeLayer===type||renderSeq===layerRequestSeq;
   const started=performance.now();
   if(!meta.append)clearServiceZoneOverlays(type);
 
@@ -1867,11 +1869,21 @@ async function hydrateServiceZoneArray(type,zones,meta={}){
     perf.firstPaintMs=Math.round(performance.now()-started);
   }
 
-  for(let i=0;i<rest.length;i+=SERVICE_ZONE_BACKGROUND_BATCH){
+  for(let i=0;i<rest.length;){
     await waitForBrowserIdle();
-    const batch=rest.slice(i,i+SERVICE_ZONE_BACKGROUND_BATCH);
-    for(const z of batch){
+    if(!shouldContinue()){
+      perf.cancelled=true;
+      perf.completeMs=Math.round(performance.now()-started);
+      console.info('[TEST] service-zone background render cancelled',type,perf);
+      return false;
+    }
+    // 고정 180개 일괄 생성 대신 한 idle 구간에서 약 10ms만 사용해 UI 스레드 점유를 줄입니다.
+    const sliceStarted=performance.now();
+    let made=0;
+    while(i<rest.length&&made<SERVICE_ZONE_BACKGROUND_BATCH&&(performance.now()-sliceStarted)<10){
+      const z=rest[i++];
       addServiceZonePolygon(type,z.points,{...z,automatic:true,fromCache:!!meta.fromCache,fromBundle:!!meta.fromBundle});
+      made++;
     }
     if(activeLayer===type&&serviceLayerState.zone)syncServiceZoneVisibility(type);
   }
@@ -3558,22 +3570,22 @@ async function hydrateCachedRouteOverlays(specs){
     if(cached)createDongRouteOverlay(spec,{...cached,fromCache:true});
   });
 }
-async function ensureDongRoutesForSelection(type){
+async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
+  const providerSnapshot=selectedVehicle[type]||'전체';
+  const daySnapshot=activeDay||'전체';
+  const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===type&&(selectedVehicle[type]||'전체')===providerSnapshot&&(activeDay||'전체')===daySnapshot;
   const specs=routeCandidatesForSelection(type);
-  if(!specs.length){syncDongRouteVisibility(type);return}
-  // 1차: IndexedDB에 저장된 선을 먼저 복원하여 클릭 즉시 보여줍니다.
+  if(!specs.length){if(isCurrent())syncDongRouteVisibility(type);return}
+  // 오래된 요청도 캐시 준비는 끝낼 수 있지만 지도 갱신은 현재 선택일 때만 수행합니다.
   await hydrateCachedRouteOverlays(specs);
-  // v82: 선택 스펙의 scope가 현재 코드와 달라져도 기존 v76 사전계산 노선 자체는 유효할 수 있습니다.
-  // 외부 번들은 1회 반드시 확인해 복원 가능한 94개 노선을 먼저 살리고, 이후 누락분만 실시간 계산합니다.
   await hydrateExternalBundledPrecomputedData();
-  syncDongRouteVisibility(type);
-  // 3차: 사전계산 묶음에도 없는 노선만 실제 도로망으로 계산합니다.
+  if(isCurrent())syncDongRouteVisibility(type);
   const missing=specs.filter(s=>!existingDongRouteOverlay(s));
   await mapWithConcurrency(missing,3,async spec=>{
     await buildDongRouteOverlay(spec);
-    if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
+    if(isCurrent()&&serviceLayerState.route)syncDongRouteVisibility(type);
   });
-  syncDongRouteVisibility(type);
+  if(isCurrent())syncDongRouteVisibility(type);
 }
 
 function allDongRouteSpecs(){
@@ -4231,7 +4243,7 @@ function setLayer(layer){
         .catch(e=>console.warn('수거권역 생성 실패',e));
     }
     if(serviceLayerState.route){
-      ensureDongRoutesForSelection(layer)
+      ensureDongRoutesForSelection(layer,requestSeq)
         .then(()=>{if(isCurrent())syncDongRouteVisibility(layer)})
         .catch(e=>console.warn('근거노선 로드 실패',e));
     }else hideDongRouteOverlays();
