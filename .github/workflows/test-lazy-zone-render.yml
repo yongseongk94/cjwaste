@@ -18,7 +18,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ZONE_RENDER_MODE='schedule-map-v3-disjoint'" /tmp/test-live.html \
+              && grep -q "TEST_ZONE_RENDER_MODE='schedule-map-v4-reviewed'" /tmp/test-live.html \
               && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v4-shared-geometry'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
               exit 0
@@ -55,7 +55,7 @@ jobs:
               display:(serviceZoneOverlays.general||[]).filter(z=>!z.manual).length,
               raw:[...rawServiceZones.general.values()].reduce((n,a)=>n+a.length,0)
             }));
-            if(landing.mode!=='schedule-map-v3-disjoint')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
+            if(landing.mode!=='schedule-map-v4-reviewed')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
             if(landing.display!==0)throw new Error('Landing created non-manual polygons: '+JSON.stringify(landing));
 
             const t0=Date.now();
@@ -101,7 +101,8 @@ jobs:
                   visibleTotal,visibleHit,visibleRatio:visibleTotal?visibleHit/visibleTotal:1
                 };
               })(),
-              rawMatch:!!serviceZoneOverlayMatch('general',{district:'우암동',legalEmd:'우암동',legalRi:'',lat:currentLat,lng:currentLng}),
+              rawMatch:!!serviceZoneOverlayMatch('general',{address:currentAddress,district:'우암동',legalEmd:'우암동',legalRi:'',lat:currentLat,lng:currentLng}),
+              samePointDays:serviceZoneOverlayMatch('general',{address:currentAddress,jibunAddress:currentJibunAddress,district:'우암동',legalEmd:'우암동',lat:currentLat,lng:currentLng})?.days||[],
               routeObjects:(dongRouteOverlays.general||[]).length,
               routeVisible:(dongRouteOverlays.general||[]).filter(item=>routeItemPolylines(item).some(pl=>pl?.getMap?.())).length,
               routePolylineRefs:(dongRouteOverlays.general||[]).reduce((n,item)=>n+routeItemPolylines(item).length,0),
@@ -162,12 +163,13 @@ jobs:
             if(result.addressFocus.signature!=='월·수·금')throw new Error('Wrong address focus schedule: '+JSON.stringify(result.addressFocus));
             if(result.addressFocus.provider!=='제일환경')throw new Error('Wrong address focus provider: '+JSON.stringify(result.addressFocus));
             if(!result.addressFocus.vehicles.some(v=>String(v).includes('88어1536')))throw new Error('Wrong address focus vehicle: '+JSON.stringify(result.addressFocus));
-            if(result.focusTileCount<=0||!result.focusTileAtAddress)throw new Error('Address focus region does not cover searched point: '+JSON.stringify(result));
+            // The simplified grid is no longer repainted with the searched address schedule.
+            if(result.samePointDays.join('·')!==result.addressFocus.days.join('·'))throw new Error('Map point and address disagree: '+JSON.stringify(result));
             if(result.schedulePolygonCount<8)throw new Error('Detailed schedule map is still too coarse: '+JSON.stringify(result));
             if(result.assignmentCount<3)throw new Error('Detailed schedule map did not separate assignments: '+JSON.stringify(result));
             if(result.assignmentVehicles.length<2)throw new Error('Detailed schedule map did not expose multiple vehicles: '+JSON.stringify(result.assignmentVehicles));
             if(result.coloredScheduleSignatures.length<2)throw new Error('Schedule map does not expose multiple schedules: '+JSON.stringify(result.coloredScheduleSignatures));
-            if((result.addressSchedulePolygon||[]).join('·')!=='월·수·금')throw new Error('Address point is not inside MWF schedule region: '+JSON.stringify(result.addressSchedulePolygon));
+
             if((result.scheduleCoverage?.ratio||0)<0.96)throw new Error('Schedule-colored regions leave too many visible gaps: '+JSON.stringify(result.scheduleCoverage));
             console.log('ROUTE_DIAG',JSON.stringify({routeObjects:result.routeObjects,routeVisible:result.routeVisible,routePolylineRefs:result.routePolylineRefs,routeUniquePolylineObjects:result.routeUniquePolylineObjects,routeUniqueVisiblePolylines:result.routeUniqueVisiblePolylines,routeGeometryGroups:result.routeGeometryGroups,uam1536Groups:result.uam1536Groups,uam1536Days:result.uam1536Days,selectedVehicle:result.selectedVehicle,activeDay:result.activeDay,routeReadyMs:result.routeReadyMs,routeSelection:result.routeSelection}));
             if(result.routePriorityMode!=='address-first-v4-shared-geometry')throw new Error('Wrong route loader version: '+JSON.stringify(result));

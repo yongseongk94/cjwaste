@@ -21,6 +21,18 @@ for(const type of ['general','recycle']){
   vm.runInContext('registerRawServiceZones(type,chunk.zones||[])',ctx);
  }
 }
+const base=JSON.parse(fs.readFileSync(root+'/data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json'));
+const extra=JSON.parse(fs.readFileSync(root+'/cjwaste-test/data/precomputed-uam-contractor-routes-v1.json'));
+ctx.evidence={routes:[...base.routes,...extra.routes]};
+ctx.riFeatures=JSON.parse(fs.readFileSync(process.argv[4]||'/tmp/cjwaste-ri.json')).features;
+vm.runInContext(`
+for(const f of riFeatures){
+ const p=f.properties,code=String(p.li_cd||p.licd||''),district=districtFromRiCode(code);
+ const ri=RI_CODE_NAME_OVERRIDES[code]||p.li_nm||p.ri_nm||p.name;
+ if(district&&ri){riFeatureMap.set(district+'|'+ri+'|'+code,f);riFeatureMap.set(district+'|'+ri,f);}
+}
+for(const type of ['general','recycle'])localScheduleIndexes[type]=buildLocalScheduleIndex(type,evidence);
+`,ctx);
 console.log(vm.runInContext("[...rawServiceZones.general].map(([d,z])=>[d,z.length])",ctx));
 ctx.outputs=[];
 vm.runInContext(`
@@ -52,7 +64,7 @@ for(const day of DAYS){
  scenarios.push({label:'day '+day,expected:all.filter(z=>z.days.includes(day)),actual:coarseDisplayZones('general')});
 }
 activeDay='전체';
-for(const vehicle of [...new Set(all.map(z=>z.vehicle))]){
+for(const vehicle of [...new Set(all.map(z=>z.vehicle).filter(Boolean))]){
  selectedVehicle.general=vehicle;
  scenarios.push({label:'vehicle '+vehicle,expected:all.filter(z=>rawZoneMatchesCurrentFilter('general',z)),actual:coarseDisplayZones('general')});
 }

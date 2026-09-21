@@ -172,7 +172,7 @@
         <div id="recycleDetail" class="detail"></div>
       </article>
     </div>
-    <div class="source-note">자료 기준: 사용자가 제공한 <strong>2026년 6월 청원구 직영 생활·재활용 코스표</strong>, <strong>제일환경 6구역 수거노선표</strong>, <strong>현대환경 2026.08.11 수거노선표</strong> 및 2025~2026 대행구역별 수거지역 자료와 청원구 읍·면·동/법정리 경계. 현대환경 자료는 청원구에 해당하는 <strong>내덕1동만</strong> 반영하고 흥덕구 자료는 제외했습니다. 생활·재활용은 <strong>① 수거권역 → ② 근거 수거노선</strong>의 2단계로 확인합니다. <strong>수거권역은 원본 코스의 차량·요일별 도로선과 시설·마을의 숨은 근거점을 함께 지리적으로 배치한 뒤, 같은 리 또는 행정동 안에서 가장 가까운 근거를 기준으로 자동 분할한 추정 권역</strong>입니다. 실제 GPS 주행경로나 공식 확정 GIS 권역이 아니므로 경계 부근은 담당자 확인이 필요합니다. 주소 수거일정은 화면에 표시되는 ① 수거권역 폴리곤 포함 여부를 그대로 사용하며, 관리자 편집으로 직접 그린 권역은 자동 추정권역보다 우선합니다. 자동권역과 근거노선은 브라우저 영구 캐시에 저장해 다음 접속부터 즉시 복원합니다. 제일환경·현대환경 대행구간은 새 수거노선표의 주소·차량·요일을 우선하며, 북이면 광암리→금암리 일정 상속은 기존 지정 규칙을 유지합니다. 음식물은 기존 분류배출 시행/제외지역 기준을 유지합니다.<br>경계 출처: 청원구 읍·면·동 행정경계는 mapcn-kr 웹용 경계를 우선 사용하고 admdongkor ver20260701 WGS84 경계를 예비 경로로 사용합니다. 법정리 경계는 화면에는 표시하지 않고 내수읍·오창읍·북이면의 수거권역 분할 계산에만 내부적으로 사용합니다.</div>
+    <div class="source-note">자료: 2026년 6월 청원구 직영 코스표, 제일환경 6구역 노선표, 현대환경 2026.08.11 노선표 및 사용자 확인사항.<br><strong>확인된 주소 → 원자료 주소 일치 → 가까운 노선·근거점 순으로 판단합니다.</strong> 지도는 수거권역 참고용이며 공식 확정 경계가 아닙니다. 근거가 먼 곳은 회색 ‘일정 확인 필요’로 표시합니다. 직영·대행과 생활·재활용을 각각 구분하며 공동주택 계약 일정은 별도 확인이 필요합니다. 노선과 원자료 캐시는 유지됩니다.</div>
   </aside>
 
   <section class="map-wrap">
@@ -202,13 +202,14 @@
       <div class="admin-help">확정 수거노선 밖의 추정권역이 실제와 다를 때 지도에서 직접 권역을 그립니다. 직접 그린 권역은 자동 추정권역보다 우선합니다.</div>
       <div class="admin-row"><label>종류</label><select id="adminType"><option value="general">생활쓰레기</option><option value="recycle">재활용</option></select><label>차량</label><select id="adminVehicle"></select></div>
       <div class="admin-row"><label>요일</label><div id="adminDays" class="admin-days"><label><input type="checkbox" value="월">월</label><label><input type="checkbox" value="화">화</label><label><input type="checkbox" value="수">수</label><label><input type="checkbox" value="목">목</label><label><input type="checkbox" value="금">금</label></div></div>
-      <div class="admin-row"><label>메모</label><input id="adminNote" type="text" placeholder="예: 마산리 북쪽 구역" style="flex:1"></div>
+      <div class="admin-row"><label>메모</label><input id="adminNote" type="text" placeholder="확인 근거·담당자·확인일 입력" style="flex:1"></div>
       <div class="admin-actions"><button id="adminDraw" class="primary">새 권역 그리기</button><button id="adminFinish">그리기 완료</button><button id="adminCancel">취소</button><button id="adminRebuild">자동권역 재표시</button></div>
       <div id="adminStatus" class="admin-status">저장된 수동 권역을 불러오는 중입니다.</div>
-      <button id="adminExport" class="wide-btn">수동권역 JSON 내보내기</button>
+      <button id="adminUndo" class="wide-btn">이전 개인 수정안 복원</button>
+      <button id="adminExport" class="wide-btn">공통 반영용 수정안 내보내기</button>
       <button id="adminImport" class="wide-btn">수동권역 JSON 가져오기</button><input id="adminImportFile" type="file" accept="application/json,.json" hidden>
       <button id="adminClear" class="wide-btn" style="color:#9f1239">수동권역 전체 삭제</button>
-      <div class="admin-zone-note">현재 관리자 편집 저장은 이 브라우저의 localStorage에 보관됩니다. 전역 홈페이지 반영용으로는 JSON을 내보내 보관할 수 있습니다.</div>
+      <div class="admin-zone-note">개인 수정안은 이 브라우저에만 저장됩니다. 다른 담당자에게 공유하려면 내보낸 파일을 검수해 공통 게시본에 반영해야 합니다. 게시된 확인권역은 모든 접속자에게 동일하게 적용됩니다.</div>
     </div>
     <div id="mapBadge" class="map-badge"><strong>생활쓰레기 수거노선 레이어</strong><span>읍·면·동 경계와 수거노선을 불러오는 중입니다.</span></div>
   </section>
@@ -367,7 +368,7 @@ function contractExactScheduleMatch(type,ctx){
         const key=contractAddressNorm(part);
         if(key.length<5)continue;
         const score=Math.min(key.length,target.length);
-        if((target.includes(key)||key.includes(target))&&score>=5){
+        if(exactSourceAddressMatch(part,ctx.address)&&score>=5){
           if(!matchedDays.includes(day))matchedDays.push(day);
           if(score>localBestLen){localBestLen=score;matchedAddress=part.trim()}
         }
@@ -400,7 +401,7 @@ function contractExactScheduleMatch(type,ctx){
     }
     for(const key of contractAddressCandidates(x.address)){
       const score=Math.min(key.length,target.length);
-      if((target.includes(key)||key.includes(target))&&score>bestLen){best=x;bestLen=score}
+      if(exactSourceAddressMatch(x.address,ctx.address)&&score>bestLen){best=x;bestLen=score}
     }
   }
   return best;
@@ -797,6 +798,7 @@ function renderOchangScienceContract(type,ctx){
 }
 
 const DIRECT_INFERRED_REGIONS={"general":{"3344":{"월":["오창읍"],"화":["오창읍"],"수":["오창읍"],"목":["북이면","오창읍"],"금":["오창읍"]},"3346":{"월":["내수읍","율량사천동"],"화":["오근장동","율량사천동"],"수":["율량사천동"],"목":["내수읍","오근장동","율량사천동"],"금":["오근장동","율량사천동"]},"6244":{"월":["율량사천동"],"화":["오근장동","율량사천동"],"수":["율량사천동"],"목":["오근장동","율량사천동"],"금":["율량사천동"]},"6224":{"월":["내수읍","오근장동","율량사천동"],"화":["오근장동","율량사천동"],"수":["내수읍","오근장동","율량사천동"],"목":["내수읍","오근장동","율량사천동"],"금":["오근장동","율량사천동"]},"6138":{"월":["내수읍"],"화":["내수읍","북이면"],"수":["내수읍","북이면"],"목":["내수읍","북이면"],"금":["내수읍","북이면"]},"6157":{"월":["내덕2동"],"화":["율량사천동","내덕2동"],"수":["내덕2동"],"목":["내덕2동"],"금":["율량사천동","내덕2동"]}},"recycle":{"6544":{"월":["내수읍"],"화":["내수읍","북이면"],"수":["내수읍","북이면"],"목":["내수읍","북이면"],"금":["내수읍","북이면"]},"0263":{"월":["오근장동","율량사천동"],"화":["율량사천동"],"수":["오근장동","율량사천동"],"목":["오근장동","율량사천동"],"금":["율량사천동"]},"0261":{"월":["율량사천동","내덕2동"],"화":["내덕2동"],"수":["율량사천동","내덕2동"],"목":["내덕2동"],"금":["율량사천동","내덕2동"]},"0262":{"월":["오창읍"],"화":["오창읍"],"수":["오창읍"],"목":["북이면","오창읍"],"금":["오창읍"]},"9090":{"월":["율량사천동"],"화":["내수읍","오근장동","율량사천동"],"수":["율량사천동"],"목":["내수읍","율량사천동"],"금":["율량사천동"]},"0264":{"월":["율량사천동"],"화":["내수읍","오근장동","율량사천동"],"수":["오근장동"],"목":["율량사천동"],"금":["내수읍","오근장동"]},"1578":{}}};
+for(const r of DIRECT_ROUTES.general)if(r.vehicle==='6224')delete r.days['수'];
 const DIRECT_RI_DAYS={"general":{"월":[{"key":"내수읍|구성리","vehicles":["3346"]},{"key":"내수읍|내수리","vehicles":["6138"]},{"key":"내수읍|덕암리","vehicles":["6138"]},{"key":"내수읍|마산리","vehicles":["6138"]},{"key":"내수읍|비상리","vehicles":["6138"]},{"key":"내수읍|비중리","vehicles":["6138"]},{"key":"내수읍|세교리","vehicles":["6138"]},{"key":"내수읍|우산리","vehicles":["6138"]},{"key":"내수읍|은곡리","vehicles":["6138"]},{"key":"내수읍|초정리","vehicles":["6138"]},{"key":"내수읍|풍정리","vehicles":["6138"]},{"key":"내수읍|학평리","vehicles":["6138"]},{"key":"내수읍|형동리","vehicles":["6138"]},{"key":"오창읍|각리","vehicles":["3344"]},{"key":"오창읍|농소리","vehicles":["3344"]},{"key":"오창읍|복현리","vehicles":["3344"]},{"key":"오창읍|신평리","vehicles":["3344"]},{"key":"오창읍|여천리","vehicles":["3344"]},{"key":"오창읍|원리","vehicles":["3344"]},{"key":"오창읍|장대리","vehicles":["3344"]},{"key":"오창읍|중신리","vehicles":["3344"]},{"key":"오창읍|창리","vehicles":["3344"]},{"key":"오창읍|탑리","vehicles":["3344"]}],"화":[{"key":"내수읍|저곡리","vehicles":["6138"]},{"key":"북이면|영하리","vehicles":["6138"]},{"key":"오창읍|꽃화산리","vehicles":["3344"]},{"key":"오창읍|상평리","vehicles":["3344"]},{"key":"오창읍|후기리","vehicles":["3344"]}],"수":[{"key":"내수읍|마산리","vehicles":["6138"]},{"key":"내수읍|신안리","vehicles":["6138"]},{"key":"내수읍|원통리","vehicles":["6224"]},{"key":"내수읍|은곡리","vehicles":["6138"]},{"key":"내수읍|학평리","vehicles":["6138"]},{"key":"북이면|석성리","vehicles":["6138"]},{"key":"북이면|신대리","vehicles":["6138"]},{"key":"북이면|용계리","vehicles":["6138"]},{"key":"북이면|장양리","vehicles":["6138"]},{"key":"북이면|추학리","vehicles":["6138"]},{"key":"북이면|화상리","vehicles":["6138"]},{"key":"오창읍|가곡리","vehicles":["3344"]},{"key":"오창읍|괴정리","vehicles":["3344"]},{"key":"오창읍|기암리","vehicles":["3344"]},{"key":"오창읍|도암리","vehicles":["3344"]},{"key":"오창읍|모정리","vehicles":["3344"]},{"key":"오창읍|빛화산리","vehicles":["3344"]},{"key":"오창읍|석우리","vehicles":["3344"]},{"key":"오창읍|양지리","vehicles":["3344"]},{"key":"오창읍|여천리","vehicles":["3344"]},{"key":"오창읍|유리","vehicles":["3344"]},{"key":"오창읍|일신리","vehicles":["3344"]},{"key":"오창읍|탑리","vehicles":["3344"]},{"key":"오창읍|학소리","vehicles":["3344"]}],"목":[{"key":"내수읍|구성리","vehicles":["3346"]},{"key":"내수읍|은곡리","vehicles":["3346"]},{"key":"북이면|대길리","vehicles":["6138"]},{"key":"북이면|대율리","vehicles":["3344"]},{"key":"북이면|부연리","vehicles":["6138"]},{"key":"북이면|서당리","vehicles":["6138"]},{"key":"북이면|석화리","vehicles":["6138"]},{"key":"북이면|선암리","vehicles":["6138"]},{"key":"북이면|신기리","vehicles":["6138"]},{"key":"북이면|현암리","vehicles":["6138"]},{"key":"북이면|호명리","vehicles":["6138"]},{"key":"북이면|화상리","vehicles":["3344"]},{"key":"오창읍|복현리","vehicles":["3344"]},{"key":"오창읍|성산리","vehicles":["3344"]},{"key":"오창읍|창리","vehicles":["3344"]}],"금":[{"key":"내수읍|내수리","vehicles":["6138"]},{"key":"내수읍|마산리","vehicles":["6138"]},{"key":"내수읍|은곡리","vehicles":["6138"]},{"key":"내수읍|학평리","vehicles":["6138"]},{"key":"북이면|금대리","vehicles":["6138"]},{"key":"북이면|금암리","vehicles":["6138"]},{"key":"북이면|내추리","vehicles":["6138"]},{"key":"북이면|송정리","vehicles":["6138"]},{"key":"북이면|옥수리","vehicles":["6138"]},{"key":"북이면|장재리","vehicles":["6138"]},{"key":"북이면|토성리","vehicles":["6138"]},{"key":"오창읍|가좌리","vehicles":["3344"]},{"key":"오창읍|두릉리","vehicles":["3344"]},{"key":"오창읍|백현리","vehicles":["3344"]},{"key":"오창읍|성산리","vehicles":["3344"]},{"key":"오창읍|성재리","vehicles":["3344"]},{"key":"오창읍|용두리","vehicles":["3344"]}]},"recycle":{"월":[{"key":"내수읍|내수리","vehicles":["6544"]},{"key":"내수읍|덕암리","vehicles":["6544"]},{"key":"내수읍|도원리","vehicles":["6544"]},{"key":"내수읍|마산리","vehicles":["6544"]},{"key":"내수읍|비상리","vehicles":["6544"]},{"key":"내수읍|세교리","vehicles":["6544"]},{"key":"내수읍|신안리","vehicles":["6544"]},{"key":"내수읍|우산리","vehicles":["6544"]},{"key":"내수읍|은곡리","vehicles":["6544"]},{"key":"내수읍|초정리","vehicles":["6544"]},{"key":"내수읍|풍정리","vehicles":["6544"]},{"key":"내수읍|학평리","vehicles":["6544"]},{"key":"내수읍|형동리","vehicles":["6544"]},{"key":"오창읍|복현리","vehicles":["0262"]},{"key":"오창읍|양지리","vehicles":["0262"]},{"key":"오창읍|원리","vehicles":["0262"]},{"key":"오창읍|장대리","vehicles":["0262"]},{"key":"오창읍|창리","vehicles":["0262"]}],"화":[{"key":"내수읍|도원리","vehicles":["6544"]},{"key":"내수읍|세교리","vehicles":["6544"]},{"key":"내수읍|신안리","vehicles":["6544"]},{"key":"내수읍|우산리","vehicles":["6544"]},{"key":"내수읍|저곡리","vehicles":["6544"]},{"key":"내수읍|풍정리","vehicles":["6544"]},{"key":"북이면|영하리","vehicles":["6544"]},{"key":"오창읍|모정리","vehicles":["0262"]},{"key":"오창읍|빛화산리","vehicles":["0262"]},{"key":"오창읍|여천리","vehicles":["0262"]},{"key":"오창읍|유리","vehicles":["0262"]},{"key":"오창읍|일신리","vehicles":["0262"]},{"key":"오창읍|학소리","vehicles":["0262"]}],"수":[{"key":"북이면|내추리","vehicles":["6544"]},{"key":"북이면|대율리","vehicles":["6544"]},{"key":"북이면|석성리","vehicles":["6544"]},{"key":"북이면|신대리","vehicles":["6544"]},{"key":"북이면|옥수리","vehicles":["6544"]},{"key":"북이면|용계리","vehicles":["6544"]},{"key":"북이면|장양리","vehicles":["6544"]},{"key":"북이면|추학리","vehicles":["6544"]},{"key":"북이면|화상리","vehicles":["6544"]},{"key":"오창읍|가곡리","vehicles":["0262"]},{"key":"오창읍|각리","vehicles":["0262"]},{"key":"오창읍|괴정리","vehicles":["0262"]},{"key":"오창읍|기암리","vehicles":["0262"]},{"key":"오창읍|농소리","vehicles":["0262"]},{"key":"오창읍|석우리","vehicles":["0262"]},{"key":"오창읍|신평리","vehicles":["0262"]},{"key":"오창읍|중신리","vehicles":["0262"]},{"key":"오창읍|탑리","vehicles":["0262"]}],"목":[{"key":"내수읍|구성리","vehicles":["9090"]},{"key":"내수읍|국동리","vehicles":["9090"]},{"key":"내수읍|묵방리","vehicles":["9090"]},{"key":"내수읍|은곡리","vehicles":["9090"]},{"key":"내수읍|학평리","vehicles":["6544"]},{"key":"북이면|대길리","vehicles":["6544"]},{"key":"북이면|대율리","vehicles":["0262"]},{"key":"북이면|부연리","vehicles":["6544"]},{"key":"북이면|서당리","vehicles":["6544"]},{"key":"북이면|석성리","vehicles":["0262"]},{"key":"북이면|석화리","vehicles":["6544"]},{"key":"북이면|선암리","vehicles":["6544"]},{"key":"북이면|신기리","vehicles":["6544"]},{"key":"북이면|신대리","vehicles":["0262"]},{"key":"북이면|현암리","vehicles":["6544"]},{"key":"북이면|호명리","vehicles":["6544"]},{"key":"북이면|화상리","vehicles":["0262"]},{"key":"오창읍|장대리","vehicles":["0262"]},{"key":"오창읍|창리","vehicles":["0262"]}],"금":[{"key":"내수읍|내수리","vehicles":["6544"]},{"key":"내수읍|마산리","vehicles":["6544"]},{"key":"내수읍|신안리","vehicles":["6544"]},{"key":"내수읍|원통리","vehicles":["0264"]},{"key":"내수읍|은곡리","vehicles":["6544"]},{"key":"내수읍|입동리","vehicles":["0264"]},{"key":"내수읍|입상리","vehicles":["0264"]},{"key":"내수읍|학평리","vehicles":["6544"]},{"key":"북이면|금대리","vehicles":["6544"]},{"key":"북이면|금암리","vehicles":["6544"]},{"key":"북이면|송정리","vehicles":["6544"]},{"key":"북이면|옥수리","vehicles":["6544"]},{"key":"북이면|장재리","vehicles":["6544"]},{"key":"북이면|토성리","vehicles":["6544"]},{"key":"오창읍|가좌리","vehicles":["0262"]},{"key":"오창읍|꽃화산리","vehicles":["0262"]},{"key":"오창읍|두릉리","vehicles":["0262"]},{"key":"오창읍|백현리","vehicles":["0262"]},{"key":"오창읍|성산리","vehicles":["0262"]},{"key":"오창읍|성재리","vehicles":["0262"]},{"key":"오창읍|용두리","vehicles":["0262"]},{"key":"오창읍|후기리","vehicles":["0262"]}]}};
 
 const DIRECT_REGION_ADDITIONS={
@@ -1072,12 +1074,13 @@ const CONFIRMED_ADDRESS_SCHEDULE_OVERRIDES=[
 ];
 function confirmedAddressScheduleOverride(type,ctx){
   const district=serviceDistrictForContext(ctx);
-  const target=[ctx?.address,ctx?.jibunAddress,ctx?.lookupText,currentJibunAddress,currentLookupText]
+  const target=[ctx?.address,ctx?.jibunAddress,ctx?.lookupText]
     .map(routeNorm).filter(Boolean).join('|');
   if(!target)return null;
   for(const rule of CONFIRMED_ADDRESS_SCHEDULE_OVERRIDES){
     if(rule.district&&canonicalDistrict(rule.district)!==district)continue;
-    if(!(rule.addressTokens||[]).some(token=>target.includes(routeNorm(token))))continue;
+    if(rule.id==='jujung-304-1'&&!([ctx?.address,ctx?.jibunAddress,ctx?.lookupText].some(a=>exactSourceAddressMatch('주중동 304-1',a))))continue;
+    if(rule.id!=='jujung-304-1'&&!(rule.addressTokens||[]).some(token=>target.includes(routeNorm(token))))continue;
     const schedule=rule.schedules?.[type];
     if(schedule?.vehicle&&(schedule.days||[]).length)return {...schedule,ruleId:rule.id,district};
   }
@@ -1567,87 +1570,13 @@ function renderSchedule(district,legalEmd='',legalRi=''){
     document.getElementById('foodDetail').innerHTML=`<div class="verified"><strong>단독주택 배출:</strong> ${food.days.join(' · ')}<br><strong>수거:</strong> ${food.pickup}<br><strong>수거업체:</strong> ${food.operator}${food.phone?' · '+food.phone:''}<br><strong>공동주택:</strong> 상시배출${extra}</div>`;
   }else setPending('food','해당 지역의 음식물 일정을 공식자료에서 확인하지 못했습니다.');
 
-  const ctx={address:currentAddress,district,legalEmd,legalRi,lat:currentLat,lng:currentLng};
+  const ctx={address:currentAddress,jibunAddress:currentJibunAddress,lookupText:currentLookupText,district,legalEmd,legalRi,lat:currentLat,lng:currentLng};
 
-  // 생활쓰레기: 확정되지 않은 리는 추정하지 않고 미확인으로 처리합니다.
-  if(isUnconfirmedRi('general',legalEmd||district,legalRi)){
-    selectedVehicle.general='전체';
-    document.getElementById('generalBadge').textContent='수거정보 미확인';
-    renderDays('generalDays',[]);
-    document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.</div>`;
-  }else{
-    const directGeneralCtx=inheritedScheduleContext(ctx);
-    const inheritedGeneral=!!directGeneralCtx.scheduleInheritedFrom;
-    const scienceGeneral=false;
-    if(false){
-    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedGeneral){
-      selectedVehicle.general='전체';
-      if(!renderRestoredRuralRiSchedule('general',ctx)){
-        document.getElementById('generalBadge').textContent='수거노선 확인 중';
-        renderDays('generalDays',[]);
-        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 제공된 코스표 일정과 주소 인접 수거노선을 함께 확인합니다.</div>`;
-      }
-    }else{
-      const directGeneral=findDirectMatches('general',directGeneralCtx);
-      selectedVehicle.general=directGeneral.length?directGeneral[0].vehicle:'전체';
-      if(directGeneral.length){
-        renderDirectSchedule('general',directGeneral,directGeneralCtx);
-      }else if(renderRestoredRuralRiSchedule('general',ctx)){
-      }else if(districtHasDirectCoverage('general',district)){
-        document.getElementById('generalBadge').textContent='수거일정 확인 중';
-        renderDays('generalDays',[]);
-        document.getElementById('generalDetail').innerHTML=`<div class="pending"><strong>검색주소의 생활쓰레기 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.</div>`;
-      }else{
-        const generals=findRegionEntries('general',district);
-        if(generals.length){
-          document.getElementById('generalBadge').textContent='요일 확인 필요';renderDays('generalDays',[]);
-          const rows=generals.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
-          document.getElementById('generalDetail').innerHTML=`<div class="pending">${rows}<br><strong>배출시간:</strong> 일몰 후부터 자정 전<br>제공된 노선표에서 이 주소와 일치하는 세부 코스를 확인하지 못했습니다.</div>`;
-        }else setPending('general','현재 확정된 자료만으로는 이 지역의 생활쓰레기 수거정보를 안내할 수 없습니다.');
-      }
-    }
-  }
-
-  // 재활용: 확정되지 않은 리는 추정하지 않고 미확인으로 처리합니다.
-  if(isUnconfirmedRi('recycle',legalEmd||district,legalRi)){
-    selectedVehicle.recycle='전체';
-    document.getElementById('recycleBadge').textContent='수거정보 미확인';
-    renderDays('recycleDays',[]);
-    document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
-  }else{
-    const directRecycleCtx=inheritedScheduleContext(ctx);
-    const inheritedRecycle=!!directRecycleCtx.scheduleInheritedFrom;
-    const scienceRecycle=false;
-    if(false){
-    }else if(RI_LAYER_DISTRICTS.has(canonicalDistrict(legalEmd||district)) && !inheritedRecycle){
-      selectedVehicle.recycle='전체';
-      if(!renderRestoredRuralRiSchedule('recycle',ctx)){
-        document.getElementById('recycleBadge').textContent='수거노선 확인 중';
-        renderDays('recycleDays',[]);
-        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 제공된 코스표 일정과 주소 인접 수거노선을 함께 확인합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
-      }
-    }else{
-      const directRecycle=findDirectMatches('recycle',directRecycleCtx);
-      selectedVehicle.recycle=directRecycle.length?directRecycle[0].vehicle:'전체';
-      if(directRecycle.length){
-        renderDirectSchedule('recycle',directRecycle,directRecycleCtx);
-      }else if(renderRestoredRuralRiSchedule('recycle',ctx)){
-      }else if(districtHasDirectCoverage('recycle',district)){
-        document.getElementById('recycleBadge').textContent='수거일정 확인 중';
-        renderDays('recycleDays',[]);
-        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>검색주소의 재활용품 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
-      }else{
-        const recycles=findRegionEntries('recycle',district);
-        if(recycles.length){
-          document.getElementById('recycleBadge').textContent='요일 확인 필요';renderDays('recycleDays',[]);
-          const rows=recycles.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
-          document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>제공된 노선표에서 이 주소와 일치하는 세부 코스를 확인하지 못했습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
-        }else{
-          setPending('recycle','현재 확정된 자료만으로는 이 지역의 재활용쓰레기 수거정보를 안내할 수 없습니다.');
-          document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
-        }
-      }
-    }
+  for(const type of ['general','recycle']){
+    selectedVehicle[type]='전체';clearAddressLayerFocus(type);
+    const fixed=confirmedAddressScheduleOverride(type,ctx);
+    if(fixed)renderReviewedSchedule(type,{...fixed,matchBasis:'user-address',estimated:false},ctx);
+    else setPending(type,'주소별 세부 수거근거를 확인하고 있습니다.');
   }
 
   if(activeLayer==='general'||activeLayer==='recycle'){renderVehicleFilter();setLayer(activeLayer)}
@@ -1694,7 +1623,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='schedule-map-v3-disjoint';
+const TEST_ZONE_RENDER_MODE='schedule-map-v4-reviewed';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -2153,7 +2082,7 @@ function rawZoneEdgeDistanceSq(z,lat,lng){
   return dx*dx*.82*.82+dy*dy;
 }
 function scheduleDisplaySignature(z){
-  return DAYS.filter(d=>(z?.days||[]).includes(d)).join('·');
+  return z?.noSchedule?'일정 확인 필요':DAYS.filter(d=>(z?.days||[]).includes(d)).join('·');
 }
 function assignmentDisplaySignature(z){
   const provider=String(z?.provider||routeCompany(z?.vehicle)||'').trim();
@@ -2161,30 +2090,151 @@ function assignmentDisplaySignature(z){
     .filter(Boolean).map(v=>String(routePlate(v)||v).trim()).sort();
   return [provider,vehicles.join(','),scheduleDisplaySignature(z)].join('|');
 }
-function nearestScheduleDisplayZone(type,district,lat,lng){
-  const zones=rawServiceZonesForDistrict(type,district).filter(z=>{
-    const sig=scheduleDisplaySignature(z);
-    if(!sig)return false; // 소속은 전체 노선으로 결정하고 요일/차량 필터는 표시만 제한합니다.
-    // 과거 정적 청크에 남아 있는 '오창 7개 리 전체 대행' 셀도 실제 제일환경 노선 180m 밖이면 표시하지 않습니다.
-    return ochangContractZoneAllowedAtPoint(type,z,lat,lng);
-  });
-  if(!zones.length)return null;
-
-  const containing=zones.find(z=>pointInZonePolygon(lat,lng,z));
-  if(containing)return containing;
-
-  let best=null,bestD=Infinity,bestCenterD=Infinity;
-  for(const z of zones){
-    const d=rawZoneEdgeDistanceSq(z,lat,lng);
-    const p=z._coarseCenter||(z._coarseCenter=rawZoneCenterPoint(z));
-    if(!p)continue;
-    const cdx=(p.lng-lng)*.82,cdy=p.lat-lat;
-    const centerD=cdx*cdx+cdy*cdy;
-    if(d<bestD-1e-15||(Math.abs(d-bestD)<=1e-15&&centerD<bestCenterD)){
-      bestD=d;bestCenterD=centerD;best=z;
+// 동일 번지/도로와 현 위치의 차량×요일 근거만 사용합니다.
+// 거리 한계는 공식 수거경계가 아니라 과도한 외삽을 막는 추정 안전장치입니다.
+const LOCAL_SCHEDULE_VERSION='local-evidence-v1';
+const LOCAL_ESTIMATE_LIMIT_KM={urban:.15,rural:.40};
+const localScheduleIndexes={general:null,recycle:null};
+const localSchedulePromises={general:null,recycle:null};
+const localScheduleScopeCache=new Map();
+const localRiPointCache=new Map();
+function scheduleRouteAllowed(type,vehicle,day){
+  return !(type==='general'&&String(vehicle)==='6224'&&day==='수');
+}
+function addressIdentityParts(text){
+  const s=String(text||'').replace(/(로|길)\s+(\d+번길)/g,'$1$2').replace(/(\d+)\s*-\s*(\d+)/g,'$1-$2');
+  return [...s.matchAll(/([가-힣A-Za-z0-9]+(?:대로|로|길|동|리))\s*(산?\d+(?:-\d+)?)(?![\d-])/g)]
+    .map(m=>({place:m[1],number:m[2],key:m[1]+'|'+m[2]}));
+}
+function exactSourceAddressMatch(source,target){
+  const a=addressIdentityParts(source),b=addressIdentityParts(target);
+  return a.some(x=>b.some(y=>x.key===y.key));
+}
+function userConfirmedSchedule(type,ctx){
+  const fixed=confirmedAddressScheduleOverride(type,ctx);
+  if(fixed)return {...fixed,zoneStatus:'manual',matchBasis:'user-address',estimated:false};
+  const district=serviceDistrictForContext(ctx),ri=normalizeRi(ctx?.legalRi||'');
+  const inherited=RI_SCHEDULE_INHERIT[district+'|'+ri];
+  if(inherited){
+    const byDay=riScheduleFromSources(type,district,inherited);
+    const days=DAYS.filter(d=>(byDay[d]||[]).some(v=>scheduleRouteAllowed(type,v.key,d)));
+    const vehicles=[...new Set(days.flatMap(d=>(byDay[d]||[]).map(v=>v.key)))];
+    if(days.length)return {vehicle:vehicles[0],vehicles,days,provider:'',zoneStatus:'manual',matchBasis:'user-inheritance',estimated:false,inheritedFrom:inherited};
+  }
+  return null;
+}
+function localRiAtPoint(district,lat,lng){
+  const key=[district,lat.toFixed(6),lng.toFixed(6),riFeatureMap.size].join('|');
+  if(localRiPointCache.has(key))return localRiPointCache.get(key);
+  for(const [key,feature] of riFeatureMap){
+    if(!key.startsWith(district+'|')||key.split('|').length!==3)continue;
+    const b=featureBounds(feature);
+    if(b&&lat>=b.minLat&&lat<=b.maxLat&&lng>=b.minLng&&lng<=b.maxLng&&pointInGeoFeature([lng,lat],feature)){
+      const [,riName,riCode]=key.split('|');const result={riName,riCode};
+      localRiPointCache.set([district,lat.toFixed(6),lng.toFixed(6),riFeatureMap.size].join('|'),result);return result;
     }
   }
-  return best;
+  const empty={riName:'',riCode:''};localRiPointCache.set(key,empty);return empty;
+}
+function localAllowedRouteKeys(type,district,riName,riCode){
+  const key=[type,district,riName,riCode].join('|');
+  if(!localScheduleScopeCache.has(key)){
+    const specs=serviceZoneCandidateSpecs(type,district,riName,riCode);
+    localScheduleScopeCache.set(key,new Set(specs.filter(s=>scheduleRouteAllowed(type,s.vehicle,s.day)).map(s=>s.vehicle+'|'+s.day)));
+  }
+  return localScheduleScopeCache.get(key);
+}
+function buildLocalScheduleIndex(type,data){
+  const specs=allDongRouteSpecs(),buckets=new Map(),records=[],seen=new Set();
+  const grid=.20;
+  function add(a,b,spec,kind,term=''){
+    if(!a||!Number.isFinite(+a.lat)||!Number.isFinite(+a.lng))return;
+    b=b||a;
+    const p=geoPointKm(a.lat,a.lng),q=geoPointKm(b.lat,b.lng);
+    const key=[spec.vehicle,spec.day,routeScopeSignature(spec),kind,p.x.toFixed(5),p.y.toFixed(5),q.x.toFixed(5),q.y.toFixed(5)].join('|');
+    if(seen.has(key))return;seen.add(key);
+    const item={a,b,spec,kind,term,districts:routeAllowedDistricts(spec),id:records.length};records.push(item);
+    for(let x=Math.floor(Math.min(p.x,q.x)/grid);x<=Math.floor(Math.max(p.x,q.x)/grid);x++){
+      for(let y=Math.floor(Math.min(p.y,q.y)/grid);y<=Math.floor(Math.max(p.y,q.y)/grid);y++){
+        const cell=x+'|'+y;if(!buckets.has(cell))buckets.set(cell,[]);buckets.get(cell).push(item);
+      }
+    }
+  }
+  for(const record of data?.routes||[]){
+    if(record.type!==type||!scheduleRouteAllowed(type,record.vehicle,record.day))continue;
+    const spec=record.liveSpec||bundleRouteRecordSpec(record,specs);if(!spec||spec.housing==='apartment'||spec.zoneEligible===false)continue;
+    if(!record.liveSpec&&(routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec)))continue;
+    const route=record.data||{};
+    for(const seg of route.segments||[])for(let i=1;i<seg.length;i++)add(seg[i-1],seg[i],spec,'line');
+    for(const p of route.zoneEvidencePoints||[])add(p,p,spec,'point',p.term||p.address||'');
+  }
+  return {grid,buckets,records,cache:new Map(),liveCount:(dongRouteOverlays[type]||[]).length};
+}
+async function ensureLocalScheduleIndex(type){
+  if(localScheduleIndexes[type]&&localScheduleIndexes[type].liveCount===(dongRouteOverlays[type]||[]).length)return localScheduleIndexes[type];
+  if(localSchedulePromises[type])return localSchedulePromises[type];
+  localSchedulePromises[type]=(async()=>{
+    const data=await loadExternalBundledPrecomputedData();
+    if(!data?.routes?.length)return null;
+    localScheduleIndexes[type]=buildLocalScheduleIndex(type,{routes:[...data.routes,...(dongRouteOverlays[type]||[]).map(item=>({type,vehicle:item.vehicle,day:item.day,data:item,liveSpec:item}))]});
+    if(resultMapVisible()&&activeLayer===type)scheduleVisibleServiceZoneMaterialization(type);
+    return localScheduleIndexes[type];
+  })();
+  try{return await localSchedulePromises[type]}finally{localSchedulePromises[type]=null}
+}
+function localScheduleAtPoint(type,ctx,{directOnly=false}={}){
+  const district=serviceDistrictForContext(ctx),lat=+ctx?.lat,lng=+ctx?.lng;
+  if(!CHEONGWON_ROUTE_DISTRICTS.has(district)||!Number.isFinite(lat)||!Number.isFinite(lng))return null;
+  const index=localScheduleIndexes[type];if(!index)return null;
+  const cacheKey=[district,ctx.legalRi||'',ctx.riCode||'',lat.toFixed(6),lng.toFixed(6),directOnly,riFeatureMap.size].join('|');
+  if(!ctx.address&&index.cache.has(cacheKey))return index.cache.get(cacheKey);
+  const remember=value=>{if(!ctx.address){if(index.cache.size>30000)index.cache.clear();index.cache.set(cacheKey,value);}return value;};
+  if(!directOnly){const direct=localScheduleAtPoint(type,ctx,{directOnly:true});if(direct)return remember(direct);}
+  const rural=RI_LAYER_DISTRICTS.has(district);
+  const ri=ctx.legalRi?{riName:normalizeRi(ctx.legalRi),riCode:ctx.riCode||''}:(rural?localRiAtPoint(district,lat,lng):{riName:'',riCode:''});
+  if(isUnconfirmedRi(type,district,ri.riName))return null;
+  const fixed=userConfirmedSchedule(type,{...ctx,district,legalRi:ri.riName});if(fixed)return {...fixed,district,riName:ri.riName};
+  // 읍면 경계가 아직 준비되지 않으면 다른 리의 일정을 가져오지 않습니다.
+  if(rural&&!ri.riName)return null;
+  const allowed=localAllowedRouteKeys(type,district,ri.riName,ri.riCode);
+  const limit=directOnly?.020:(rural?LOCAL_ESTIMATE_LIMIT_KM.rural:LOCAL_ESTIMATE_LIMIT_KM.urban);
+  const p=geoPointKm(lat,lng),minX=Math.floor((p.x-limit)/index.grid),maxX=Math.floor((p.x+limit)/index.grid),minY=Math.floor((p.y-limit)/index.grid),maxY=Math.floor((p.y+limit)/index.grid);
+  const rows=new Map(),visited=new Set();
+  for(let x=minX;x<=maxX;x++)for(let y=minY;y<=maxY;y++){
+    for(const item of index.buckets.get(x+'|'+y)||[]){
+      if(visited.has(item.id))continue;visited.add(item.id);
+      const spec=item.spec,key=spec.vehicle+'|'+spec.day;
+      if(!item.districts.includes(district)||!allowed.has(key)||(directOnly&&item.kind!=='line'))continue;
+      if(type==='general'&&district==='내수읍'&&ri.riName==='도원리'&&spec.vehicle!=='6138')continue;
+      if(district==='오창읍'&&spec.provider==='제일환경'&&!ochangContractZoneAllowedAtPoint(type,{...spec,district},lat,lng))continue;
+      const d=pointSegmentDistanceKm(lat,lng,item.a,item.b);if(d>limit)continue;
+      if(!rows.has(key)||rows.get(key).distanceKm>d)rows.set(key,{spec,distanceKm:d,kind:item.kind,term:item.term});
+    }
+  }
+  let ranked=[...rows.values()].sort((a,b)=>a.distanceKm-b.distanceKm||a.spec.vehicle.localeCompare(b.spec.vehicle,'ko'));
+  if(!ranked.length)return remember(null);
+  if(ctx.address){
+    const roads=extractAddressRoadNames(ctx.address);
+    const onRoad=ranked.filter(r=>r.distanceKm<=.020&&matchedAddressRoads(r.spec,roads).length);
+    if(onRoad.length)ranked=[...onRoad,...ranked.filter(r=>!onRoad.includes(r))];
+  }
+  const best=ranked[0];
+  // 같은 차량이어도 다른 도로/요일까지 합산하지 않습니다. 같은 위치의 5m 오차 안 근거만 결합합니다.
+  const same=ranked.filter(r=>r.spec.vehicle===best.spec.vehicle&&r.distanceKm<=best.distanceKm+.005);
+  const days=DAYS.filter(day=>same.some(r=>r.spec.day===day));
+  const second=ranked.find(r=>r.spec.vehicle!==best.spec.vehicle);
+  const ambiguous=!!second&&second.distanceKm<=best.distanceKm+.010;
+  const estimated=true; // 코스표로 만든 선과 실제 GPS 수거확인은 구별합니다.
+  const result={district,riName:ri.riName,riCode:ri.riCode,vehicle:best.spec.vehicle,vehicles:[best.spec.vehicle],provider:best.spec.provider||routeCompany(best.spec.vehicle),days,
+    distanceKm:best.distanceKm,estimated,ambiguous,zoneStatus:ambiguous?'boundary':(estimated?'estimated':'inferred'),matchBasis:directOnly?'distance':'local-evidence',
+    matchedRoads:matchedAddressRoads(best.spec,extractAddressRoadNames(ctx.address||'')),evidenceKind:best.kind,evidenceTerm:best.term,localEvidence:true};
+  if(!ctx.address){if(index.cache.size>30000)index.cache.clear();index.cache.set(cacheKey,result);}
+  return result;
+}
+
+
+function nearestScheduleDisplayZone(type,district,lat,lng){
+  return localScheduleAtPoint(type,{district,lat,lng})||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
 }
 function mergeScheduleDisplayCells(cells){
   const rows=new Map();
@@ -2356,16 +2406,7 @@ function coarseDisplayZones(type){
             let addressFocus=false;
             if(focus&&focus.district===district&&
                +focus.lat>=clat0&&+focus.lat<clat1&&+focus.lng>=clng0&&+focus.lng<clng1){
-              childRep={
-                ...childRep,
-                district,
-                vehicle:(focus.vehicles||[])[0]||childRep.vehicle,
-                vehicles:[...(focus.vehicles||[])],
-                provider:focus.provider||childRep.provider||'',
-                days:[...(focus.days||[])],
-                estimated:true
-              };
-              addressFocus=true;
+addressFocus=zoneMatchesAddressFocus(type,childRep);
             }
             const scheduleSig=scheduleDisplaySignature(childRep);
             if(!scheduleSig||!rawZoneMatchesCurrentFilter(type,childRep))continue;
@@ -2378,16 +2419,7 @@ function coarseDisplayZones(type){
         let addressFocus=false;
         if(focus&&focus.district===district&&
            +focus.lat>=lat0&&+focus.lat<lat1&&+focus.lng>=lng0&&+focus.lng<lng1){
-          rep={
-            ...rep,
-            district,
-            vehicle:(focus.vehicles||[])[0]||rep.vehicle,
-            vehicles:[...(focus.vehicles||[])],
-            provider:focus.provider||rep.provider||'',
-            days:[...(focus.days||[])],
-            estimated:true
-          };
-          addressFocus=true;
+addressFocus=zoneMatchesAddressFocus(type,rep);
         }
 
         const scheduleSig=scheduleDisplaySignature(rep);
@@ -2417,7 +2449,7 @@ function coarseDisplayZones(type){
       points,rings:[points],hitRings:[points],
       district:m.district,automatic:true,fromBundle:true,
       displayOnly:true,displaySchedule:true,coarseDisplay:true,coarseCover:true,gridMerged:true,
-      ambiguous:false,estimated:true,
+      ambiguous:!!m.rep.ambiguous,estimated:true,
       vehicle:m.rep.vehicle,vehicles:[...(m.rep.vehicles||[])],
       provider:m.rep.provider||routeCompany(m.rep.vehicle),
       days:[...(m.rep.days||[])],
@@ -2435,6 +2467,7 @@ function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
+  if(!localScheduleIndexes[type]||localScheduleIndexes[type].liveCount!==(dongRouteOverlays[type]||[]).length)ensureLocalScheduleIndex(type).catch(e=>console.warn('세부 일정 근거 준비 실패',e));
   // 행정경계는 주소 판정을 막지 않고 백그라운드로 준비합니다.
   // 준비되면 행정경계로 자른 단일 추정권역을 다시 표시합니다.
   if(!testAdminBoundaryLoadStarted){
@@ -2508,56 +2541,18 @@ async function hydrateCachedServiceZones(type){
   return hydrateServiceZoneArray(type,cached,{fromCache:true});
 }
 function serviceZoneOverlayMatch(type,ctx){
-  const district=serviceDistrictForContext(ctx);
-  const riName=normalizeRi(ctx?.legalRi||'');
-  const lat=+ctx?.lat,lng=+ctx?.lng;
-  if(!Number.isFinite(lat)||!Number.isFinite(lng))return null;
-  const manual=manualZoneMatch(type,lat,lng);
-  if(manual)return {vehicle:manual.vehicle,provider:manual.provider||routeCompany(manual.vehicle),days:[...(manual.days||[])],distanceKm:Infinity,matchBasis:'manual-zone',zoneStatus:'manual',matchedRoads:[],note:manual.note||'',district,riName};
-  // 주소 판정은 Kakao Polygon 생성 여부와 분리합니다. 정밀 raw JSON을 먼저 검사합니다.
-  let hits=rawServiceZonesForDistrict(type,district).filter(z=>{
-    if(riName && normalizeRi(z.riName||'')!==riName)return false;
-    if(!pointInZonePolygon(lat,lng,z))return false;
-    return ochangContractZoneAllowedAtPoint(type,z,lat,lng);
-  });
-  if(!hits.length)hits=(serviceZoneOverlays[type]||[]).filter(z=>{
-    if(z.manual||z.displayOnly||z.displayBase)return false;
-    if(z.district&&canonicalDistrict(z.district)!==district)return false;
-    if(riName && normalizeRi(z.riName||'')!==riName)return false;
-    if(!pointInZonePolygon(lat,lng,z))return false;
-    return ochangContractZoneAllowedAtPoint(type,z,lat,lng);
-  });
-  // 구형 오창 청크에서 넓게 생성된 대행셀을 제외한 뒤 빈칸이 생기면,
-  // 같은 리의 가장 가까운 직영 추정셀을 사용해 화면/주소 일정이 공백으로 빠지지 않게 합니다.
-  if(!hits.length&&district==='오창읍'){
-    const fallback=rawServiceZonesForDistrict(type,district)
-      .filter(z=>(!riName||normalizeRi(z.riName||'')===riName)&&!isOchangContractZone(z)&&scheduleDisplaySignature(z))
-      .map(z=>({z,d:rawZoneEdgeDistanceSq(z,lat,lng)}))
-      .filter(x=>Number.isFinite(x.d))
-      .sort((a,b)=>a.d-b.d);
-    if(fallback.length)hits=[fallback[0].z];
-  }
-  if(!hits.length)return null;
-  hits.sort((a,b)=>(a.ambiguous?2:(a.estimated?1:0))-(b.ambiguous?2:(b.estimated?1:0)));
-  const z=hits[0];
-  const dongEstimated=DONG_ROUTE_DISTRICTS.has(district)&&!z.manual&&!z.routeBuffer;
-  return {vehicle:z.vehicle,vehicles:[...(z.vehicles||[])],provider:z.provider||routeCompany(z.vehicle),plate:z.plate||'',days:[...(z.days||[])],distanceKm:Infinity,matchBasis:'displayed-zone',zoneStatus:(z.estimated||dongEstimated)?'estimated':(z.ambiguous?'boundary':'inferred'),estimated:!!z.estimated||dongEstimated,neighborRatio:Number.isFinite(+z.neighborRatio)?+z.neighborRatio:0,neighborSupport:+z.neighborSupport||0,neighborTotal:+z.neighborTotal||0,matchedRoads:[],district,riName,riGrouped:!!z.riGrouped,contractLayer:!!z.contractLayer,routeBuffer:!!z.routeBuffer,noSchedule:!!z.noSchedule,groupOutline:!!z.groupOutline,gridMerged:!!z.gridMerged,polygonized:!!z.polygonized};
+  const manual=manualZoneMatch(type,+ctx.lat,+ctx.lng);
+  if(manual)return {...manual,matchBasis:manual.published?'published-zone':'manual-zone',estimated:!manual.published,zoneStatus:manual.published?'manual':'estimated'};
+  const fixed=userConfirmedSchedule(type,ctx);if(fixed)return fixed;
+  const exact=contractExactScheduleMatch(type,ctx);
+  return exact?{...exact,matchBasis:'source-address',estimated:false}:localScheduleAtPoint(type,ctx);
 }
 async function ensureServiceZoneMatch(type,ctx){
   const district=serviceDistrictForContext(ctx);
-  // 주소가 속한 지역 청크가 아직 없으면 그 지역만 우선 내려받습니다.
-  if(district&&!loadedServiceZoneDistricts[type].has(district)){
-    await hydrateExternalBundledServiceZones(type,[district]);
-  }
+  if(RI_LAYER_DISTRICTS.has(district))await ensureTestAdminBoundaryLoad();
   if(district==='오창읍')await ensureOchangContractRouteItems(type);
-  let match=serviceZoneOverlayMatch(type,ctx);if(match)return match;
-  if(!serviceZoneBuilt[type]){
-    const hydrated=await hydrateCachedServiceZones(type);
-    if(hydrated){match=serviceZoneOverlayMatch(type,ctx);if(match)return match}
-    await buildServiceZones(type);
-    match=serviceZoneOverlayMatch(type,ctx);
-  }
-  return match;
+  await ensureLocalScheduleIndex(type);
+  return serviceZoneOverlayMatch(type,ctx);
 }
 
 function geoPointKm(lat,lng){
@@ -2646,14 +2641,8 @@ function routeRawWithRoadAliases(raw){
   return s;
 }
 function roadMatchesRouteRaw(road,raw){
-  const r=normalizedRoadMatchKey(road);
-  if(!r)return false;
-  const n=normalizedRoadMatchKey(routeRawWithRoadAliases(raw));
-  if(n.includes(r))return true;
-  // 2순환로 / 제2순환로처럼 현장 표기 차이를 허용합니다.
-  const r2=r.replace(/^제(?=\d)/,'');
-  const n2=n.replace(/제(?=\d)/g,'');
-  return !!r2 && n2.includes(r2);
+  const key=normalizedRoadMatchKey(road);if(!key)return false;
+  return extractAddressRoadNames(routeRawWithRoadAliases(expandRouteShorthand(raw||''))).some(r=>normalizedRoadMatchKey(r)===key);
 }
 function matchedAddressRoads(spec,addressRoads){
   return (addressRoads||[]).filter(road=>roadMatchesRouteRaw(road,spec?.raw||''));
@@ -3043,52 +3032,22 @@ async function refreshRuralSubzoneSchedules(ctx){ // v66 호환용: 현재 호�
 }
 
 async function refreshNearbyRouteSchedules(ctx){
-  if(!ctx)return;
-  const district=serviceDistrictForContext(ctx);if(!CHEONGWON_ROUTE_DISTRICTS.has(district))return;
-  // 북이면 광암리는 사용자가 지정한 금암리 일정 상속을 그대로 유지합니다.
-  if(district==='북이면'&&normalizeRi(ctx.legalRi||'')==='광암리')return;
+  if(!ctx||!CHEONGWON_ROUTE_DISTRICTS.has(serviceDistrictForContext(ctx)))return;
   const seq=++nearbyScheduleRequestSeq;
-  // TEST FAST PATH: 생활·재활용 주소 판정은 정적 raw 권역/실제노선을 직접 사용하므로
-  // 대용량 행정경계 GeoJSON 로딩을 기다리지 않습니다. 경계는 음식물/관리 기능에서만 필요할 때 로드합니다.
+  await loadPublishedReviewZones();
+  const district=serviceDistrictForContext(ctx);
+  if(RI_LAYER_DISTRICTS.has(district))await ensureTestAdminBoundaryLoad();
   if(seq!==nearbyScheduleRequestSeq)return;
-
   for(const type of ['general','recycle']){
-    const confirmed=confirmedAddressScheduleOverride(type,ctx);if(confirmed){renderConfirmedAddressSchedule(type,confirmed,ctx);continue}
-    const exact=contractExactScheduleMatch(type,ctx);if(exact){renderContractExactSchedule(type,exact,ctx);continue}
-    if(isUnconfirmedRi(type,district,ctx.legalRi||''))continue;
-    if(RURAL_ROUTE_LAYER_DISTRICTS.has(district)){
-      const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
-      if(seq!==nearbyScheduleRequestSeq)return;
-      if(near?.length){renderNearbyRouteSchedule(type,near,ctx);continue}
-      const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
-      if(seq!==nearbyScheduleRequestSeq)return;
-      if(match)renderServiceZoneSchedule(type,{...match,estimated:true,zoneStatus:'estimated'},ctx);
-      else renderNoNearbyRouteSchedule(type,district);
-      continue;
-    }
-    if(RURAL_INFERRED_ROUTE_DISTRICTS.has(district)){
-      const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
-      if(seq!==nearbyScheduleRequestSeq)return;
-      if(near?.length)renderNearbyRouteSchedule(type,near,ctx);
-      else if(!renderRestoredRuralRiSchedule(type,ctx))renderNoNearbyRouteSchedule(type,district);
-      continue;
-    }
-    if(DONG_ROUTE_DISTRICTS.has(district)){
-      // 확실한 표시 수거노선 20m 이내가 최우선입니다. 그 밖의 빈 공간에서만 추정권역을 사용합니다.
-      const near=await nearestRouteMatchesForAddress(type,{...ctx,district,legalEmd:district});
-      if(seq!==nearbyScheduleRequestSeq)return;
-      if(near?.length){renderNearbyRouteSchedule(type,near,ctx);continue}
-      const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
-      if(seq!==nearbyScheduleRequestSeq)return;
-      if(match)renderServiceZoneSchedule(type,{...match,estimated:true,zoneStatus:'estimated'},ctx);
-      else renderNoNearbyRouteSchedule(type,district);
-      continue;
-    }
-    // 오창읍은 기존 리 단위/대행 확정규칙을 유지합니다.
-    const match=await ensureServiceZoneMatch(type,{...ctx,district,legalEmd:district});
+    if(isUnconfirmedRi(type,district,ctx.legalRi||'')){renderReviewedSchedule(type,null,ctx);continue;}
+    const manual=manualZoneMatch(type,+ctx.lat,+ctx.lng);
+    const fixed=manual?{...manual,matchBasis:manual.published?'published-zone':'manual-zone',estimated:!manual.published}:userConfirmedSchedule(type,ctx);
+    if(fixed){renderReviewedSchedule(type,fixed,ctx);continue;}
+    const exact=contractExactScheduleMatch(type,ctx);
+    if(exact){renderReviewedSchedule(type,{...exact,matchBasis:'source-address',estimated:false},ctx);continue;}
+    const match=await ensureServiceZoneMatch(type,ctx);
     if(seq!==nearbyScheduleRequestSeq)return;
-    if(match)renderServiceZoneSchedule(type,match,ctx);
-    else renderNoNearbyRouteSchedule(type,district);
+    renderReviewedSchedule(type,match,ctx);
   }
   if(seq!==nearbyScheduleRequestSeq)return;
   renderVehicleFilter();
@@ -4472,9 +4431,10 @@ function addServiceZonePolygon(type,points,meta={}){
   const exactRings=(Array.isArray(meta.hitRings)&&meta.hitRings.length?meta.hitRings:normalizedDisplayRings).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
   const zone={polygon,type,...meta,points:[...(exactRings[0]||[])],rings:normalizedDisplayRings,hitRings:exactRings};
   kakao.maps.event.addListener(polygon,'mouseover',e=>{
+    if(meta.displaySchedule){reviewPolygonTooltip(type,meta,e);return;}
     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
     const ratioText=meta.estimated&&Number.isFinite(+meta.neighborRatio)&&+meta.neighborRatio>0?` · 인접권역 ${Math.round(+meta.neighborRatio*100)}% 우세`:'';
-    const detail=meta.displayBase
+    const detail=meta.noSchedule?'근거 부족 · 일정 확인 필요':meta.displayBase
       ?'수거일정 표시의 빈틈을 막기 위한 읍면동 기본 추정권역'
       :(meta.displayOnly
       ?(meta.displaySchedule
@@ -4484,13 +4444,14 @@ function addServiceZonePolygon(type,points,meta={}){
     const basis=meta.displayBase
       ?'읍면동 행정경계 전체 기본표시 · 일정 판정에는 사용하지 않음'
       :(meta.displayOnly
-      ?`약 130m 격자에서 가장 가까운 정밀 수거권역의 업체·차량·요일을 상속하고 동일 담당 셀만 병합한 표시 · 실제 주소 일정은 정밀권역/20m 노선으로 별도 판정`
+      ?`같은 위치의 코스표 노선·차량·요일 근거로 계산한 추정 표시 · 공식 확정 수거경계가 아닙니다`
       :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할')))));
     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
   });
   kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
   kakao.maps.event.addListener(polygon,'mouseout',()=>{polygon.setOptions({fillOpacity:baseFill});hideZoneTooltip()});
-  kakao.maps.event.addListener(polygon,'click',()=>{
+  kakao.maps.event.addListener(polygon,'click',e=>{
+    if(meta.displaySchedule){const p=e.latLng;const ctx={district:meta.district,lat:p.getLat(),lng:p.getLng()};const hit=serviceZoneOverlayMatch(type,ctx);updateMapBadge(hit?(meta.district+' · '+routeDisplayLabel(hit.vehicle)+' · '+hit.days.join('·')+' · '+(hit.estimated?'추정':'확인')):'일정 확인 필요 · 세부 근거 부족');return;}
     if(meta.displayBase){
       updateMapBadge((meta.district||'')+' · 기본 추정권역 · 실제 일정은 주소 검색 결과 기준');
       return;
@@ -4532,7 +4493,7 @@ function classifyServiceGroups(groups,lat,lng,region=null){
     });
   }
   ranked.sort((a,b)=>a.distanceKm-b.distanceKm);
-  if(!ranked.length)return null;
+  if(!ranked.length)return remember(null);
   const best=ranked[0],second=ranked[1]||null;
   const delta=second?second.distanceKm-best.distanceKm:Infinity;
   const ambiguous=!!second && (delta<0.08 || (best.distanceKm>0.05 && second.distanceKm/(best.distanceKm||.001)<1.18));
@@ -4914,50 +4875,91 @@ function pointInZonePolygon(lat,lng,zone){
 }
 function allAdminZones(){return [...PUBLISHED_SERVICE_ZONES,...manualServiceZones]}
 function manualZoneMatch(type,lat,lng){
-  const hits=allAdminZones().filter(z=>z.type===type&&pointInSimplePolygon(lat,lng,z.points||[]));return hits.length?hits[hits.length-1]:null;
+  const hits=allAdminZones().filter(z=>z.type===type&&pointInZonePolygon(lat,lng,z));return hits.length?hits[hits.length-1]:null;
 }
 async function inferredZoneMatchForAddress(type,ctx){
   // 주소카드와 지도 ① 수거권역이 서로 다른 결과를 내지 않도록 실제 표시 폴리곤을 그대로 판정합니다.
   return ensureServiceZoneMatch(type,ctx);
 }
-function renderServiceZoneSchedule(type,match,ctx,options={}){
-  if(!match)return;
-  const company=match.provider||routeCompany(match.vehicle);
-  const vehicles=(match.vehicles||[]).length?match.vehicles:[match.vehicle].filter(Boolean);
-  const plate=match.plate||((vehicles.length===1)?routePlate(vehicles[0]):'');
-  if(!options.fromMap){
-    selectedVehicle[type]=company||match.vehicle||'전체';
-    preferredRouteVehicle[type]=match.vehicle||'';
-  }
-  const days=DAYS.filter(d=>(match.days||[]).includes(d));
-  if(!options.fromMap)setAddressLayerFocus(type,ctx,{vehicle:match.vehicle||'',vehicles,provider:company||'',days,source:'estimated-zone'});
-  const badge=document.getElementById(type+'Badge');
-  const estimated=match.zoneStatus==='estimated'||!!match.estimated;
-  const estimateMark=estimated?' (추정)':'';
-  if(match.contractLayer)badge.textContent=`오창산업단지 대행${estimateMark} · ${days.join('·')}`;
-  else if(company)badge.textContent=`대행권역${estimateMark} · ${days.join('·')}`;
-  else if(match.riGrouped)badge.textContent=`리 단위${estimateMark} · ${days.join('·')}`;
-  else if(match.zoneStatus==='manual')badge.textContent=`관리자권역 · ${days.join('·')}`;
-  else if(match.zoneStatus==='boundary')badge.textContent=`권역경계 · ${days.join('·')}`;
-  else badge.textContent=`수거권역${estimateMark} · ${days.join('·')}`;
-  renderDays(type+'Days',days);
-  const ratioPct=estimated&&Number.isFinite(+match.neighborRatio)&&+match.neighborRatio>0?Math.round(+match.neighborRatio*100):0;
-  const status=match.zoneStatus==='manual'?'관리자가 직접 지정한 수거권역':(estimated?`확정 수거노선 밖 자동 추정권역 (추정)${ratioPct?` · 경계 우세비율 약 ${ratioPct}%`:''}`:(match.routeBuffer?'법정리 안 수거노선 20m 권역':(match.riGrouped?'법정리 전체를 하나로 묶은 수거권역':(match.zoneStatus==='boundary'?'자동 수거권역 경계부 — 담당자 확인 권장':'화면에 표시된 ① 수거권역 내부'))));
-  const place=[ctx?.legalEmd||ctx?.district,ctx?.legalRi].filter(Boolean).join(' ');const apartmentNotice=type==='recycle'?'<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.':'';
-  const phone=company?(CONTRACT_OPERATOR_INFO[company]?.phone||''):'';
-  const vehicleText=vehicles.length>1?vehicles.map(routeDisplayLabel).join(' / '):(vehicles.length?routeDisplayLabel(vehicles[0]):'담당 확인');
-  const body=company
-    ? `<strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${escapeHtml(company)}${phone?' · '+phone:''}${plate?`<br><strong>차량:</strong> ${escapeHtml(plate)}`:''}<br><strong>수거일${estimateMark}:</strong> ${days.join(' · ')||'요일 확인 필요'}`
-    : `<strong>수거방식:</strong> 청원구 직영<br><strong>담당:</strong> ${escapeHtml(vehicleText)}<br><strong>수거일${estimateMark}:</strong> ${days.join(' · ')||'요일 확인 필요'}`;
-  const basis=estimated
-    ? `실제 표시 수거노선 20m 이내의 확정구간은 추정권역에서 제외했습니다. 남은 빈 구간만 주변 원본 수거노선과 경계 점유비율을 이용해 편입한 값입니다${ratioPct?`(경계 우세비율 약 ${ratioPct}%)`:''}.`
-    : (match.contractLayer?'오창산업단지 대행업체 구간을 별도 색상으로 구분하고, 최신 제일환경 원본노선의 요일을 리 단위로 묶었습니다.':(match.routeBuffer?'내수·북이는 리 단위 구분을 유지하되 실제 일정은 표시 수거노선 20m 이내에서만 인정합니다.':(match.riGrouped?'오창읍은 법정리 1개를 ① 수거권역 1개로 표시합니다.':`${company?'대행업체 원본 차량×요일 노선':'직영 원본 차량×요일 노선'}을 기준으로 만든 ① 수거권역과 주소를 매칭했습니다.`)));
-  document.getElementById(type+'Detail').innerHTML=`<div class="${(match.zoneStatus==='boundary'||estimated)?'pending':'verified'}">${place?`<strong>판정지역:</strong> ${escapeHtml(place)}<br>`:''}${body}${company&&type==='general'?contractorIncombustibleSummary(ctx):''}<br><span style="color:#6b7280">※ ${basis} 현재 판정: ${status}.</span>${apartmentNotice}</div>`;
+const REVIEW_PUBLICATION_URL='cjwaste-test/data/reviewed-service-zones-v1.json';
+let publishedReviewLoad=null;
+async function loadPublishedReviewZones(){
+  if(publishedReviewLoad)return publishedReviewLoad;
+  publishedReviewLoad=(async()=>{
+    try{
+      const r=await fetch(REVIEW_PUBLICATION_URL,{cache:'no-cache'});if(!r.ok)throw Error('공통권역 읽기 실패');
+      const data=await r.json();
+      const zones=(data.zones||[]).filter(z=>validReviewZone(z)&&z.reviewedAt&&z.source);
+      PUBLISHED_SERVICE_ZONES.splice(0,PUBLISHED_SERVICE_ZONES.length,...zones.map(z=>({...z,published:true})));
+      displayPartitionCache=null;
+      if(activeLayer==='general'||activeLayer==='recycle')scheduleVisibleServiceZoneMaterialization(activeLayer);
+      return data;
+    }catch(e){console.warn('공통 확인권역 로드 실패',e);return null;}
+  })();return publishedReviewLoad;
 }
+function validReviewZone(z){
+  return !!z&&['general','recycle'].includes(z.type)&&Array.isArray(z.points)&&z.points.length>=3&&
+    z.points.every(p=>Number.isFinite(+p.lat)&&Number.isFinite(+p.lng)&&+p.lat>=36.4&&+p.lat<=37&&+p.lng>=127.2&&+p.lng<=127.8)&&
+    Array.isArray(z.days)&&z.days.length>0&&z.days.every(d=>DAYS.includes(d));
+}
+function renderReviewedSchedule(type,match,ctx,options={}){
+  const district=serviceDistrictForContext(ctx);
+  const known=!!match&&(match.days||[]).length>0;
+  const basis=match?.matchBasis||'';
+  const confirmed=['user-address','user-inheritance','published-zone'].includes(basis);
+  const sourceExact=basis==='source-address';
+  const label=!known?'일정 확인 필요':confirmed?'확인된 일정':sourceExact?'원자료 주소 일치':basis==='manual-zone'?'개인 수정안':match.ambiguous?'경계 확인 필요':'추정 일정';
+  const days=known?DAYS.filter(d=>match.days.includes(d)):[];
+  const company=known?(match.provider||routeCompany(match.vehicle)):'';
+  const owner=known?(company?company+' · '+routePlate(match.vehicle):routeDisplayLabel(match.vehicle)):'담당 확인 필요';
+  const evidence=!known?'가까운 세부 수거근거가 부족해 주변 권역의 일정을 확대 적용하지 않았습니다.'
+    :basis==='user-address'?'사용자가 확인한 해당 번지의 차량·요일'
+    :basis==='user-inheritance'?`사용자 지정: ${escapeHtml(match.inheritedFrom||'지정 지역')} 일정 상속`
+    :basis==='published-zone'?escapeHtml(match.source||'게시된 확인권역')
+    :sourceExact?`원자료의 주소·본번·부번 일치: ${escapeHtml(match.address||ctx.address||'')}`
+    :basis==='manual-zone'?escapeHtml(match.note||'이 브라우저에서 수정한 미게시 권역')
+    :`코스표 ${match.evidenceKind==='point'?'시설·마을 근거점':'도로 노선'} 기준${Number.isFinite(match.distanceKm)?' · 약 '+Math.round(match.distanceKm*1000)+'m':''}`;
+  const sourceDate=match?.reviewedAt?escapeHtml(match.reviewedAt):'현장 확인일 미등록 · 원자료 기반';
+  const note=confirmed?'':sourceExact?'코스표에 기재된 주소 기준이며, 휴일·임시 변경은 별도 확인이 필요합니다.':
+    '실제 수거 확인이나 공식 확정 경계가 아닙니다. 노선 20m 이내도 코스표 기반 추정이며 이동구간일 수 있습니다.';
+  document.getElementById(type+'Badge').textContent=label+(days.length?' · '+days.join('·'):'');
+  renderDays(type+'Days',days);
+  document.getElementById(type+'Detail').innerHTML=`<div class="${confirmed||sourceExact?'verified':'pending'}"><strong>수거요일:</strong> ${days.join(' · ')||'확인 필요'}<br><strong>담당:</strong> ${escapeHtml(owner)}<br><strong>판정:</strong> ${label}<br><strong>근거:</strong> ${evidence}<br><strong>자료·확인일:</strong> ${sourceDate}${note?'<br><span style="color:#6b7280">※ '+note+'</span>':''}${district==='오창읍'&&company?'<br>※ 산단 공식 대행경계 확인 전의 노선 근거 판정입니다.':''}${type==='recycle'?'<br>※ 공동주택 자체 위탁계약 일정은 별도 확인해주세요.':''}</div>`;
+  if(!options.fromMap){
+    // 결과 때문에 주변 다른 담당 구간을 숨기지 않습니다.
+    selectedVehicle[type]='전체';preferredRouteVehicle[type]=match?.vehicle||'';
+    if(known)setAddressLayerFocus(type,ctx,{...match,source:basis||'local-evidence'});else clearAddressLayerFocus(type);
+  }
+}
+function reviewPolygonTooltip(type,meta,event){
+  const lat=event.latLng.getLat(),lng=event.latLng.getLng();
+  const ctx={district:meta.district,lat,lng};
+  const match=serviceZoneOverlayMatch(type,ctx);
+  const detail=match?`${routeDisplayLabel(match.vehicle)} · ${(match.days||[]).join('·')} · ${match.matchBasis==='manual-zone'?'개인 수정안':match.matchBasis==='source-address'?'원자료 주소 일치':match.estimated?'추정':'사용자 확인'}`:'일정 확인 필요 · 세부 근거 부족';
+  showZoneTooltip(event.latLng,meta.district||'',detail,'주소 검색과 같은 위치별 판정 · 대표 색상 경계는 단순화 표시');
+}
+const REVIEW_HISTORY_KEY='cjwaste-review-history-v1';
+function saveReviewedDrafts(){
+  const before=localStorage.getItem(ADMIN_ZONE_STORAGE_KEY)||'[]';
+  let history=[];try{history=JSON.parse(localStorage.getItem(REVIEW_HISTORY_KEY)||'[]')}catch(e){}
+  const next=JSON.stringify(manualServiceZones);
+  if(before!==next){history.push({savedAt:new Date().toISOString(),zones:JSON.parse(before)});localStorage.setItem(REVIEW_HISTORY_KEY,JSON.stringify(history.slice(-20)));}
+  localStorage.setItem(ADMIN_ZONE_STORAGE_KEY,next);updateAdminStatus();
+}
+function undoReviewedDraft(){
+  let history=[];try{history=JSON.parse(localStorage.getItem(REVIEW_HISTORY_KEY)||'[]')}catch(e){}
+  const previous=history.pop();if(!previous){updateAdminStatus('복원할 이전 수정안이 없습니다.');return;}
+  manualServiceZones=previous.zones;localStorage.setItem(ADMIN_ZONE_STORAGE_KEY,JSON.stringify(manualServiceZones));
+  localStorage.setItem(REVIEW_HISTORY_KEY,JSON.stringify(history));displayPartitionCache=null;
+  for(const type of ['general','recycle'])rebuildManualZoneOverlays(type);
+  updateAdminStatus('이전 개인 수정안으로 복원했습니다. 공통 게시본은 변경되지 않습니다.');
+}
+
+function renderServiceZoneSchedule(type,match,ctx,options={}){renderReviewedSchedule(type,match,ctx,options)}
 function loadManualZones(){
   try{const raw=localStorage.getItem(ADMIN_ZONE_STORAGE_KEY);manualServiceZones=raw?JSON.parse(raw):[];if(!Array.isArray(manualServiceZones))manualServiceZones=[]}catch(e){manualServiceZones=[]}
 }
-function saveManualZones(){localStorage.setItem(ADMIN_ZONE_STORAGE_KEY,JSON.stringify(manualServiceZones));updateAdminStatus()}
+function saveManualZones(){saveReviewedDrafts()}
 function removeManualZoneOverlays(type){
   const keep=[];for(const z of serviceZoneOverlays[type]){if(z.manual){z.polygon?.setMap(null)}else keep.push(z)}serviceZoneOverlays[type]=keep;
 }
@@ -5600,6 +5602,7 @@ document.getElementById('adminDraw').addEventListener('click',startAdminDrawing)
 document.getElementById('adminFinish').addEventListener('click',finishAdminDrawing);
 document.getElementById('adminCancel').addEventListener('click',clearAdminDraft);
 document.getElementById('adminRebuild').addEventListener('click',async()=>{for(const t of ['general','recycle']){clearServiceZoneOverlays(t);serviceZoneBuilt[t]=false;serviceZoneCacheHydrated[t]=false;await deleteCachedServiceZones(t)}await buildServiceZones(activeLayer);setLayer(activeLayer);updateAdminStatus('자동권역을 다시 계산해 저장했습니다.')});
+document.getElementById('adminUndo').addEventListener('click',undoReviewedDraft);
 document.getElementById('adminExport').addEventListener('click',exportAdminZones);
 document.getElementById('adminImport').addEventListener('click',()=>document.getElementById('adminImportFile').click());
 document.getElementById('adminImportFile').addEventListener('change',e=>{if(e.target.files?.[0])importAdminZones(e.target.files[0]);e.target.value=''});

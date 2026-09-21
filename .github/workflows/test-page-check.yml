@@ -80,6 +80,8 @@ jobs:
         run: |
           set -euo pipefail
           curl -fsSL --retry 3 https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/emd.json -o /tmp/emd.json
+          curl -fsSL --retry 3 https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json -o /tmp/cjwaste-ri.json
           python3 -m pip install shapely==2.1.2
+          node tools/test_reviewed_schedule.cjs
           node tools/test_disjoint_display.cjs /tmp/emd.json /tmp/disjoint-display.json
           python3 tools/validate_disjoint_display.py /tmp/emd.json /tmp/disjoint-display.json
