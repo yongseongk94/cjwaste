@@ -54,6 +54,24 @@ jobs:
               raise SystemExit('confirmed schedule regression missing: '+', '.join(missing))
           print('confirmed schedule regression rules: OK')
           PY
+      - name: Check production Dowon Monday override
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          required={
+              '도원리 생활 월요일 강제규칙': "'내수읍|도원리':{",
+              '도원리 월요일 차량': "vehicle:'6138'",
+              '도원리 레이어 월요일 정규화': "productionOverride:'naesu-dowon-general-monday'",
+              '도원리 주소 우선판정': "forcedRiScheduleOverride(type,ctx)",
+              '도원리 캐시 갱신': "prod-district-v3-dowon-monday",
+          }
+          missing=[name for name,needle in required.items() if needle not in s]
+          if missing:
+              raise SystemExit('missing production Dowon override: '+', '.join(missing))
+          print('production Dowon general Monday override: OK')
+          PY
       - name: Check production service-zone version consistency
         shell: bash
         run: |
