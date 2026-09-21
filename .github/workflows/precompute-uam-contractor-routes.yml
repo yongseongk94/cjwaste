@@ -24,7 +24,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 180); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?uam_route_precompute_check=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v1'" /tmp/test-live.html; then
+              && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v2-boundary-ready'" /tmp/test-live.html; then
               echo 'Address-first test page deployed'
               exit 0
             fi
@@ -65,6 +65,8 @@ jobs:
 
             const result=await page.evaluate(async()=>{
               const district='우암동';
+              await ensureTestAdminBoundaryLoad();
+              if(!districtFeatureMap.get(district))throw new Error('Uam district boundary not loaded');
               const all=allDongRouteSpecs().filter(s=>
                 (s.type==='general'||s.type==='recycle') &&
                 (s.districts||[]).map(canonicalDistrict).includes(district) &&
