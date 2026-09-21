@@ -1878,7 +1878,9 @@ function resultMapVisible(){
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
-  const box=currentMapBoundsBox(.10),c=map?.getCenter?.();
+  // 화면 전체가 아니라 중앙 작업타일(가로·세로 약 36%)만 Polygon으로 만듭니다.
+  // 주소 판정은 raw JSON 전체를 사용하므로 화면 가장자리 미생성 영역도 일정 정확도에는 영향이 없습니다.
+  const box=currentMapBoundsBox(-.32),c=map?.getCenter?.();
   const center=c?{lat:c.getLat(),lng:c.getLng()}:null;
   const candidates=[];
   for(const zones of rawServiceZones[type].values()){
@@ -4138,12 +4140,14 @@ async function buildServiceZones(type){
 
 function syncServiceZoneVisibility(type,forceRedraw=false){
   const provider=selectedVehicle[type]||'전체',day=activeDay||'전체';
+  const renderBox=resultMapVisible()?currentMapBoundsBox(-.32):null;
   for(const t of ['general','recycle']){
     for(const z of (serviceZoneOverlays[t]||[])){
       const zoneVehicles=(z.vehicles||[]).length?z.vehicles:[z.vehicle];
       const providerOk=provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
       const dayOk=day==='전체'||(z.days||[]).includes(day);
-      const visible=t===type&&activeLayer===type&&serviceLayerState.zone&&providerOk&&dayOk;
+      const viewportOk=z.manual||!z.fromBundle||!renderBox||rawZoneIntersectsBox(z,renderBox);
+      const visible=t===type&&activeLayer===type&&serviceLayerState.zone&&providerOk&&dayOk&&viewportOk;
       if(!visible){if(z.polygon?.getMap())z.polygon.setMap(null);continue}
       const contract=!!z.contractLayer;
       const color=z.manual?'#0f172a':(z.ambiguous?'#94a3b8':(contract?OCHANG_CONTRACT_COLOR:(day!=='전체'?(DAY_COLORS[day]||'#64748b'):serviceZoneColor(z.days,type))));
