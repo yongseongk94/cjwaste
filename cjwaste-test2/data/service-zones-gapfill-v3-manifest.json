@@ -6,7 +6,7 @@
     "general": [
       {
         "district": "우암동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/uam.json",
+        "path": "data/zones-gapfill-v3/general/uam.json",
         "count": 545,
         "bbox": {
           "minLat": 36.6447,
@@ -17,7 +17,7 @@
       },
       {
         "district": "내덕1동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/naedeok1.json",
+        "path": "data/zones-gapfill-v3/general/naedeok1.json",
         "count": 26,
         "bbox": {
           "minLat": 36.6524,
@@ -28,7 +28,7 @@
       },
       {
         "district": "내덕2동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/naedeok2.json",
+        "path": "data/zones-gapfill-v3/general/naedeok2.json",
         "count": 22,
         "bbox": {
           "minLat": 36.6524,
@@ -39,7 +39,7 @@
       },
       {
         "district": "오근장동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/ogeunjang.json",
+        "path": "data/zones-gapfill-v3/general/ogeunjang.json",
         "count": 268,
         "bbox": {
           "minLat": 36.6693,
@@ -50,7 +50,7 @@
       },
       {
         "district": "율량사천동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/yullyang-sacheon.json",
+        "path": "data/zones-gapfill-v3/general/yullyang-sacheon.json",
         "count": 161,
         "bbox": {
           "minLat": 36.6501,
@@ -61,7 +61,7 @@
       },
       {
         "district": "오창읍",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/ochang.json",
+        "path": "data/zones-gapfill-v3/general/ochang.json",
         "count": 1076,
         "bbox": {
           "minLat": 36.6841,
@@ -72,7 +72,7 @@
       },
       {
         "district": "내수읍",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/naesu.json",
+        "path": "data/zones-gapfill-v3/general/naesu.json",
         "count": 672,
         "bbox": {
           "minLat": 36.6661,
@@ -83,7 +83,7 @@
       },
       {
         "district": "북이면",
-        "path": "cjwaste-test/data/zones-gapfill-v3/general/bugi.json",
+        "path": "data/zones-gapfill-v3/general/bugi.json",
         "count": 554,
         "bbox": {
           "minLat": 36.7141,
@@ -96,7 +96,7 @@
     "recycle": [
       {
         "district": "우암동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/uam.json",
+        "path": "data/zones-gapfill-v3/recycle/uam.json",
         "count": 492,
         "bbox": {
           "minLat": 36.6447,
@@ -107,7 +107,7 @@
       },
       {
         "district": "내덕1동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/naedeok1.json",
+        "path": "data/zones-gapfill-v3/recycle/naedeok1.json",
         "count": 26,
         "bbox": {
           "minLat": 36.6524,
@@ -118,7 +118,7 @@
       },
       {
         "district": "내덕2동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/naedeok2.json",
+        "path": "data/zones-gapfill-v3/recycle/naedeok2.json",
         "count": 27,
         "bbox": {
           "minLat": 36.6524,
@@ -129,7 +129,7 @@
       },
       {
         "district": "오근장동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/ogeunjang.json",
+        "path": "data/zones-gapfill-v3/recycle/ogeunjang.json",
         "count": 246,
         "bbox": {
           "minLat": 36.6693,
@@ -140,7 +140,7 @@
       },
       {
         "district": "율량사천동",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/yullyang-sacheon.json",
+        "path": "data/zones-gapfill-v3/recycle/yullyang-sacheon.json",
         "count": 181,
         "bbox": {
           "minLat": 36.6501,
@@ -151,7 +151,7 @@
       },
       {
         "district": "오창읍",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/ochang.json",
+        "path": "data/zones-gapfill-v3/recycle/ochang.json",
         "count": 988,
         "bbox": {
           "minLat": 36.6841,
@@ -162,7 +162,7 @@
       },
       {
         "district": "내수읍",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/naesu.json",
+        "path": "data/zones-gapfill-v3/recycle/naesu.json",
         "count": 625,
         "bbox": {
           "minLat": 36.6661,
@@ -173,7 +173,7 @@
       },
       {
         "district": "북이면",
-        "path": "cjwaste-test/data/zones-gapfill-v3/recycle/bugi.json",
+        "path": "data/zones-gapfill-v3/recycle/bugi.json",
         "count": 573,
         "bbox": {
           "minLat": 36.7141,
