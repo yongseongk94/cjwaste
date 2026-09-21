@@ -1544,7 +1544,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='schedule-map-v1';
+const TEST_ZONE_RENDER_MODE='schedule-map-v2-detailed';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1968,9 +1968,9 @@ function resultMapVisible(){
   const landing=document.getElementById('landing');
   return !!landing&&landing.classList.contains('hidden');
 }
-const COARSE_ZONE_LAT_STEP=.00225;  // 약 250m
-const COARSE_ZONE_LNG_STEP=.00285; // 청주 위도 기준 약 250m
-const COARSE_ZONE_MAX_POLYGONS=36;
+const COARSE_ZONE_LAT_STEP=.00115;  // 약 128m
+const COARSE_ZONE_LNG_STEP=.00148; // 청주 위도 기준 약 130m
+const COARSE_ZONE_MAX_POLYGONS=120;
 function coarseZoneSignature(z){
   const vehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean).slice().sort();
   const days=DAYS.filter(d=>(z?.days||[]).includes(d));
@@ -1985,6 +1985,12 @@ function rawZoneCenterPoint(z){
 }
 function scheduleDisplaySignature(z){
   return DAYS.filter(d=>(z?.days||[]).includes(d)).join('·');
+}
+function assignmentDisplaySignature(z){
+  const provider=String(z?.provider||routeCompany(z?.vehicle)||'').trim();
+  const vehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle])
+    .filter(Boolean).map(v=>String(routePlate(v)||v).trim()).sort();
+  return [provider,vehicles.join(','),scheduleDisplaySignature(z)].join('|');
 }
 function nearestScheduleDisplayZone(type,district,lat,lng){
   const zones=rawServiceZonesForDistrict(type,district).filter(z=>{
@@ -2020,7 +2026,7 @@ function mergeScheduleDisplayCells(cells){
     for(const cell of row){
       if(!run||run.sig!==cell.sig||cell.ix!==run.x1+1){
         if(run)runs.push(run);
-        run={iy0:iy,iy1:iy,x0:cell.ix,x1:cell.ix,sig:cell.sig,rep:cell.rep,addressFocus:!!cell.addressFocus,district:cell.district,count:1};
+        run={iy0:iy,iy1:iy,x0:cell.ix,x1:cell.ix,sig:cell.sig,scheduleSig:cell.scheduleSig,rep:cell.rep,addressFocus:!!cell.addressFocus,district:cell.district,count:1};
       }else{
         run.x1=cell.ix;
         run.count++;
@@ -2100,9 +2106,10 @@ function coarseDisplayZones(type){
           addressFocus=true;
         }
 
-        const sig=scheduleDisplaySignature(rep);
-        if(!sig)continue;
-        cells.push({district,iy,ix,sig,rep,addressFocus});
+        const scheduleSig=scheduleDisplaySignature(rep);
+        if(!scheduleSig)continue;
+        const sig=assignmentDisplaySignature(rep);
+        cells.push({district,iy,ix,sig,scheduleSig,rep,addressFocus});
       }
     }
   }
@@ -2129,6 +2136,8 @@ function coarseDisplayZones(type){
       coarseMembers:m.count,
       coarseMixed:false,
       coarseKey:m.district+'|'+m.sig+'|'+m.iy0+'-'+m.iy1+'|'+m.x0+'-'+m.x1,
+      assignmentKey:m.sig,
+      scheduleSignature:m.scheduleSig||scheduleDisplaySignature(m.rep),
       addressFocus:!!m.addressFocus
     };
   });
@@ -4170,9 +4179,11 @@ function addServiceZonePolygon(type,points,meta={}){
     : normalizedDisplayRings[0].map(p=>new kakao.maps.LatLng(p.lat,p.lng));
   const polygon=new kakao.maps.Polygon({
     path:polygonPath,
-    strokeWeight:meta.addressFocus?2:((meta.displayOnly||meta.gridMerged)?0:meta.manual?2:(contract?2:(rural?1:0))),strokeColor:meta.manual?'#111827':color,strokeOpacity:meta.addressFocus?.9:((meta.displayOnly||meta.gridMerged)?0:meta.manual?.95:(contract?.86:(rural?.42:0))),
+    strokeWeight:meta.addressFocus?2.5:(meta.displaySchedule?1:((meta.displayOnly||meta.gridMerged)?0:meta.manual?2:(contract?2:(rural?1:0)))),
+    strokeColor:meta.manual?'#111827':(meta.displaySchedule?'#334155':color),
+    strokeOpacity:meta.addressFocus?.95:(meta.displaySchedule?.55:((meta.displayOnly||meta.gridMerged)?0:meta.manual?.95:(contract?.86:(rural?.42:0)))),
     fillColor:color,fillOpacity:baseFill,
-    zIndex:meta.displayBase?1:(meta.addressFocus?4:(meta.displayOnly?2:3))
+    zIndex:meta.displayBase?1:(meta.addressFocus?4:(meta.displaySchedule?3:(meta.displayOnly?2:3)))
   });
   polygon.setMap(null);
   const exactRings=(Array.isArray(meta.hitRings)&&meta.hitRings.length?meta.hitRings:normalizedDisplayRings).map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -4183,12 +4194,14 @@ function addServiceZonePolygon(type,points,meta={}){
     const detail=meta.displayBase
       ?'수거일정 표시의 빈틈을 막기 위한 읍면동 기본 추정권역'
       :(meta.displayOnly
-      ?(meta.displaySchedule?'요일별 단순화 추정권역':'큰 범위로 단순화한 대표 추정권역')
+      ?(meta.displaySchedule
+        ?((meta.provider?meta.provider+' · ':'')+routeDisplayLabel(meta.vehicle||'담당')+' · '+scheduleDisplaySignature(meta))
+        :'큰 범위로 단순화한 대표 추정권역')
       :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`)));
     const basis=meta.displayBase
       ?'읍면동 행정경계 전체 기본표시 · 일정 판정에는 사용하지 않음'
       :(meta.displayOnly
-      ?`약 250m 격자에서 가장 가까운 정밀 수거권역의 요일을 상속하고 같은 요일 셀을 병합한 표시 · 실제 주소 일정은 정밀권역/20m 노선으로 별도 판정`
+      ?`약 130m 격자에서 가장 가까운 정밀 수거권역의 업체·차량·요일을 상속하고 동일 담당 셀만 병합한 표시 · 실제 주소 일정은 정밀권역/20m 노선으로 별도 판정`
       :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할')))));
     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
   });
@@ -4197,6 +4210,12 @@ function addServiceZonePolygon(type,points,meta={}){
   kakao.maps.event.addListener(polygon,'click',()=>{
     if(meta.displayBase){
       updateMapBadge((meta.district||'')+' · 기본 추정권역 · 실제 일정은 주소 검색 결과 기준');
+      return;
+    }
+    if(meta.displaySchedule){
+      const vehicleLabel=routeDisplayLabel(meta.vehicle||'담당');
+      const providerLabel=meta.provider||routeCompany(meta.vehicle)||'';
+      updateMapBadge((meta.district||'')+' · '+scheduleDisplaySignature(meta)+' · '+(providerLabel?providerLabel+' · ':'')+vehicleLabel+' · 세부 추정권역');
       return;
     }
     if(meta.displayOnly){
@@ -4779,8 +4798,8 @@ function updateMapBadge(custom){
   const focus=addressLayerFocus[activeLayer];
   const focusText=focus?`검색주소 · ${focus.days.join('·')}`:'';
   const text=custom||(focus
-    ?`검색주소 일정은 <strong>${focus.days.join('·')}</strong>입니다. 지도 전체는 실제 정밀권역을 단순화한 요일별 추정권역이며, 검색주소 권역은 진하게 표시합니다.`
-    :`표시: <strong>${state||'없음'}</strong> · 색상별로 추정 수거요일을 구분합니다. 실제 주소 판정은 수거노선 20m 이내를 우선 적용합니다.`);
+    ?`검색주소 일정은 <strong>${focus.days.join('·')}</strong>입니다. 지도 전체는 실제 정밀권역을 약 130m 단위로 단순화한 업체·차량·요일별 추정권역이며, 검색주소 권역은 진하게 표시합니다.`
+    :`표시: <strong>${state||'없음'}</strong> · 색상은 수거요일을 나타내고, 얇은 경계선은 업체·차량 담당권역의 변화도 구분합니다. 실제 주소 판정은 수거노선 20m 이내를 우선 적용합니다.`);
   el.innerHTML=`<strong>${labels[activeLayer]} · ${focusText||providerLabel+' · '+dayLabel}</strong><span>${text}</span>${scheduleLegendHtml(activeLayer)}`;
 }
 function escapeHtml(value){
