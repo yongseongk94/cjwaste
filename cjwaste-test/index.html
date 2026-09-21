@@ -1490,7 +1490,7 @@ const serviceZoneOverlays={general:[],recycle:[]};
 const rawServiceZones={general:new Map(),recycle:new Map()};
 const rawServiceZoneKeys={general:new Map(),recycle:new Map()};
 const serviceZoneMaterializeScheduled={general:false,recycle:false};
-const TEST_ZONE_RENDER_MODE='coarse-display-v1';
+const TEST_ZONE_RENDER_MODE='coarse-cover-v2';
 const serviceZoneBuildPromises=new Map();
 const serviceZoneBuilt={general:false,recycle:false};
 const serviceZoneRegions=[];
@@ -1914,9 +1914,9 @@ function resultMapVisible(){
   const landing=document.getElementById('landing');
   return !!landing&&landing.classList.contains('hidden');
 }
-const COARSE_ZONE_LAT_STEP=.00155;  // 약 170m
-const COARSE_ZONE_LNG_STEP=.00195; // 청주 위도 기준 약 170m
-const COARSE_ZONE_MAX_POLYGONS=28;
+const COARSE_ZONE_LAT_STEP=.00225;  // 약 250m
+const COARSE_ZONE_LNG_STEP=.00285; // 청주 위도 기준 약 250m
+const COARSE_ZONE_MAX_POLYGONS=24;
 function coarseZoneSignature(z){
   const vehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean).slice().sort();
   const days=DAYS.filter(d=>(z?.days||[]).includes(d));
@@ -1960,10 +1960,12 @@ function coarseDisplayZones(type){
     const ranked=[...t.signatures.values()].sort((a,b)=>b.count-a.count);
     const rep=ranked[0]?.zone;if(!rep)continue;
     const mixed=ranked.length>1;
-    const lat0=Math.max(t.minLat,t.iy*COARSE_ZONE_LAT_STEP);
-    const lat1=Math.min(t.maxLat,(t.iy+1)*COARSE_ZONE_LAT_STEP);
-    const lng0=Math.max(t.minLng,t.ix*COARSE_ZONE_LNG_STEP);
-    const lng1=Math.min(t.maxLng,(t.ix+1)*COARSE_ZONE_LNG_STEP);
+    // 표시용 레이어는 raw 셀의 작은 bbox가 아니라 대표 타일 전체를 채웁니다.
+    // 20m 확정노선 주변의 빈틈도 시각적으로 이어져 보이지만 실제 일정 판정에는 사용하지 않습니다.
+    const lat0=t.iy*COARSE_ZONE_LAT_STEP;
+    const lat1=(t.iy+1)*COARSE_ZONE_LAT_STEP;
+    const lng0=t.ix*COARSE_ZONE_LNG_STEP;
+    const lng1=(t.ix+1)*COARSE_ZONE_LNG_STEP;
     if(!(lat1>lat0&&lng1>lng0))continue;
     const points=[
       {lat:lat0,lng:lng0},{lat:lat0,lng:lng1},
@@ -1972,11 +1974,13 @@ function coarseDisplayZones(type){
     out.push({
       ...rep,points,rings:[points],hitRings:[points],
       district:t.district,automatic:true,fromBundle:true,
-      displayOnly:true,coarseDisplay:true,gridMerged:false,
-      ambiguous:mixed,estimated:true,
-      vehicle:mixed?'':rep.vehicle,vehicles:mixed?[]:[...(rep.vehicles||[])],
-      provider:mixed?'':(rep.provider||routeCompany(rep.vehicle)),
-      days:mixed?[]:[...(rep.days||[])],
+      displayOnly:true,coarseDisplay:true,coarseCover:true,gridMerged:true,
+      ambiguous:false,estimated:true,
+      // 혼합 타일도 가장 많이 포함된 대표 일정의 색으로 표시합니다.
+      // 실제 주소 일정은 정밀 raw 권역으로 별도 판정하므로 이 값은 시각화 전용입니다.
+      vehicle:rep.vehicle,vehicles:[...(rep.vehicles||[])],
+      provider:rep.provider||routeCompany(rep.vehicle),
+      days:[...(rep.days||[])],
       coarseMembers:t.count,
       coarseMixed:mixed,
       coarseKey:t.key
@@ -1989,7 +1993,7 @@ function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
-  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 약 170m 대표권역만 최대 28개 표시합니다.
+  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 약 250m 대표권역만 최대 24개 표시합니다.
   // 기존 자동 표시 폴리곤은 제거해 지도 이동 중 객체가 누적되지 않도록 합니다.
   const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
   for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
@@ -3975,7 +3979,7 @@ function addServiceZonePolygon(type,points,meta={}){
   const buffer=!!meta.routeBuffer;
   const color=meta.ambiguous?'#94a3b8':(meta.manual?'#0f172a':(contract?OCHANG_CONTRACT_COLOR:serviceZoneColor(meta.days||[],type)));
   const rural=!!meta.rural;
-  const baseFill=meta.displayOnly?.13:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22))))));
+  const baseFill=meta.displayOnly?.19:(outline?.035:(meta.manual?.28:(meta.ambiguous?.18:(contract?.36:(buffer?.24:(rural?.30:.22))))));
   const displayRings=(Array.isArray(meta.rings)&&meta.rings.length?meta.rings:[points]).filter(r=>Array.isArray(r)&&r.length>=3);
   if(!displayRings.length)return null;
   const normalizedDisplayRings=displayRings.map(r=>r.map(p=>({lat:+p.lat,lng:+p.lng})));
@@ -3984,7 +3988,7 @@ function addServiceZonePolygon(type,points,meta={}){
     : normalizedDisplayRings[0].map(p=>new kakao.maps.LatLng(p.lat,p.lng));
   const polygon=new kakao.maps.Polygon({
     path:polygonPath,
-    strokeWeight:meta.gridMerged?0:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:meta.gridMerged?0:meta.manual?.95:(contract?.86:(rural?.42:0)),
+    strokeWeight:(meta.displayOnly||meta.gridMerged)?0:meta.manual?2:(contract?2:(rural?1:0)),strokeColor:meta.manual?'#111827':color,strokeOpacity:(meta.displayOnly||meta.gridMerged)?0:meta.manual?.95:(contract?.86:(rural?.42:0)),
     fillColor:color,fillOpacity:baseFill
   });
   polygon.setMap(null);
@@ -3994,10 +3998,10 @@ function addServiceZonePolygon(type,points,meta={}){
     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
     const ratioText=meta.estimated&&Number.isFinite(+meta.neighborRatio)&&+meta.neighborRatio>0?` · 인접권역 ${Math.round(+meta.neighborRatio*100)}% 우세`:'';
     const detail=meta.displayOnly
-      ?(meta.coarseMixed?'단순화 표시용 혼합 추정권역':'단순화 표시용 대표 추정권역')
+      ?'큰 범위로 단순화한 대표 추정권역'
       :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`));
     const basis=meta.displayOnly
-      ?`지도 성능을 위한 약 170m 단순화 표시 · 실제 수거일정은 주소 검색 시 정밀권역으로 별도 판정`
+      ?`지도 성능을 위한 약 250m 단순화 표시 · 실제 수거일정은 주소 검색 시 정밀권역으로 별도 판정`
       :(meta.manual?'관리자 직접 지정':(meta.estimated?'확정 표시 수거노선 20m 범위를 제외한 빈 구간을 주변 원본 노선 기준으로 추정':(contract?'오창산업단지 대행업체 구간 · 리 단위 표시':(meta.riGrouped?'읍·면 법정리 1개 = 수거권역 1개':'원본 수거노선 최근접 분할'))));
     showZoneTooltip(e.latLng,`${meta.district||''}${meta.riName?' '+meta.riName:''}`,detail,basis);
   });
@@ -4352,7 +4356,7 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
       const zoneVehicles=(z.vehicles||[]).length?z.vehicles:[z.vehicle];
       const providerOk=provider==='전체'||zoneVehicles.some(v=>routeSelectedBy(provider,v))||provider===(z.provider||'');
       const dayOk=day==='전체'||(z.days||[]).includes(day);
-      const viewportOk=z.manual||!z.fromBundle||!renderBox||rawZoneIntersectsBox(z,renderBox);
+      const viewportOk=z.displayOnly||z.manual||!z.fromBundle||!renderBox||rawZoneIntersectsBox(z,renderBox);
       const visible=t===type&&activeLayer===type&&serviceLayerState.zone&&providerOk&&dayOk&&viewportOk;
       if(!visible){if(z.polygon?.getMap())z.polygon.setMap(null);continue}
       const contract=!!z.contractLayer;
