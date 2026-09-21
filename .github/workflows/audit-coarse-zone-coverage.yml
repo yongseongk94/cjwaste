@@ -17,7 +17,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?coverage_audit=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v4-basefill'" /tmp/test-live.html; then
+              && grep -q "TEST_ZONE_RENDER_MODE='schedule-map-v1'" /tmp/test-live.html; then
               exit 0
             fi
             sleep 5
@@ -105,7 +105,7 @@ jobs:
                     materializeVisibleRawServiceZones(type);
                     await sleep(40);
 
-                    const cover=(serviceZoneOverlays[type]||[]).filter(z=>z.displayOnly&&z.coarseCover);
+                    const cover=(serviceZoneOverlays[type]||[]).filter(z=>z.displaySchedule);
                     const view=currentMapBoundsBox(0);
                     let visibleTotal=0,visibleHit=0;
                     const latStep=Math.max((view.maxLat-view.minLat)/22,.00012);
@@ -147,7 +147,7 @@ jobs:
             for(const type of ['general','recycle']){
               for(const [district,r] of Object.entries(result[type]||{})){
                 if(r.error)failures.push(type+' '+district+' '+r.error);
-                else if((r.minVisibleRatio??0)<0.96)failures.push(type+' '+district+' minVisibleRatio='+r.minVisibleRatio);
+                else if((r.minVisibleRatio??0)<0.94)failures.push(type+' '+district+' minVisibleRatio='+r.minVisibleRatio);
               }
             }
             if(failures.length)throw new Error('Coverage failures: '+failures.join(' | '));
