@@ -1,0 +1,132 @@
+name: Audit coarse zone coverage all districts
+
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-coarse-zone-coverage.yml'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for current test page
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 120); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?coverage_audit=$RANDOM" -o /tmp/test-live.html \
+              && grep -q "TEST_ZONE_RENDER_MODE='coarse-cover-v3'" /tmp/test-live.html; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+      - name: Audit all general and recycle districts
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm init -y >/dev/null 2>&1
+          npm install puppeteer-core@24.16.0 >/dev/null 2>&1
+          CHROME_BIN=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)
+          test -n "$CHROME_BIN"
+          export CHROME_BIN
+          cat > audit.js <<'NODE'
+          const puppeteer=require('puppeteer-core');
+          (async()=>{
+            const browser=await puppeteer.launch({
+              headless:true,
+              executablePath:process.env.CHROME_BIN,
+              protocolTimeout:1200000,
+              args:['--no-sandbox','--disable-dev-shm-usage']
+            });
+            const page=await browser.newPage();
+            page.setDefaultTimeout(1200000);
+            page.on('pageerror',e=>console.error('PAGEERROR',e.message));
+            await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?coverage_audit='+Date.now(),{
+              waitUntil:'domcontentloaded',timeout:180000
+            });
+            await page.waitForFunction(()=>typeof map!=='undefined'&&!!map&&typeof ensureTestAdminBoundaryLoad==='function',{timeout:180000});
+
+            const result=await page.evaluate(async()=>{
+              document.getElementById('landing').classList.add('hidden');
+              map.relayout();
+              await ensureTestAdminBoundaryLoad();
+              const manifest=await loadServiceZoneManifest();
+              const districts=[...new Set([
+                ...(manifest?.types?.general||[]).map(e=>canonicalDistrict(e.district)),
+                ...(manifest?.types?.recycle||[]).map(e=>canonicalDistrict(e.district))
+              ])].filter(Boolean);
+              const results={general:{},recycle:{}};
+
+              const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+              for(const type of ['general','recycle']){
+                activeLayer=type;
+                selectedVehicle[type]='전체';
+                activeDay='전체';
+                serviceLayerState.zone=true;
+
+                for(const district of districts){
+                  const feature=districtFeatureMap.get(district);
+                  if(!feature){
+                    results[type][district]={error:'missing district feature'};
+                    continue;
+                  }
+                  await hydrateExternalBundledServiceZones(type,[district]);
+                  const raw=rawServiceZonesForDistrict(type,district);
+                  if(!raw.length){
+                    results[type][district]={error:'no raw zones'};
+                    continue;
+                  }
+                  const b=featureBounds(feature);
+                  map.setCenter(new kakao.maps.LatLng((b.minLat+b.maxLat)/2,(b.minLng+b.maxLng)/2));
+                  map.setLevel(4);
+                  map.relayout();
+                  await sleep(120);
+
+                  // Only keep this type's manual items; rebuild display from raw for current viewport.
+                  const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
+                  for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
+                  serviceZoneOverlays[type]=manual;
+                  materializeVisibleRawServiceZones(type);
+                  await sleep(60);
+
+                  const cover=(serviceZoneOverlays[type]||[]).filter(z=>z.displayOnly&&z.coarseCover);
+                  const view=currentMapBoundsBox(0);
+                  let total=0,hit=0,visibleTotal=0,visibleHit=0;
+                  for(const z of raw){
+                    const zb=rawZoneBounds(z);if(!zb)continue;
+                    const lat=(zb.minLat+zb.maxLat)/2,lng=(zb.minLng+zb.maxLng)/2;
+                    total++;
+                    const covered=cover.some(c=>pointInZonePolygon(lat,lng,c));
+                    if(covered)hit++;
+                    const visible=lat>=view.minLat&&lat<=view.maxLat&&lng>=view.minLng&&lng<=view.maxLng;
+                    if(visible){
+                      visibleTotal++;
+                      if(covered)visibleHit++;
+                    }
+                  }
+                  results[type][district]={
+                    raw:raw.length,
+                    polygons:cover.length,
+                    total,hit,ratio:total?hit/total:1,
+                    visibleTotal,visibleHit,visibleRatio:visibleTotal?visibleHit/visibleTotal:1
+                  };
+                }
+              }
+              return results;
+            });
+            console.log('COVERAGE_AUDIT '+JSON.stringify(result));
+            let failures=[];
+            for(const type of ['general','recycle']){
+              for(const [district,r] of Object.entries(result[type]||{})){
+                if(r.error)failures.push(type+' '+district+' '+r.error);
+                else if((r.visibleRatio??0)<0.96)failures.push(type+' '+district+' visibleRatio='+r.visibleRatio);
+              }
+            }
+            if(failures.length)throw new Error('Coverage failures: '+failures.join(' | '));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exit(1)});
+          NODE
+          node audit.js
