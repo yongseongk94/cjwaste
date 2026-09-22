@@ -1,0 +1,227 @@
+{
+  "startedAt": "2026-09-22T15:21:57Z",
+  "points": {
+    "오창1산단중앙": [
+      36.712,
+      127.43
+    ],
+    "오창2산단_81": [
+      36.730034575028,
+      127.44700275
+    ],
+    "오창2산단_167": [
+      36.735893087274,
+      127.45332092277
+    ],
+    "내수_저곡리": [
+      36.748,
+      127.535
+    ],
+    "북이_장양리": [
+      36.758,
+      127.545
+    ],
+    "우암동_중앙": [
+      36.6497,
+      127.487
+    ],
+    "율량사천동_중앙": [
+      36.6655,
+      127.4935
+    ]
+  },
+  "main": {
+    "errors": [],
+    "layers": {
+      "general": {
+        "오창1산단중앙": {
+          "raw": [],
+          "display": []
+        },
+        "오창2산단_81": {
+          "raw": [],
+          "display": []
+        },
+        "오창2산단_167": {
+          "raw": [],
+          "display": []
+        },
+        "내수_저곡리": {
+          "raw": [],
+          "display": []
+        },
+        "북이_장양리": {
+          "raw": [],
+          "display": []
+        },
+        "우암동_중앙": {
+          "raw": [
+            {
+              "district": "우암동",
+              "provider": "제일환경",
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "days": [
+                "월",
+                "수",
+                "금"
+              ],
+              "contract": false
+            }
+          ],
+          "display": []
+        },
+        "율량사천동_중앙": {
+          "raw": [],
+          "display": []
+        }
+      },
+      "recycle": {
+        "오창1산단중앙": {
+          "raw": [],
+          "display": []
+        },
+        "오창2산단_81": {
+          "raw": [],
+          "display": []
+        },
+        "오창2산단_167": {
+          "raw": [],
+          "display": []
+        },
+        "내수_저곡리": {
+          "raw": [],
+          "display": []
+        },
+        "북이_장양리": {
+          "raw": [],
+          "display": []
+        },
+        "우암동_중앙": {
+          "raw": [
+            {
+              "district": "우암동",
+              "provider": "제일환경",
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "days": [
+                "월",
+                "수",
+                "금"
+              ],
+              "contract": false
+            }
+          ],
+          "display": []
+        },
+        "율량사천동_중앙": {
+          "raw": [],
+          "display": []
+        }
+      }
+    }
+  },
+  "test2": {
+    "errors": [],
+    "layers": {
+      "general": {
+        "오창1산단중앙": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": true
+        },
+        "오창2산단_81": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": true
+        },
+        "오창2산단_167": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": true
+        },
+        "내수_저곡리": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        },
+        "북이_장양리": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        },
+        "우암동_중앙": {
+          "raw": [
+            {
+              "district": "우암동",
+              "provider": "제일환경",
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "days": [
+                "월",
+                "수",
+                "금"
+              ],
+              "contract": false
+            }
+          ],
+          "display": [
+            {
+              "district": "우암동",
+              "provider": "제일환경",
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "days": [
+                "월",
+                "수",
+                "금"
+              ],
+              "contract": false,
+              "displayOnly": true,
+              "legacy": false
+            }
+          ],
+          "insideOchangIndustrial": false
+        },
+        "율량사천동_중앙": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        }
+      },
+      "recycle": {
+        "오창1산단중앙": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": true
+        },
+        "오창2산단_81": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": true
+        },
+        "오창2산단_167": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": true
+        },
+        "내수_저곡리": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        },
+        "북이_장양리": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        },
+        "우암동_중앙": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        },
+        "율량사천동_중앙": {
+          "raw": [],
+          "display": [],
+          "insideOchangIndustrial": false
+        }
+      }
+    }
+  }
+}
