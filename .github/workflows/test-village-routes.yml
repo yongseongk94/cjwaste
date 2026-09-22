@@ -1,0 +1,26 @@
+name: Build test village facility routes
+on:
+  push:
+    paths:
+      - 'tools/village-routes/run.trigger'
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Match facilities and generate routes
+        run: |
+          npm install --no-save --package-lock=false puppeteer-core@24.16.0
+          export CHROME_BIN=$(command -v google-chrome || command -v chromium)
+          node tools/village-routes/generate.cjs
+      - name: Store generation results
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tools/village-routes/matches.json
+          git commit -m 'Record verified village facility matches for test routes'
+          git pull --rebase origin main
+          git push origin HEAD:main
