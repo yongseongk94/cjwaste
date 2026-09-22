@@ -3,6 +3,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 URL="https://yongseongk94.github.io/cjwaste/cjwaste-test2/"
+TARGET_VEHICLES={"3344","6138","6544","0262"}
 OUT=Path("cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json")
 REPORT=Path("tools/test2-rural-no-motorway-report.json")
 
@@ -21,7 +22,11 @@ async def main():
 
         result=await page.evaluate("""async () => {
           const rural=new Set(['오창읍','내수읍','북이면']);
-          const specs=allDongRouteSpecs().filter(s=>routeAllowedDistricts(s).some(d=>rural.has(canonicalDistrict(d))));
+          const target=new Set(['3344','6138','6544','0262']);
+          const specs=allDongRouteSpecs().filter(s=>
+            target.has(String(s.vehicle)) &&
+            routeAllowedDistricts(s).some(d=>rural.has(canonicalDistrict(d)))
+          );
           const built=[];
           const fallback=[];
           const failed=[];
@@ -39,6 +44,17 @@ async def main():
                   districts:routeAllowedDistricts(spec),
                   scopeSignature:routeScopeSignature(spec),
                   data:{...reusableRouteData(item),inferredMovementCount:0,motorwayExcluded:true}
+                };
+                rec.audit={
+                  segments:(rec.data.segments||[]).length,
+                  evidence:(rec.data.zoneEvidencePoints||[]).length,
+                  missingTerms:[...(rec.data.missingTerms||[])],
+                  outsideTerms:[...(rec.data.outsideTerms||[])],
+                  outOfCheongwonTerms:[...(rec.data.outOfCheongwonTerms||[])],
+                  requiredRoadTerms:[...(rec.data.requiredRoadTerms||[])],
+                  coveredRoadTerms:[...(rec.data.coveredRoadTerms||[])],
+                  missingRoadTerms:[...(rec.data.missingRoadTerms||[])],
+                  finalAuditInvalidCount:Number(rec.data.finalAuditInvalidCount)||0
                 };
                 built.push(rec);
                 if(item.fromBundle)fallback.push({type:spec.type,vehicle:spec.vehicle,day:spec.day,scope:routeScopeSignature(spec)});
@@ -64,6 +80,8 @@ async def main():
       "version":result.get("version"),
       "specCount":result.get("specCount"),
       "routeCount":len(result.get("routes") or []),
+      "expectedRouteCount":20,
+      "complete":len(result.get("routes") or [])==20 and len(result.get("failed") or [])==0,
       "fallbackCount":len(result.get("fallback") or []),
       "fallback":result.get("fallback") or [],
       "failedCount":len(result.get("failed") or []),
