@@ -1,0 +1,35 @@
+name: Audit TEST2 rural route restoration
+on:
+  push:
+    paths:
+      - 'tools/test2-rural-route-audit.trigger'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Audit rural routes
+        run: python tools/audit_test2_rural_routes.py
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/test2-rural-route-audit.trigger
+          test -f tools/test2-rural-route-audit-report.json || echo '{"fatal":"no report"}' > tools/test2-rural-route-audit-report.json
+          git add tools/test2-rural-route-audit-report.json tools/test2-rural-route-audit.trigger
+          git commit -m "Record TEST2 rural route audit" || true
+          git pull --rebase origin main
+          git push
