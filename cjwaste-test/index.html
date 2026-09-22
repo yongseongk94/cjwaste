@@ -2250,6 +2250,8 @@ function localScheduleAtPoint(type,ctx,{directOnly=false}={}){
   const limit=directOnly?.020:(rural?LOCAL_ESTIMATE_LIMIT_KM.rural:LOCAL_ESTIMATE_LIMIT_KM.urban);
   const p=geoPointKm(lat,lng),minX=Math.floor((p.x-limit)/index.grid),maxX=Math.floor((p.x+limit)/index.grid),minY=Math.floor((p.y-limit)/index.grid),maxY=Math.floor((p.y+limit)/index.grid);
   const rows=new Map(),visited=new Set();
+  // 같은 조회점의 산단 전체 노선 검사는 후보 선분마다 반복하지 않습니다.
+  let industrialRouteAllowed;
   for(let x=minX;x<=maxX;x++)for(let y=minY;y<=maxY;y++){
     for(const item of index.buckets.get(x+'|'+y)||[]){
       if(visited.has(item.id))continue;visited.add(item.id);
@@ -2257,8 +2259,11 @@ function localScheduleAtPoint(type,ctx,{directOnly=false}={}){
       if(!item.districts.includes(district)||!allowed.has(key)||(directOnly&&item.kind!=='line'))continue;
       if(type==='general'&&district==='내수읍'&&ri.riName==='도원리'&&spec.vehicle!=='6138')continue;
       if(insideIndustrial&&(spec.provider||routeCompany(spec.vehicle))!=='제일환경')continue;
-      if(district==='오창읍'&&spec.provider==='제일환경'&&!ochangContractZoneAllowedAtPoint(type,{...spec,district},lat,lng))continue;
       const d=pointSegmentDistanceKm(lat,lng,item.a,item.b);if(d>limit)continue;
+      if(district==='오창읍'&&spec.provider==='제일환경'){
+        if(industrialRouteAllowed===undefined)industrialRouteAllowed=ochangContractZoneAllowedAtPoint(type,{...spec,district},lat,lng);
+        if(!industrialRouteAllowed)continue;
+      }
       if(!rows.has(key)||rows.get(key).distanceKm>d)rows.set(key,{spec,distanceKm:d,kind:item.kind,term:item.term});
     }
   }
@@ -5719,5 +5724,4 @@ loadSdk();
 </script>
 </body>
 </html>
-
 

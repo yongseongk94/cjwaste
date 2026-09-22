@@ -45,3 +45,23 @@ console.log('PASS 2023 boundary: inside/outside, both waste types, clipped lines
 
 check("activeDay='전체';routeLayerMatchedColor('general',{vehicle:'6224',day:'화',districts:['오근장동']})");
 console.log('PASS live route color uses test-page display registry');
+
+check(`
+localAllowedRouteKeys=()=>new Set(['industrial|월']);
+userConfirmedSchedule=()=>null;
+let guardCalls=0;
+ochangContractZoneAllowedAtPoint=()=>{guardCalls++;return true;};
+const denseSpec={type:'general',vehicle:'industrial',day:'월',provider:'제일환경',districts:['오창읍'],raw:''};
+const denseSegments=Array.from({length:2000},(_,i)=>[
+ {lat:36.71746+i*1e-9,lng:127.4291},{lat:36.71746+i*1e-9,lng:127.4293}]);
+localScheduleIndexes.general=buildLocalScheduleIndex('general',{routes:[{type:'general',vehicle:'industrial',day:'월',liveSpec:denseSpec,data:{segments:denseSegments}}]});
+const denseResult=localScheduleAtPoint('general',{district:'오창읍',legalRi:'양청리',lat:36.7174626,lng:127.4291884});
+if(!denseResult||denseResult.days.join()!=='월')throw Error('dense industrial schedule lost');
+if(guardCalls!==1)throw Error('whole-route scans repeated '+guardCalls+' times');
+guardCalls=0;
+localScheduleIndexes.general.cache.clear();
+ochangContractZoneAllowedAtPoint=()=>{guardCalls++;return false;};
+if(localScheduleAtPoint('general',{district:'오창읍',legalRi:'양청리',lat:36.7174626,lng:127.4291884})!==null)throw Error('denied industrial route accepted');
+if(guardCalls>2)throw Error('denied route repeated scan '+guardCalls);
+`);
+console.log('PASS dense industrial evidence: one whole-route check per lookup pass, schedule and rejection preserved');
