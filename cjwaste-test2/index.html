@@ -2798,13 +2798,20 @@ async function ensureAddressRouteItems(type,ctx){
   // 현재 주소 후보만 1개씩 처리해 메인스레드/외부 API 동시부하를 제한합니다.
   const built=await mapWithConcurrency(specs,1,async spec=>{
     try{
-      const existing=existingDongRouteOverlay(spec);
-      // 일반 이용에서는 이미 사전계산된 선을 즉시 사용합니다.
-      // 마을회관/경로당 기준 재계산은 사전생성 모드에서만 수행해 주소검색 중 길찾기 폭증을 막습니다.
-      const forceRebuild=SERVICE_ZONE_PRECOMPUTE_ONLY&&!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
+      let existing=existingDongRouteOverlay(spec);
+      if(!existing){
+        // 구형 사전계산 번들은 scope가 넓을 수 있으므로 같은 차량·요일 중 현재 행정구역을
+        // 실제 담당하는 기존 선도 재사용합니다. scope 차이 때문에 재길찾기하지 않습니다.
+        existing=(dongRouteOverlays[type]||[]).find(item=>
+          item.vehicle===spec.vehicle&&item.day===spec.day&&
+          routeAllowedDistricts(item).includes(canonicalDistrict(district))
+        )||null;
+      }
+      if(!SERVICE_ZONE_PRECOMPUTE_ONLY)return existing;
+      const forceRebuild=!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
       return await buildDongRouteOverlay(spec,{forceRebuild});
     }
-    catch(e){console.warn('TEST2 현재주소 노선 생성 실패 - 기존노선 유지',spec,e);return existingDongRouteOverlay(spec)}
+    catch(e){console.warn('TEST2 현재주소 노선 준비 실패 - 기존노선 유지',spec,e);return existingDongRouteOverlay(spec)}
   });
   if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
   return built.filter(Boolean);
