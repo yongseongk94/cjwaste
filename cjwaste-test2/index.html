@@ -218,6 +218,7 @@
 <script id="bundledPrecomputed" type="application/json" data-src=""></script>
 <script id="bundledServiceZones" type="application/json" data-manifest="data/service-zones-manifest-v2.json"></script>
 <script src="vendor/polygon-clipping-0.15.7.min.js"></script>
+<script src="data/ochang-boundary-2023.js?v=2023v2"></script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -733,9 +734,28 @@ const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로'
 const OCHANG_CONTRACT_COLOR='#0f766e';
 // 산업단지 블록 안 빈 공간을 메우기 위한 최대 추정거리. 리 전체로 번지는 것을 막기 위해 실제 대행노선에서 180m 이내만 허용합니다.
 const OCHANG_CONTRACT_ESTIMATE_MAX_KM=0.180;
-// TEST2 표시 전용: 오창산단 내부에서 130m 대표격자 때문에 생기는 작은 공백만 메웁니다.
+// TEST2 표시 전용: 2023년 고시 도면 정합 경계 안은 오창산단 레이어가 끊기지 않도록 채웁니다.
 // 주소 일정 판정의 180m 기준과 20m 직접매칭은 그대로 유지합니다.
-const OCHANG_CONTRACT_DISPLAY_FILL_MAX_KM=0.260;
+const OCHANG_2023_FEATURE=globalThis.CJWASTE_OCHANG_2023||null;
+function insideOchang2023(lat,lng){
+  return !!OCHANG_2023_FEATURE&&Number.isFinite(+lat)&&Number.isFinite(+lng)&&pointInGeoFeature([+lng,+lat],OCHANG_2023_FEATURE);
+}
+function ochang2023Geometry(){
+  return OCHANG_2023_FEATURE?[OCHANG_2023_FEATURE.geometry.coordinates]:[];
+}
+function partitionOchang2023Display(type,zones){
+  const boundary=ochang2023Geometry();
+  if(!boundary.length)return zones;
+  return zones.flatMap(z=>{
+    if(z.district!=='오창읍'||z.noSchedule)return [z];
+    const geometry=zoneMultiPolygon(z);
+    const contract=isOchangContractZone(z);
+    const clipped=contract
+      ? polygonClipping.intersection(geometry,boundary)
+      : polygonClipping.difference(geometry,boundary);
+    return displayGeometryZones(z,clipped);
+  });
+}
 const OCHANG_INDUSTRIAL_HINT_RIS=new Set(['각리','양청리','구룡리']);
 
 function isContractLayerRi(district,riName){return false}
@@ -762,6 +782,7 @@ function ochangContractRouteDistanceKm(type,lat,lng){
   return best;
 }
 function ochangContractDisplayFillAtPoint(type,lat,lng){
+  if(!insideOchang2023(lat,lng))return null;
   let best=Infinity;
   const measured=[];
   for(const item of (dongRouteOverlays[type]||[])){
@@ -771,9 +792,9 @@ function ochangContractDisplayFillAtPoint(type,lat,lng){
     measured.push({item,distanceKm});
     if(distanceKm<best)best=distanceKm;
   }
-  if(!Number.isFinite(best)||best>OCHANG_CONTRACT_DISPLAY_FILL_MAX_KM)return null;
+  if(!Number.isFinite(best))return null;
 
-  // 같은 산단 블록을 지나는 동일 계열 노선의 요일만 묶습니다.
+  // 산단 경계 내부는 가장 가까운 제일환경 세부노선 묶음으로 표시해 중간 공백을 없앱니다.
   const near=measured.filter(x=>x.distanceKm<=best+.025);
   const days=DAYS.filter(day=>near.some(x=>x.item.day===day));
   const vehicles=[...new Set(near.map(x=>x.item.vehicle).filter(Boolean))];
@@ -792,7 +813,7 @@ function ochangContractDisplayFillAtPoint(type,lat,lng){
     contractLayer:true,
     displayOnly:true,
     displaySchedule:true,
-    matchBasis:'ochang-contract-visual-gap-fill',
+    matchBasis:'ochang-2023-boundary-display-fill',
     distanceKm:best
   };
 }
@@ -2479,7 +2500,7 @@ addressFocus=zoneMatchesAddressFocus(type,rep);
   }
 
   const merged=mergeScheduleDisplayCells(cells);
-  return merged.flatMap(m=>{
+  return partitionOchang2023Display(type,merged.flatMap(m=>{
     const scale=m.scale||1;
     const latStep=COARSE_ZONE_LAT_STEP/scale,lngStep=COARSE_ZONE_LNG_STEP/scale;
     const lat0=m.iy0*latStep;
@@ -2509,7 +2530,7 @@ addressFocus=zoneMatchesAddressFocus(type,rep);
       scheduleSignature:m.scheduleSig||scheduleDisplaySignature(m.rep),
       addressFocus:!!m.addressFocus
     },geometry);
-  });
+  }));
 }
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
