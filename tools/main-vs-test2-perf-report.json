@@ -1,0 +1,199 @@
+{
+  "startedAt": "2026-09-22T07:47:32Z",
+  "main": {
+    "name": "main",
+    "url": "https://yongseongk94.github.io/cjwaste/",
+    "httpStatus": 200,
+    "timingMs": {
+      "ready": 1115,
+      "showResultPlus1500": 1503,
+      "recycleSwitchPlus800": 890,
+      "addressSearchPlus1500": 1870
+    },
+    "requests": {
+      "total": 146,
+      "duringAddressSearch": 64,
+      "kakaoLocal": 74,
+      "routeProxy": 0,
+      "serviceZoneJson": 2,
+      "precomputedJson": 1
+    },
+    "errors": {
+      "http": [],
+      "console": []
+    },
+    "states": {
+      "general": {
+        "activeLayer": "general",
+        "district": "",
+        "ri": "",
+        "routeItems": {
+          "general": {
+            "items": 35,
+            "polylines": 628,
+            "visible": 628
+          },
+          "recycle": {
+            "items": 32,
+            "polylines": 489,
+            "visible": 0
+          }
+        },
+        "zones": {
+          "general": 18,
+          "recycle": 0
+        }
+      },
+      "recycle": {
+        "activeLayer": "recycle",
+        "district": "",
+        "ri": "",
+        "routeItems": {
+          "general": {
+            "items": 35,
+            "polylines": 628,
+            "visible": 0
+          },
+          "recycle": {
+            "items": 32,
+            "polylines": 489,
+            "visible": 489
+          }
+        },
+        "zones": {
+          "general": 18,
+          "recycle": 20
+        }
+      },
+      "afterSearch": {
+        "activeLayer": "general",
+        "district": "내수읍",
+        "ri": "저곡리",
+        "routeItems": {
+          "general": {
+            "items": 35,
+            "polylines": 628,
+            "visible": 0
+          },
+          "recycle": {
+            "items": 32,
+            "polylines": 489,
+            "visible": 0
+          }
+        },
+        "zones": {
+          "general": 72,
+          "recycle": 20
+        }
+      }
+    },
+    "metrics": {
+      "TaskDuration": 1.2e-05,
+      "ScriptDuration": 0,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "JSHeapUsedSize": 29998948,
+      "Nodes": 664,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0
+    }
+  },
+  "test2": {
+    "name": "test2",
+    "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
+    "httpStatus": 200,
+    "timingMs": {
+      "ready": 784,
+      "showResultPlus1500": 1502,
+      "recycleSwitchPlus800": 7601,
+      "addressSearchPlus1500": 2372
+    },
+    "requests": {
+      "total": 72,
+      "duringAddressSearch": 29,
+      "kakaoLocal": 3,
+      "routeProxy": 0,
+      "serviceZoneJson": 2,
+      "precomputedJson": 1
+    },
+    "errors": {
+      "http": [],
+      "console": []
+    },
+    "states": {
+      "general": {
+        "activeLayer": "general",
+        "district": "",
+        "ri": "",
+        "routeItems": {
+          "general": {
+            "items": 49,
+            "polylines": 770,
+            "visible": 770
+          },
+          "recycle": {
+            "items": 44,
+            "polylines": 627,
+            "visible": 0
+          }
+        },
+        "zones": {
+          "general": 67,
+          "recycle": 0
+        }
+      },
+      "recycle": {
+        "activeLayer": "recycle",
+        "district": "",
+        "ri": "",
+        "routeItems": {
+          "general": {
+            "items": 49,
+            "polylines": 770,
+            "visible": 0
+          },
+          "recycle": {
+            "items": 44,
+            "polylines": 627,
+            "visible": 627
+          }
+        },
+        "zones": {
+          "general": 67,
+          "recycle": 50
+        }
+      },
+      "afterSearch": {
+        "activeLayer": "general",
+        "district": "내수읍",
+        "ri": "저곡리",
+        "routeItems": {
+          "general": {
+            "items": 49,
+            "polylines": 770,
+            "visible": 770
+          },
+          "recycle": {
+            "items": 44,
+            "polylines": 627,
+            "visible": 0
+          }
+        },
+        "zones": {
+          "general": 77,
+          "recycle": 50
+        }
+      }
+    },
+    "metrics": {
+      "TaskDuration": 0.000878,
+      "ScriptDuration": 0.000611,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0,
+      "JSHeapUsedSize": 59438752,
+      "Nodes": 10719,
+      "LayoutCount": 0,
+      "RecalcStyleCount": 0
+    }
+  }
+}
