@@ -18,6 +18,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?lazy_check=$RANDOM" -o /tmp/test-live.html \
+              && grep -q "OCHANG_2023_FEATURE" /tmp/test-live.html \
               && grep -q "TEST_ZONE_RENDER_MODE='schedule-map-v4-reviewed'" /tmp/test-live.html \
               && grep -q "TEST_ROUTE_PRIORITY_MODE='address-first-v4-shared-geometry'" /tmp/test-live.html; then
               echo 'Lazy-render test page deployed'
@@ -57,6 +58,8 @@ jobs:
             }));
             if(landing.mode!=='schedule-map-v4-reviewed')throw new Error('Wrong deployed renderer: '+JSON.stringify(landing));
             if(landing.display!==0)throw new Error('Landing created non-manual polygons: '+JSON.stringify(landing));
+            const park=await page.evaluate(()=>({source:OCHANG_2023_FEATURE?.properties?.noticeDate,inside:insideOchang2023(36.7174626,127.4291884),outside:insideOchang2023(36.7277,127.4454)}));
+            if(park.source!=='2023-03-10'||!park.inside||park.outside)throw new Error('2023 industrial boundary missing or misplaced: '+JSON.stringify(park));
 
             const t0=Date.now();
             await page.type('#landingInput','청주시 청원구 상당로 230');

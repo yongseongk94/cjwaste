@@ -6,6 +6,7 @@ const html=fs.readFileSync(root+'/cjwaste-test/index.html','utf8');
 let js=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m=>m[1]).join('\n');
 js=js.slice(0,js.lastIndexOf("document.getElementById('landingForm').addEventListener"));
 const ctx=vm.createContext({console,URLSearchParams,location:{search:''},window:{},document:{getElementById:()=>({getAttribute:()=>'',textContent:'',classList:{contains:()=>true}})},localStorage:{getItem:()=>null},setTimeout,clearTimeout,requestAnimationFrame:()=>{},polygonClipping:require(root+'/cjwaste-test/vendor/polygon-clipping-0.15.7.min.js')});
+vm.runInContext(fs.readFileSync(root+'/cjwaste-test/data/ochang-boundary-2023.js','utf8'),ctx);
 vm.runInContext(js,ctx);
 const emd=JSON.parse(fs.readFileSync(process.argv[2]));
 ctx.features=emd.features.filter(f=>(f.properties.sggnm||'').includes('청원구'));
