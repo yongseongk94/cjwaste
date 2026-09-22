@@ -1,1 +1,196 @@
-{"fatal":"no report"}
+{
+  "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
+  "startedAt": "2026-09-22T14:44:44Z",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "httpStatus": 200,
+  "general": {
+    "points": {
+      "2산단로81": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|88저7478|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      },
+      "2산단로82": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|88저7478|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": true,
+            "display": true
+          }
+        ]
+      },
+      "2산단2로32": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|88저7478|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      },
+      "2산단로167": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|88저7478|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      },
+      "2산단4로60": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|88저7478|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      }
+    },
+    "zoneCount": 208
+  },
+  "recycle": {
+    "points": {
+      "2산단로81": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|95오0187|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      },
+      "2산단로82": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|95오0187|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": true,
+            "display": true
+          }
+        ]
+      },
+      "2산단2로32": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|95오0187|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      },
+      "2산단로167": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|95오0187|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      },
+      "2산단4로60": {
+        "insideIndustrial": true,
+        "insideOchang2": true,
+        "hits": [
+          {
+            "provider": "제일환경",
+            "vehicle": "제일환경|95오0187|오창읍|단독",
+            "days": [
+              "화",
+              "목",
+              "토"
+            ],
+            "contract": false,
+            "display": true
+          }
+        ]
+      }
+    },
+    "zoneCount": 246
+  },
+  "checks": {
+    "http200": true,
+    "featureLoaded": true,
+    "combinedBoundary": true,
+    "generalLayerCovers": true,
+    "recycleLayerCovers": true,
+    "noPageErrors": true
+  }
+}
