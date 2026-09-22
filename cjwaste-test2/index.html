@@ -2182,9 +2182,11 @@ function resultMapVisible(){
   const landing=document.getElementById('landing');
   return !!landing&&landing.classList.contains('hidden');
 }
-const COARSE_ZONE_LAT_STEP=.00115;  // 약 128m
-const COARSE_ZONE_LNG_STEP=.00148; // 청주 위도 기준 약 130m
-const COARSE_ZONE_MAX_POLYGONS=120;
+// TEST2 표시 성능: 주소 판정용 정밀 데이터는 그대로 유지하고 지도 표시 격자만 약 220m로 단순화합니다.
+// 혼합 일정 경계는 아래 2×2 분할로 약 110m 수준까지 다시 세분화됩니다.
+const COARSE_ZONE_LAT_STEP=.00200;  // 약 222m
+const COARSE_ZONE_LNG_STEP=.00250; // 청주 위도 기준 약 220m
+const COARSE_ZONE_MAX_POLYGONS=70;
 // 큰 대표격자는 유지하되 서로 다른 차량·요일 경계가 한 칸 안에 섞일 때만 2×2로 세분화합니다.
 // 전체를 촘촘하게 만들지 않아 로딩 부담을 억제하면서 일정 경계 오차를 줄입니다.
 const TEST_ZONE_DETAIL_MODE='adaptive-boundary-v1';
@@ -2383,9 +2385,12 @@ function rawScheduleDisplayFallback(type,district,lat,lng){
   return best<=0.0000028?nearest:null;
 }
 function nearestScheduleDisplayZone(type,district,lat,lng){
-  const local=localScheduleAtPoint(type,{district,lat,lng});
-  const raw=local?null:rawScheduleDisplayFallback(type,district,lat,lng);
-  const base=local||raw||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
+  // 일반 화면 표시에서는 이미 사전계산된 raw 추정권역만 사용합니다.
+  // 수백~수천 개 격자마다 실제 노선 거리계산(localScheduleAtPoint)을 반복하면 탭 전환이 심하게 느려집니다.
+  // 실제 주소의 20m 직접매칭은 ensureServiceZoneMatch/localScheduleAtPoint에서 그대로 수행합니다.
+  const raw=rawScheduleDisplayFallback(type,district,lat,lng);
+  const local=SERVICE_ZONE_PRECOMPUTE_ONLY&&!raw?localScheduleAtPoint(type,{district,lat,lng}):null;
+  const base=raw||local||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
   if(canonicalDistrict(district)==='오창읍'){
     const contractFill=ochangContractDisplayFillAtPoint(type,lat,lng);
     // 오창산단 표시 레이어에 한해서만 계약노선 주변의 내부 공백을 메웁니다.
@@ -2484,10 +2489,40 @@ function displayPartitionMasks(type){
   displayPartitionCache={type,entries,manualKey,districts,manualParts};
   return displayPartitionCache;
 }
+function simplifyDisplayRing(points,tolerance=.000065){
+  if(!Array.isArray(points)||points.length<=8)return points||[];
+  const sq=tolerance*tolerance;
+  function segD2(p,a,b){
+    const vx=b.lng-a.lng,vy=b.lat-a.lat,wx=p.lng-a.lng,wy=p.lat-a.lat;
+    const vv=vx*vx+vy*vy;
+    let t=vv?((wx*vx+wy*vy)/vv):0;t=Math.max(0,Math.min(1,t));
+    const dx=p.lng-(a.lng+t*vx),dy=p.lat-(a.lat+t*vy);
+    return dx*dx+dy*dy;
+  }
+  function rdp(arr){
+    if(arr.length<=2)return arr;
+    let best=-1,idx=-1;
+    for(let i=1;i<arr.length-1;i++){const d=segD2(arr[i],arr[0],arr[arr.length-1]);if(d>best){best=d;idx=i}}
+    if(best<=sq||idx<0)return [arr[0],arr[arr.length-1]];
+    const a=rdp(arr.slice(0,idx+1)),b=rdp(arr.slice(idx));
+    return [...a.slice(0,-1),...b];
+  }
+  const closed=Math.abs(points[0].lat-points[points.length-1].lat)<1e-10&&Math.abs(points[0].lng-points[points.length-1].lng)<1e-10;
+  const core=closed?points.slice(0,-1):points.slice();
+  if(core.length<=3)return points;
+  // 폐곡선은 가장 먼 점을 중간 분할점으로 잡아 양쪽 호를 각각 단순화해 형태 붕괴를 막습니다.
+  let far=1,best=-1;
+  for(let i=1;i<core.length;i++){const dx=core[i].lng-core[0].lng,dy=core[i].lat-core[0].lat,d=dx*dx+dy*dy;if(d>best){best=d;far=i}}
+  const first=rdp(core.slice(0,far+1)),second=rdp([...core.slice(far),core[0]]);
+  const out=[...first.slice(0,-1),...second];
+  if(out.length<4)return points;
+  return out;
+}
 function displayGeometryZones(meta,geometry){
   return geometry.map((poly,part)=>{
-    const rings=poly.map(r=>r.map(([lng,lat])=>({lat,lng})));
-    return {...meta,points:rings[0],rings,hitRings:rings,
+    const exactRings=poly.map(r=>r.map(([lng,lat])=>({lat,lng})));
+    const rings=exactRings.map(r=>simplifyDisplayRing(r));
+    return {...meta,points:rings[0],rings,hitRings:exactRings,
       coarseKey:(meta.coarseKey||'manual')+'|part:'+part};
   });
 }
