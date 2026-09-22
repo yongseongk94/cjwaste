@@ -1,0 +1,263 @@
+{
+  "startedAt": "2026-09-22T15:26:25Z",
+  "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
+  "errors": [],
+  "bundleVersion": "v76-layer-visibility-refresh",
+  "routeCount": 94,
+  "rows": [
+    {
+      "vehicle": "3344",
+      "specRows": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "창리,오창마트,장대리,오창초,복현리,오창읍사무소,원리,여천리,체리부로,각리,중신리,\n        신평리,지게바위,농소리,탑리"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "화",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "팔결교,상평리,엘리트전원마을,한우마실,미래지한옥마을,꽃화산리,후기리"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "탑리,기암리,석우리,가곡리,농업기술원,도암리,괴정리,양지리,모정리,학소리,일신리,\n        유리,빛화산리,여천리"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeKind": "rural",
+          "districts": [
+            "북이면",
+            "오창읍"
+          ],
+          "scopeSignature": "북이면|오창읍",
+          "raw": "창리,오창마트,오창초,복현리,오창읍사무소,성산리,자모원,벨루아캠핑장,북이면 화상리,\n        화죽리,대율리,내둔리"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "장미공원,한우마실,성산리,용두리,두릉리,백현리,성재리,가좌리,3산업단지,\n        자연어린이집,오창농협급식지원센터"
+        }
+      ],
+      "recordCount": 0
+    },
+    {
+      "vehicle": "6138",
+      "specRows": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍"
+          ],
+          "scopeSignature": "내수읍",
+          "raw": "진성레미컨,은곡리,마산리,학평리,내수읍사무소 일원,내수리,풍정리,덕암리,세교리\n        청주종합사격장,형동리,비상리,비중리,우산리,초정리,초정약수원탕"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "충북도로사업소,풍정3길,정도안전산업,세교사거리,비중사거리,저곡리,초정어린이집\n        초정봉칼국수,영하1리버스정류장,영하보건소,전주밥상,청원약수딸기"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "진성레미컨,은곡리,신안리,마산리,학평리,내수읍사무소 일원,북이면사무소,신대리\n        장양리,다모아산업,용계리,석성초,석성리,화상리,추학리,북이초"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "풍정교차로,카우스토리,대길2리경로당,감사교회,서당리,대길리,부연리,선암리,신기리\n        초정구길,호명리,석화리,보람농원,현암리"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "진성레미컨,은곡리,마산리,학평리,내수읍사무소 일원,내수리,장재교차로,장재문화마을\n        우진환경,장재리,토성리,금암리,금대리,송정리,가구대통령,옥수리,내추리,굿모닝요양원\n        다모아패키지"
+        }
+      ],
+      "recordCount": 0
+    },
+    {
+      "vehicle": "6544",
+      "specRows": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍"
+          ],
+          "scopeSignature": "내수읍",
+          "raw": "은곡리,마산리,신안리,내수읍 일원,신안리,내수리,학평리,풍정리,덕암리,도원리,세교리\n            청주종합사격장,형동리,초정리,비상리,우산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "풍정교차로,풍정리,충북도로사업소,세교리,저곡리,우산리,초정,초정요양원,\n           영하보건소,영하리,은곡3구,수성초,신안리,내수생활체육공원,내수성당,도원리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "내수읍 일원,내수로,청암로,북이면사무소,신대리,대율리,내추리,장양리,용계리,석성초\n           석성리,화상리,장양2리,추학리,옥수리,내추리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "학평리,청주미트,감사교회,서당리,대길리,부연리,선암리,신기리,초정구길,호명리\n           석화리,현암리,보람농원"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeKind": "rural",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면",
+          "raw": "은곡리,마산리,내수읍 일원,신안리,내수리,학평리,토성리,북이,장재리,금암리,금대리\n           송정리,가구대통령,옥수리,북이초,굿모닝요양원,다모아패키지"
+        }
+      ],
+      "recordCount": 0
+    },
+    {
+      "vehicle": "0262",
+      "specRows": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "창리사거리,창리,오창읍사무소,오창초,장대리,원리,팔결교,해든전원마을\n           (가곡길181-53)일대, 하나로마트,양지리,복현리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "모정리,학소리,일신리,유리,빛화산리,증평IC,여천리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "각리(각리2길),신평리,지게바위길 일대,중신리,농소리,혜성약품,양청농소길,탑리 일대\n           기암리,석우리,가곡리,충북농업기술원,괴정리,오창중,고"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeKind": "rural",
+          "districts": [
+            "북이면",
+            "오창읍"
+          ],
+          "scopeSignature": "북이면|오창읍",
+          "raw": "창리사거리,창리,오창읍사무소,장대리,구룡택지1로 일대,구룡에너지 일대,번천마을\n           두릉유리로 일대,화상리,내둔리,대율리,화죽리,신대리,석성리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeKind": "rural",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍",
+          "raw": "꽃화산리,용두리,가좌리,미래지한옥마을,후기리,성산리,3산업단지,두릉리,성재리\n           백현리,자연어린이집"
+        }
+      ],
+      "recordCount": 0
+    }
+  ]
+}
