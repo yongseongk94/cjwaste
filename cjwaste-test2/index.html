@@ -1962,7 +1962,6 @@ function hydrateBundledPrecomputedData(dataOverride=null){
         // TEST2: 구형 v76 직영 읍면(rural) 번들에는 수거지 사이 차량이동 추정선이 포함되어
         // 고속도로/자동차전용도로가 수거노선처럼 보일 수 있으므로 복원하지 않습니다.
         // 해당 읍면 노선은 현재 규칙으로 다시 계산해 IndexedDB에 저장합니다.
-        if(/^\d+$/.test(String(spec.vehicle||''))&&routeAllowedDistricts(spec).some(d=>RURAL_ROUTE_LAYER_DISTRICTS.has(canonicalDistrict(d))))continue;
         // 화죽리 보강 대상만 구형 좌표를 건너뜁니다.
         // 오창산단 제일환경은 구형 사전계산 선을 2023 산단경계 안으로 잘라 즉시 표시하고,
         // 이후 TEST2 실시간 계산 결과가 준비되면 그 결과로 갱신합니다.
@@ -2295,7 +2294,6 @@ function buildLocalScheduleIndex(type,data){
     if(record.type!==type||!scheduleRouteAllowed(type,record.vehicle,record.day))continue;
     const spec=record.liveSpec||bundleRouteRecordSpec(record,specs);if(!spec||spec.housing==='apartment'||spec.zoneEligible===false)continue;
     // 주소 판정용 인덱스에도 구형 읍면 이동 추정선을 넣지 않습니다.
-    if(!record.liveSpec&&/^\d+$/.test(String(spec.vehicle||''))&&routeAllowedDistricts(spec).some(d=>RURAL_ROUTE_LAYER_DISTRICTS.has(canonicalDistrict(d))))continue;
     if(!record.liveSpec&&(routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec)))continue;
     const route=stripInferredTransitSegments(record.data||{});
     for(const seg of route.segments||[])for(let i=1;i<seg.length;i++)add(seg[i-1],seg[i],spec,'line');
