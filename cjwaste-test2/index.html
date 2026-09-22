@@ -2770,11 +2770,17 @@ async function ensureAddressRouteItems(type,ctx){
     const key=spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeScopeSignature(spec);
     if(seen.has(key))return false;seen.add(key);return true;
   });
-  for(const spec of specs)if(test2SpecNeedsVillageRebuild(spec))discardTest2BaselineOverlay(spec);
+  // 사전계산 노선을 먼저 살려 둔 상태에서 필요한 현재주소 노선만 안전교체합니다.
+  // 새 길찾기가 실패해도 기존 선이 사라지지 않습니다.
   await hydrateCachedRouteOverlays(specs);
+  await hydrateExternalBundledPrecomputedData();
   const built=await mapWithConcurrency(specs,2,async spec=>{
-    try{return await buildDongRouteOverlay(spec)}
-    catch(e){console.warn('TEST2 현재주소 노선 생성 실패',spec,e);return null}
+    try{
+      const existing=existingDongRouteOverlay(spec);
+      const forceRebuild=!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
+      return await buildDongRouteOverlay(spec,{forceRebuild});
+    }
+    catch(e){console.warn('TEST2 현재주소 노선 생성 실패 - 기존노선 유지',spec,e);return existingDongRouteOverlay(spec)}
   });
   if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
   return built.filter(Boolean);
@@ -4072,15 +4078,19 @@ function existingDongRouteOverlay(spec){
 function test2SpecNeedsVillageRebuild(spec){
   return routeDescriptorsForMap(spec?.raw||'').some(d=>!!test2VillageNameFromRouteTerm(d?.term||''));
 }
+function removeDongRouteOverlayItem(item){
+  if(!item)return false;
+  setRouteItemMap(item,null);
+  const arr=dongRouteOverlays[item.type]||[];
+  const idx=arr.indexOf(item);
+  if(idx>=0)arr.splice(idx,1);
+  localScheduleIndexes[item.type]=null;
+  return idx>=0;
+}
 function discardTest2BaselineOverlay(spec){
   const item=existingDongRouteOverlay(spec);
   if(!item||!item.fromBundle)return false;
-  setRouteItemMap(item,null);
-  const arr=dongRouteOverlays[spec.type]||[];
-  const idx=arr.indexOf(item);
-  if(idx>=0)arr.splice(idx,1);
-  localScheduleIndexes[spec.type]=null;
-  return true;
+  return removeDongRouteOverlayItem(item);
 }
 function sharedGeometryRouteOverlay(spec){
   const key=contractorRouteGeometryKey(spec);
@@ -4262,18 +4272,21 @@ async function inferredRuralMovementSegments(anchorMap){
   return {segments,inferredMovementCount};
 }
 
-async function buildDongRouteOverlay(spec){
-  const buildKey=spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeScopeSignature(spec);
+async function buildDongRouteOverlay(spec,options={}){
+  const forceRebuild=!!options.forceRebuild;
+  const buildKey=spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeScopeSignature(spec)+(forceRebuild?'|force-rebuild':'');
   const existing=existingDongRouteOverlay(spec);
-  if(existing)return existing;
-  const sharedOwner=sharedGeometryRouteOverlay(spec);
+  if(existing&&!forceRebuild)return existing;
+  const sharedOwner=forceRebuild?null:sharedGeometryRouteOverlay(spec);
   if(sharedOwner)return createDongRouteOverlay(spec,reusableRouteData(sharedOwner));
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
 
   const task=(async()=>{
-    const cached=await getCachedDongRoute(spec);
-    if(cached?.segments?.length){
-      return createDongRouteOverlay(spec,{...cached,fromCache:true});
+    if(!forceRebuild){
+      const cached=await getCachedDongRoute(spec);
+      if(cached?.segments?.length){
+        return createDongRouteOverlay(spec,{...cached,fromCache:true});
+      }
     }
 
     const touchedDistricts=[];
@@ -4443,6 +4456,16 @@ async function buildDongRouteOverlay(spec){
     }else if(!postAudit.ok){
       console.warn('최종 수거노선 좌표검증 실패: 캐시하지 않음',spec,postAudit);
     }
+
+    // TEST2 안전교체: 마을회관/경로당 기준 재계산은 새 선이 실제로 만들어진 뒤에만
+    // 기존 사전계산 선을 교체합니다. 길찾기 실패 시 기존 노선을 그대로 유지합니다.
+    if(forceRebuild&&existing){
+      if(!postAudit.ok||!(safeData.segments||[]).length){
+        console.warn('TEST2 새 노선 계산 불완전: 기존 사전계산 노선 유지',spec);
+        return existing;
+      }
+      removeDongRouteOverlayItem(existing);
+    }
     return createDongRouteOverlay(spec,{...safeData,fromCache:false});
   })();
 
@@ -4552,10 +4575,8 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
   }
 
   const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
-  const specificSelection=providerSnapshot!=='전체'||daySnapshot!=='전체'||!!here;
-  if(specificSelection){
-    for(const spec of specs)if(test2SpecNeedsVillageRebuild(spec))discardTest2BaselineOverlay(spec);
-  }
+  // 기존 사전계산 노선은 여기서 선제 삭제하지 않습니다.
+  // 주소별 마을회관/경로당 보정은 ensureAddressRouteItems에서 새 계산 성공 후에만 교체합니다.
   // 랜딩→결과 전환 직후에는 resolveDistrict가 아직 끝나지 않을 수 있습니다.
   // 이때 전체 내수·북이 노선을 계산하면 첫 노선 표시가 지나치게 늦어지므로 캐시 복원만 하고 종료합니다.
   if(!here){
