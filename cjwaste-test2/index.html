@@ -733,6 +733,9 @@ const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로'
 const OCHANG_CONTRACT_COLOR='#0f766e';
 // 산업단지 블록 안 빈 공간을 메우기 위한 최대 추정거리. 리 전체로 번지는 것을 막기 위해 실제 대행노선에서 180m 이내만 허용합니다.
 const OCHANG_CONTRACT_ESTIMATE_MAX_KM=0.180;
+// TEST2 표시 전용: 오창산단 내부에서 130m 대표격자 때문에 생기는 작은 공백만 메웁니다.
+// 주소 일정 판정의 180m 기준과 20m 직접매칭은 그대로 유지합니다.
+const OCHANG_CONTRACT_DISPLAY_FILL_MAX_KM=0.260;
 const OCHANG_INDUSTRIAL_HINT_RIS=new Set(['각리','양청리','구룡리']);
 
 function isContractLayerRi(district,riName){return false}
@@ -757,6 +760,41 @@ function ochangContractRouteDistanceKm(type,lat,lng){
     best=Math.min(best,routeItemDistanceKm(item,lat,lng));
   }
   return best;
+}
+function ochangContractDisplayFillAtPoint(type,lat,lng){
+  let best=Infinity;
+  const measured=[];
+  for(const item of (dongRouteOverlays[type]||[])){
+    if(!isOchangContractRouteItem(item))continue;
+    const distanceKm=routeItemDistanceKm(item,lat,lng);
+    if(!Number.isFinite(distanceKm))continue;
+    measured.push({item,distanceKm});
+    if(distanceKm<best)best=distanceKm;
+  }
+  if(!Number.isFinite(best)||best>OCHANG_CONTRACT_DISPLAY_FILL_MAX_KM)return null;
+
+  // 같은 산단 블록을 지나는 동일 계열 노선의 요일만 묶습니다.
+  const near=measured.filter(x=>x.distanceKm<=best+.025);
+  const days=DAYS.filter(day=>near.some(x=>x.item.day===day));
+  const vehicles=[...new Set(near.map(x=>x.item.vehicle).filter(Boolean))];
+  const first=near[0]?.item;
+  if(!first||!days.length)return null;
+  return {
+    district:'오창읍',
+    vehicle:first.vehicle,
+    vehicles:vehicles.length?vehicles:[first.vehicle],
+    provider:'제일환경',
+    plate:first.plate||routePlate(first.vehicle),
+    days,
+    noSchedule:false,
+    ambiguous:false,
+    estimated:true,
+    contractLayer:true,
+    displayOnly:true,
+    displaySchedule:true,
+    matchBasis:'ochang-contract-visual-gap-fill',
+    distanceKm:best
+  };
 }
 function ochangContractZoneAllowedAtPoint(type,z,lat,lng){
   if(!isOchangContractZone(z))return true;
@@ -2237,7 +2275,14 @@ function localScheduleAtPoint(type,ctx,{directOnly=false}={}){
 
 
 function nearestScheduleDisplayZone(type,district,lat,lng){
-  return localScheduleAtPoint(type,{district,lat,lng})||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
+  const base=localScheduleAtPoint(type,{district,lat,lng})||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
+  if(canonicalDistrict(district)==='오창읍'){
+    const contractFill=ochangContractDisplayFillAtPoint(type,lat,lng);
+    // 오창산단 표시 레이어에 한해서만 계약노선 주변의 내부 공백을 메웁니다.
+    // 실제 주소 판정 결과와 원본 노선 데이터는 변경하지 않습니다.
+    if(contractFill)return contractFill;
+  }
+  return base;
 }
 function mergeScheduleDisplayCells(cells){
   const rows=new Map();
