@@ -1,1 +1,0 @@
-verify-direct-rural-block
