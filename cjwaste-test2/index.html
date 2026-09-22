@@ -215,7 +215,7 @@
   </section>
 </main>
 
-<script id="bundledPrecomputed" type="application/json" data-src=""></script>
+<script id="bundledPrecomputed" type="application/json" data-src="../data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json?v=test2-baseline-1"></script>
 <script id="bundledServiceZones" type="application/json" data-manifest="data/service-zones-manifest-v2.json"></script>
 <script src="vendor/polygon-clipping-0.15.7.min.js"></script>
 <script src="data/ochang-boundary-2023.js?v=2023v2"></script>
@@ -1231,7 +1231,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v4';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v5';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1893,7 +1893,7 @@ function hydrateBundledPrecomputedData(dataOverride=null){
   if(!data)return false;
   let hydrated=false;
   try{
-    if(data.version===DONG_ROUTE_CACHE_VERSION){
+    if(data.version===DONG_ROUTE_CACHE_VERSION||data.version==='v76-layer-visibility-refresh'){
       const specs=allDongRouteSpecs();
       for(const r of (data.routes||[])){
         const spec=bundleRouteRecordSpec(r,specs);
@@ -1907,7 +1907,7 @@ function hydrateBundledPrecomputedData(dataOverride=null){
           continue;
         }
         createDongRouteOverlay(spec,{...bundleRouteData,fromCache:true,fromBundle:true});
-        putCachedDongRoute(spec,bundleRouteData).catch(e=>console.warn('사전계산 노선 IndexedDB 저장 실패',spec,e));
+        if(data.version===DONG_ROUTE_CACHE_VERSION)putCachedDongRoute(spec,bundleRouteData).catch(e=>console.warn('사전계산 노선 IndexedDB 저장 실패',spec,e));
       }
       hydrated=true;
     }
@@ -2295,8 +2295,23 @@ function localScheduleAtPoint(type,ctx,{directOnly=false}={}){
 }
 
 
+function rawScheduleDisplayFallback(type,district,lat,lng){
+  const rows=rawServiceZonesForDistrict(type,district);
+  let nearest=null,best=Infinity;
+  for(const z of rows){
+    if(z?.noSchedule)continue;
+    const b=rawZoneBounds(z);if(!b)continue;
+    if(lat>=b.minLat&&lat<=b.maxLat&&lng>=b.minLng&&lng<=b.maxLng&&pointInZonePolygon(lat,lng,z))return z;
+    const d=rawZoneEdgeDistanceSq(z,lat,lng);
+    if(d<best){best=d;nearest=z}
+  }
+  // 약 180m 안쪽의 작은 표시 공백만 저장 권역의 가장 가까운 일정으로 보정합니다.
+  return best<=0.0000028?nearest:null;
+}
 function nearestScheduleDisplayZone(type,district,lat,lng){
-  const base=localScheduleAtPoint(type,{district,lat,lng})||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
+  const local=localScheduleAtPoint(type,{district,lat,lng});
+  const raw=local?null:rawScheduleDisplayFallback(type,district,lat,lng);
+  const base=local||raw||{district,vehicle:'',vehicles:[],provider:'',days:[],noSchedule:true,ambiguous:true,estimated:true};
   if(canonicalDistrict(district)==='오창읍'){
     const contractFill=ochangContractDisplayFillAtPoint(type,lat,lng);
     // 오창산단 표시 레이어에 한해서만 계약노선 주변의 내부 공백을 메웁니다.
@@ -2532,11 +2547,22 @@ addressFocus=zoneMatchesAddressFocus(type,rep);
     },geometry);
   }));
 }
+const test2OchangWarmStarted={general:false,recycle:false};
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
   if(!localScheduleIndexes[type]||localScheduleIndexes[type].liveCount!==(dongRouteOverlays[type]||[]).length)ensureLocalScheduleIndex(type).catch(e=>console.warn('세부 일정 근거 준비 실패',e));
+  if(!test2OchangWarmStarted[type]){
+    test2OchangWarmStarted[type]=true;
+    ensureOchangContractRouteItems(type).then(()=>{
+      localScheduleIndexes[type]=null;
+      ensureLocalScheduleIndex(type).finally(()=>{
+        if(activeLayer===type&&resultMapVisible())scheduleVisibleServiceZoneMaterialization(type);
+        if(serviceLayerState.route)syncDongRouteVisibility(type);
+      });
+    }).catch(e=>console.warn('TEST2 오창산단 노선 준비 실패',e));
+  }
   // 행정경계는 주소 판정을 막지 않고 백그라운드로 준비합니다.
   // 준비되면 행정경계로 자른 단일 추정권역을 다시 표시합니다.
   if(!testAdminBoundaryLoadStarted){
@@ -2691,6 +2717,7 @@ async function ensureAddressRouteItems(type,ctx){
     const key=spec.type+'|'+spec.vehicle+'|'+spec.day+'|'+routeScopeSignature(spec);
     if(seen.has(key))return false;seen.add(key);return true;
   });
+  for(const spec of specs)if(test2SpecNeedsVillageRebuild(spec))discardTest2BaselineOverlay(spec);
   await hydrateCachedRouteOverlays(specs);
   const built=await mapWithConcurrency(specs,2,async spec=>{
     try{return await buildDongRouteOverlay(spec)}
@@ -3989,6 +4016,19 @@ function existingDongRouteOverlay(spec){
   const scope=routeScopeSignature(spec);
   return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day&&routeScopeSignature(x)===scope)||null;
 }
+function test2SpecNeedsVillageRebuild(spec){
+  return routeDescriptorsForMap(spec?.raw||'').some(d=>!!test2VillageNameFromRouteTerm(d?.term||''));
+}
+function discardTest2BaselineOverlay(spec){
+  const item=existingDongRouteOverlay(spec);
+  if(!item||!item.fromBundle)return false;
+  setRouteItemMap(item,null);
+  const arr=dongRouteOverlays[spec.type]||[];
+  const idx=arr.indexOf(item);
+  if(idx>=0)arr.splice(idx,1);
+  localScheduleIndexes[spec.type]=null;
+  return true;
+}
 function sharedGeometryRouteOverlay(spec){
   const key=contractorRouteGeometryKey(spec);
   if(!key)return null;
@@ -4057,7 +4097,7 @@ function createDongRouteOverlay(spec,data){
       roadMatchedCount,roadRequestedCount,inferredMovementCount,roadResult:{distance},cached:true,
       segments:sharedOwner.segments,servicePoints:[],zoneEvidencePoints:sharedOwner.zoneEvidencePoints,
       polylines:sharedOwner.polylines,circles:[],polyline:sharedOwner.polyline||sharedOwner.polylines?.[0]||null,
-      geometryKey,sharedGeometry:true,geometryOwnerDay:sharedOwner.day
+      geometryKey,sharedGeometry:true,geometryOwnerDay:sharedOwner.day,fromBundle:!!data.fromBundle
     };
     dongRouteOverlays[spec.type].push(item);
     return item;
@@ -4126,7 +4166,7 @@ function createDongRouteOverlay(spec,data){
     servicePoints:[],
     zoneEvidencePoints:zoneEvidencePoints.map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:p.district||routePointAnyDistrict(p)||''})),
     polylines,circles,polyline:polylines[0]||null,
-    geometryKey,sharedGeometry:false
+    geometryKey,sharedGeometry:false,fromBundle:!!data.fromBundle
   };
   dongRouteOverlays[spec.type].push(item);
   return item;
@@ -4456,6 +4496,10 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
   if(isCurrent())syncDongRouteVisibility(type);
 
   const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
+  const specificSelection=providerSnapshot!=='전체'||daySnapshot!=='전체'||!!here;
+  if(specificSelection){
+    for(const spec of specs)if(test2SpecNeedsVillageRebuild(spec))discardTest2BaselineOverlay(spec);
+  }
   // 랜딩→결과 전환 직후에는 resolveDistrict가 아직 끝나지 않을 수 있습니다.
   // 이때 전체 내수·북이 노선을 계산하면 첫 노선 표시가 지나치게 늦어지므로 캐시 복원만 하고 종료합니다.
   if(!here){
