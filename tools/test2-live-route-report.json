@@ -1,13 +1,13 @@
 {
   "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
-  "startedAt": "2026-09-22T06:31:43Z",
+  "startedAt": "2026-09-22T07:46:18Z",
   "pageErrors": [],
   "consoleErrors": [],
   "httpErrors": [],
   "snapshots": [
     {
       "label": "general-no-address",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058703",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790063178",
       "activeLayer": "general",
       "serviceLayerState": {
         "zone": true,
@@ -40,7 +40,7 @@
     },
     {
       "label": "recycle-no-address",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058703",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790063178",
       "activeLayer": "recycle",
       "serviceLayerState": {
         "zone": true,
@@ -73,7 +73,7 @@
     },
     {
       "label": "general-jeogok-after-search",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058703",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790063178",
       "activeLayer": "general",
       "serviceLayerState": {
         "zone": true,
@@ -106,7 +106,7 @@
     },
     {
       "label": "recycle-jeogok-after-search",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058703",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790063178",
       "activeLayer": "recycle",
       "serviceLayerState": {
         "zone": true,
