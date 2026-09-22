@@ -1,0 +1,35 @@
+name: Compare main and TEST2 zone points
+on:
+  push:
+    paths:
+      - 'tools/main-vs-test2-zone-points.trigger'
+permissions:
+  contents: write
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Compare zone points
+        run: python tools/compare_main_test2_zones.py
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/main-vs-test2-zone-points.trigger
+          test -f tools/main-vs-test2-zone-point-report.json || echo '{"fatal":"no report"}' > tools/main-vs-test2-zone-point-report.json
+          git add tools/main-vs-test2-zone-point-report.json tools/main-vs-test2-zone-points.trigger
+          git commit -m "Record main vs TEST2 zone point comparison" || true
+          git pull --rebase origin main
+          git push
