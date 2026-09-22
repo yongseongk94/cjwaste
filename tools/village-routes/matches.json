@@ -1,0 +1,3009 @@
+{
+  "generatedAt": "2026-09-22T14:08:17.226Z",
+  "source": "Kakao Maps place search; district polygon checked",
+  "matches": [
+    {
+      "key": "오창읍|창리",
+      "village": "창리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "창리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "창리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "창리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|장대리",
+      "village": "장대리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "장대리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "장대리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "장대리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7417724989088,
+          "lng": 127.459163142249,
+          "name": "장대리경로당",
+          "address": "충북 청주시 청원구 오창읍 오창시내1길 49",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 65-2",
+          "district": "오창읍",
+          "source": "village-senior-center",
+          "placeId": "23985894",
+          "sourceUrl": "http://place.map.kakao.com/23985894",
+          "query": "청주시 청원구 오창읍 장대리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|복현리",
+      "village": "복현리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "복현리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "복현리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "복현리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|원리",
+      "village": "원리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "원리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "원리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "원리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7512507440373,
+          "lng": 127.451062986724,
+          "name": "원리 경로당",
+          "address": "충북 청주시 청원구 오창읍 원리1길 13",
+          "jibunAddress": "충북 청주시 청원구 오창읍 원리 207-8",
+          "district": "오창읍",
+          "source": "village-senior-center",
+          "placeId": "23985927",
+          "sourceUrl": "http://place.map.kakao.com/23985927",
+          "query": "청주시 청원구 오창읍 원리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|여천리",
+      "village": "여천리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "여천리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "여천리"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "여천리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "여천리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|각리",
+      "village": "각리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "각리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "각리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "각리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|중신리",
+      "village": "중신리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "중신리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "중신리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "중신리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|신평리",
+      "village": "신평리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "신평리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "신평리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "신평리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|농소리",
+      "village": "농소리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "농소리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "농소리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "농소리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7056717394166,
+          "lng": 127.442573041651,
+          "name": "농소리경로당",
+          "address": "충북 청주시 청원구 오창읍 농소길 18-2",
+          "jibunAddress": "충북 청주시 청원구 오창읍 농소리 119-1",
+          "district": "오창읍",
+          "source": "village-senior-center",
+          "placeId": "10264051",
+          "sourceUrl": "http://place.map.kakao.com/10264051",
+          "query": "청주시 청원구 오창읍 농소리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|탑리",
+      "village": "탑리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "탑리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "탑리"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "탑리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "탑리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7086343533812,
+          "lng": 127.448423209902,
+          "name": "탑리마을회관",
+          "address": "충북 청주시 청원구 오창읍 탑리길 21-4",
+          "jibunAddress": "충북 청주시 청원구 오창읍 탑리 266-2",
+          "district": "오창읍",
+          "source": "village-hall",
+          "placeId": "27034097",
+          "sourceUrl": "http://place.map.kakao.com/27034097",
+          "query": "청주시 청원구 오창읍 탑리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|상평리",
+      "village": "상평리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "상평리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "상평리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|꽃화산리",
+      "village": "꽃화산리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "꽃화산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "꽃화산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "꽃화산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|후기리",
+      "village": "후기리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "후기리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "후기리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "후기리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|기암리",
+      "village": "기암리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "기암리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "기암리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "기암리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|석우리",
+      "village": "석우리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "석우리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "석우리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "석우리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|가곡리",
+      "village": "가곡리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "가곡리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "가곡리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "가곡리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7220933800451,
+          "lng": 127.458844486326,
+          "name": "가곡리노인정",
+          "address": "충북 청주시 청원구 오창읍 가곡2길 6",
+          "jibunAddress": "충북 청주시 청원구 오창읍 가곡리 353-1",
+          "district": "오창읍",
+          "source": "village-senior-center",
+          "placeId": "23987137",
+          "sourceUrl": "http://place.map.kakao.com/23987137",
+          "query": "청주시 청원구 오창읍 가곡리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|도암리",
+      "village": "도암리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "도암리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "도암리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|괴정리",
+      "village": "괴정리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "괴정리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "괴정리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "괴정리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7294017801489,
+          "lng": 127.460852660645,
+          "name": "괴정리 노인정",
+          "address": "충북 청주시 청원구 오창읍 괴정1길 72",
+          "jibunAddress": "충북 청주시 청원구 오창읍 괴정리 657-6",
+          "district": "오창읍",
+          "source": "village-senior-center",
+          "placeId": "1282975810",
+          "sourceUrl": "http://place.map.kakao.com/1282975810",
+          "query": "청주시 청원구 오창읍 괴정리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|양지리",
+      "village": "양지리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "양지리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "양지리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "scopeSignature": "오창읍",
+          "rawTerm": "양지리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|모정리",
+      "village": "모정리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "모정리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "모정리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "모정리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|학소리",
+      "village": "학소리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "학소리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "학소리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "학소리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|일신리",
+      "village": "일신리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "일신리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "일신리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "일신리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|유리",
+      "village": "유리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "유리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "유리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "유리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|빛화산리",
+      "village": "빛화산리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "빛화산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "scopeSignature": "오창읍",
+          "rawTerm": "빛화산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "scopeSignature": "오창읍",
+          "rawTerm": "빛화산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|창리",
+      "village": "창리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "창리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "창리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "창리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|복현리",
+      "village": "복현리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "복현리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "복현리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|성산리",
+      "village": "성산리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "성산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "성산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|화상리",
+      "village": "화상리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "북이면 화상리",
+        "화상리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "북이면 화상리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "화상리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|화죽리",
+      "village": "화죽리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "화죽리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "화죽리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "화죽리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|대율리",
+      "village": "대율리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "대율리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "대율리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "대율리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|내둔리",
+      "village": "내둔리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "내둔리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "내둔리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "내둔리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|성산리",
+      "village": "성산리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "성산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "성산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "성산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|용두리",
+      "village": "용두리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "용두리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "용두리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "용두리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|두릉리",
+      "village": "두릉리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "두릉리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "두릉리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "두릉리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7423261594892,
+          "lng": 127.345506165371,
+          "name": "두릉리마을회관",
+          "address": "충북 청주시 청원구 오창읍 두릉1길 59-36",
+          "jibunAddress": "충북 청주시 청원구 오창읍 두릉리 333",
+          "district": "오창읍",
+          "source": "village-hall",
+          "placeId": "7851500",
+          "sourceUrl": "http://place.map.kakao.com/7851500",
+          "query": "청주시 청원구 오창읍 두릉리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "오창읍|백현리",
+      "village": "백현리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "백현리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "백현리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "백현리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|성재리",
+      "village": "성재리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "성재리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "성재리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "성재리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "오창읍|가좌리",
+      "village": "가좌리",
+      "districts": [
+        "오창읍"
+      ],
+      "terms": [
+        "가좌리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "가좌리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "scopeSignature": "오창읍",
+          "rawTerm": "가좌리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|구성3리",
+      "village": "구성3리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "구성3리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3346",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "구성3리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|구성1리",
+      "village": "구성1리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "구성1리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3346",
+          "day": "목",
+          "scopeSignature": "내수읍",
+          "rawTerm": "구성1리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.6809495502343,
+          "lng": 127.508026556652,
+          "name": "구성1리마을회관",
+          "address": "충북 청주시 청원구 내수읍 구성길 43",
+          "jibunAddress": "충북 청주시 청원구 내수읍 구성리 141-4",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "1695305770",
+          "sourceUrl": "http://place.map.kakao.com/1695305770",
+          "query": "청주시 청원구 내수읍 구성1리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍|은곡리",
+      "village": "은곡리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "은곡리",
+        "은곡리 일부"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3346",
+          "day": "목",
+          "scopeSignature": "내수읍",
+          "rawTerm": "은곡리"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "은곡리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "은곡리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "9090",
+          "day": "목",
+          "scopeSignature": "내수읍",
+          "rawTerm": "은곡리 일부"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.6990050995681,
+          "lng": 127.529573831607,
+          "name": "은곡리마을회관",
+          "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+          "jibunAddress": "충북 청주시 청원구 내수읍 은곡리 90-1",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "27428613",
+          "sourceUrl": "http://place.map.kakao.com/27428613",
+          "query": "청주시 청원구 내수읍 은곡리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍|마산리",
+      "village": "마산리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "마산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "마산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "마산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|학평리",
+      "village": "학평리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "학평리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "학평리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "학평리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|내수리",
+      "village": "내수리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "내수리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "내수리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "내수리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|풍정리",
+      "village": "풍정리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "풍정리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "풍정리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "풍정리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|덕암리",
+      "village": "덕암리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "덕암리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "덕암리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "덕암리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|세교리",
+      "village": "세교리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "세교리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "세교리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "세교리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|형동리",
+      "village": "형동리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "형동리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "형동리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "형동리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|비상리",
+      "village": "비상리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "비상리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "비상리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "비상리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.70792442397508,
+          "lng": 127.58131703218913,
+          "name": "비상리마을회관",
+          "address": "충북 청주시 청원구 내수읍 비상길 25-1",
+          "jibunAddress": "충북 청주시 청원구 내수읍 비상리 273-6",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "145179791",
+          "sourceUrl": "http://place.map.kakao.com/145179791",
+          "query": "청주시 청원구 내수읍 비상리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍|비중리",
+      "village": "비중리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "비중리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "비중리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|우산리",
+      "village": "우산리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "우산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "우산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "우산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|초정리",
+      "village": "초정리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "초정리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "초정리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "초정리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|저곡리",
+      "village": "저곡리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "저곡리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "저곡리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "저곡리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7096301548653,
+          "lng": 127.59392859991,
+          "name": "저곡리마을회관",
+          "address": "충북 청주시 청원구 내수읍 저곡길 33-4",
+          "jibunAddress": "충북 청주시 청원구 내수읍 저곡리 134-1",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "1577657865",
+          "sourceUrl": "http://place.map.kakao.com/1577657865",
+          "query": "청주시 청원구 내수읍 저곡리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍,북이면|은곡리",
+      "village": "은곡리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "은곡리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "은곡리"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "은곡리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "은곡리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.6990050995681,
+          "lng": 127.529573831607,
+          "name": "은곡리마을회관",
+          "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+          "jibunAddress": "충북 청주시 청원구 내수읍 은곡리 90-1",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "27428613",
+          "sourceUrl": "http://place.map.kakao.com/27428613",
+          "query": "청주시 청원구 내수읍 은곡리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍,북이면|신안리",
+      "village": "신안리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "신안리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신안리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신안리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신안리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.72408223821757,
+          "lng": 127.52037879455152,
+          "name": "신안리마을회관",
+          "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 474-1",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "23987339",
+          "sourceUrl": "http://place.map.kakao.com/23987339",
+          "query": "청주시 청원구 내수읍 신안리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍,북이면|마산리",
+      "village": "마산리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "마산리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "마산리"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "마산리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "마산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|학평리",
+      "village": "학평리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "학평리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "학평리"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "학평리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "학평리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "학평리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|신대리",
+      "village": "신대리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "신대리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신대리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신대리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|장양2리",
+      "village": "장양2리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "장양2리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장양2리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장양2리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|장양1리",
+      "village": "장양1리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "장양1리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장양1리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장양1리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7594865175932,
+          "lng": 127.529854941757,
+          "name": "장양1리마을회관",
+          "address": "충북 청주시 청원구 북이면 장양1길 29-3",
+          "jibunAddress": "충북 청주시 청원구 북이면 장양리 442-4",
+          "district": "북이면",
+          "source": "village-hall",
+          "placeId": "23985924",
+          "sourceUrl": "http://place.map.kakao.com/23985924",
+          "query": "청주시 청원구 북이면 장양1리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍,북이면|장양3리",
+      "village": "장양3리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "장양3리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장양3리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장양3리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|용계리",
+      "village": "용계리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "용계리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "용계리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "용계리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|석성리",
+      "village": "석성리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "석성리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "석성리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "석성리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|화상리",
+      "village": "화상리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "화상리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "화상리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "화상리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|추학리",
+      "village": "추학리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "추학리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "추학리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "추학리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|서당리",
+      "village": "서당리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "서당리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "서당리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "서당리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|대길리",
+      "village": "대길리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "대길리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "대길리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "대길리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|부연리",
+      "village": "부연리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "부연리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "부연리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "부연리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|선암리",
+      "village": "선암리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "선암리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "선암리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "선암리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|신기리",
+      "village": "신기리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "신기리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신기리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "신기리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7332412787184,
+          "lng": 127.545307722241,
+          "name": "신기리마을회관",
+          "address": "충북 청주시 청원구 북이면 신기길 33",
+          "jibunAddress": "충북 청주시 청원구 북이면 신기리 220-3",
+          "district": "북이면",
+          "source": "village-hall",
+          "placeId": "25640808",
+          "sourceUrl": "http://place.map.kakao.com/25640808",
+          "query": "청주시 청원구 북이면 신기리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍,북이면|호명리",
+      "village": "호명리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "호명리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "호명리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "호명리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|석화리",
+      "village": "석화리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "석화리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "석화리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "석화리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|현암리",
+      "village": "현암리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "현암리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "현암리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "현암리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|내수리",
+      "village": "내수리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "내수리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "내수리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "내수리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|장재리",
+      "village": "장재리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "장재리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장재리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "장재리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.748284561222604,
+          "lng": 127.56288565487732,
+          "name": "장재마을회관",
+          "address": "충북 청주시 청원구 북이면 장재토성길 6",
+          "jibunAddress": "충북 청주시 청원구 북이면 장재리 4-3",
+          "district": "북이면",
+          "source": "village-hall",
+          "placeId": "27428509",
+          "sourceUrl": "http://place.map.kakao.com/27428509",
+          "query": "청주시 청원구 북이면 장재리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍,북이면|토성리",
+      "village": "토성리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "토성리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "토성리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "토성리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|금암리",
+      "village": "금암리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "금암리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "금암리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "금암리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|금대리",
+      "village": "금대리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "금대리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "금대리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "금대리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|송정리",
+      "village": "송정리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "송정리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "송정리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "송정리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|옥수리",
+      "village": "옥수리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "옥수리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "옥수리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "옥수리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "옥수리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|내추리",
+      "village": "내추리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "내추리"
+      ],
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "내추리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "내추리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "내추리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|신안리",
+      "village": "신안리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "신안리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "신안리"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "신안리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.72408223821757,
+          "lng": 127.52037879455152,
+          "name": "신안리마을회관",
+          "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 474-1",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "23987339",
+          "sourceUrl": "http://place.map.kakao.com/23987339",
+          "query": "청주시 청원구 내수읍 신안리 마을회관"
+        }
+      ]
+    },
+    {
+      "key": "내수읍|도원리",
+      "village": "도원리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "도원리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "월",
+          "scopeSignature": "내수읍",
+          "rawTerm": "도원리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|풍정리",
+      "village": "풍정리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "풍정리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "풍정리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|세교리",
+      "village": "세교리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "세교리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "세교리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|우산리",
+      "village": "우산리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "우산리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "우산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|영하리",
+      "village": "영하리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "영하리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "영하리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|은곡3리",
+      "village": "은곡3리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "은곡3구"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "은곡3구"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|도원리",
+      "village": "도원리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "도원리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "도원리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍,북이면|대율리",
+      "village": "대율리",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "terms": [
+        "대율리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "scopeSignature": "내수읍|북이면",
+          "rawTerm": "대율리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|장대리",
+      "village": "장대리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "장대리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "장대리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7417724989088,
+          "lng": 127.459163142249,
+          "name": "장대리경로당",
+          "address": "충북 청주시 청원구 오창읍 오창시내1길 49",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 65-2",
+          "district": "오창읍",
+          "source": "village-senior-center",
+          "placeId": "23985894",
+          "sourceUrl": "http://place.map.kakao.com/23985894",
+          "query": "청주시 청원구 오창읍 장대리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "북이면,오창읍|신대리",
+      "village": "신대리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "신대리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "신대리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "북이면,오창읍|석성리",
+      "village": "석성리",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "terms": [
+        "석성리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "scopeSignature": "북이면|오창읍",
+          "rawTerm": "석성리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|구성리",
+      "village": "구성리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "구성리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "9090",
+          "day": "목",
+          "scopeSignature": "내수읍",
+          "rawTerm": "구성리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|묵방리",
+      "village": "묵방리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "묵방리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "9090",
+          "day": "목",
+          "scopeSignature": "내수읍",
+          "rawTerm": "묵방리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|국동리",
+      "village": "국동리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "국동리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "9090",
+          "day": "목",
+          "scopeSignature": "내수읍",
+          "rawTerm": "국동리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.679181988137,
+          "lng": 127.525983214166,
+          "name": "국동리경로당",
+          "address": "충북 청주시 청원구 내수읍 국동길 79",
+          "jibunAddress": "충북 청주시 청원구 내수읍 국동리 67",
+          "district": "내수읍",
+          "source": "village-senior-center",
+          "placeId": "23987381",
+          "sourceUrl": "http://place.map.kakao.com/23987381",
+          "query": "청주시 청원구 내수읍 국동리 경로당"
+        }
+      ]
+    },
+    {
+      "key": "내수읍|발산리",
+      "village": "발산리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "발산리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0264",
+          "day": "화",
+          "scopeSignature": "내수읍",
+          "rawTerm": "발산리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|입상리",
+      "village": "입상리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "입상리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0264",
+          "day": "금",
+          "scopeSignature": "내수읍",
+          "rawTerm": "입상리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|입동리",
+      "village": "입동리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "입동리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0264",
+          "day": "금",
+          "scopeSignature": "내수읍",
+          "rawTerm": "입동리"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|원통1리",
+      "village": "원통1리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "원통1구"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0264",
+          "day": "금",
+          "scopeSignature": "내수읍",
+          "rawTerm": "원통1구"
+        }
+      ],
+      "status": "unresolved",
+      "facilities": []
+    },
+    {
+      "key": "내수읍|원통2리",
+      "village": "원통2리",
+      "districts": [
+        "내수읍"
+      ],
+      "terms": [
+        "원통2리"
+      ],
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0264",
+          "day": "금",
+          "scopeSignature": "내수읍",
+          "rawTerm": "원통2리"
+        }
+      ],
+      "status": "matched",
+      "facilities": [
+        {
+          "lat": 36.7022920567538,
+          "lng": 127.501341665817,
+          "name": "원통2리마을회관",
+          "address": "충북 청주시 청원구 내수읍 원통숲안1길 78-15",
+          "jibunAddress": "충북 청주시 청원구 내수읍 원통리 388-1",
+          "district": "내수읍",
+          "source": "village-hall",
+          "placeId": "25622851",
+          "sourceUrl": "http://place.map.kakao.com/25622851",
+          "query": "청주시 청원구 내수읍 원통2리 마을회관"
+        }
+      ]
+    }
+  ]
+}
