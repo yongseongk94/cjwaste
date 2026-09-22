@@ -42,3 +42,6 @@ activeDay='월';const filtered=partitionOchang2023Display('general',[z]);
 if(filtered.some(x=>x.noSchedule))throw Error('weekday filter showed unknown schedule');
 `);
 console.log('PASS 2023 boundary: inside/outside, both waste types, clipped lines, unchanged cache, coverage, no overlap, filters');
+
+check("activeDay='전체';routeLayerMatchedColor('general',{vehicle:'6224',day:'화',districts:['오근장동']})");
+console.log('PASS live route color uses test-page display registry');

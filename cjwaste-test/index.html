@@ -734,6 +734,7 @@ const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로'
 const OCHANG_CONTRACT_COLOR='#0f766e';
 // 산업단지 블록 안 빈 공간을 메우기 위한 최대 추정거리. 리 전체로 번지는 것을 막기 위해 실제 대행노선에서 180m 이내만 허용합니다.
 // 2023년 고시 도면을 도로 교차로에 맞춘 참고 경계. 경계 밖으로 대행구역을 외삽하지 않습니다.
+const OCHANG_2023_RUNTIME_VERSION='2023-boundary-v2';
 const OCHANG_2023_FEATURE=globalThis.CJWASTE_OCHANG_2023||null;
 function insideOchang2023(lat,lng){return !!OCHANG_2023_FEATURE&&Number.isFinite(+lat)&&Number.isFinite(+lng)&&pointInGeoFeature([+lng,+lat],OCHANG_2023_FEATURE);}
 function ochang2023EdgeDistanceKm(lat,lng){
@@ -4264,7 +4265,7 @@ function routeLayerMatchedColor(type,item){
   const signatureCounts=new Map();
 
   for(const district of districts){
-    for(const z of (legacyDisplayZones?.[type]?.get?.(district)||[])){
+    for(const z of (serviceZoneOverlays[type]||[]).filter(z=>z.district===district&&!z.noSchedule)){
       const zoneVehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean);
       const sameVehicle=token&&zoneVehicles.some(v=>focusVehicleToken(v)===token);
       const zoneProvider=z?.provider||routeCompany(z?.vehicle)||'';

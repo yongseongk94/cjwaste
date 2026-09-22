@@ -17,7 +17,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 120); do
             if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?coverage_audit=$RANDOM" -o /tmp/test-live.html \
-              && grep -q "OCHANG_2023_FEATURE" /tmp/test-live.html \
+              && grep -q "2023-boundary-v2" /tmp/test-live.html \
               && grep -q "TEST_ZONE_RENDER_MODE='schedule-map-v4-reviewed'" /tmp/test-live.html; then
               exit 0
             fi
