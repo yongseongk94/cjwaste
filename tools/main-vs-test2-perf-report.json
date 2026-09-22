@@ -1,18 +1,18 @@
 {
-  "startedAt": "2026-09-22T07:47:32Z",
+  "startedAt": "2026-09-22T07:52:00Z",
   "main": {
     "name": "main",
     "url": "https://yongseongk94.github.io/cjwaste/",
     "httpStatus": 200,
     "timingMs": {
-      "ready": 1115,
-      "showResultPlus1500": 1503,
-      "recycleSwitchPlus800": 890,
-      "addressSearchPlus1500": 1870
+      "ready": 1117,
+      "showResultPlus1500": 1502,
+      "recycleSwitchPlus800": 880,
+      "addressSearchPlus1500": 1892
     },
     "requests": {
       "total": 146,
-      "duringAddressSearch": 64,
+      "duringAddressSearch": 63,
       "kakaoLocal": 74,
       "routeProxy": 0,
       "serviceZoneJson": 2,
@@ -88,12 +88,12 @@
       }
     },
     "metrics": {
-      "TaskDuration": 1.2e-05,
+      "TaskDuration": 1.4e-05,
       "ScriptDuration": 0,
       "LayoutDuration": 0,
       "RecalcStyleDuration": 0,
-      "JSHeapUsedSize": 29998948,
-      "Nodes": 664,
+      "JSHeapUsedSize": 40962196,
+      "Nodes": 9275,
       "LayoutCount": 0,
       "RecalcStyleCount": 0
     }
@@ -103,10 +103,10 @@
     "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
     "httpStatus": 200,
     "timingMs": {
-      "ready": 784,
-      "showResultPlus1500": 1502,
-      "recycleSwitchPlus800": 7601,
-      "addressSearchPlus1500": 2372
+      "ready": 706,
+      "showResultPlus1500": 1503,
+      "recycleSwitchPlus800": 878,
+      "addressSearchPlus1500": 2208
     },
     "requests": {
       "total": 72,
@@ -138,7 +138,7 @@
           }
         },
         "zones": {
-          "general": 67,
+          "general": 17,
           "recycle": 0
         }
       },
@@ -159,8 +159,8 @@
           }
         },
         "zones": {
-          "general": 67,
-          "recycle": 50
+          "general": 17,
+          "recycle": 11
         }
       },
       "afterSearch": {
@@ -180,18 +180,18 @@
           }
         },
         "zones": {
-          "general": 77,
-          "recycle": 50
+          "general": 47,
+          "recycle": 11
         }
       }
     },
     "metrics": {
-      "TaskDuration": 0.000878,
-      "ScriptDuration": 0.000611,
+      "TaskDuration": 1.4e-05,
+      "ScriptDuration": 0,
       "LayoutDuration": 0,
       "RecalcStyleDuration": 0,
-      "JSHeapUsedSize": 59438752,
-      "Nodes": 10719,
+      "JSHeapUsedSize": 27307584,
+      "Nodes": 1137,
       "LayoutCount": 0,
       "RecalcStyleCount": 0
     }
