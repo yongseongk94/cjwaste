@@ -2795,7 +2795,8 @@ async function ensureAddressRouteItems(type,ctx){
   // 새 길찾기가 실패해도 기존 선이 사라지지 않습니다.
   await hydrateCachedRouteOverlays(specs);
   await hydrateExternalBundledPrecomputedData();
-  const built=await mapWithConcurrency(specs,2,async spec=>{
+  // 현재 주소 후보만 1개씩 처리해 메인스레드/외부 API 동시부하를 제한합니다.
+  const built=await mapWithConcurrency(specs,1,async spec=>{
     try{
       const existing=existingDongRouteOverlay(spec);
       const forceRebuild=!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
@@ -4582,65 +4583,18 @@ function isNaesuBugiRouteSpec(spec){
   return ds.includes('내수읍')||ds.includes('북이면');
 }
 async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
-  // TEST2: 주소가 확정되기 전 전체 읍면 노선을 한꺼번에 계산하지 않습니다.
-  // 검색주소가 확정되면 해당 읍면의 차량×요일 노선부터 계산하여 즉시 표시하고,
-  // 나머지는 뒤에서 캐시에 준비합니다.
-  try{await ensureTestAdminBoundaryLoad()}catch(e){console.warn('근거노선 경계 준비 실패',e)}
+  // TEST2 성능모드: 레이어 전환에서는 기존 IndexedDB/사전계산 번들만 복원합니다.
+  // 누락노선을 여기서 계산하지 않습니다. 현재 주소에 꼭 필요한 후보만 ensureAddressRouteItems()에서 계산합니다.
   const providerSnapshot=selectedVehicle[type]||'전체';
   const daySnapshot=activeDay||'전체';
   const isCurrent=()=>requestSeq===layerRequestSeq&&activeLayer===type&&(selectedVehicle[type]||'전체')===providerSnapshot&&(activeDay||'전체')===daySnapshot;
   const specs=routeCandidatesForSelection(type);
   if(!specs.length){if(isCurrent())syncDongRouteVisibility(type);return}
-
   await hydrateCachedRouteOverlays(specs);
   await hydrateExternalBundledPrecomputedData();
   if(isCurrent()){
     syncDongRouteVisibility(type);
     if(serviceLayerState.zone)scheduleVisibleServiceZoneMaterialization(type);
-  }
-
-  const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
-  // 기존 사전계산 노선은 여기서 선제 삭제하지 않습니다.
-  // 주소별 마을회관/경로당 보정은 ensureAddressRouteItems에서 새 계산 성공 후에만 교체합니다.
-  // 랜딩→결과 전환 직후에는 resolveDistrict가 아직 끝나지 않을 수 있습니다.
-  // 이때 전체 내수·북이 노선을 계산하면 첫 노선 표시가 지나치게 늦어지므로 캐시 복원만 하고 종료합니다.
-  if(!here){
-    if(isCurrent())syncDongRouteVisibility(type);
-    // 구형 rural 번들을 차단했으므로, 주소 선택 전에도 읍면 직영노선을 새 규칙으로 백그라운드 준비합니다.
-    // 새 규칙은 수거지 사이 단순 차량이동선을 만들지 않아 고속도로가 근거노선으로 표시되지 않습니다.
-    const ruralMissing=specs.filter(s=>s.scopeKind==='rural'&&!existingDongRouteOverlay(s));
-    if(ruralMissing.length){
-      buildRouteSpecsGeometryGrouped(ruralMissing,type,isCurrent)
-        .catch(e=>console.warn('TEST2 고속도로 제외 읍면노선 백그라운드 준비 실패',e));
-    }
-    return;
-  }
-
-  const missing=specs.filter(s=>!existingDongRouteOverlay(s));
-  const preferred=String(preferredRouteVehicle[type]||'').trim();
-  const urgent=missing.filter(s=>{
-    const local=(s.districts||[]).map(canonicalDistrict).includes(here);
-    const exact=preferred&&(String(s.vehicle)===preferred||routePlate(s.vehicle)===preferred);
-    return local&&exact;
-  });
-  const local=missing.filter(s=>!urgent.includes(s)&&(s.districts||[]).map(canonicalDistrict).includes(here));
-  const ruralPriority=missing.filter(s=>!urgent.includes(s)&&!local.includes(s)&&isNaesuBugiRouteSpec(s));
-  const rest=missing.filter(s=>!urgent.includes(s)&&!local.includes(s)&&!ruralPriority.includes(s));
-
-  if(urgent.length)await buildRouteSpecsGeometryGrouped(urgent,type,isCurrent);
-  if(isCurrent())syncDongRouteVisibility(type);
-
-  if(local.length)await buildRouteSpecsGeometryGrouped(local,type,isCurrent);
-  if(isCurrent())syncDongRouteVisibility(type);
-
-  // 현재 주소와 무관한 노선은 화면 표시를 막지 않고 백그라운드에서 준비합니다.
-  if(ruralPriority.length){
-    buildRouteSpecsGeometryGrouped(ruralPriority,type,isCurrent)
-      .catch(e=>console.warn('내수·북이 비가시 근거노선 백그라운드 준비 실패',e));
-  }
-  if(rest.length){
-    buildRouteSpecsGeometryGrouped(rest,type,isCurrent)
-      .catch(e=>console.warn('비가시 근거노선 백그라운드 준비 실패',e));
   }
 }
 
@@ -4665,30 +4619,10 @@ async function preloadAllDongRoutes(){
   if(dongRoutePreloadStarted)return;
   dongRoutePreloadStarted=true;
   const specs=allDongRouteSpecs();
-
-  // v78: 대용량 사전계산 데이터는 index.html에서 분리합니다.
-  // IndexedDB를 먼저 복원하고, 새 브라우저처럼 누락 노선이 있을 때만 외부 묶음을 1회 불러옵니다.
+  // TEST2 성능모드: 앱 시작 시에는 네트워크 길찾기/주소검색을 절대 돌리지 않습니다.
+  // 이미 저장된 IndexedDB와 정적 사전계산 노선만 복원합니다.
   await hydrateCachedRouteOverlays(specs);
-  // v82: 외부 사전계산 노선은 캐시 유무와 관계없이 1회 병합합니다.
-  // 일부 캐시만 존재할 때 번들 전체 로딩이 건너뛰어져 전지역 노선이 사라지는 회귀를 방지합니다.
   await hydrateExternalBundledPrecomputedData();
-  if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
-
-  // IndexedDB와 외부 사전계산 묶음에도 없는 노선을 계산합니다.
-  // 외부 번들에 0건인 내수·북이 노선을 먼저 만들어 사용자가 레이어를 열었을 때 사라져 보이지 않게 합니다.
-  const missing=specs.filter(s=>!existingDongRouteOverlay(s));
-  const ruralFirst=missing.filter(isNaesuBugiRouteSpec);
-  const otherMissing=missing.filter(s=>!ruralFirst.includes(s));
-  await mapWithConcurrency(ruralFirst,4,async spec=>{
-    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('내수·북이 수거노선 준비 실패',spec,e)}
-    if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
-  });
-  await mapWithConcurrency(otherMissing,3,async spec=>{
-    try{await buildDongRouteOverlay(spec)}catch(e){console.warn('수거노선 준비 실패',spec,e)}
-    if(activeLayer===spec.type&&serviceLayerState.route)syncDongRouteVisibility(spec.type);
-  });
-
-  // 테스트페이지: 수거권역은 레이어 선택 시 개별 로드하고 전체 사전로딩과 분리합니다.
   if(activeLayer==='general'||activeLayer==='recycle')syncDongRouteVisibility(activeLayer);
   window.__CJWASTE_PRECOMPUTE_READY=true;
 }
@@ -4751,7 +4685,9 @@ async function serviceRouteGroups(type,district,riName='',riCode=''){
        String(x.district||x.districtLabel||'').split(/[·,]/).map(canonicalDistrict).includes(districtName))
     );
     if(item)return item;
-    return buildDongRouteOverlay(spec);
+    // 일반 이용 중 추정권역 때문에 누락노선을 실시간 생성하지 않습니다.
+    // 사전생성 모드에서만 새 좌표를 계산합니다.
+    return SERVICE_ZONE_PRECOMPUTE_ONLY?buildDongRouteOverlay(spec):null;
   });
   const groups=new Map();
   specs.forEach((spec,i)=>{
