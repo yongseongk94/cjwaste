@@ -29,11 +29,20 @@ async def route_state(page):
         const lines=items.flatMap(i=>safe(()=>routeItemPolylines(i),[]));
         out[type]={items:items.length,polylines:lines.length,visible:lines.filter(p=>safe(()=>p.getMap()===map,false)).length};
       }
+      const routeKeys={};
+      for(const type of ['general','recycle']){
+        routeKeys[type]=(safe(()=>dongRouteOverlays[type]||[],[])).map(i=>({
+          vehicle:i.vehicle||'', day:i.day||'', provider:i.provider||routeCompany(i.vehicle)||'',
+          districts:safe(()=>routeAllowedDistricts(i),[]), fromBundle:!!i.fromBundle,
+          segments:(i.segments||[]).length
+        })).sort((a,b)=>(a.vehicle+'|'+a.day+'|'+a.districts.join(',')).localeCompare(b.vehicle+'|'+b.day+'|'+b.districts.join(','),'ko'));
+      }
       return {
         activeLayer:safe(()=>activeLayer,''),
         district:safe(()=>currentLegalEmd||currentDistrict,''),
         ri:safe(()=>currentLegalRi,''),
         routeItems:out,
+        routeKeys,
         zones:{
           general:safe(()=>serviceZoneOverlays.general.length,0),
           recycle:safe(()=>serviceZoneOverlays.recycle.length,0)
