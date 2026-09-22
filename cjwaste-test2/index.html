@@ -4484,7 +4484,7 @@ function routeLayerMatchedColor(type,item){
   const signatureCounts=new Map();
 
   for(const district of districts){
-    for(const z of (legacyDisplayZones?.[type]?.get?.(district)||[])){
+    for(const z of rawServiceZonesForDistrict(type,district)){
       const zoneVehicles=((z?.vehicles||[]).length?z.vehicles:[z?.vehicle]).filter(Boolean);
       const sameVehicle=token&&zoneVehicles.some(v=>focusVehicleToken(v)===token);
       const zoneProvider=z?.provider||routeCompany(z?.vehicle)||'';
@@ -5225,7 +5225,7 @@ async function inferredZoneMatchForAddress(type,ctx){
   // 주소카드와 지도 ① 수거권역이 서로 다른 결과를 내지 않도록 실제 표시 폴리곤을 그대로 판정합니다.
   return ensureServiceZoneMatch(type,ctx);
 }
-const REVIEW_PUBLICATION_URL='data/reviewed-service-zones-v1.json';
+const REVIEW_PUBLICATION_URL='cjwaste-test2/data/reviewed-service-zones-v1.json?v=test2-pathfix-1';
 let publishedReviewLoad=null;
 async function loadPublishedReviewZones(){
   if(publishedReviewLoad)return publishedReviewLoad;
