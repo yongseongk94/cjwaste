@@ -2627,7 +2627,7 @@ function materializeVisibleRawServiceZones(type){
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
 
   if(!localScheduleIndexes[type]||localScheduleIndexes[type].liveCount!==(dongRouteOverlays[type]||[]).length)ensureLocalScheduleIndex(type).catch(e=>console.warn('세부 일정 근거 준비 실패',e));
-  if(!test2OchangWarmStarted[type]){
+  if(SERVICE_ZONE_PRECOMPUTE_ONLY&&!test2OchangWarmStarted[type]){
     test2OchangWarmStarted[type]=true;
     ensureOchangContractRouteItems(type).then(()=>{
       localScheduleIndexes[type]=null;
