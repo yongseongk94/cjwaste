@@ -1855,7 +1855,9 @@ async function ensureVisibleServiceZoneChunks(type){
   const ok=await hydrateExternalBundledServiceZones(type);
   // 저장된 추정권역은 제일환경 실시간 노선 계산을 기다리지 않고 즉시 표시합니다.
   scheduleVisibleServiceZoneMaterialization(type);
-  if(loadedServiceZoneDistricts[type].has('오창읍')){
+  // 일반 이용에서는 저장된 오창산단 권역/노선을 그대로 사용합니다.
+  // 실시간 제일환경 길찾기는 사전생성 모드에서만 수행해 불필요한 프록시 호출과 렉을 막습니다.
+  if(SERVICE_ZONE_PRECOMPUTE_ONLY&&loadedServiceZoneDistricts[type].has('오창읍')){
     ensureOchangContractRouteItems(type).then(()=>{
       localScheduleIndexes[type]=null;
       scheduleVisibleServiceZoneMaterialization(type);
