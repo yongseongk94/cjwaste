@@ -2797,7 +2797,9 @@ async function ensureAddressRouteItems(type,ctx){
   const built=await mapWithConcurrency(specs,1,async spec=>{
     try{
       const existing=existingDongRouteOverlay(spec);
-      const forceRebuild=!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
+      // 일반 이용에서는 이미 사전계산된 선을 즉시 사용합니다.
+      // 마을회관/경로당 기준 재계산은 사전생성 모드에서만 수행해 주소검색 중 길찾기 폭증을 막습니다.
+      const forceRebuild=SERVICE_ZONE_PRECOMPUTE_ONLY&&!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
       return await buildDongRouteOverlay(spec,{forceRebuild});
     }
     catch(e){console.warn('TEST2 현재주소 노선 생성 실패 - 기존노선 유지',spec,e);return existingDongRouteOverlay(spec)}
