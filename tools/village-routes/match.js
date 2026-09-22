@@ -32,13 +32,12 @@ async function matchVillageFacility(target){
   for(const district of target.districts){
     for(const kind of ['마을회관','경로당']){
       const query='청주 '+district+' '+name+' '+kind;
-      let rows=await keyword(query);
-      if(!rows.length)rows=await keyword('청주 '+district+' '+stem+' '+kind);
+      let rows=[...await keyword(query),...await keyword('청주 '+name+kind),...await keyword('청주 '+stem+kind)];
       candidates.push(...rows.map(r=>({name:r.place_name,address:r.address_name,roadAddress:r.road_address_name,lat:+r.y,lng:+r.x,query,id:r.id})));
       const matches=rows.filter(r=>{
         const n=compact(r.place_name),a=String(r.address_name||'');
         if(!a.includes('청원구')||!a.includes(district))return false;
-        if(kind==='마을회관'?!/회관/.test(n):!/경로당|노인정/.test(n))return false;
+        if(kind==='마을회관'?!/회관/.test(n):!/경로당|노인정|노인회관|경로회관/.test(n))return false;
         const numbered=/\d/.test(name);
         const stemBase=stem.replace(/\d+$/,'');
         const nameMatch=numbered?new RegExp(stem+'(?:리|구|마을|경로|노인)').test(n):(n.includes(name)||n.startsWith(stemBase));
@@ -54,5 +53,6 @@ async function matchVillageFacility(target){
     }
   }
   const facilities=[];for(const f of results)if(!facilities.some(p=>routePointDistance(p,f)<.02))facilities.push(f);
+  facilities.sort((a,b)=>a.name.localeCompare(b.name,'ko',{numeric:true}));
   return {...target,status:facilities.length?'matched':'unresolved',facilities,candidates};
 }
