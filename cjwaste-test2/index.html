@@ -215,10 +215,10 @@
   </section>
 </main>
 
-<script id="bundledPrecomputed" type="application/json" data-src="../data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json?v=test2-baseline-1"></script>
-<script id="bundledServiceZones" type="application/json" data-manifest="data/service-zones-manifest-v2.json"></script>
+<script id="bundledPrecomputed" type="application/json" data-src="data/precomputed-routes-v76-layer-visibility-refresh-a1e5f19fa4da.json?v=test2-baseline-2"></script>
+<script id="bundledServiceZones" type="application/json" data-manifest="cjwaste-test2/data/service-zones-gapfill-v3-manifest.json?v=test2-pathfix-1"></script>
 <script src="vendor/polygon-clipping-0.15.7.min.js"></script>
-<script src="data/ochang-boundary-2023.js?v=2023v2"></script>
+<script src="cjwaste-test2/data/ochang-boundary-2023.js?v=2023v3"></script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -1738,7 +1738,7 @@ let adminMode=false,adminDrawing=false,adminDraftPoints=[],adminDraftLine=null,a
 // 기존 브라우저는 IndexedDB를 우선 사용하고, 새 브라우저만 외부 사전계산 데이터를 1회 받아 캐시에 저장합니다.
 let bundledServiceZoneManifest=null;
 let bundledServiceZoneManifestPromise=null;
-const TEST_SERVICE_ZONE_MANIFEST='data/service-zones-gapfill-v3-manifest.json?v=test2-zonefix-1';
+const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test2/data/service-zones-gapfill-v3-manifest.json?v=test2-pathfix-1';
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
 
@@ -1796,7 +1796,8 @@ async function fetchServiceZoneChunk(type,entry){
   if(serviceZoneChunkPromises.has(key))return serviceZoneChunkPromises.get(key);
   const promise=(async()=>{
     try{
-      const res=await fetch(entry.path+(entry.path.includes('?')?'&':'?')+'v=test2-zonefix-1',{cache:'no-cache'});
+      const chunkPath=entry.path.startsWith('data/')?'cjwaste-test2/'+entry.path:entry.path;
+      const res=await fetch(chunkPath+(chunkPath.includes('?')?'&':'?')+'v=test2-pathfix-1',{cache:'no-cache'});
       if(!res.ok)throw new Error('service zone district chunk '+res.status);
       const chunk=await res.json();
       if(chunk.zoneVersion!==SERVICE_ZONE_CACHE_VERSION)throw new Error('service zone district version mismatch');
