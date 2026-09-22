@@ -743,6 +743,44 @@ function insideOchang2023(lat,lng){
 function ochang2023Geometry(){
   return OCHANG_2023_FEATURE?[OCHANG_2023_FEATURE.geometry.coordinates]:[];
 }
+function clipOchang2023Segments(segments){
+  if(!OCHANG_2023_FEATURE)return [];
+  const rings=OCHANG_2023_FEATURE.geometry.coordinates;
+  const out=[];
+  for(const seg of (segments||[])){
+    let current=[];
+    const flush=()=>{if(current.length>1)out.push(current);current=[]};
+    for(let i=1;i<seg.length;i++){
+      const a=seg[i-1],b=seg[i];
+      const dx=+b.lng-+a.lng,dy=+b.lat-+a.lat;
+      const ts=[0,1];
+      for(const ring of rings){
+        for(let j=1;j<ring.length;j++){
+          const c=ring[j-1],d=ring[j],ex=d[0]-c[0],ey=d[1]-c[1];
+          const den=dx*ey-dy*ex;
+          if(Math.abs(den)<1e-16)continue;
+          const t=((c[0]-a.lng)*ey-(c[1]-a.lat)*ex)/den;
+          const u=((c[0]-a.lng)*dy-(c[1]-a.lat)*dx)/den;
+          if(t>0&&t<1&&u>=0&&u<=1)ts.push(t);
+        }
+      }
+      ts.sort((x,y)=>x-y);
+      for(let j=1;j<ts.length;j++){
+        const t0=ts[j-1],t1=ts[j];
+        if(t1-t0<1e-10)continue;
+        const mid=(t0+t1)/2;
+        if(!insideOchang2023(+a.lat+dy*mid,+a.lng+dx*mid)){flush();continue}
+        const p={lat:+a.lat+dy*t0,lng:+a.lng+dx*t0};
+        const q={lat:+a.lat+dy*t1,lng:+a.lng+dx*t1};
+        if(current.length&&Math.hypot(current[current.length-1].lat-p.lat,current[current.length-1].lng-p.lng)>1e-8)flush();
+        if(!current.length)current.push(p);
+        current.push(q);
+      }
+    }
+    flush();
+  }
+  return out;
+}
 function partitionOchang2023Display(type,zones){
   const boundary=ochang2023Geometry();
   if(!boundary.length)return zones;
@@ -1231,7 +1269,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v5';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v6';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1799,8 +1837,15 @@ async function hydrateExternalBundledServiceZones(type,districts=null){
 async function ensureVisibleServiceZoneChunks(type){
   if(type!=='general'&&type!=='recycle')return false;
   const ok=await hydrateExternalBundledServiceZones(type);
-  if(loadedServiceZoneDistricts[type].has('오창읍'))await ensureOchangContractRouteItems(type);
+  // 저장된 추정권역은 제일환경 실시간 노선 계산을 기다리지 않고 즉시 표시합니다.
   scheduleVisibleServiceZoneMaterialization(type);
+  if(loadedServiceZoneDistricts[type].has('오창읍')){
+    ensureOchangContractRouteItems(type).then(()=>{
+      localScheduleIndexes[type]=null;
+      scheduleVisibleServiceZoneMaterialization(type);
+      if(activeLayer===type&&serviceLayerState.route)syncDongRouteVisibility(type);
+    }).catch(e=>console.warn('TEST2 오창 제일환경 노선 갱신 실패',e));
+  }
   return ok;
 }
 
@@ -1898,9 +1943,16 @@ function hydrateBundledPrecomputedData(dataOverride=null){
       for(const r of (data.routes||[])){
         const spec=bundleRouteRecordSpec(r,specs);
         if(!spec||existingDongRouteOverlay(spec))continue;
-        // 화죽리 보강 및 오창 산단 제한 대상은 구형 사전계산 좌표를 복원하지 않고 새로 계산합니다.
-        if(routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec))continue;
+        // 화죽리 보강 대상만 구형 좌표를 건너뜁니다.
+        // 오창산단 제일환경은 구형 사전계산 선을 2023 산단경계 안으로 잘라 즉시 표시하고,
+        // 이후 TEST2 실시간 계산 결과가 준비되면 그 결과로 갱신합니다.
+        if(routeNeedsPatchedGeometry(spec))continue;
         const bundleRouteData={...(r.data||{})};
+        if(isOchangScienceContractSpec(spec)&&OCHANG_2023_FEATURE){
+          bundleRouteData.segments=clipOchang2023Segments(bundleRouteData.segments||[]);
+          bundleRouteData.zoneEvidencePoints=(bundleRouteData.zoneEvidencePoints||[])
+            .filter(p=>insideOchang2023(+p.lat,+p.lng));
+        }
         const audit=finalRouteCoordinateAudit(spec,bundleRouteData);
         if(!audit.ok){
           console.warn('사전계산 노선 scope 불일치로 복원을 건너뜁니다.',r.type,r.vehicle,r.day,audit);
@@ -4493,7 +4545,10 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
 
   await hydrateCachedRouteOverlays(specs);
   await hydrateExternalBundledPrecomputedData();
-  if(isCurrent())syncDongRouteVisibility(type);
+  if(isCurrent()){
+    syncDongRouteVisibility(type);
+    if(serviceLayerState.zone)scheduleVisibleServiceZoneMaterialization(type);
+  }
 
   const here=canonicalDistrict(currentLegalEmd||currentDistrict||'');
   const specificSelection=providerSnapshot!=='전체'||daySnapshot!=='전체'||!!here;
