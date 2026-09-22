@@ -1269,13 +1269,28 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v6';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v7-no-motorway';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
 function routeCachePatchKey(spec){return `${spec?.type||''}|${spec?.vehicle||''}|${spec?.day||''}`}
 function routeNeedsPatchedGeometry(spec){return ROUTE_CACHE_PATCH_KEYS.has(routeCachePatchKey(spec))}
 function routeCachePatchSuffix(spec){return routeNeedsPatchedGeometry(spec)?'|hwajuk-v1':''}
+
+// TEST2: 읍·면의 수거지와 다음 수거지 사이를 길찾기로 연결한 '차량 이동 추정선'은
+// 실제 수거구간이 아니며 고속도로/자동차전용도로로 우회할 수 있으므로 지도에서 제외합니다.
+// 기존 v76 번들에서도 inferredMovementCount만큼 마지막에 붙은 이동 추정 세그먼트를 제거합니다.
+function stripInferredTransitSegments(data){
+  if(!data||typeof data!=='object')return data;
+  const out={...data};
+  const segments=Array.isArray(data.segments)?data.segments:[];
+  const n=Math.max(0,Math.min(segments.length,Number(data.inferredMovementCount)||0));
+  out.segments=n?segments.slice(0,segments.length-n):segments.slice();
+  out.inferredMovementCount=0;
+  out.transitMovementExcluded=n;
+  out.motorwayExcluded=true;
+  return out;
+}
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1948,7 +1963,7 @@ function hydrateBundledPrecomputedData(dataOverride=null){
         // 오창산단 제일환경은 구형 사전계산 선을 2023 산단경계 안으로 잘라 즉시 표시하고,
         // 이후 TEST2 실시간 계산 결과가 준비되면 그 결과로 갱신합니다.
         if(routeNeedsPatchedGeometry(spec))continue;
-        const bundleRouteData={...(r.data||{})};
+        const bundleRouteData=stripInferredTransitSegments(r.data||{});
         if(isOchangScienceContractSpec(spec)&&OCHANG_2023_FEATURE){
           bundleRouteData.segments=clipOchang2023Segments(bundleRouteData.segments||[]);
           bundleRouteData.zoneEvidencePoints=(bundleRouteData.zoneEvidencePoints||[])
@@ -2276,7 +2291,7 @@ function buildLocalScheduleIndex(type,data){
     if(record.type!==type||!scheduleRouteAllowed(type,record.vehicle,record.day))continue;
     const spec=record.liveSpec||bundleRouteRecordSpec(record,specs);if(!spec||spec.housing==='apartment'||spec.zoneEligible===false)continue;
     if(!record.liveSpec&&(routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec)))continue;
-    const route=record.data||{};
+    const route=stripInferredTransitSegments(record.data||{});
     for(const seg of route.segments||[])for(let i=1;i<seg.length;i++)add(seg[i-1],seg[i],spec,'line');
     for(const p of route.zoneEvidencePoints||[])add(p,p,spec,'point',p.term||p.address||'');
   }
@@ -2882,7 +2897,7 @@ function renderNearbyRouteSchedule(type,matches,ctx){
     : `<strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(match.vehicle)}호</strong>`;
   document.getElementById(type+'Detail').innerHTML=
     `<div class="verified">${ownerLine}: ${orderedDays.join(' · ')}<span style="color:#6b7280">${distanceText}${roadText}</span>`+
-    `${secondary}<br><span style="color:#6b7280">※ ${basisText} 주소점에서 실제 표시 수거선까지 ${limitM}m 이내인 경우에만 수거요일을 인정하며, 다른 차량의 인접노선 요일을 섞지 않습니다.${RURAL_INFERRED_ROUTE_DISTRICTS.has(district)?' 내수·북이는 원본 코스 순서를 따라 추정한 차량이동 도로구간도 수거노선에 포함합니다.':''}</span>${apartmentNotice}</div>`;
+    `${secondary}<br><span style="color:#6b7280">※ ${basisText} 주소점에서 실제 표시 수거선까지 ${limitM}m 이내인 경우에만 수거요일을 인정하며, 다른 차량의 인접노선 요일을 섞지 않습니다.${RURAL_INFERRED_ROUTE_DISTRICTS.has(district)?' 수거지 사이 단순 차량 이동구간은 수거노선에서 제외하며, 실제 수거지 주변 도로구간만 표시합니다.':''}</span>${apartmentNotice}</div>`;
 }
 function restoredRuralRiSchedule(type,ctx){
   const district=serviceDistrictForContext(ctx);
@@ -3828,7 +3843,10 @@ async function fetchRoadFollowingPath(points){
   async function requestOnce(batch){
     const payload={
       points:batch.map(p=>({x:+p.lng,y:+p.lat,name:String(p.term||p.name||'').slice(0,80)})),
-      priority:'RECOMMEND'
+      priority:'RECOMMEND',
+      // Worker가 지원하는 경우 카카오모빌리티의 자동차전용도로 회피 옵션을 전달합니다.
+      // 현재 TEST2는 아래 별도 방어 로직으로 차량 이동 추정선도 제거하므로 Worker가 이 값을 무시해도 고속도로 선이 표시되지 않습니다.
+      avoid:'motorway'
     };
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),25000);
@@ -4411,9 +4429,10 @@ async function buildDongRouteOverlay(spec,options={}){
       }
     }
 
-    const inferredMovement=SERVICE_ZONE_PRECOMPUTE_ONLY?{segments:[],inferredMovementCount:0}:await inferredRuralMovementSegments(ruralMovementAnchors);
-    if(inferredMovement.segments.length)segments.push(...inferredMovement.segments);
-    const inferredMovementCount=inferredMovement.inferredMovementCount;
+    // TEST2에서는 수거지 사이의 단순 차량 이동선은 표시하지 않습니다.
+    // 이 구간은 실제 수거구간이 아니고 길찾기 결과가 고속도로를 탈 수 있어 수거노선으로 오인될 수 있습니다.
+    const inferredMovement={segments:[],inferredMovementCount:0};
+    const inferredMovementCount=0;
 
     const uniqueEvidence=uniqueRoutePoints(zoneEvidencePoints);
     if(!segments.length&&!uniqueEvidence.length)return null;
