@@ -1,8 +1,20 @@
 {
   "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
-  "startedAt": "2026-09-22T06:22:57Z",
+  "startedAt": "2026-09-22T06:25:38Z",
   "pageErrors": [],
   "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
+    "Failed to load resource: the server responded with a status of 502 ()",
     "Failed to load resource: the server responded with a status of 502 ()",
     "Failed to load resource: the server responded with a status of 502 ()",
     "Failed to load resource: the server responded with a status of 502 ()",
@@ -49,12 +61,60 @@
     {
       "status": 502,
       "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
+    },
+    {
+      "status": 502,
+      "url": "https://cjwaste-route.yseong22.workers.dev/route"
     }
   ],
   "snapshots": [
     {
       "label": "general-no-address",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058177",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058340",
       "activeLayer": "general",
       "serviceLayerState": {
         "zone": true,
@@ -87,7 +147,7 @@
     },
     {
       "label": "recycle-no-address",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058177",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058340",
       "activeLayer": "recycle",
       "serviceLayerState": {
         "zone": true,
@@ -120,7 +180,7 @@
     },
     {
       "label": "general-jeogok-after-search",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058177",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058340",
       "activeLayer": "general",
       "serviceLayerState": {
         "zone": true,
@@ -153,7 +213,7 @@
     },
     {
       "label": "recycle-jeogok-after-search",
-      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058177",
+      "href": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/?routecheck=1790058340",
       "activeLayer": "recycle",
       "serviceLayerState": {
         "zone": true,
