@@ -1,0 +1,33 @@
+name: TEST2 live route check
+on:
+  push:
+    paths:
+      - 'tools/test2-live-route-check.trigger'
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Check TEST2 live route visibility
+        run: python tools/test2_live_route_check.py
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/test2-live-route-check.trigger
+          test -f tools/test2-live-route-report.json || echo '{"fatal":"report not generated"}' > tools/test2-live-route-report.json
+          git add tools/test2-live-route-report.json tools/test2-live-route-check.trigger
+          git commit -m "Record TEST2 live route check" || true
+          git pull --rebase origin main
+          git push
