@@ -4581,6 +4581,9 @@ function isNaesuBugiRouteSpec(spec){
   return ds.includes('내수읍')||ds.includes('북이면');
 }
 async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
+  // 사전계산 노선의 담당구역 검증에는 행정경계가 필요합니다.
+  // 경계만 먼저 로드하고, 누락노선 실시간 계산은 하지 않습니다.
+  try{await ensureTestAdminBoundaryLoad()}catch(e){console.warn('근거노선 경계 준비 실패',e)}
   // TEST2 성능모드: 레이어 전환에서는 기존 IndexedDB/사전계산 번들만 복원합니다.
   // 누락노선을 여기서 계산하지 않습니다. 현재 주소에 꼭 필요한 후보만 ensureAddressRouteItems()에서 계산합니다.
   const providerSnapshot=selectedVehicle[type]||'전체';
@@ -4617,6 +4620,7 @@ async function preloadAllDongRoutes(){
   if(dongRoutePreloadStarted)return;
   dongRoutePreloadStarted=true;
   const specs=allDongRouteSpecs();
+  try{await ensureTestAdminBoundaryLoad()}catch(e){console.warn('사전노선 경계 준비 실패',e)}
   // TEST2 성능모드: 앱 시작 시에는 네트워크 길찾기/주소검색을 절대 돌리지 않습니다.
   // 이미 저장된 IndexedDB와 정적 사전계산 노선만 복원합니다.
   await hydrateCachedRouteOverlays(specs);
