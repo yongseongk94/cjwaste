@@ -1,1 +1,0 @@
-final-zero-proxy-check
