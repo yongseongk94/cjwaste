@@ -31,7 +31,7 @@ async def main():
           const fallback=[];
           const failed=[];
           let cursor=0;
-          const workers=Array.from({length:2},async()=>{
+          const workers=Array.from({length:8},async()=>{
             while(true){
               const i=cursor++;
               if(i>=specs.length)return;
