@@ -22,7 +22,7 @@ async def main():
         page.on("response",lambda r: out["httpErrors"].append({"status":r.status,"url":r.url}) if r.status>=400 else None)
         resp=await page.goto(URL+"?ochang2check="+str(int(time.time())),wait_until="domcontentloaded",timeout=90000)
         out["httpStatus"]=resp.status if resp else None
-        await page.wait_for_function("() => !!window.kakao && typeof insideOchang2023==='function' && !!window.CJWASTE_OCHANG2_2023",timeout=90000)
+        await page.wait_for_function("() => !!window.kakao && typeof insideOchang2023==='function' && !!window.CJWASTE_OCHANG2_2023 && typeof map!=='undefined' && !!map",timeout=90000)
         await page.evaluate("() => showResult()")
         await page.evaluate("""() => {
           map.setCenter(new kakao.maps.LatLng(36.7338,127.4498));
