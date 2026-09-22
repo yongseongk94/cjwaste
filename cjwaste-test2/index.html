@@ -219,6 +219,7 @@
 <script id="bundledServiceZones" type="application/json" data-manifest="cjwaste-test2/data/service-zones-gapfill-v3-manifest.json?v=test2-pathfix-1"></script>
 <script src="vendor/polygon-clipping-0.15.7.min.js"></script>
 <script src="cjwaste-test2/data/ochang-boundary-2023.js?v=2023v3"></script>
+<script src="cjwaste-test2/data/ochang2-boundary-2023.js?v=2023v1"></script>
 <script>
 const KAKAO_KEY='a103b2ec4ae35a508696bd61dabc0d65';
 // Kakao Mobility REST API 키는 HTML에 넣지 않습니다. Cloudflare Worker 프록시 주소만 설정하세요.
@@ -734,18 +735,28 @@ const OCHANG_SCIENCE_ROAD_HINTS=['오창과학','과학산업','오창중앙로'
 const OCHANG_CONTRACT_COLOR='#0f766e';
 // 산업단지 블록 안 빈 공간을 메우기 위한 최대 추정거리. 리 전체로 번지는 것을 막기 위해 실제 대행노선에서 180m 이내만 허용합니다.
 const OCHANG_CONTRACT_ESTIMATE_MAX_KM=0.180;
-// TEST2 표시 전용: 2023년 고시 도면 정합 경계 안은 오창산단 레이어가 끊기지 않도록 채웁니다.
+// TEST2 표시 전용: 2023년 기준 오창과학산단(1산단) + 오창제2산단 경계 안은 산단 레이어가 끊기지 않도록 채웁니다.
 // 주소 일정 판정의 180m 기준과 20m 직접매칭은 그대로 유지합니다.
 const OCHANG_2023_FEATURE=globalThis.CJWASTE_OCHANG_2023||null;
+const OCHANG2_2023_FEATURE=globalThis.CJWASTE_OCHANG2_2023||null;
+function ochangIndustrial2023Features(){
+  return [OCHANG_2023_FEATURE,OCHANG2_2023_FEATURE].filter(Boolean);
+}
 function insideOchang2023(lat,lng){
-  return !!OCHANG_2023_FEATURE&&Number.isFinite(+lat)&&Number.isFinite(+lng)&&pointInGeoFeature([+lng,+lat],OCHANG_2023_FEATURE);
+  return Number.isFinite(+lat)&&Number.isFinite(+lng)&&
+    ochangIndustrial2023Features().some(feature=>pointInGeoFeature([+lng,+lat],feature));
 }
 function ochang2023Geometry(){
-  return OCHANG_2023_FEATURE?[OCHANG_2023_FEATURE.geometry.coordinates]:[];
+  const parts=ochangIndustrial2023Features()
+    .map(feature=>[feature.geometry.coordinates])
+    .filter(g=>g?.[0]?.length);
+  if(!parts.length)return [];
+  return parts.length===1?parts[0]:polygonClipping.union(...parts);
 }
 function clipOchang2023Segments(segments){
-  if(!OCHANG_2023_FEATURE)return [];
-  const rings=OCHANG_2023_FEATURE.geometry.coordinates;
+  const features=ochangIndustrial2023Features();
+  if(!features.length)return [];
+  const rings=features.flatMap(feature=>feature.geometry.coordinates||[]);
   const out=[];
   for(const seg of (segments||[])){
     let current=[];
