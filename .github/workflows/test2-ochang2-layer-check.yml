@@ -1,0 +1,35 @@
+name: Check TEST2 Ochang 2nd complex layer
+on:
+  push:
+    paths:
+      - 'tools/test2-ochang2-layer.trigger'
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Check Ochang 2nd complex layer
+        run: python tools/test2_ochang2_layer_check.py
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/test2-ochang2-layer.trigger
+          test -f tools/test2-ochang2-layer-report.json || echo '{"fatal":"no report"}' > tools/test2-ochang2-layer-report.json
+          git add tools/test2-ochang2-layer-report.json tools/test2-ochang2-layer.trigger
+          git commit -m "Record TEST2 Ochang 2nd complex layer check" || true
+          git pull --rebase origin main
+          git push
