@@ -1,19 +1,19 @@
 {
-  "startedAt": "2026-09-22T07:52:00Z",
+  "startedAt": "2026-09-22T15:19:50Z",
   "main": {
     "name": "main",
     "url": "https://yongseongk94.github.io/cjwaste/",
     "httpStatus": 200,
     "timingMs": {
-      "ready": 1117,
-      "showResultPlus1500": 1502,
-      "recycleSwitchPlus800": 880,
-      "addressSearchPlus1500": 1892
+      "ready": 1133,
+      "showResultPlus1500": 1504,
+      "recycleSwitchPlus800": 1123,
+      "addressSearchPlus1500": 1901
     },
     "requests": {
-      "total": 146,
-      "duringAddressSearch": 63,
-      "kakaoLocal": 74,
+      "total": 166,
+      "duringAddressSearch": 103,
+      "kakaoLocal": 94,
       "routeProxy": 0,
       "serviceZoneJson": 2,
       "precomputedJson": 1
@@ -29,15 +29,19 @@
         "ri": "",
         "routeItems": {
           "general": {
-            "items": 35,
-            "polylines": 628,
-            "visible": 628
+            "items": 0,
+            "polylines": 0,
+            "visible": 0
           },
           "recycle": {
-            "items": 32,
-            "polylines": 489,
+            "items": 0,
+            "polylines": 0,
             "visible": 0
           }
+        },
+        "routeKeys": {
+          "general": [],
+          "recycle": []
         },
         "zones": {
           "general": 18,
@@ -60,6 +64,707 @@
             "visible": 489
           }
         },
+        "routeKeys": {
+          "general": [
+            {
+              "vehicle": "3346",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 16
+            },
+            {
+              "vehicle": "3346",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "3346",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 8
+            },
+            {
+              "vehicle": "3346",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 15
+            },
+            {
+              "vehicle": "3346",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 34
+            },
+            {
+              "vehicle": "6157",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 9
+            },
+            {
+              "vehicle": "6157",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 22
+            },
+            {
+              "vehicle": "6157",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 31
+            },
+            {
+              "vehicle": "6224",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "6224",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 10
+            },
+            {
+              "vehicle": "6224",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 8
+            },
+            {
+              "vehicle": "6224",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 23
+            },
+            {
+              "vehicle": "6224",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 13
+            },
+            {
+              "vehicle": "6244",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "6244",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 33
+            },
+            {
+              "vehicle": "6244",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 25
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 3
+            }
+          ],
+          "recycle": [
+            {
+              "vehicle": "0261",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 14
+            },
+            {
+              "vehicle": "0261",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 14
+            },
+            {
+              "vehicle": "0263",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 15
+            },
+            {
+              "vehicle": "0263",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "0263",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "0263",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0263",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 9
+            },
+            {
+              "vehicle": "0264",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 6
+            },
+            {
+              "vehicle": "0264",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 27
+            },
+            {
+              "vehicle": "0264",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 7
+            },
+            {
+              "vehicle": "0264",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 18
+            },
+            {
+              "vehicle": "0264",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 16
+            },
+            {
+              "vehicle": "9090",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 5
+            },
+            {
+              "vehicle": "9090",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "9090",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 2
+            },
+            {
+              "vehicle": "9090",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 6
+            },
+            {
+              "vehicle": "9090",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 22
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 3
+            }
+          ]
+        },
         "zones": {
           "general": 18,
           "recycle": 20
@@ -81,6 +786,707 @@
             "visible": 0
           }
         },
+        "routeKeys": {
+          "general": [
+            {
+              "vehicle": "3346",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 16
+            },
+            {
+              "vehicle": "3346",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "3346",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 8
+            },
+            {
+              "vehicle": "3346",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 15
+            },
+            {
+              "vehicle": "3346",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 34
+            },
+            {
+              "vehicle": "6157",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 9
+            },
+            {
+              "vehicle": "6157",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 22
+            },
+            {
+              "vehicle": "6157",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 31
+            },
+            {
+              "vehicle": "6224",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "6224",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 10
+            },
+            {
+              "vehicle": "6224",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 8
+            },
+            {
+              "vehicle": "6224",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 23
+            },
+            {
+              "vehicle": "6224",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 13
+            },
+            {
+              "vehicle": "6244",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "6244",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 33
+            },
+            {
+              "vehicle": "6244",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 25
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 3
+            }
+          ],
+          "recycle": [
+            {
+              "vehicle": "0261",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 14
+            },
+            {
+              "vehicle": "0261",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 14
+            },
+            {
+              "vehicle": "0263",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 15
+            },
+            {
+              "vehicle": "0263",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "0263",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "0263",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 26
+            },
+            {
+              "vehicle": "0263",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 9
+            },
+            {
+              "vehicle": "0264",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 6
+            },
+            {
+              "vehicle": "0264",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 27
+            },
+            {
+              "vehicle": "0264",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 7
+            },
+            {
+              "vehicle": "0264",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 18
+            },
+            {
+              "vehicle": "0264",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 16
+            },
+            {
+              "vehicle": "9090",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 5
+            },
+            {
+              "vehicle": "9090",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 1
+            },
+            {
+              "vehicle": "9090",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 2
+            },
+            {
+              "vehicle": "9090",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": false,
+              "segments": 6
+            },
+            {
+              "vehicle": "9090",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": false,
+              "segments": 22
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": false,
+              "segments": 11
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": false,
+              "segments": 3
+            }
+          ]
+        },
         "zones": {
           "general": 72,
           "recycle": 20
@@ -88,12 +1494,12 @@
       }
     },
     "metrics": {
-      "TaskDuration": 1.4e-05,
+      "TaskDuration": 1.6e-05,
       "ScriptDuration": 0,
       "LayoutDuration": 0,
       "RecalcStyleDuration": 0,
-      "JSHeapUsedSize": 40962196,
-      "Nodes": 9275,
+      "JSHeapUsedSize": 49867924,
+      "Nodes": 3428,
       "LayoutCount": 0,
       "RecalcStyleCount": 0
     }
@@ -103,13 +1509,13 @@
     "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
     "httpStatus": 200,
     "timingMs": {
-      "ready": 706,
-      "showResultPlus1500": 1503,
-      "recycleSwitchPlus800": 878,
-      "addressSearchPlus1500": 2208
+      "ready": 770,
+      "showResultPlus1500": 1502,
+      "recycleSwitchPlus800": 892,
+      "addressSearchPlus1500": 2202
     },
     "requests": {
-      "total": 72,
+      "total": 73,
       "duringAddressSearch": 29,
       "kakaoLocal": 3,
       "routeProxy": 0,
@@ -128,14 +1534,974 @@
         "routeItems": {
           "general": {
             "items": 49,
-            "polylines": 770,
-            "visible": 770
+            "polylines": 797,
+            "visible": 797
           },
           "recycle": {
             "items": 44,
-            "polylines": 627,
+            "polylines": 636,
             "visible": 0
           }
+        },
+        "routeKeys": {
+          "general": [
+            {
+              "vehicle": "3346",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 16
+            },
+            {
+              "vehicle": "3346",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "3346",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "3346",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 15
+            },
+            {
+              "vehicle": "3346",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 34
+            },
+            {
+              "vehicle": "6157",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "6157",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 22
+            },
+            {
+              "vehicle": "6157",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 31
+            },
+            {
+              "vehicle": "6224",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "6224",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 10
+            },
+            {
+              "vehicle": "6224",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 23
+            },
+            {
+              "vehicle": "6224",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 13
+            },
+            {
+              "vehicle": "6244",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "6244",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 33
+            },
+            {
+              "vehicle": "6244",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 3
+            }
+          ],
+          "recycle": [
+            {
+              "vehicle": "0261",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 14
+            },
+            {
+              "vehicle": "0261",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 14
+            },
+            {
+              "vehicle": "0263",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 15
+            },
+            {
+              "vehicle": "0263",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "0263",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "0263",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0263",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "0264",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 6
+            },
+            {
+              "vehicle": "0264",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "0264",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "0264",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 18
+            },
+            {
+              "vehicle": "0264",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 16
+            },
+            {
+              "vehicle": "9090",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "9090",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "9090",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "9090",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 6
+            },
+            {
+              "vehicle": "9090",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 22
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 3
+            }
+          ]
         },
         "zones": {
           "general": 17,
@@ -149,14 +2515,974 @@
         "routeItems": {
           "general": {
             "items": 49,
-            "polylines": 770,
+            "polylines": 797,
             "visible": 0
           },
           "recycle": {
             "items": 44,
-            "polylines": 627,
-            "visible": 627
+            "polylines": 636,
+            "visible": 636
           }
+        },
+        "routeKeys": {
+          "general": [
+            {
+              "vehicle": "3346",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 16
+            },
+            {
+              "vehicle": "3346",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "3346",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "3346",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 15
+            },
+            {
+              "vehicle": "3346",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 34
+            },
+            {
+              "vehicle": "6157",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "6157",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 22
+            },
+            {
+              "vehicle": "6157",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 31
+            },
+            {
+              "vehicle": "6224",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "6224",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 10
+            },
+            {
+              "vehicle": "6224",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 23
+            },
+            {
+              "vehicle": "6224",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 13
+            },
+            {
+              "vehicle": "6244",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "6244",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 33
+            },
+            {
+              "vehicle": "6244",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 3
+            }
+          ],
+          "recycle": [
+            {
+              "vehicle": "0261",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 14
+            },
+            {
+              "vehicle": "0261",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 14
+            },
+            {
+              "vehicle": "0263",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 15
+            },
+            {
+              "vehicle": "0263",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "0263",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "0263",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0263",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "0264",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 6
+            },
+            {
+              "vehicle": "0264",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "0264",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "0264",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 18
+            },
+            {
+              "vehicle": "0264",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 16
+            },
+            {
+              "vehicle": "9090",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "9090",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "9090",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "9090",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 6
+            },
+            {
+              "vehicle": "9090",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 22
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 3
+            }
+          ]
         },
         "zones": {
           "general": 17,
@@ -170,14 +3496,974 @@
         "routeItems": {
           "general": {
             "items": 49,
-            "polylines": 770,
-            "visible": 770
+            "polylines": 797,
+            "visible": 797
           },
           "recycle": {
             "items": 44,
-            "polylines": 627,
+            "polylines": 636,
             "visible": 0
           }
+        },
+        "routeKeys": {
+          "general": [
+            {
+              "vehicle": "3346",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 16
+            },
+            {
+              "vehicle": "3346",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "3346",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "3346",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 15
+            },
+            {
+              "vehicle": "3346",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "6157",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 34
+            },
+            {
+              "vehicle": "6157",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "6157",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 22
+            },
+            {
+              "vehicle": "6157",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 31
+            },
+            {
+              "vehicle": "6224",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "6224",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 10
+            },
+            {
+              "vehicle": "6224",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 23
+            },
+            {
+              "vehicle": "6224",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "오근장동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 13
+            },
+            {
+              "vehicle": "6244",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "6244",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 33
+            },
+            {
+              "vehicle": "6244",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "6244",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 36
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88어1536|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7478|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88저7556|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|94고3991|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "제일환경|95오0147|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 3
+            }
+          ],
+          "recycle": [
+            {
+              "vehicle": "0261",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 14
+            },
+            {
+              "vehicle": "0261",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0261",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "내덕2동",
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 14
+            },
+            {
+              "vehicle": "0263",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 15
+            },
+            {
+              "vehicle": "0263",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "0263",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "0263",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 26
+            },
+            {
+              "vehicle": "0263",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "0264",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 6
+            },
+            {
+              "vehicle": "0264",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 27
+            },
+            {
+              "vehicle": "0264",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "0264",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 18
+            },
+            {
+              "vehicle": "0264",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 16
+            },
+            {
+              "vehicle": "9090",
+              "day": "금",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 5
+            },
+            {
+              "vehicle": "9090",
+              "day": "목",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 1
+            },
+            {
+              "vehicle": "9090",
+              "day": "수",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "9090",
+              "day": "월",
+              "provider": "",
+              "districts": [
+                "율량사천동"
+              ],
+              "fromBundle": true,
+              "segments": 6
+            },
+            {
+              "vehicle": "9090",
+              "day": "화",
+              "provider": "",
+              "districts": [
+                "율량사천동",
+                "오근장동"
+              ],
+              "fromBundle": true,
+              "segments": 22
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 28
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|81주3418|우암동|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "우암동"
+              ],
+              "fromBundle": true,
+              "segments": 11
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 25
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|88어1535|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "금",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "목",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "수",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "월",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 9
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "토",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "제일환경|95오0187|오창읍|단독",
+              "day": "화",
+              "provider": "제일환경",
+              "districts": [
+                "오창읍"
+              ],
+              "fromBundle": true,
+              "segments": 8
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "금",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 20
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "목",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 7
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "수",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 19
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "월",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 24
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "토",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 2
+            },
+            {
+              "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+              "day": "화",
+              "provider": "현대환경",
+              "districts": [
+                "내덕1동"
+              ],
+              "fromBundle": true,
+              "segments": 3
+            }
+          ]
         },
         "zones": {
           "general": 47,
@@ -186,12 +4472,12 @@
       }
     },
     "metrics": {
-      "TaskDuration": 1.4e-05,
+      "TaskDuration": 1.6e-05,
       "ScriptDuration": 0,
       "LayoutDuration": 0,
       "RecalcStyleDuration": 0,
-      "JSHeapUsedSize": 27307584,
-      "Nodes": 1137,
+      "JSHeapUsedSize": 28290724,
+      "Nodes": 1148,
       "LayoutCount": 0,
       "RecalcStyleCount": 0
     }
