@@ -47,7 +47,7 @@ jobs:
               '0262 목요일 선택 캐시 갱신': "'recycle|0262|목'",
               '오창 산단 구간 필터': "function filterOchangIndustrialContractRaw(raw)",
               '오창 산단 허용어': "const OCHANG_CONTRACT_INDUSTRIAL_TERMS=[",
-              '오창 구형 대행번들 차단': "routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec)",
+              '오창 구형 대행번들 차단': "||isOchangScienceContractSpec(spec)||",
           }
           missing=[name for name,needle in required.items() if needle not in s]
           if missing:
@@ -120,6 +120,7 @@ jobs:
           curl -fsSL --retry 3 https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/emd.json -o /tmp/emd.json
           curl -fsSL --retry 3 https://cdn.jsdelivr.net/gh/DevMinGeonPark/mapcn-kr@main/data/ri/43.json -o /tmp/cjwaste-ri.json
           python3 -m pip install shapely==2.1.2
+          node tools/test_village_facility_routes.cjs
           node tools/test_reviewed_schedule.cjs
           node tools/test_ochang_boundary_2023.cjs
           node tools/test_disjoint_display.cjs /tmp/emd.json /tmp/disjoint-display.json
