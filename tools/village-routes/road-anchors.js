@@ -1,4 +1,8 @@
 const villageRoadAnchorCache=new Map();
+function villageAccessNeighbors(facility,spec){
+  const matches=typeof villageRouteBundle!=='undefined'?villageRouteBundle?.matches:[...(window.villageMatches?.values()||[])];
+  return uniqueRoutePoints((matches||[]).flatMap(r=>r.facilities||[])).filter(p=>pointInsideRouteDistricts(p,routeAllowedDistricts(spec))&&routePointDistance(facility,p)>.2&&routePointDistance(facility,p)<5).sort((a,b)=>routePointDistance(facility,a)-routePointDistance(facility,b));
+}
 async function villageRoadAnchors(facility,spec){
   const key=facility.address+'|'+routeScopeSignature(spec);
   if(villageRoadAnchorCache.has(key))return villageRoadAnchorCache.get(key);
@@ -9,7 +13,11 @@ async function villageRoadAnchors(facility,spec){
       const found=own.find(p=>p.road_address&&routePointDistance(facility,{lat:+p.y,lng:+p.x})<.05);
       if(found){address=found.road_address.address_name;road=roadNameFromAddress(address);}
     }
-    if(!road)return [];
+    const accessFallback=()=>{
+      const nearest=villageAccessNeighbors(facility,spec)[0];
+      return nearest?[facility,nearest]:[];
+    };
+    if(!road)return accessFallback();
     const all=(await searchRoadAnchorPlaces(road)).filter(p=>pointInsideRouteDistricts(p,routeAllowedDistricts(spec)));
     let near=all.filter(p=>routePointDistance(facility,p)<=.18&&routePointDistance(facility,p)>.015);
     const number=roadHouseNumberFromAddress(address,road);
@@ -32,9 +40,27 @@ async function villageRoadAnchors(facility,spec){
       const closest=all.filter(p=>routePointDistance(facility,p)>.015).sort((a,b)=>routePointDistance(facility,a)-routePointDistance(facility,b))[0];
       if(closest)near=[closest];
     }
-    return near.length?orderedRoadSamples([...near,{...facility,address,sampleNo:roadSampleOrder(address,road)}],6):[];
+    return near.length?orderedRoadSamples([...near,{...facility,address,sampleNo:roadSampleOrder(address,road)}],6):accessFallback();
   })();
   villageRoadAnchorCache.set(key,work);return work;
+}
+const villageFacilityRoadCache=new Map();
+async function fetchVillageFacilityRoad(anchors,facility,spec){
+  const key=[facility.lat,facility.lng,routeScopeSignature(spec)].join('|');
+  if(villageFacilityRoadCache.has(key))return villageFacilityRoadCache.get(key);
+  const work=(async()=>{
+    const initial=await fetchRoadFollowingPath(anchors);
+    let segments=clipVillageFacilitySegments(initial?.segments||[],facility);
+    if(routeItemDistanceKm({segments},facility.lat,facility.lng)>.08){
+      for(const next of villageAccessNeighbors(facility,spec).slice(0,2)){
+        const access=await fetchRoadFollowingPath([facility,next]);
+        segments.push(...clipVillageFacilitySegments(access?.segments||[],facility));
+        if(routeItemDistanceKm({segments},facility.lat,facility.lng)<=.08)break;
+      }
+    }
+    return {...initial,segments};
+  })();
+  villageFacilityRoadCache.set(key,work);return work;
 }
 function clipVillageFacilitySegments(segments,center,radiusKm=.18){
   const origin=geoPointKm(center.lat,center.lng),out=[];

@@ -32,7 +32,7 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
     });`);
     source=source.replace('let generic=await searchRouteTermPlaces(term);','let generic=desc.villageFacility?[desc.villageFacility]:(villageRouteTerm(term)?[]:await searchRouteTermPlaces(term));');
     source=source.replace('generic=await expandRangeCandidates(generic,desc);','if(!villageRouteTerm(term))generic=await expandRangeCandidates(generic,desc);');
-    source=source.replace('const roadResult=await fetchRoadFollowingPath(anchors);', 'const roadResult=await fetchRoadFollowingPath(anchors); if(entry.desc.villageFacility&&roadResult)roadResult.segments=clipVillageFacilitySegments(roadResult.segments,entry.desc.villageFacility);');
+    source=source.replace('const roadResult=await fetchRoadFollowingPath(anchors);', 'const roadResult=entry.desc.villageFacility?await fetchVillageFacilityRoad(anchors,entry.desc.villageFacility,spec):await fetchRoadFollowingPath(anchors);');
     source=source.replace('await putCachedDongRoute(spec,safeData);','/* generation data is saved by the runner */');
     source=source.replace('await inferredRuralMovementSegments(ruralMovementAnchors)','{segments:[],inferredMovementCount:0}');
     source=source.replace('return createDongRouteOverlay(spec,{...safeData,fromCache:false});','return safeData;');
