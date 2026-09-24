@@ -1,7 +1,7 @@
 const fs=require('fs'),puppeteer=require('puppeteer-core');
 (async()=>{
  const matches=JSON.parse(fs.readFileSync('tools/village-routes/matches.json')).matches;
- const facilities=[...JSON.parse(fs.readFileSync('tools/village-routes/public-facilities.json')),...JSON.parse(fs.readFileSync('tools/village-routes/public-facility-listings.json'))];
+ const facilities=[...JSON.parse(fs.readFileSync('tools/village-routes/public-records.json')),...JSON.parse(fs.readFileSync('tools/village-routes/public-facility-listings.json'))];
  const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox']});
  try{
   const page=await browser.newPage();

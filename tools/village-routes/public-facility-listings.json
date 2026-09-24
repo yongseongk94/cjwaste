@@ -56,11 +56,51 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "마산4리경로당",
-    "address": "충청북도 청주시 청원구 내수읍 마산5길 20",
+    "name": "현암1리경로당",
+    "address": "충청북도 청주시 청원구 현암길 51",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/2910",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13710",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13616",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "신대2리경로당",
+    "address": "충청북도 청주시 청원구 신대2길 18",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36719",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "신기리경로당",
+    "address": "충청북도 청주시 청원구 신기길 33",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13653",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13646",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "장재2리경로당",
+    "address": "충청북도 청주시 청원구 장재2길 16",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13667",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "현암2리경로당",
+    "address": "충청북도 청주시 청원구 현암천수길 21-13",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13617",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13662",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "장양3리경로당",
+    "address": "충청북도 청주시 청원구 장양3길 13",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13693",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -72,19 +112,35 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "내수6리경로당",
-    "address": "충청북도 청주시 청원구 내수읍 내수본길 12 상가동 101호",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13699",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13695",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
     "name": "내수1리경로당",
     "address": "충청북도 청주시 청원구 내수읍 내수본길 22",
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13695",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13699",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "상리경로당",
+    "address": "충청북도 청주시 청원구 상리로8번길 7-3(율량동)",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36694",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13743",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "마산4리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산5길 20",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/2910",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13710",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "내수6리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수본길 12 상가동 101호",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13699",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13695",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -157,6 +213,110 @@
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13535",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13582",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "송정2리경로당",
+    "address": "충청북도 청주시 청원구 송정새터말길 20",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/9696",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "금대1리경로당",
+    "address": "충청북도 청주시 청원구 금대길 30-8",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13689",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13688",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "금대2리경로당",
+    "address": "충청북도 청주시 청원구 금대2길 28",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13690",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13689",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "옥수리경로당",
+    "address": "충청북도 청주시 청원구 옥수길 38",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13658",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13612",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "광암리경로당",
+    "address": "충청북도 청주시 청원구 광암길 9-3",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13688",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "토성2리경로당",
+    "address": "충청북도 청주시 청원구 토성1길 10",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36715",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "금암1리경로당",
+    "address": "충청북도 청주시 청원구 금암1길 51",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13666",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "호명리경로당",
+    "address": "충청북도 청주시 청원구 호명길 73",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13618",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13656",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "선암1리경로당",
+    "address": "충청북도 청주시 청원구 선암영하로 67",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13652",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13656",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "부연2리경로당",
+    "address": "충청북도 청주시 청원구 부연2길 68-6",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13645",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13688",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "영하1리경로당",
+    "address": "충청북도 청주시 청원구 영하1길 14",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13656",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "우산3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 우산길 37 105동 104,105호",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13668",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "우산1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 우산1길 16",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13719",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -248,11 +408,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "용계2리경로당",
-    "address": "충청북도 청주시 청원구 용계내추로 26",
+    "name": "석성1리경로당",
+    "address": "충청북도 청주시 청원구 석성길 2-20",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13660",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13648",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13649",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -264,6 +424,14 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
+    "name": "대율1리경로당",
+    "address": "충청북도 청주시 청원구 대율길 12-13",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13642",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
     "name": "석성2리경로당",
     "address": "충청북도 청주시 청원구 석성한천길 43-1",
     "jibunAddress": "",
@@ -272,11 +440,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "석성3리경로당",
-    "address": "충청북도 청주시 청원구 남한이길 28",
+    "name": "내둔리경로당",
+    "address": "충청북도 청주시 청원구 내둔길 69-1",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36716",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13649",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13691",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13643",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -284,6 +452,22 @@
     "address": "충청북도 청주시 청원구 화상석성로 401-6",
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13621",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13649",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "용계2리경로당",
+    "address": "충청북도 청주시 청원구 용계내추로 26",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13660",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "석성3리경로당",
+    "address": "충청북도 청주시 청원구 남한이길 28",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36716",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13649",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
@@ -296,11 +480,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "대율1리경로당",
-    "address": "충청북도 청주시 청원구 대율길 12-13",
+    "name": "내덕2구경로당",
+    "address": "충청북도 청주시 청원구 안덕벌로15번길 45-1",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13642",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13729",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/36729",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -404,7 +588,31 @@
     "address": "충청북도 청주시 청원구 내수읍 내수신안길 106",
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/36723",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13669",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13643",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "선암2리경로당",
+    "address": "충청북도 청주시 청원구 선암길 29-4",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13623",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13656",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "영하2리경로당",
+    "address": "충청북도 청주시 청원구 영하길 7-3",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13657",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "부연1리경로당",
+    "address": "충청북도 청주시 청원구 부연1길 34",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13644",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13666",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -429,6 +637,46 @@
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13598",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13597",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "대율2리경로당",
+    "address": "충청북도 청주시 청원구 대율다락말길 43",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13643",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/36719",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "입상1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 입상1길 32",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13677",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13620",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "화상2리경로당",
+    "address": "충청북도 청주시 청원구 화상신여울길 7-1",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13620",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13678",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "송정1리경로당",
+    "address": "충청북도 청주시 청원구 송정1길 1",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36717",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13689",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "토성1리경로당",
+    "address": "충청북도 청주시 청원구 토성1길 63-1",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13614",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -464,43 +712,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "우산1리경로당",
-    "address": "충청북도 청주시 청원구 내수읍 우산1길 16",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13719",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
     "name": "저곡리경로당",
     "address": "충청북도 청주시 청원구 내수읍 저곡길 33-4",
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13679",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13720",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "우산3리경로당",
-    "address": "충청북도 청주시 청원구 내수읍 우산길 37 105동 104,105호",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13668",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "호명리경로당",
-    "address": "충청북도 청주시 청원구 호명길 73",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13618",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13668",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "선암1리경로당",
-    "address": "충청북도 청주시 청원구 선암영하로 67",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13652",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13668",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -552,6 +768,70 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
+    "name": "대길2리경로당",
+    "address": "충청북도 청주시 청원구 서당대길 길 103-3",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13641",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13646",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "서당1리경로당",
+    "address": "충청북도 청주시 청원구 서당길 39",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13646",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "서당2리경로당",
+    "address": "충청북도 청주시 청원구 서당길 133-10",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13647",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13646",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "장재1리경로당",
+    "address": "충청북도 청주시 청원구 장재토성길 6",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13666",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "화하2리경로당",
+    "address": "충청북도 청주시 청원구 화하길 30",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13622",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13678",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "장양4리경로당",
+    "address": "충청북도 청주시 청원구 대율내추길 319-17",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13665",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13693",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "내추1리경로당",
+    "address": "충청북도 청주시 청원구 내추옥수길 31-6",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13692",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "내추2리경로당",
+    "address": "충청북도 청주시 청원구 내추길 61-2",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13693",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13662",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
     "name": "장양1리경로당",
     "address": "충청북도 청주시 청원구 장양1길 29-3",
     "jibunAddress": "",
@@ -573,6 +853,14 @@
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13611",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13693",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "입상2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 입상2길 22",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13678",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13620",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -600,6 +888,14 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
+    "name": "금암2리경로당",
+    "address": "충청북도 청주시 청원구 금암길 17",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36720",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
     "name": "묵방1리경로당",
     "address": "충청북도 청주시 청원구 내수읍 묵방길 39-3",
     "jibunAddress": "",
@@ -613,14 +909,6 @@
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13713",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13741",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "상리경로당",
-    "address": "충청북도 청주시 청원구 상리로8번길 7-3(율량동)",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36694",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13743",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -640,11 +928,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "영하2리경로당",
-    "address": "충청북도 청주시 청원구 영하길 7-3",
+    "name": "원통2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 원통숲안1길 78-15",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13657",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13670",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13741",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -656,51 +944,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "내추2리경로당",
-    "address": "충청북도 청주시 청원구 내추길 61-2",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13693",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13662",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "장양4리경로당",
-    "address": "충청북도 청주시 청원구 대율내추길 319-17",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13665",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13693",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "옥수리경로당",
-    "address": "충청북도 청주시 청원구 옥수길 38",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13658",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13612",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
     "name": "추학2리경로당",
     "address": "충청북도 청주시 청원구 학암옥수길 51-8",
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13612",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13693",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "금암2리경로당",
-    "address": "충청북도 청주시 청원구 금암길 17",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36720",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "금암1리경로당",
-    "address": "충청북도 청주시 청원구 금암1길 51",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/2864",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13667",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -736,51 +984,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "석성1리경로당",
-    "address": "충청북도 청주시 청원구 석성길 2-20",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13648",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13649",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "화하2리경로당",
-    "address": "충청북도 청주시 청원구 화하길 30",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13622",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/36716",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "서당2리경로당",
-    "address": "충청북도 청주시 청원구 서당길 133-10",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13647",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13641",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
     "name": "비상리경로당",
     "address": "충청북도 청주시 청원구 내수읍 비상길 34",
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13714",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13686",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "원통2리경로당",
-    "address": "충청북도 청주시 청원구 내수읍 원통숲안1길 78-15",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13670",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13741",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "영하1리경로당",
-    "address": "충청북도 청주시 청원구 영하1길 14",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13656",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13679",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -792,27 +1000,19 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "내추1리경로당",
-    "address": "충청북도 청주시 청원구 내추옥수길 31-6",
+    "name": "신대1리경로당",
+    "address": "충청북도 청주시 청원구 신대길 22-10",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13692",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36718",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13617",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "장양3리경로당",
-    "address": "충청북도 청주시 청원구 장양3길 13",
+    "name": "대길1리경로당",
+    "address": "충청북도 청주시 청원구 대길 길 28-1",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13664",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13693",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "장재2리경로당",
-    "address": "충청북도 청주시 청원구 장재2길 16",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13667",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13694",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13646",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -832,59 +1032,11 @@
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
-    "name": "대길1리경로당",
-    "address": "충청북도 청주시 청원구 대길 길 28-1",
+    "name": "원2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 원리1길 13",
     "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13694",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "서당1리경로당",
-    "address": "충청북도 청주시 청원구 서당길 39",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13646",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "부연1리경로당",
-    "address": "충청북도 청주시 청원구 부연1길 34",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13644",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13641",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "신기리경로당",
-    "address": "충청북도 청주시 청원구 신기길 33",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13653",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "토성1리경로당",
-    "address": "충청북도 청주시 청원구 토성1길 63-1",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13614",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "장재1리경로당",
-    "address": "충청북도 청주시 청원구 장재토성길 6",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13666",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "여천2리경로당",
-    "address": "충청북도 청주시 청원구 오창읍 여천3길 60",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13567",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13566",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13576",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13606",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -893,6 +1045,14 @@
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13577",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13580",
+    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
+  },
+  {
+    "name": "여천2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 여천3길 60",
+    "jibunAddress": "",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13567",
+    "sourceListing": "https://fshh.purpleo.co.kr/view/13566",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   },
   {
@@ -909,118 +1069,6 @@
     "jibunAddress": "",
     "sourceUrl": "https://fshh.purpleo.co.kr/view/13687",
     "sourceListing": "https://fshh.purpleo.co.kr/view/13686",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "대길2리경로당",
-    "address": "충청북도 청주시 청원구 서당대길 길 103-3",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13641",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "현암2리경로당",
-    "address": "충청북도 청주시 청원구 현암천수길 21-13",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13617",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13662",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "원2리경로당",
-    "address": "충청북도 청주시 청원구 오창읍 원리1길 13",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13576",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13606",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "내둔리경로당",
-    "address": "충청북도 청주시 청원구 내둔길 69-1",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13691",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13622",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "토성2리경로당",
-    "address": "충청북도 청주시 청원구 토성1길 10",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36715",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "금대2리경로당",
-    "address": "충청북도 청주시 청원구 금대2길 28",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13690",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13658",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "금대1리경로당",
-    "address": "충청북도 청주시 청원구 금대길 30-8",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13689",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13658",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "송정1리경로당",
-    "address": "충청북도 청주시 청원구 송정1길 1",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36717",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13658",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "송정2리경로당",
-    "address": "충청북도 청주시 청원구 송정새터말길 20",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/9696",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "입상2리경로당",
-    "address": "충청북도 청주시 청원구 내수읍 입상2길 22",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13678",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13622",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "현암1리경로당",
-    "address": "충청북도 청주시 청원구 현암길 51",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13616",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "신대1리경로당",
-    "address": "충청북도 청주시 청원구 신대길 22-10",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36718",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13617",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "신대2리경로당",
-    "address": "충청북도 청주시 청원구 신대2길 18",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/36719",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
-    "sourceProvider": "충청북도 청주시 공개시설자료 목록"
-  },
-  {
-    "name": "광암리경로당",
-    "address": "충청북도 청주시 청원구 광암길 9-3",
-    "jibunAddress": "",
-    "sourceUrl": "https://fshh.purpleo.co.kr/view/13688",
-    "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
     "sourceProvider": "충청북도 청주시 공개시설자료 목록"
   }
 ]
