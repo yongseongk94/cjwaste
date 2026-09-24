@@ -1227,7 +1227,7 @@ const DONG_ROUTE_CACHE_VERSION='v76-layer-visibility-refresh';
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
 function routeCachePatchKey(spec){return `${spec?.type||''}|${spec?.vehicle||''}|${spec?.day||''}`}
 function routeNeedsPatchedGeometry(spec){return ROUTE_CACHE_PATCH_KEYS.has(routeCachePatchKey(spec))}
-function routeCachePatchSuffix(spec){return routeNeedsPatchedGeometry(spec)?'|hwajuk-v1':''}
+function routeCachePatchSuffix(spec){return (routeNeedsPatchedGeometry(spec)?'|hwajuk-v1':'')+(villageSpecAffected(spec)?'|village-facility-v1':'')}
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1797,6 +1797,20 @@ async function ensureVisibleServiceZoneChunks(type){
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
+let villageRouteBundle=null;
+function villageRouteTerm(term){
+  const t=String(term||'').trim().replace(/\s*(?:일대|일부|일원)$/,'').trim();
+  const m=t.match(/^(?:(?:청주시\s*)?(?:청원구\s*)?(?:내수읍|오창읍|북이면)\s+)?([가-힣]+\d*(?:리|구))$/);
+  if(!m||/(?:사거리|스토리)$/.test(m[1]))return '';
+  return m[1].replace(/구$/,'리');
+}
+function villageRouteKey(term,spec){return routeAllowedDistricts(spec).filter(d=>['내수읍','오창읍','북이면'].includes(d)).sort().join(',')+'|'+villageRouteTerm(term);}
+function villageSpecAffected(spec){return !spec?.provider&&routeAllowedDistricts(spec).some(d=>['내수읍','오창읍','북이면'].includes(d))&&routeDescriptorsForMap(spec.raw).some(d=>villageRouteTerm(d.term));}
+function villageFacilityCandidates(term,spec){
+  const row=villageRouteBundle?.matches?.find(r=>r.key===villageRouteKey(term,spec));
+  return row?.status==='matched'?row.facilities.map(f=>({...f,term})):[];
+}
+function villagePrecomputedRecord(spec){return villageRouteBundle?.routes?.find(r=>r.type===spec.type&&r.vehicle===spec.vehicle&&r.day===spec.day&&r.scopeSignature===routeScopeSignature(spec));}
 const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test/data/precomputed-uam-contractor-routes-v1.json'];
 function bundledPrecomputedData(){
   try{
@@ -1831,6 +1845,19 @@ async function loadExternalBundledPrecomputedData(){
           mergedRoutes.push(...extra.routes);
         }catch(e){console.warn('테스트 추가 근거노선 묶음 로드 실패',extraSrc,e)}
       }
+      try{
+        const vr=await fetch('cjwaste-test/data/precomputed-village-facility-routes-v1.json',{cache:'force-cache'});
+        if(!vr.ok)throw Error('village routes HTTP '+vr.status);
+        const bundle=await vr.json();
+        if(bundle.villageVersion!=='village-facility-v1'||!bundle.routes?.length)throw Error('invalid village routes');
+        villageRouteBundle=bundle;
+        const specs=allDongRouteSpecs();
+        for(let i=mergedRoutes.length-1;i>=0;i--){
+          const spec=bundleRouteRecordSpec(mergedRoutes[i],specs);
+          if(spec&&villagePrecomputedRecord(spec))mergedRoutes.splice(i,1);
+        }
+        mergedRoutes.push(...bundle.routes);
+      }catch(e){console.warn('마을회관 기준 사전계산 노선 로드 실패',e)}
       bundledPrecomputedExternal={...data,routes:mergedRoutes};
       return bundledPrecomputedExternal;
     }catch(e){
@@ -1889,7 +1916,7 @@ function hydrateBundledPrecomputedData(dataOverride=null){
         const spec=bundleRouteRecordSpec(r,specs);
         if(!spec||existingDongRouteOverlay(spec))continue;
         // 화죽리 보강 및 오창 산단 제한 대상은 구형 사전계산 좌표를 복원하지 않고 새로 계산합니다.
-        if(routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec))continue;
+        if((routeNeedsPatchedGeometry(spec)&&r.villageVersion!=='village-facility-v1')||isOchangScienceContractSpec(spec)||(villageSpecAffected(spec)&&r.villageVersion!=='village-facility-v1'))continue;
         const bundleRouteData={...(r.data||{})};
         const audit=finalRouteCoordinateAudit(spec,bundleRouteData);
         if(!audit.ok){
@@ -2212,7 +2239,7 @@ function buildLocalScheduleIndex(type,data){
   for(const record of data?.routes||[]){
     if(record.type!==type||!scheduleRouteAllowed(type,record.vehicle,record.day))continue;
     const spec=record.liveSpec||bundleRouteRecordSpec(record,specs);if(!spec||spec.housing==='apartment'||spec.zoneEligible===false)continue;
-    if(!record.liveSpec&&(routeNeedsPatchedGeometry(spec)||isOchangScienceContractSpec(spec)))continue;
+    if(!record.liveSpec&&((routeNeedsPatchedGeometry(spec)&&record.villageVersion!=='village-facility-v1')||isOchangScienceContractSpec(spec)||(villageSpecAffected(spec)&&record.villageVersion!=='village-facility-v1')))continue;
     const route=record.data||{};
     for(const seg of route.segments||[])for(let i=1;i<seg.length;i++)add(seg[i-1],seg[i],spec,'line');
     for(const p of route.zoneEvidencePoints||[])add(p,p,spec,'point',p.term||p.address||'');
@@ -2763,7 +2790,7 @@ function renderNearbyRouteSchedule(type,matches,ctx){
     : `<strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(match.vehicle)}호</strong>`;
   document.getElementById(type+'Detail').innerHTML=
     `<div class="verified">${ownerLine}: ${orderedDays.join(' · ')}<span style="color:#6b7280">${distanceText}${roadText}</span>`+
-    `${secondary}<br><span style="color:#6b7280">※ ${basisText} 주소점에서 실제 표시 수거선까지 ${limitM}m 이내인 경우에만 수거요일을 인정하며, 다른 차량의 인접노선 요일을 섞지 않습니다.${RURAL_INFERRED_ROUTE_DISTRICTS.has(district)?' 내수·북이는 원본 코스 순서를 따라 추정한 차량이동 도로구간도 수거노선에 포함합니다.':''}</span>${apartmentNotice}</div>`;
+    `${secondary}<br><span style="color:#6b7280">※ ${basisText} 주소점에서 실제 표시 수거선까지 ${limitM}m 이내인 경우에만 수거요일을 인정하며, 다른 차량의 인접노선 요일을 섞지 않습니다.${RURAL_INFERRED_ROUTE_DISTRICTS.has(district)?' 마을명 항목은 주소가 확인된 마을회관·경로당 주변 도로를 기준으로 추정합니다.':''}</span>${apartmentNotice}</div>`;
 }
 function restoredRuralRiSchedule(type,ctx){
   const district=serviceDistrictForContext(ctx);
@@ -3816,8 +3843,98 @@ async function localRoadAnchorsAroundPoint(base,spec,radiusKm=0.45){
   }
   return orderedRoadSamples(samples,5);
 }
+const villageRoadAnchorCache=new Map();
+function villageAccessNeighbors(facility,spec){
+  const matches=typeof villageRouteBundle!=='undefined'?villageRouteBundle?.matches:[...(window.villageMatches?.values()||[])];
+  return uniqueRoutePoints((matches||[]).flatMap(r=>r.facilities||[])).filter(p=>pointInsideRouteDistricts(p,routeAllowedDistricts(spec))&&routePointDistance(facility,p)>.2&&routePointDistance(facility,p)<5).sort((a,b)=>routePointDistance(facility,a)-routePointDistance(facility,b));
+}
+async function villageRoadAnchors(facility,spec){
+  const key=facility.address+'|'+routeScopeSignature(spec);
+  if(villageRoadAnchorCache.has(key))return villageRoadAnchorCache.get(key);
+  const work=(async()=>{
+    let address=facility.address,road=roadNameFromAddress(address);
+    if(!road){
+      const own=await addressSearchPromise(address);
+      const found=own.find(p=>p.road_address&&routePointDistance(facility,{lat:+p.y,lng:+p.x})<.05);
+      if(found){address=found.road_address.address_name;road=roadNameFromAddress(address);}
+    }
+    const accessFallback=()=>{
+      const nearest=villageAccessNeighbors(facility,spec)[0];
+      return nearest?[facility,nearest]:[];
+    };
+    if(!road)return accessFallback();
+    const all=(await searchRoadAnchorPlaces(road)).filter(p=>pointInsideRouteDistricts(p,routeAllowedDistricts(spec)));
+    let near=all.filter(p=>routePointDistance(facility,p)<=.18&&routePointDistance(facility,p)>.015);
+    const number=roadHouseNumberFromAddress(address,road);
+    if(near.length<2&&Number.isFinite(number)){
+      const suffix=address.match(/\s\d+-(\d+)/)?.[1];
+      const numbers=[-6,-4,-2,-1,1,2,4,6].map(n=>String(number+n)).filter(n=>+n>0);
+      if(suffix)numbers.push(...[-4,-2,-1,1,2,4].map(n=>number+'-'+(+suffix+n)).filter(n=>+n.split('-')[1]>0));
+      const rows=(await Promise.all(numbers.map(n=>addressSearchPromise('청주시 청원구 '+road+' '+n)))).flat();
+      for(const r of rows){
+        const a=r.road_address?.address_name||r.address_name||'',p={lat:+r.y,lng:+r.x,address:a,sampleNo:roadSampleOrder(a,road)};
+        if(roadNameFromAddress(a)!==road||!pointInsideRouteDistricts(p,routeAllowedDistricts(spec)))continue;
+        const distance=routePointDistance(facility,p);
+        if(distance>.015&&distance<=.18)near.push(p);
+      }
+    }
+    // An exact facility address remains an endpoint even when only one neighboring address exists.
+    near=uniqueRoutePoints(near).sort((a,b)=>routePointDistance(facility,a)-routePointDistance(facility,b)).slice(0,5);
+    if(!near.length){
+      // A longer road lookup is clipped to the 180 m facility neighborhood before display.
+      const closest=all.filter(p=>routePointDistance(facility,p)>.015).sort((a,b)=>routePointDistance(facility,a)-routePointDistance(facility,b))[0];
+      if(closest)near=[closest];
+    }
+    return near.length?orderedRoadSamples([...near,{...facility,address,sampleNo:roadSampleOrder(address,road)}],6):accessFallback();
+  })();
+  villageRoadAnchorCache.set(key,work);return work;
+}
+const villageFacilityRoadCache=new Map();
+async function fetchVillageFacilityRoad(anchors,facility,spec){
+  const key=[facility.lat,facility.lng,routeScopeSignature(spec)].join('|');
+  if(villageFacilityRoadCache.has(key))return villageFacilityRoadCache.get(key);
+  const work=(async()=>{
+    const initial=await fetchRoadFollowingPath(anchors);
+    let segments=clipVillageFacilitySegments(initial?.segments||[],facility);
+    if(routeItemDistanceKm({segments},facility.lat,facility.lng)>.08){
+      for(const next of villageAccessNeighbors(facility,spec).slice(0,2)){
+        const access=await fetchRoadFollowingPath([facility,next]);
+        segments.push(...clipVillageFacilitySegments(access?.segments||[],facility));
+        if(routeItemDistanceKm({segments},facility.lat,facility.lng)<=.08)break;
+      }
+    }
+    return {...initial,segments};
+  })();
+  villageFacilityRoadCache.set(key,work);return work;
+}
+function clipVillageFacilitySegments(segments,center,radiusKm=.18){
+  const origin=geoPointKm(center.lat,center.lng),out=[];
+  for(const segment of segments||[]){
+    let chain=[];
+    const flush=()=>{if(chain.length>=2)out.push(chain);chain=[];};
+    for(let i=1;i<segment.length;i++){
+      const a=segment[i-1],b=segment[i],p=geoPointKm(a.lat,a.lng),q=geoPointKm(b.lat,b.lng);
+      const x=p.x-origin.x,y=p.y-origin.y,dx=q.x-p.x,dy=q.y-p.y;
+      const A=dx*dx+dy*dy,B=2*(x*dx+y*dy),C=x*x+y*y-radiusKm*radiusKm;
+      if(A<1e-16)continue;
+      const discriminant=B*B-4*A*C;
+      if(discriminant<0){flush();continue;}
+      const root=Math.sqrt(discriminant),lo=Math.max(0,(-B-root)/(2*A)),hi=Math.min(1,(-B+root)/(2*A));
+      if(lo>hi){flush();continue;}
+      const point=t=>({lat:a.lat+(b.lat-a.lat)*t,lng:a.lng+(b.lng-a.lng)*t});
+      const start=point(lo),end=point(hi);
+      if(chain.length&&routePointDistance(chain[chain.length-1],start)>.001)flush();
+      if(!chain.length)chain.push(start);chain.push(end);
+      if(hi<1)flush();
+    }
+    flush();
+  }
+  return out;
+}
+
 async function serviceAnchorsForEntry(entry,spec){
   const base=bestLocalCandidate(entry);
+  if(entry.desc?.villageFacility)return villageRoadAnchors(entry.desc.villageFacility,spec);
   const sampled=entry.candidates.filter(p=>['road-sample','range-road-sample','verified-road','road-keyword'].includes(p.source));
 
   // 코스표에 도로/간선/번길이 직접 적힌 경우, 그 도로 자체만 서비스 구간으로 사용합니다.
@@ -4007,10 +4124,12 @@ function createDongRouteOverlay(spec,data){
     const outsideRoadNote=outsideRoadTerms.length?` · 읍·면 면레이어 처리 도로: ${escapeHtml(outsideRoadTerms.join(', '))}`:'';
     const addressRangeNote=addressRangeTerms.length?` · 도로주소형 구간: ${escapeHtml(addressRangeTerms.join(', '))}`:'';
     const missingRoadNote=missingRoadTerms.length?` · 미표시 도로: ${escapeHtml(missingRoadTerms.join(', '))}`:'';
+    const villageEvidence=zoneEvidencePoints.filter(p=>villageSpecAffected(spec)&&villageRouteTerm(p.term));
+    const villageNote=villageEvidence.length?`<details><summary>마을회관·경로당 기준시설 ${villageEvidence.length}곳 · 주소 기준 추정노선</summary>${villageEvidence.map(p=>`${escapeHtml(p.term)} → ${escapeHtml(p.name)} · ${escapeHtml(p.address)}`).join('<br>')}</details>`:'';
     const missingNote=missingTerms.length?` · 미해결 항목: ${escapeHtml(missingTerms.join(', '))}`:'';
     const rangeNote=rangeTerms.length?` · 범위표현: ${escapeHtml(rangeTerms.join(', '))}`:'';
     const secondaryNote=secondaryText?` · ${secondaryKind}: ${escapeHtml(secondaryText)} ※ ${secondaryKind}은 주 수거구간과 별도 작업정보입니다.`:'';
-    updateMapBadge(`${districtLabel} · ${escapeHtml(routeDisplayLabel(spec.vehicle))} · ${spec.day}요일 · 실제 수거구간 ${segments.length}개 · ${inferredMovementCount?`내수·북이 차량이동 추정 ${inferredMovementCount}구간 포함`:`구간 사이 이동선 제외`}${apiNote}${distance?` · 표시구간 약 ${(distance/1000).toFixed(1)}km`:''}${outsideNote}${blockedNote}${rangeNote}${outsideRoadNote}${addressRangeNote}${missingRoadNote}${missingNote}${secondaryNote} · 원본 주 수거코스: ${escapeHtml(original)}`);
+    updateMapBadge(`${districtLabel} · ${escapeHtml(routeDisplayLabel(spec.vehicle))} · ${spec.day}요일 · 실제 수거구간 ${segments.length}개 · ${inferredMovementCount?`내수·북이 차량이동 추정 ${inferredMovementCount}구간 포함`:`구간 사이 이동선 제외`}${apiNote}${distance?` · 표시구간 약 ${(distance/1000).toFixed(1)}km`:''}${outsideNote}${blockedNote}${rangeNote}${outsideRoadNote}${addressRangeNote}${missingRoadNote}${missingNote}${secondaryNote} · 원본 주 수거코스: ${escapeHtml(original)}${villageNote}`);
   };
 
   polylines.forEach(shape=>{
@@ -4080,13 +4199,24 @@ async function buildDongRouteOverlay(spec){
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
 
   const task=(async()=>{
+    if(villageSpecAffected(spec)){
+      await loadExternalBundledPrecomputedData();
+      const record=villagePrecomputedRecord(spec);
+      if(record){
+        putCachedDongRoute(spec,record.data).catch(e=>console.warn('마을회관 노선 캐시 저장 실패',e));
+        return createDongRouteOverlay(spec,{...record.data,fromCache:true,fromBundle:true});
+      }
+    }
     const cached=await getCachedDongRoute(spec);
     if(cached?.segments?.length){
       return createDongRouteOverlay(spec,{...cached,fromCache:true});
     }
 
     const touchedDistricts=[];
-    const descriptors=applySourceRoadAudit(spec,routeDescriptorsForMap(spec.raw));
+    const descriptors=applySourceRoadAudit(spec,routeDescriptorsForMap(spec.raw)).flatMap(d=>{
+      const facilities=villageSpecAffected(spec)&&villageRouteTerm(d.term)?villageFacilityCandidates(d.term,spec):[];
+      return facilities.length?facilities.map(f=>({...d,villageFacility:f})):[d];
+    });
     const entries=[];
     const outOfCheongwonTerms=[];
     const rangeTerms=[];
@@ -4102,8 +4232,9 @@ async function buildDongRouteOverlay(spec){
 
     for(const desc of descriptors){
       const term=desc.term;
-      let generic=await searchRouteTermPlaces(term);
-      generic=await expandRangeCandidates(generic,desc);
+      const village=villageSpecAffected(spec)&&!!villageRouteTerm(term);
+      let generic=desc.villageFacility?[desc.villageFacility]:(village?[]:await searchRouteTermPlaces(term));
+      if(!village)generic=await expandRangeCandidates(generic,desc);
       const roadTerm=isRoadRouteTerm(routeSearchAlias(term)) || desc.scope==='road' || desc.scope==='line';
       const roadSamples=roadTerm?await searchRoadAnchorPlaces(routeSearchAlias(term)):[];
       const merged=uniqueRoutePoints([...roadSamples,...generic]);
@@ -4178,7 +4309,7 @@ async function buildDongRouteOverlay(spec){
 
       if(anchors.length>=2){
         roadRequestedCount++;
-        const roadResult=await fetchRoadFollowingPath(anchors);
+        const roadResult=entry.desc.villageFacility?await fetchVillageFacilityRoad(anchors,entry.desc.villageFacility,spec):await fetchRoadFollowingPath(anchors);
         let matchedThisTerm=false;
         for(const roadPath of (roadResult?.segments||[])){
           // 해당 차량·요일에 배정된 동지역 경계 안에서만 실제 도로망 구간을 남깁니다.
@@ -4207,7 +4338,7 @@ async function buildDongRouteOverlay(spec){
       }
     }
 
-    const inferredMovement=SERVICE_ZONE_PRECOMPUTE_ONLY?{segments:[],inferredMovementCount:0}:await inferredRuralMovementSegments(ruralMovementAnchors);
+    const inferredMovement=SERVICE_ZONE_PRECOMPUTE_ONLY||villageSpecAffected(spec)?{segments:[],inferredMovementCount:0}:await inferredRuralMovementSegments(ruralMovementAnchors);
     if(inferredMovement.segments.length)segments.push(...inferredMovement.segments);
     const inferredMovementCount=inferredMovement.inferredMovementCount;
 
@@ -5724,4 +5855,3 @@ loadSdk();
 </script>
 </body>
 </html>
-

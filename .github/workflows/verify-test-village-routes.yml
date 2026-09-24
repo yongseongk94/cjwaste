@@ -1,0 +1,29 @@
+name: Verify deployed village facility routes
+on:
+  push:
+    paths:
+      - 'cjwaste-test/index.html'
+      - 'tools/village-routes/verify-live.cjs'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify route data and existing schedule rules
+        run: |
+          node tools/test_village_facility_routes.cjs
+          node tools/test_ochang_boundary_2023.cjs
+          node tools/test_reviewed_schedule.cjs
+      - name: Wait for this test page deployment
+        run: |
+          for i in $(seq 1 120); do
+            if curl -fsSL "https://yongseongk94.github.io/cjwaste/cjwaste-test/?village_check=$RANDOM" -o /tmp/live.html && cmp -s /tmp/live.html cjwaste-test/index.html; then exit 0; fi
+            sleep 5
+          done
+          exit 1
+      - name: Verify saved routes and Ochang map in browser
+        run: |
+          npm install --no-save --package-lock=false puppeteer-core@24.16.0
+          export CHROME_BIN=$(command -v google-chrome || command -v chromium)
+          node tools/village-routes/verify-live.cjs
