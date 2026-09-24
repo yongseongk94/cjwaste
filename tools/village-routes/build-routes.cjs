@@ -8,6 +8,7 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
   await page.waitForFunction(()=>typeof geocoder!=='undefined'&&!!geocoder);
   await page.evaluate(()=>ensureTestAdminBoundaryLoad());
   await page.addScriptTag({content:fs.readFileSync('tools/village-routes/match.js','utf8')});
+  await page.addScriptTag({content:fs.readFileSync('tools/village-routes/road-anchors.js','utf8')});
   const matches=JSON.parse(fs.readFileSync('tools/village-routes/matches.json')).matches.map(({candidates,...r})=>r);
   await page.evaluate(matches=>{
     window.villageMatches=new Map(matches.map(r=>[r.key,r]));
@@ -18,10 +19,7 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
     const originalServiceAnchors=serviceAnchorsForEntry;
     serviceAnchorsForEntry=async(entry,spec)=>{
       if(!entry.desc?.villageFacility)return originalServiceAnchors(entry,spec);
-      const base=entry.desc.villageFacility,road=roadNameFromAddress(base.address);
-      const near=await localRoadAnchorsAroundPoint(base,spec,.18);
-      if(!near.length)return [];
-      return orderedRoadSamples([...near,{...base,sampleNo:roadSampleOrder(base.address,road)}],6);
+      return villageRoadAnchors(entry.desc.villageFacility,spec);
     };
     // Build into plain data, bypassing old browser caches and visual object allocation.
     let source=buildDongRouteOverlay.toString().replace('function buildDongRouteOverlay','function generateVillageRoute');
@@ -34,6 +32,7 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
     });`);
     source=source.replace('let generic=await searchRouteTermPlaces(term);','let generic=desc.villageFacility?[desc.villageFacility]:(villageRouteTerm(term)?[]:await searchRouteTermPlaces(term));');
     source=source.replace('generic=await expandRangeCandidates(generic,desc);','if(!villageRouteTerm(term))generic=await expandRangeCandidates(generic,desc);');
+    source=source.replace('const roadResult=await fetchRoadFollowingPath(anchors);', 'const roadResult=await fetchRoadFollowingPath(anchors); if(entry.desc.villageFacility&&roadResult)roadResult.segments=clipVillageFacilitySegments(roadResult.segments,entry.desc.villageFacility);');
     source=source.replace('await putCachedDongRoute(spec,safeData);','/* generation data is saved by the runner */');
     source=source.replace('await inferredRuralMovementSegments(ruralMovementAnchors)','{segments:[],inferredMovementCount:0}');
     source=source.replace('return createDongRouteOverlay(spec,{...safeData,fromCache:false});','return safeData;');
