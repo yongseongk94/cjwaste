@@ -1,0 +1,2334 @@
+[
+  {
+    "vehicle": "3344",
+    "day": "화",
+    "type": "general",
+    "waypoints": 7,
+    "parts": 1,
+    "missing": [
+      "엘리트전원마을"
+    ],
+    "distances": [
+      {
+        "name": "팔결교",
+        "term": "팔결교",
+        "distanceM": 0
+      },
+      {
+        "name": "상평리경로당",
+        "term": "상평리",
+        "distanceM": 12
+      },
+      {
+        "name": "청원한우마실",
+        "term": "한우마실",
+        "distanceM": 34
+      },
+      {
+        "name": "가영당 한옥팬션",
+        "term": "미래지한옥마을",
+        "distanceM": 13
+      },
+      {
+        "name": "화산리마을회관(꽃화산)",
+        "term": "꽃화산리",
+        "distanceM": 11
+      },
+      {
+        "name": "후기1리 경로당",
+        "term": "후기리",
+        "distanceM": 14
+      },
+      {
+        "name": "후기2리경로당",
+        "term": "후기리",
+        "distanceM": 6
+      }
+    ]
+  },
+  {
+    "vehicle": "3344",
+    "day": "수",
+    "type": "general",
+    "waypoints": 15,
+    "parts": 1,
+    "missing": [
+      "도암리",
+      "양지리"
+    ],
+    "distances": [
+      {
+        "name": "탑리마을회관",
+        "term": "탑리",
+        "distanceM": 12
+      },
+      {
+        "name": "기암리경로당",
+        "term": "기암리",
+        "distanceM": 14
+      },
+      {
+        "name": "석우리경로당",
+        "term": "석우리",
+        "distanceM": 18
+      },
+      {
+        "name": "가곡1리마을회관",
+        "term": "가곡리",
+        "distanceM": 4
+      },
+      {
+        "name": "충청북도농업기술원",
+        "term": "농업기술원",
+        "distanceM": 23
+      },
+      {
+        "name": "괴정리 노인정",
+        "term": "괴정리",
+        "distanceM": 6
+      },
+      {
+        "name": "모정1리경로당",
+        "term": "모정리",
+        "distanceM": 12
+      },
+      {
+        "name": "모정2리경로당",
+        "term": "모정리",
+        "distanceM": 9
+      },
+      {
+        "name": "학소리(할머니)경로당",
+        "term": "학소리",
+        "distanceM": 12
+      },
+      {
+        "name": "학소리(할아버지)경로당",
+        "term": "학소리",
+        "distanceM": 8
+      },
+      {
+        "name": "일신리경로당",
+        "term": "일신리",
+        "distanceM": 9
+      },
+      {
+        "name": "유리경로당",
+        "term": "유리",
+        "distanceM": 10
+      },
+      {
+        "name": "유리학구경로당",
+        "term": "유리",
+        "distanceM": 10
+      },
+      {
+        "name": "華山(화산)경로당",
+        "term": "빛화산리",
+        "distanceM": 6
+      },
+      {
+        "name": "여천1리경로당",
+        "term": "여천리",
+        "distanceM": 17
+      }
+    ]
+  },
+  {
+    "vehicle": "3344",
+    "day": "목",
+    "type": "general",
+    "waypoints": 14,
+    "parts": 1,
+    "missing": [
+      "화죽리"
+    ],
+    "distances": [
+      {
+        "name": "창1리(할머니)경로당",
+        "term": "창리",
+        "distanceM": 13
+      },
+      {
+        "name": "창2리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창4리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창5리경로당",
+        "term": "창리",
+        "distanceM": 3
+      },
+      {
+        "name": "홈플러스 오창점",
+        "term": "오창마트",
+        "distanceM": 48
+      },
+      {
+        "name": "오창초등학교",
+        "term": "오창초",
+        "distanceM": 36
+      },
+      {
+        "name": "복현2리경로당",
+        "term": "복현리",
+        "distanceM": 22
+      },
+      {
+        "name": "오창읍 행정복지센터",
+        "term": "오창읍사무소",
+        "distanceM": 19
+      },
+      {
+        "name": "성산1리경로당",
+        "term": "성산리",
+        "distanceM": 9
+      },
+      {
+        "name": "자모원한생명문화원",
+        "term": "자모원",
+        "distanceM": 34
+      },
+      {
+        "name": "벨루아",
+        "term": "벨루아캠핑장",
+        "distanceM": 78
+      },
+      {
+        "name": "화상1리경로당",
+        "term": "북이면 화상리",
+        "distanceM": 7
+      },
+      {
+        "name": "대율2리경로당",
+        "term": "대율리",
+        "distanceM": 7
+      },
+      {
+        "name": "내둔리경로당",
+        "term": "내둔리",
+        "distanceM": 9
+      }
+    ]
+  },
+  {
+    "vehicle": "3344",
+    "day": "월",
+    "type": "general",
+    "waypoints": 17,
+    "parts": 1,
+    "missing": [
+      "체리부로",
+      "각리"
+    ],
+    "distances": [
+      {
+        "name": "창1리(할머니)경로당",
+        "term": "창리",
+        "distanceM": 13
+      },
+      {
+        "name": "창2리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창4리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창5리경로당",
+        "term": "창리",
+        "distanceM": 3
+      },
+      {
+        "name": "홈플러스 오창점",
+        "term": "오창마트",
+        "distanceM": 48
+      },
+      {
+        "name": "장대2리경로당",
+        "term": "장대리",
+        "distanceM": 8
+      },
+      {
+        "name": "장대리경로당",
+        "term": "장대리",
+        "distanceM": 12
+      },
+      {
+        "name": "오창초등학교",
+        "term": "오창초",
+        "distanceM": 36
+      },
+      {
+        "name": "복현2리경로당",
+        "term": "복현리",
+        "distanceM": 22
+      },
+      {
+        "name": "오창읍 행정복지센터",
+        "term": "오창읍사무소",
+        "distanceM": 19
+      },
+      {
+        "name": "원리 경로당",
+        "term": "원리",
+        "distanceM": 17
+      },
+      {
+        "name": "여천1리경로당",
+        "term": "여천리",
+        "distanceM": 17
+      },
+      {
+        "name": "중신리경로당",
+        "term": "중신리",
+        "distanceM": 19
+      },
+      {
+        "name": "신평2리노인정",
+        "term": "신평리",
+        "distanceM": 9
+      },
+      {
+        "name": "오창성당 지게바위공소",
+        "term": "지게바위",
+        "distanceM": 14
+      },
+      {
+        "name": "농소리경로당",
+        "term": "농소리",
+        "distanceM": 6
+      },
+      {
+        "name": "탑리마을회관",
+        "term": "탑리",
+        "distanceM": 12
+      }
+    ]
+  },
+  {
+    "vehicle": "3344",
+    "day": "금",
+    "type": "general",
+    "waypoints": 12,
+    "parts": 1,
+    "missing": [
+      "자연어린이집",
+      "오창농협급식지원센터"
+    ],
+    "distances": [
+      {
+        "name": "장미공원",
+        "term": "장미공원",
+        "distanceM": 29
+      },
+      {
+        "name": "청원한우마실",
+        "term": "한우마실",
+        "distanceM": 34
+      },
+      {
+        "name": "성산1리경로당",
+        "term": "성산리",
+        "distanceM": 9
+      },
+      {
+        "name": "용두리경로당",
+        "term": "용두리",
+        "distanceM": 6
+      },
+      {
+        "name": "두릉리마을회관",
+        "term": "두릉리",
+        "distanceM": 11
+      },
+      {
+        "name": "백현노인정",
+        "term": "백현리",
+        "distanceM": 7
+      },
+      {
+        "name": "백현리반계노인정",
+        "term": "백현리",
+        "distanceM": 15
+      },
+      {
+        "name": "성재2리신자포 경로당",
+        "term": "성재리",
+        "distanceM": 9
+      },
+      {
+        "name": "성재3리경로당",
+        "term": "성재리",
+        "distanceM": 12
+      },
+      {
+        "name": "성재4리노인정",
+        "term": "성재리",
+        "distanceM": 12
+      },
+      {
+        "name": "가좌2리마을회관",
+        "term": "가좌리",
+        "distanceM": 10
+      },
+      {
+        "name": "오창제3산업단지",
+        "term": "3산업단지",
+        "distanceM": 48
+      }
+    ]
+  },
+  {
+    "vehicle": "3346",
+    "day": "월",
+    "type": "general",
+    "waypoints": 4,
+    "parts": 1,
+    "missing": [
+      "대원1차상가",
+      "주성로279번길",
+      "주성중학교",
+      "율봉로261번길",
+      "율봉로262번길",
+      "엔포드상가",
+      "율량로201번길",
+      "중앙초등학교",
+      "내수로8"
+    ],
+    "distances": [
+      {
+        "name": "충청대로",
+        "term": "충청대로",
+        "distanceM": 1
+      },
+      {
+        "name": "구성3리노인회관",
+        "term": "구성3리",
+        "distanceM": 13
+      },
+      {
+        "name": "거송갈비찜 청주점",
+        "term": "거송갈비찜",
+        "distanceM": 14
+      },
+      {
+        "name": "반석산업",
+        "term": "반석산업",
+        "distanceM": 19
+      }
+    ]
+  },
+  {
+    "vehicle": "3346",
+    "day": "목",
+    "type": "general",
+    "waypoints": 12,
+    "parts": 1,
+    "missing": [
+      "대원1차상가",
+      "주성로279번길",
+      "주성중학교",
+      "율봉로261번길",
+      "엔포드상가",
+      "율량로201번길",
+      "주성동 마을회관"
+    ],
+    "distances": [
+      {
+        "name": "보람어린이집",
+        "term": "보람어린이집",
+        "distanceM": 22
+      },
+      {
+        "name": "내수로",
+        "term": "내수로",
+        "distanceM": 0
+      },
+      {
+        "name": "수정요양원",
+        "term": "수정요양원",
+        "distanceM": 11
+      },
+      {
+        "name": "반석산업",
+        "term": "반석산업",
+        "distanceM": 19
+      },
+      {
+        "name": "구성1리마을회관",
+        "term": "구성1리",
+        "distanceM": 9
+      },
+      {
+        "name": "메리다웨딩컨벤션",
+        "term": "메리다웨딩",
+        "distanceM": 100
+      },
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리",
+        "distanceM": 6
+      },
+      {
+        "name": "수성초등학교 구성분교장",
+        "term": "수성초분교",
+        "distanceM": 39
+      },
+      {
+        "name": "묵방1구 마을회관",
+        "term": "묵방마을회관",
+        "distanceM": 8
+      },
+      {
+        "name": "국동리경로당",
+        "term": "국동리경로회관",
+        "distanceM": 12
+      },
+      {
+        "name": "묵방2길",
+        "term": "묵방2길",
+        "distanceM": 21
+      }
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "화",
+    "type": "general",
+    "waypoints": 10,
+    "parts": 1,
+    "missing": [
+      "정도안전산업",
+      "영하1리버스정류장"
+    ],
+    "distances": [
+      {
+        "name": "충청북도 도로관리사업소",
+        "term": "충북도로사업소",
+        "distanceM": 102
+      },
+      {
+        "name": "풍정3길",
+        "term": "풍정3길",
+        "distanceM": 0
+      },
+      {
+        "name": "세교사거리",
+        "term": "세교사거리",
+        "distanceM": 0
+      },
+      {
+        "name": "비중사거리",
+        "term": "비중사거리",
+        "distanceM": 0
+      },
+      {
+        "name": "저곡리마을회관",
+        "term": "저곡리",
+        "distanceM": 8
+      },
+      {
+        "name": "초정어린이집",
+        "term": "초정어린이집",
+        "distanceM": 26
+      },
+      {
+        "name": "초정봉칼국수",
+        "term": "초정봉칼국수",
+        "distanceM": 24
+      },
+      {
+        "name": "영하보건진료소",
+        "term": "영하보건소",
+        "distanceM": 19
+      },
+      {
+        "name": "전주밥상",
+        "term": "전주밥상",
+        "distanceM": 27
+      },
+      {
+        "name": "약수딸기",
+        "term": "청원약수딸기",
+        "distanceM": 82
+      }
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "월",
+    "type": "general",
+    "waypoints": 28,
+    "parts": 1,
+    "missing": [],
+    "distances": [
+      {
+        "name": "진성레미컨",
+        "term": "진성레미컨",
+        "distanceM": 26
+      },
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리",
+        "distanceM": 6
+      },
+      {
+        "name": "마산1리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산2리경로당",
+        "term": "마산리",
+        "distanceM": 7
+      },
+      {
+        "name": "마산3리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산4리경로당",
+        "term": "마산리",
+        "distanceM": 13
+      },
+      {
+        "name": "마산5리경로당",
+        "term": "마산리",
+        "distanceM": 14
+      },
+      {
+        "name": "마산6리경로당",
+        "term": "마산리",
+        "distanceM": 9
+      },
+      {
+        "name": "마산7리경로당",
+        "term": "마산리",
+        "distanceM": 17
+      },
+      {
+        "name": "학평2리경로당",
+        "term": "학평리",
+        "distanceM": 20
+      },
+      {
+        "name": "내수읍행정복지센터",
+        "term": "내수읍사무소",
+        "distanceM": 33
+      },
+      {
+        "name": "내수1리경로당",
+        "term": "내수리",
+        "distanceM": 59
+      },
+      {
+        "name": "내수2리경로당",
+        "term": "내수리",
+        "distanceM": 9
+      },
+      {
+        "name": "내수3리경로당",
+        "term": "내수리",
+        "distanceM": 11
+      },
+      {
+        "name": "내수6리경로당",
+        "term": "내수리",
+        "distanceM": 13
+      },
+      {
+        "name": "풍정2리마을회관",
+        "term": "풍정리",
+        "distanceM": 7
+      },
+      {
+        "name": "덕암1리경로당",
+        "term": "덕암리",
+        "distanceM": 4
+      },
+      {
+        "name": "덕암2리경로당",
+        "term": "덕암리",
+        "distanceM": 8
+      },
+      {
+        "name": "세교2리마을회관",
+        "term": "세교리",
+        "distanceM": 4
+      },
+      {
+        "name": "청주종합사격장",
+        "term": "청주종합사격장",
+        "distanceM": 77
+      },
+      {
+        "name": "형동1리마을회관",
+        "term": "형동리",
+        "distanceM": 8
+      },
+      {
+        "name": "비상리마을회관",
+        "term": "비상리",
+        "distanceM": 3
+      },
+      {
+        "name": "비중 문화마을 경로당",
+        "term": "비중리",
+        "distanceM": 9
+      },
+      {
+        "name": "우산1리경로당",
+        "term": "우산리",
+        "distanceM": 10
+      },
+      {
+        "name": "우산2리경로당",
+        "term": "우산리",
+        "distanceM": 26
+      },
+      {
+        "name": "초정리경로당",
+        "term": "초정리",
+        "distanceM": 7
+      },
+      {
+        "name": "초정약수원탕",
+        "term": "초정약수원탕",
+        "distanceM": 28
+      }
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "목",
+    "type": "general",
+    "waypoints": 14,
+    "parts": 1,
+    "missing": [
+      "대길2리경로당",
+      "초정구길",
+      "보람농원"
+    ],
+    "distances": [
+      {
+        "name": "풍정교차로",
+        "term": "풍정교차로",
+        "distanceM": 5
+      },
+      {
+        "name": "카우스토리",
+        "term": "카우스토리",
+        "distanceM": 28
+      },
+      {
+        "name": "감사교회",
+        "term": "감사교회",
+        "distanceM": 20
+      },
+      {
+        "name": "서당1리경로당",
+        "term": "서당리",
+        "distanceM": 10
+      },
+      {
+        "name": "서당2리경로당",
+        "term": "서당리",
+        "distanceM": 10
+      },
+      {
+        "name": "대길1리경로당",
+        "term": "대길리",
+        "distanceM": 14
+      },
+      {
+        "name": "대길2리경로당",
+        "term": "대길리",
+        "distanceM": 11
+      },
+      {
+        "name": "부연1구경로회관",
+        "term": "부연리",
+        "distanceM": 6
+      },
+      {
+        "name": "선암1리경로당",
+        "term": "선암리",
+        "distanceM": 18
+      },
+      {
+        "name": "신기리마을회관",
+        "term": "신기리",
+        "distanceM": 8
+      },
+      {
+        "name": "호명리경로당",
+        "term": "호명리",
+        "distanceM": 13
+      },
+      {
+        "name": "석화리노인회관",
+        "term": "석화리",
+        "distanceM": 8
+      },
+      {
+        "name": "현암1리경로당",
+        "term": "현암리",
+        "distanceM": 14
+      },
+      {
+        "name": "현암2리경로당",
+        "term": "현암리",
+        "distanceM": 6
+      }
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "수",
+    "type": "general",
+    "waypoints": 29,
+    "parts": 1,
+    "missing": [
+      "다모아산업"
+    ],
+    "distances": [
+      {
+        "name": "진성레미컨",
+        "term": "진성레미컨",
+        "distanceM": 26
+      },
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리",
+        "distanceM": 6
+      },
+      {
+        "name": "신안리경로당",
+        "term": "신안리",
+        "distanceM": 5
+      },
+      {
+        "name": "마산1리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산2리경로당",
+        "term": "마산리",
+        "distanceM": 7
+      },
+      {
+        "name": "마산3리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산4리경로당",
+        "term": "마산리",
+        "distanceM": 13
+      },
+      {
+        "name": "마산5리경로당",
+        "term": "마산리",
+        "distanceM": 14
+      },
+      {
+        "name": "마산6리경로당",
+        "term": "마산리",
+        "distanceM": 9
+      },
+      {
+        "name": "마산7리경로당",
+        "term": "마산리",
+        "distanceM": 17
+      },
+      {
+        "name": "학평2리경로당",
+        "term": "학평리",
+        "distanceM": 20
+      },
+      {
+        "name": "내수읍행정복지센터",
+        "term": "내수읍사무소",
+        "distanceM": 33
+      },
+      {
+        "name": "북이면 행정복지센터",
+        "term": "북이면사무소",
+        "distanceM": 20
+      },
+      {
+        "name": "신대1리경로당",
+        "term": "신대리",
+        "distanceM": 9
+      },
+      {
+        "name": "신대2리경로당",
+        "term": "신대리",
+        "distanceM": 11
+      },
+      {
+        "name": "장양2리경로당",
+        "term": "장양2리",
+        "distanceM": 12
+      },
+      {
+        "name": "장양1리마을회관",
+        "term": "장양1리",
+        "distanceM": 6
+      },
+      {
+        "name": "장양3구마을회관",
+        "term": "장양3리",
+        "distanceM": 6
+      },
+      {
+        "name": "용계1리경로당",
+        "term": "용계리",
+        "distanceM": 15
+      },
+      {
+        "name": "용계2리경로당",
+        "term": "용계리",
+        "distanceM": 13
+      },
+      {
+        "name": "용계3리경로당",
+        "term": "용계리",
+        "distanceM": 7
+      },
+      {
+        "name": "석성초등학교",
+        "term": "석성초",
+        "distanceM": 60
+      },
+      {
+        "name": "석성1리경로당",
+        "term": "석성리",
+        "distanceM": 9
+      },
+      {
+        "name": "석성2리경로당",
+        "term": "석성리",
+        "distanceM": 11
+      },
+      {
+        "name": "석성3리경로당",
+        "term": "석성리",
+        "distanceM": 11
+      },
+      {
+        "name": "화상1리경로당",
+        "term": "화상리",
+        "distanceM": 7
+      },
+      {
+        "name": "추학1구노인회관",
+        "term": "추학리",
+        "distanceM": 7
+      },
+      {
+        "name": "북이초등학교",
+        "term": "북이초",
+        "distanceM": 48
+      }
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "월",
+    "type": "recycle",
+    "waypoints": 31,
+    "parts": 1,
+    "missing": [],
+    "distances": [
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리",
+        "distanceM": 6
+      },
+      {
+        "name": "마산1리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산2리경로당",
+        "term": "마산리",
+        "distanceM": 7
+      },
+      {
+        "name": "마산3리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산4리경로당",
+        "term": "마산리",
+        "distanceM": 13
+      },
+      {
+        "name": "마산5리경로당",
+        "term": "마산리",
+        "distanceM": 14
+      },
+      {
+        "name": "마산6리경로당",
+        "term": "마산리",
+        "distanceM": 9
+      },
+      {
+        "name": "마산7리경로당",
+        "term": "마산리",
+        "distanceM": 17
+      },
+      {
+        "name": "신안리경로당",
+        "term": "신안리",
+        "distanceM": 5
+      },
+      {
+        "name": "내수읍",
+        "term": "내수읍",
+        "distanceM": 32
+      },
+      {
+        "name": "신안리경로당",
+        "term": "신안리",
+        "distanceM": 5
+      },
+      {
+        "name": "내수1리경로당",
+        "term": "내수리",
+        "distanceM": 59
+      },
+      {
+        "name": "내수2리경로당",
+        "term": "내수리",
+        "distanceM": 9
+      },
+      {
+        "name": "내수3리경로당",
+        "term": "내수리",
+        "distanceM": 11
+      },
+      {
+        "name": "내수6리경로당",
+        "term": "내수리",
+        "distanceM": 13
+      },
+      {
+        "name": "학평2리경로당",
+        "term": "학평리",
+        "distanceM": 20
+      },
+      {
+        "name": "풍정2리마을회관",
+        "term": "풍정리",
+        "distanceM": 7
+      },
+      {
+        "name": "덕암1리경로당",
+        "term": "덕암리",
+        "distanceM": 4
+      },
+      {
+        "name": "덕암2리경로당",
+        "term": "덕암리",
+        "distanceM": 8
+      },
+      {
+        "name": "도원1리경로당",
+        "term": "도원리",
+        "distanceM": 12
+      },
+      {
+        "name": "도원2리경로당",
+        "term": "도원리",
+        "distanceM": 13
+      },
+      {
+        "name": "도원3리경로당",
+        "term": "도원리",
+        "distanceM": 13
+      },
+      {
+        "name": "도원4리경로당",
+        "term": "도원리",
+        "distanceM": 18
+      },
+      {
+        "name": "세교2리마을회관",
+        "term": "세교리",
+        "distanceM": 4
+      },
+      {
+        "name": "청주종합사격장",
+        "term": "청주종합사격장",
+        "distanceM": 77
+      },
+      {
+        "name": "형동1리마을회관",
+        "term": "형동리",
+        "distanceM": 8
+      },
+      {
+        "name": "초정리경로당",
+        "term": "초정리",
+        "distanceM": 7
+      },
+      {
+        "name": "비상리마을회관",
+        "term": "비상리",
+        "distanceM": 3
+      },
+      {
+        "name": "우산1리경로당",
+        "term": "우산리",
+        "distanceM": 10
+      },
+      {
+        "name": "우산2리경로당",
+        "term": "우산리",
+        "distanceM": 26
+      }
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "수",
+    "type": "recycle",
+    "waypoints": 24,
+    "parts": 1,
+    "missing": [],
+    "distances": [
+      {
+        "name": "내수읍",
+        "term": "내수읍",
+        "distanceM": 32
+      },
+      {
+        "name": "내수로",
+        "term": "내수로",
+        "distanceM": 0
+      },
+      {
+        "name": "청암로",
+        "term": "청암로",
+        "distanceM": 2
+      },
+      {
+        "name": "북이면 행정복지센터",
+        "term": "북이면사무소",
+        "distanceM": 20
+      },
+      {
+        "name": "신대1리경로당",
+        "term": "신대리",
+        "distanceM": 9
+      },
+      {
+        "name": "신대2리경로당",
+        "term": "신대리",
+        "distanceM": 11
+      },
+      {
+        "name": "대율2리경로당",
+        "term": "대율리",
+        "distanceM": 7
+      },
+      {
+        "name": "내추1리경로당",
+        "term": "내추리",
+        "distanceM": 25
+      },
+      {
+        "name": "내추2리경로당",
+        "term": "내추리",
+        "distanceM": 9
+      },
+      {
+        "name": "장양2리경로당",
+        "term": "장양2리",
+        "distanceM": 12
+      },
+      {
+        "name": "장양1리마을회관",
+        "term": "장양1리",
+        "distanceM": 6
+      },
+      {
+        "name": "장양3구마을회관",
+        "term": "장양3리",
+        "distanceM": 6
+      },
+      {
+        "name": "용계1리경로당",
+        "term": "용계리",
+        "distanceM": 15
+      },
+      {
+        "name": "용계2리경로당",
+        "term": "용계리",
+        "distanceM": 13
+      },
+      {
+        "name": "용계3리경로당",
+        "term": "용계리",
+        "distanceM": 7
+      },
+      {
+        "name": "석성초등학교",
+        "term": "석성초",
+        "distanceM": 60
+      },
+      {
+        "name": "석성1리경로당",
+        "term": "석성리",
+        "distanceM": 9
+      },
+      {
+        "name": "석성2리경로당",
+        "term": "석성리",
+        "distanceM": 11
+      },
+      {
+        "name": "석성3리경로당",
+        "term": "석성리",
+        "distanceM": 11
+      },
+      {
+        "name": "화상1리경로당",
+        "term": "화상리",
+        "distanceM": 7
+      },
+      {
+        "name": "추학1구노인회관",
+        "term": "추학리",
+        "distanceM": 7
+      },
+      {
+        "name": "옥수리경로당",
+        "term": "옥수리",
+        "distanceM": 12
+      },
+      {
+        "name": "내추1리경로당",
+        "term": "내추리",
+        "distanceM": 25
+      },
+      {
+        "name": "내추2리경로당",
+        "term": "내추리",
+        "distanceM": 9
+      }
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "화",
+    "type": "recycle",
+    "waypoints": 21,
+    "parts": 1,
+    "missing": [],
+    "distances": [
+      {
+        "name": "풍정교차로",
+        "term": "풍정교차로",
+        "distanceM": 5
+      },
+      {
+        "name": "풍정2리마을회관",
+        "term": "풍정리",
+        "distanceM": 7
+      },
+      {
+        "name": "충청북도 도로관리사업소",
+        "term": "충북도로사업소",
+        "distanceM": 102
+      },
+      {
+        "name": "세교2리마을회관",
+        "term": "세교리",
+        "distanceM": 4
+      },
+      {
+        "name": "저곡리마을회관",
+        "term": "저곡리",
+        "distanceM": 8
+      },
+      {
+        "name": "우산1리경로당",
+        "term": "우산리",
+        "distanceM": 10
+      },
+      {
+        "name": "우산2리경로당",
+        "term": "우산리",
+        "distanceM": 26
+      },
+      {
+        "name": "우산3리경로당",
+        "term": "우산리",
+        "distanceM": 8
+      },
+      {
+        "name": "초정행궁",
+        "term": "초정",
+        "distanceM": 47
+      },
+      {
+        "name": "초정노인요양원",
+        "term": "초정요양원",
+        "distanceM": 14
+      },
+      {
+        "name": "영하보건진료소",
+        "term": "영하보건소",
+        "distanceM": 19
+      },
+      {
+        "name": "영하1구마을회관",
+        "term": "영하리",
+        "distanceM": 13
+      },
+      {
+        "name": "은곡3리경로당",
+        "term": "은곡3구",
+        "distanceM": 17
+      },
+      {
+        "name": "수성초등학교",
+        "term": "수성초",
+        "distanceM": 71
+      },
+      {
+        "name": "신안리경로당",
+        "term": "신안리",
+        "distanceM": 5
+      },
+      {
+        "name": "내수생활체육공원",
+        "term": "내수생활체육공원",
+        "distanceM": 64
+      },
+      {
+        "name": "내수성당",
+        "term": "내수성당",
+        "distanceM": 36
+      },
+      {
+        "name": "도원1리경로당",
+        "term": "도원리",
+        "distanceM": 12
+      },
+      {
+        "name": "도원2리경로당",
+        "term": "도원리",
+        "distanceM": 13
+      },
+      {
+        "name": "도원3리경로당",
+        "term": "도원리",
+        "distanceM": 13
+      },
+      {
+        "name": "도원4리경로당",
+        "term": "도원리",
+        "distanceM": 18
+      }
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "목",
+    "type": "recycle",
+    "waypoints": 14,
+    "parts": 1,
+    "missing": [
+      "초정구길",
+      "보람농원"
+    ],
+    "distances": [
+      {
+        "name": "학평2리경로당",
+        "term": "학평리",
+        "distanceM": 20
+      },
+      {
+        "name": "청주미트",
+        "term": "청주미트",
+        "distanceM": 16
+      },
+      {
+        "name": "감사교회",
+        "term": "감사교회",
+        "distanceM": 20
+      },
+      {
+        "name": "서당1리경로당",
+        "term": "서당리",
+        "distanceM": 10
+      },
+      {
+        "name": "서당2리경로당",
+        "term": "서당리",
+        "distanceM": 10
+      },
+      {
+        "name": "대길1리경로당",
+        "term": "대길리",
+        "distanceM": 14
+      },
+      {
+        "name": "대길2리경로당",
+        "term": "대길리",
+        "distanceM": 11
+      },
+      {
+        "name": "부연1구경로회관",
+        "term": "부연리",
+        "distanceM": 6
+      },
+      {
+        "name": "선암1리경로당",
+        "term": "선암리",
+        "distanceM": 18
+      },
+      {
+        "name": "신기리마을회관",
+        "term": "신기리",
+        "distanceM": 8
+      },
+      {
+        "name": "호명리경로당",
+        "term": "호명리",
+        "distanceM": 13
+      },
+      {
+        "name": "석화리노인회관",
+        "term": "석화리",
+        "distanceM": 8
+      },
+      {
+        "name": "현암1리경로당",
+        "term": "현암리",
+        "distanceM": 14
+      },
+      {
+        "name": "현암2리경로당",
+        "term": "현암리",
+        "distanceM": 6
+      }
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "금",
+    "type": "general",
+    "waypoints": 32,
+    "parts": 1,
+    "missing": [
+      "장재문화마을"
+    ],
+    "distances": [
+      {
+        "name": "진성레미컨",
+        "term": "진성레미컨",
+        "distanceM": 26
+      },
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리",
+        "distanceM": 6
+      },
+      {
+        "name": "마산1리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산2리경로당",
+        "term": "마산리",
+        "distanceM": 7
+      },
+      {
+        "name": "마산3리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산4리경로당",
+        "term": "마산리",
+        "distanceM": 13
+      },
+      {
+        "name": "마산5리경로당",
+        "term": "마산리",
+        "distanceM": 14
+      },
+      {
+        "name": "마산6리경로당",
+        "term": "마산리",
+        "distanceM": 9
+      },
+      {
+        "name": "마산7리경로당",
+        "term": "마산리",
+        "distanceM": 17
+      },
+      {
+        "name": "학평2리경로당",
+        "term": "학평리",
+        "distanceM": 20
+      },
+      {
+        "name": "내수읍행정복지센터",
+        "term": "내수읍사무소",
+        "distanceM": 33
+      },
+      {
+        "name": "내수1리경로당",
+        "term": "내수리",
+        "distanceM": 59
+      },
+      {
+        "name": "내수2리경로당",
+        "term": "내수리",
+        "distanceM": 9
+      },
+      {
+        "name": "내수3리경로당",
+        "term": "내수리",
+        "distanceM": 11
+      },
+      {
+        "name": "내수6리경로당",
+        "term": "내수리",
+        "distanceM": 13
+      },
+      {
+        "name": "장재교차로",
+        "term": "장재교차로",
+        "distanceM": 5
+      },
+      {
+        "name": "우진환경",
+        "term": "우진환경",
+        "distanceM": 16
+      },
+      {
+        "name": "장재마을회관",
+        "term": "장재리",
+        "distanceM": 10
+      },
+      {
+        "name": "토성2구마을회관",
+        "term": "토성리",
+        "distanceM": 12
+      },
+      {
+        "name": "금암1리경로당",
+        "term": "금암리",
+        "distanceM": 22
+      },
+      {
+        "name": "금암2리경로당",
+        "term": "금암리",
+        "distanceM": 8
+      },
+      {
+        "name": "금대1리경로당",
+        "term": "금대리",
+        "distanceM": 9
+      },
+      {
+        "name": "금대2리경로당",
+        "term": "금대리",
+        "distanceM": 8
+      },
+      {
+        "name": "송정1리경로당",
+        "term": "송정리",
+        "distanceM": 13
+      },
+      {
+        "name": "송정2리경로당",
+        "term": "송정리",
+        "distanceM": 8
+      },
+      {
+        "name": "가구대통령 청주증평점",
+        "term": "가구대통령",
+        "distanceM": 29
+      },
+      {
+        "name": "옥수리경로당",
+        "term": "옥수리",
+        "distanceM": 12
+      },
+      {
+        "name": "내추1리경로당",
+        "term": "내추리",
+        "distanceM": 25
+      },
+      {
+        "name": "내추2리경로당",
+        "term": "내추리",
+        "distanceM": 9
+      },
+      {
+        "name": "굿모닝요양원",
+        "term": "굿모닝요양원",
+        "distanceM": 13
+      },
+      {
+        "name": "다모아패키지",
+        "term": "다모아패키지",
+        "distanceM": 36
+      }
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "금",
+    "type": "recycle",
+    "waypoints": 30,
+    "parts": 1,
+    "missing": [],
+    "distances": [
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리",
+        "distanceM": 6
+      },
+      {
+        "name": "마산1리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산2리경로당",
+        "term": "마산리",
+        "distanceM": 7
+      },
+      {
+        "name": "마산3리경로당",
+        "term": "마산리",
+        "distanceM": 12
+      },
+      {
+        "name": "마산4리경로당",
+        "term": "마산리",
+        "distanceM": 13
+      },
+      {
+        "name": "마산5리경로당",
+        "term": "마산리",
+        "distanceM": 14
+      },
+      {
+        "name": "마산6리경로당",
+        "term": "마산리",
+        "distanceM": 9
+      },
+      {
+        "name": "마산7리경로당",
+        "term": "마산리",
+        "distanceM": 17
+      },
+      {
+        "name": "내수읍",
+        "term": "내수읍",
+        "distanceM": 32
+      },
+      {
+        "name": "신안리경로당",
+        "term": "신안리",
+        "distanceM": 5
+      },
+      {
+        "name": "내수1리경로당",
+        "term": "내수리",
+        "distanceM": 59
+      },
+      {
+        "name": "내수2리경로당",
+        "term": "내수리",
+        "distanceM": 9
+      },
+      {
+        "name": "내수3리경로당",
+        "term": "내수리",
+        "distanceM": 11
+      },
+      {
+        "name": "내수6리경로당",
+        "term": "내수리",
+        "distanceM": 13
+      },
+      {
+        "name": "학평2리경로당",
+        "term": "학평리",
+        "distanceM": 20
+      },
+      {
+        "name": "토성2구마을회관",
+        "term": "토성리",
+        "distanceM": 12
+      },
+      {
+        "name": "북이초등학교",
+        "term": "북이",
+        "distanceM": 48
+      },
+      {
+        "name": "장재마을회관",
+        "term": "장재리",
+        "distanceM": 10
+      },
+      {
+        "name": "금암1리경로당",
+        "term": "금암리",
+        "distanceM": 22
+      },
+      {
+        "name": "금암2리경로당",
+        "term": "금암리",
+        "distanceM": 8
+      },
+      {
+        "name": "금대1리경로당",
+        "term": "금대리",
+        "distanceM": 9
+      },
+      {
+        "name": "금대2리경로당",
+        "term": "금대리",
+        "distanceM": 8
+      },
+      {
+        "name": "송정1리경로당",
+        "term": "송정리",
+        "distanceM": 13
+      },
+      {
+        "name": "송정2리경로당",
+        "term": "송정리",
+        "distanceM": 8
+      },
+      {
+        "name": "가구대통령 청주증평점",
+        "term": "가구대통령",
+        "distanceM": 29
+      },
+      {
+        "name": "옥수리경로당",
+        "term": "옥수리",
+        "distanceM": 12
+      },
+      {
+        "name": "북이초등학교",
+        "term": "북이초",
+        "distanceM": 48
+      },
+      {
+        "name": "굿모닝요양원",
+        "term": "굿모닝요양원",
+        "distanceM": 13
+      },
+      {
+        "name": "다모아패키지",
+        "term": "다모아패키지",
+        "distanceM": 36
+      }
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "화",
+    "type": "recycle",
+    "waypoints": 10,
+    "parts": 1,
+    "missing": [],
+    "distances": [
+      {
+        "name": "모정1리경로당",
+        "term": "모정리",
+        "distanceM": 12
+      },
+      {
+        "name": "모정2리경로당",
+        "term": "모정리",
+        "distanceM": 9
+      },
+      {
+        "name": "학소리(할머니)경로당",
+        "term": "학소리",
+        "distanceM": 12
+      },
+      {
+        "name": "학소리(할아버지)경로당",
+        "term": "학소리",
+        "distanceM": 8
+      },
+      {
+        "name": "일신리경로당",
+        "term": "일신리",
+        "distanceM": 9
+      },
+      {
+        "name": "유리경로당",
+        "term": "유리",
+        "distanceM": 10
+      },
+      {
+        "name": "유리학구경로당",
+        "term": "유리",
+        "distanceM": 10
+      },
+      {
+        "name": "華山(화산)경로당",
+        "term": "빛화산리",
+        "distanceM": 6
+      },
+      {
+        "name": "증평IC",
+        "term": "증평IC",
+        "distanceM": 2
+      },
+      {
+        "name": "여천1리경로당",
+        "term": "여천리",
+        "distanceM": 17
+      }
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "월",
+    "type": "recycle",
+    "waypoints": 14,
+    "parts": 1,
+    "missing": [
+      "해든전원마을",
+      "양지리"
+    ],
+    "distances": [
+      {
+        "name": "창리사거리",
+        "term": "창리사거리",
+        "distanceM": 0
+      },
+      {
+        "name": "창1리(할머니)경로당",
+        "term": "창리",
+        "distanceM": 13
+      },
+      {
+        "name": "창2리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창4리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창5리경로당",
+        "term": "창리",
+        "distanceM": 3
+      },
+      {
+        "name": "오창읍 행정복지센터",
+        "term": "오창읍사무소",
+        "distanceM": 19
+      },
+      {
+        "name": "오창초등학교",
+        "term": "오창초",
+        "distanceM": 36
+      },
+      {
+        "name": "장대2리경로당",
+        "term": "장대리",
+        "distanceM": 8
+      },
+      {
+        "name": "장대리경로당",
+        "term": "장대리",
+        "distanceM": 12
+      },
+      {
+        "name": "원리 경로당",
+        "term": "원리",
+        "distanceM": 17
+      },
+      {
+        "name": "팔결교",
+        "term": "팔결교",
+        "distanceM": 0
+      },
+      {
+        "name": "가곡길181-53",
+        "term": "가곡길181-53",
+        "distanceM": 8
+      },
+      {
+        "name": "오창농협하나로마트 본점",
+        "term": "하나로마트",
+        "distanceM": 23
+      },
+      {
+        "name": "복현2리경로당",
+        "term": "복현리",
+        "distanceM": 22
+      }
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "금",
+    "type": "recycle",
+    "waypoints": 14,
+    "parts": 1,
+    "missing": [
+      "자연어린이집"
+    ],
+    "distances": [
+      {
+        "name": "화산리마을회관(꽃화산)",
+        "term": "꽃화산리",
+        "distanceM": 11
+      },
+      {
+        "name": "용두리경로당",
+        "term": "용두리",
+        "distanceM": 6
+      },
+      {
+        "name": "가좌2리마을회관",
+        "term": "가좌리",
+        "distanceM": 10
+      },
+      {
+        "name": "가영당 한옥팬션",
+        "term": "미래지한옥마을",
+        "distanceM": 13
+      },
+      {
+        "name": "후기1리 경로당",
+        "term": "후기리",
+        "distanceM": 14
+      },
+      {
+        "name": "후기2리경로당",
+        "term": "후기리",
+        "distanceM": 6
+      },
+      {
+        "name": "성산1리경로당",
+        "term": "성산리",
+        "distanceM": 9
+      },
+      {
+        "name": "오창제3산업단지",
+        "term": "3산업단지",
+        "distanceM": 48
+      },
+      {
+        "name": "두릉리마을회관",
+        "term": "두릉리",
+        "distanceM": 11
+      },
+      {
+        "name": "성재2리신자포 경로당",
+        "term": "성재리",
+        "distanceM": 9
+      },
+      {
+        "name": "성재3리경로당",
+        "term": "성재리",
+        "distanceM": 12
+      },
+      {
+        "name": "성재4리노인정",
+        "term": "성재리",
+        "distanceM": 12
+      },
+      {
+        "name": "백현노인정",
+        "term": "백현리",
+        "distanceM": 7
+      },
+      {
+        "name": "백현리반계노인정",
+        "term": "백현리",
+        "distanceM": 15
+      }
+    ]
+  },
+  {
+    "vehicle": "9090",
+    "day": "목",
+    "type": "recycle",
+    "waypoints": 7,
+    "parts": 1,
+    "missing": [
+      "대원1차상가",
+      "주성로279번길",
+      "엔포드호텔 상가지역"
+    ],
+    "distances": [
+      {
+        "name": "구성길",
+        "term": "구성길",
+        "distanceM": 2
+      },
+      {
+        "name": "내수로",
+        "term": "내수로",
+        "distanceM": 0
+      },
+      {
+        "name": "구성1리마을회관",
+        "term": "구성리",
+        "distanceM": 9
+      },
+      {
+        "name": "묵방1구 마을회관",
+        "term": "묵방리",
+        "distanceM": 8
+      },
+      {
+        "name": "국동리경로당",
+        "term": "국동리",
+        "distanceM": 12
+      },
+      {
+        "name": "은곡3구경로회관",
+        "term": "은곡리 일부",
+        "distanceM": 17
+      },
+      {
+        "name": "은곡리마을회관",
+        "term": "은곡리 일부",
+        "distanceM": 7
+      }
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "수",
+    "type": "recycle",
+    "waypoints": 14,
+    "parts": 1,
+    "missing": [
+      "각리",
+      "혜성약품"
+    ],
+    "distances": [
+      {
+        "name": "각리2길",
+        "term": "각리2길",
+        "distanceM": 1
+      },
+      {
+        "name": "신평2리노인정",
+        "term": "신평리",
+        "distanceM": 9
+      },
+      {
+        "name": "지게바위길",
+        "term": "지게바위길",
+        "distanceM": 1
+      },
+      {
+        "name": "중신리경로당",
+        "term": "중신리",
+        "distanceM": 19
+      },
+      {
+        "name": "농소리경로당",
+        "term": "농소리",
+        "distanceM": 6
+      },
+      {
+        "name": "양청농소길",
+        "term": "양청농소길",
+        "distanceM": 2
+      },
+      {
+        "name": "탑리마을회관",
+        "term": "탑리",
+        "distanceM": 12
+      },
+      {
+        "name": "기암리경로당",
+        "term": "기암리",
+        "distanceM": 14
+      },
+      {
+        "name": "석우리경로당",
+        "term": "석우리",
+        "distanceM": 18
+      },
+      {
+        "name": "가곡1리마을회관",
+        "term": "가곡리",
+        "distanceM": 4
+      },
+      {
+        "name": "충청북도농업기술원",
+        "term": "충북농업기술원",
+        "distanceM": 23
+      },
+      {
+        "name": "괴정리 노인정",
+        "term": "괴정리",
+        "distanceM": 6
+      },
+      {
+        "name": "오창중학교",
+        "term": "오창중",
+        "distanceM": 26
+      },
+      {
+        "name": "오창고등학교",
+        "term": "오창고",
+        "distanceM": 71
+      }
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "목",
+    "type": "recycle",
+    "waypoints": 20,
+    "parts": 1,
+    "missing": [
+      "화죽리"
+    ],
+    "distances": [
+      {
+        "name": "창리사거리",
+        "term": "창리사거리",
+        "distanceM": 0
+      },
+      {
+        "name": "창1리(할머니)경로당",
+        "term": "창리",
+        "distanceM": 13
+      },
+      {
+        "name": "창2리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창4리경로당",
+        "term": "창리",
+        "distanceM": 10
+      },
+      {
+        "name": "창5리경로당",
+        "term": "창리",
+        "distanceM": 3
+      },
+      {
+        "name": "오창읍 행정복지센터",
+        "term": "오창읍사무소",
+        "distanceM": 19
+      },
+      {
+        "name": "장대2리경로당",
+        "term": "장대리",
+        "distanceM": 8
+      },
+      {
+        "name": "장대리경로당",
+        "term": "장대리",
+        "distanceM": 12
+      },
+      {
+        "name": "구룡택지1로",
+        "term": "구룡택지1로",
+        "distanceM": 1
+      },
+      {
+        "name": "구룡에너지주유소",
+        "term": "구룡에너지",
+        "distanceM": 5
+      },
+      {
+        "name": "번천마을",
+        "term": "번천마을",
+        "distanceM": 21
+      },
+      {
+        "name": "두릉유리로",
+        "term": "두릉유리로",
+        "distanceM": 1
+      },
+      {
+        "name": "화상1리경로당",
+        "term": "화상리",
+        "distanceM": 7
+      },
+      {
+        "name": "내둔리경로당",
+        "term": "내둔리",
+        "distanceM": 9
+      },
+      {
+        "name": "대율2리경로당",
+        "term": "대율리",
+        "distanceM": 7
+      },
+      {
+        "name": "신대1리경로당",
+        "term": "신대리",
+        "distanceM": 9
+      },
+      {
+        "name": "신대2리경로당",
+        "term": "신대리",
+        "distanceM": 11
+      },
+      {
+        "name": "석성1리경로당",
+        "term": "석성리",
+        "distanceM": 9
+      },
+      {
+        "name": "석성2리경로당",
+        "term": "석성리",
+        "distanceM": 11
+      },
+      {
+        "name": "석성3리경로당",
+        "term": "석성리",
+        "distanceM": 11
+      }
+    ]
+  },
+  {
+    "vehicle": "0264",
+    "day": "화",
+    "type": "recycle",
+    "waypoints": 2,
+    "parts": 1,
+    "missing": [
+      "토성로48",
+      "양지마을",
+      "대현펌프카",
+      "정상8.9통경로당",
+      "오동2동노인정",
+      "오근장역",
+      "오근장동주민센터",
+      "참나무골뷔페",
+      "율량중",
+      "어웰휴빌리지",
+      "충청대로233",
+      "주중11통마을회관",
+      "발산리",
+      "세명이앤씨",
+      "솔뫼가든"
+    ],
+    "distances": [
+      {
+        "name": "내수로",
+        "term": "내수로",
+        "distanceM": 1
+      },
+      {
+        "name": "내수로199",
+        "term": "내수로199",
+        "distanceM": 30
+      }
+    ]
+  },
+  {
+    "vehicle": "0264",
+    "day": "금",
+    "type": "recycle",
+    "waypoints": 5,
+    "parts": 1,
+    "missing": [
+      "팔결로",
+      "팔결로188",
+      "외남새마을경로당",
+      "팔결로342번길",
+      "입동리",
+      "은곡천일빌리지"
+    ],
+    "distances": [
+      {
+        "name": "입상2리경로당",
+        "term": "입상리",
+        "distanceM": 13
+      },
+      {
+        "name": "원통1리경로당",
+        "term": "원통1구",
+        "distanceM": 7
+      },
+      {
+        "name": "원통2리마을회관",
+        "term": "원통2리",
+        "distanceM": 4
+      },
+      {
+        "name": "킹콩백화점 청주점",
+        "term": "킹콩백화점",
+        "distanceM": 21
+      },
+      {
+        "name": "묵방골정원",
+        "term": "묵방골정원",
+        "distanceM": 60
+      }
+    ]
+  }
+]
