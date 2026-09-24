@@ -1,0 +1,2254 @@
+[
+  {
+    "type": "general",
+    "vehicle": "3344",
+    "day": "화",
+    "scope": "오창읍",
+    "ms": 8241,
+    "segments": 5,
+    "matchedVillages": 3,
+    "unresolved": [],
+    "missingTerms": [
+      "팔결교",
+      "상평리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "상평리",
+        "name": "상평리경로당",
+        "address": "충북 청주시 청원구 오창읍 송대상평길 191-15",
+        "distanceM": 3275
+      },
+      {
+        "term": "꽃화산리",
+        "name": "화산리마을회관(꽃화산)",
+        "address": "충북 청주시 청원구 오창읍 꽃화산1길 13",
+        "distanceM": 11
+      },
+      {
+        "term": "후기리",
+        "name": "후기1리 경로당",
+        "address": "충북 청주시 청원구 오창읍 후기길 185-19",
+        "distanceM": 14
+      },
+      {
+        "term": "후기리",
+        "name": "후기2리경로당",
+        "address": "충북 청주시 청원구 오창읍 후기길 537",
+        "distanceM": 6
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "3344",
+    "day": "수",
+    "scope": "오창읍",
+    "ms": 14215,
+    "segments": 13,
+    "matchedVillages": 11,
+    "unresolved": [
+      "도암리",
+      "양지리"
+    ],
+    "missingTerms": [
+      "도암리",
+      "양지리",
+      "기암리",
+      "여천리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "탑리",
+        "name": "탑리마을회관",
+        "address": "충북 청주시 청원구 오창읍 탑리길 21-4",
+        "distanceM": 12
+      },
+      {
+        "term": "기암리",
+        "name": "기암리경로당",
+        "address": "충북 청주시 청원구 오창읍 탑기암길 47",
+        "distanceM": 337
+      },
+      {
+        "term": "석우리",
+        "name": "석우리경로당",
+        "address": "충북 청주시 청원구 오창읍 석우길 19-32",
+        "distanceM": 18
+      },
+      {
+        "term": "가곡리",
+        "name": "가곡1리마을회관",
+        "address": "충북 청주시 청원구 오창읍 가곡2길 2",
+        "distanceM": 5
+      },
+      {
+        "term": "괴정리",
+        "name": "괴정리 노인정",
+        "address": "충북 청주시 청원구 오창읍 괴정1길 72",
+        "distanceM": 6
+      },
+      {
+        "term": "모정리",
+        "name": "모정1리경로당",
+        "address": "충북 청주시 청원구 오창읍 모정2길 3",
+        "distanceM": 12
+      },
+      {
+        "term": "모정리",
+        "name": "모정2리경로당",
+        "address": "충북 청주시 청원구 오창읍 모정1길 6",
+        "distanceM": 9
+      },
+      {
+        "term": "학소리",
+        "name": "학소리(할머니)경로당",
+        "address": "충북 청주시 청원구 오창읍 학소길 38",
+        "distanceM": 12
+      },
+      {
+        "term": "학소리",
+        "name": "학소리(할아버지)경로당",
+        "address": "충북 청주시 청원구 오창읍 학소길 42",
+        "distanceM": 8
+      },
+      {
+        "term": "일신리",
+        "name": "일신리경로당",
+        "address": "충북 청주시 청원구 오창읍 일신길 23",
+        "distanceM": 9
+      },
+      {
+        "term": "유리",
+        "name": "유리경로당",
+        "address": "충북 청주시 청원구 오창읍 유리길 50",
+        "distanceM": 10
+      },
+      {
+        "term": "유리",
+        "name": "유리학구경로당",
+        "address": "충북 청주시 청원구 오창읍 두릉유리로 1372-3",
+        "distanceM": 10
+      },
+      {
+        "term": "빛화산리",
+        "name": "華山(화산)경로당",
+        "address": "충북 청주시 청원구 오창읍 빛화산길 23",
+        "distanceM": 6
+      },
+      {
+        "term": "여천리",
+        "name": "여천1리경로당",
+        "address": "충북 청주시 청원구 오창읍 여천1길 16-5",
+        "distanceM": 1734
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "3344",
+    "day": "목",
+    "scope": "북이면|오창읍",
+    "ms": 7046,
+    "segments": 9,
+    "matchedVillages": 6,
+    "unresolved": [
+      "화죽리"
+    ],
+    "missingTerms": [
+      "화죽리",
+      "창리",
+      "오창초",
+      "내둔리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "창리",
+        "name": "창1리(할머니)경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 1026-6",
+        "distanceM": 141
+      },
+      {
+        "term": "창리",
+        "name": "창2리경로당",
+        "address": "충북 청주시 청원구 오창읍 팔결로 691",
+        "distanceM": 176
+      },
+      {
+        "term": "창리",
+        "name": "창4리경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 988",
+        "distanceM": 215
+      },
+      {
+        "term": "창리",
+        "name": "창5리경로당",
+        "address": "충북 청주시 청원구 오창읍 창리1길 13",
+        "distanceM": 3
+      },
+      {
+        "term": "복현리",
+        "name": "복현2리경로당",
+        "address": "충북 청주시 청원구 오창읍 화복로 799",
+        "distanceM": 22
+      },
+      {
+        "term": "성산리",
+        "name": "성산1리경로당",
+        "address": "충북 청주시 청원구 오창읍 성산길 4",
+        "distanceM": 9
+      },
+      {
+        "term": "북이면 화상리",
+        "name": "화상1리경로당",
+        "address": "충북 청주시 청원구 북이면 화상길 15",
+        "distanceM": 7
+      },
+      {
+        "term": "대율리",
+        "name": "대율2리경로당",
+        "address": "충북 청주시 청원구 북이면 대율다락말길 43",
+        "distanceM": 7
+      },
+      {
+        "term": "내둔리",
+        "name": "내둔리경로당",
+        "address": "충북 청주시 청원구 북이면 내둔길 69-1",
+        "distanceM": 402
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "3344",
+    "day": "월",
+    "scope": "오창읍",
+    "ms": 16059,
+    "segments": 12,
+    "matchedVillages": 9,
+    "unresolved": [
+      "각리"
+    ],
+    "missingTerms": [
+      "체리부로",
+      "각리",
+      "창리",
+      "오창초",
+      "여천리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "창리",
+        "name": "창1리(할머니)경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 1026-6",
+        "distanceM": 97
+      },
+      {
+        "term": "창리",
+        "name": "창2리경로당",
+        "address": "충북 청주시 청원구 오창읍 팔결로 691",
+        "distanceM": 176
+      },
+      {
+        "term": "창리",
+        "name": "창4리경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 988",
+        "distanceM": 215
+      },
+      {
+        "term": "창리",
+        "name": "창5리경로당",
+        "address": "충북 청주시 청원구 오창읍 창리1길 13",
+        "distanceM": 3
+      },
+      {
+        "term": "장대리",
+        "name": "장대2리경로당",
+        "address": "충북 청주시 청원구 오창읍 장대길 8-5",
+        "distanceM": 8
+      },
+      {
+        "term": "장대리",
+        "name": "장대리경로당",
+        "address": "충북 청주시 청원구 오창읍 오창시내1길 49",
+        "distanceM": 12
+      },
+      {
+        "term": "복현리",
+        "name": "복현2리경로당",
+        "address": "충북 청주시 청원구 오창읍 화복로 799",
+        "distanceM": 22
+      },
+      {
+        "term": "원리",
+        "name": "원리 경로당",
+        "address": "충북 청주시 청원구 오창읍 원리1길 13",
+        "distanceM": 17
+      },
+      {
+        "term": "여천리",
+        "name": "여천1리경로당",
+        "address": "충북 청주시 청원구 오창읍 여천1길 16-5",
+        "distanceM": 3770
+      },
+      {
+        "term": "중신리",
+        "name": "중신리경로당",
+        "address": "충북 청주시 청원구 오창읍 중신1길 93",
+        "distanceM": 19
+      },
+      {
+        "term": "신평리",
+        "name": "신평2리노인정",
+        "address": "충북 청주시 청원구 오창읍 지게바위길 2-3",
+        "distanceM": 9
+      },
+      {
+        "term": "농소리",
+        "name": "농소리경로당",
+        "address": "충북 청주시 청원구 오창읍 농소길 18-2",
+        "distanceM": 6
+      },
+      {
+        "term": "탑리",
+        "name": "탑리마을회관",
+        "address": "충북 청주시 청원구 오창읍 탑리길 21-4",
+        "distanceM": 12
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "3344",
+    "day": "금",
+    "scope": "오창읍",
+    "ms": 10982,
+    "segments": 9,
+    "matchedVillages": 6,
+    "unresolved": [],
+    "missingTerms": [
+      "오창농협급식지원센터",
+      "백현리",
+      "가좌리",
+      "3산업단지"
+    ],
+    "facilityDistances": [
+      {
+        "term": "성산리",
+        "name": "성산1리경로당",
+        "address": "충북 청주시 청원구 오창읍 성산길 4",
+        "distanceM": 9
+      },
+      {
+        "term": "용두리",
+        "name": "용두리경로당",
+        "address": "충북 청주시 청원구 오창읍 용두길 77-5",
+        "distanceM": 6
+      },
+      {
+        "term": "두릉리",
+        "name": "두릉리마을회관",
+        "address": "충북 청주시 청원구 오창읍 두릉1길 59-36",
+        "distanceM": 11
+      },
+      {
+        "term": "백현리",
+        "name": "백현노인정",
+        "address": "충북 청주시 청원구 오창읍 백현2길 11-9",
+        "distanceM": 7
+      },
+      {
+        "term": "백현리",
+        "name": "백현리반계노인정",
+        "address": "충북 청주시 청원구 오창읍 백현1길 44-3",
+        "distanceM": 934
+      },
+      {
+        "term": "성재리",
+        "name": "성재2리신자포 경로당",
+        "address": "충북 청주시 청원구 오창읍 성재2길 39-3",
+        "distanceM": 9
+      },
+      {
+        "term": "성재리",
+        "name": "성재3리경로당",
+        "address": "충북 청주시 청원구 오창읍 성재사정로 66",
+        "distanceM": 12
+      },
+      {
+        "term": "성재리",
+        "name": "성재4리노인정",
+        "address": "충북 청주시 청원구 오창읍 성재방화동길 47",
+        "distanceM": 12
+      },
+      {
+        "term": "가좌리",
+        "name": "가좌2리마을회관",
+        "address": "충북 청주시 청원구 오창읍 오창가좌4길 77-6",
+        "distanceM": 686
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "3346",
+    "day": "월",
+    "scope": "내수읍",
+    "ms": 11934,
+    "segments": 1,
+    "matchedVillages": 1,
+    "unresolved": [],
+    "missingTerms": [
+      "충청대로",
+      "거송갈비찜",
+      "반석산업"
+    ],
+    "facilityDistances": [
+      {
+        "term": "구성3리",
+        "name": "구성3리노인회관",
+        "address": "충북 청주시 청원구 내수읍 구성새동네길 79-6",
+        "distanceM": 13
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "3346",
+    "day": "목",
+    "scope": "내수읍",
+    "ms": 20517,
+    "segments": 9,
+    "matchedVillages": 2,
+    "unresolved": [],
+    "missingTerms": [
+      "내수로",
+      "수정요양원",
+      "반석산업",
+      "메리다웨딩"
+    ],
+    "facilityDistances": [
+      {
+        "term": "구성1리",
+        "name": "구성1리마을회관",
+        "address": "충북 청주시 청원구 내수읍 구성길 43",
+        "distanceM": 9
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "6138",
+    "day": "화",
+    "scope": "내수읍|북이면",
+    "ms": 13691,
+    "segments": 7,
+    "matchedVillages": 1,
+    "unresolved": [],
+    "missingTerms": [
+      "정도안전산업",
+      "영하1리버스정류장",
+      "세교사거리",
+      "비중사거리",
+      "초정어린이집",
+      "영하보건소"
+    ],
+    "facilityDistances": [
+      {
+        "term": "저곡리",
+        "name": "저곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 저곡길 33-4",
+        "distanceM": 8
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "6138",
+    "day": "월",
+    "scope": "내수읍",
+    "ms": 26300,
+    "segments": 23,
+    "matchedVillages": 12,
+    "unresolved": [],
+    "missingTerms": [
+      "진성레미컨",
+      "덕암리",
+      "형동리",
+      "초정리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "은곡리",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산1길 100",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산2길 13",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산3리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 4-33",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산4리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산5길 20",
+        "distanceM": 13
+      },
+      {
+        "term": "마산리",
+        "name": "마산5리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산길 72",
+        "distanceM": 14
+      },
+      {
+        "term": "마산리",
+        "name": "마산6리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 3",
+        "distanceM": 9
+      },
+      {
+        "term": "마산리",
+        "name": "마산7리경로당",
+        "address": "충북 청주시 청원구 내수읍 청암로 35",
+        "distanceM": 17
+      },
+      {
+        "term": "학평리",
+        "name": "학평2리경로당",
+        "address": "충북 청주시 청원구 내수읍 학평길 53",
+        "distanceM": 20
+      },
+      {
+        "term": "내수리",
+        "name": "내수1리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 22",
+        "distanceM": 59
+      },
+      {
+        "term": "내수리",
+        "name": "내수2리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 36-3",
+        "distanceM": 9
+      },
+      {
+        "term": "내수리",
+        "name": "내수3리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수3길 22-2",
+        "distanceM": 11
+      },
+      {
+        "term": "내수리",
+        "name": "내수6리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 12",
+        "distanceM": 13
+      },
+      {
+        "term": "풍정리",
+        "name": "풍정2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 풍정2길 48-8",
+        "distanceM": 7
+      },
+      {
+        "term": "덕암리",
+        "name": "덕암1리경로당",
+        "address": "충북 청주시 청원구 내수읍 덕암1길 5",
+        "distanceM": 918
+      },
+      {
+        "term": "덕암리",
+        "name": "덕암2리경로당",
+        "address": "충북 청주시 청원구 내수읍 덕암2길 42-5",
+        "distanceM": 260
+      },
+      {
+        "term": "세교리",
+        "name": "세교2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 세교2길 28-3",
+        "distanceM": 4
+      },
+      {
+        "term": "형동리",
+        "name": "형동1리마을회관",
+        "address": "충북 청주시 청원구 내수읍 형동1길 50",
+        "distanceM": 718
+      },
+      {
+        "term": "비상리",
+        "name": "비상리마을회관",
+        "address": "충북 청주시 청원구 내수읍 비상길 25-1",
+        "distanceM": 3
+      },
+      {
+        "term": "비중리",
+        "name": "비중 문화마을 경로당",
+        "address": "충북 청주시 청원구 내수읍 비중길 12",
+        "distanceM": 9
+      },
+      {
+        "term": "우산리",
+        "name": "우산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산1길 16",
+        "distanceM": 10
+      },
+      {
+        "term": "우산리",
+        "name": "우산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산2길 61",
+        "distanceM": 26
+      },
+      {
+        "term": "초정리",
+        "name": "초정리경로당",
+        "address": "충북 청주시 청원구 내수읍 초정1길 9-1",
+        "distanceM": 76
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "6138",
+    "day": "목",
+    "scope": "내수읍|북이면",
+    "ms": 12267,
+    "segments": 7,
+    "matchedVillages": 8,
+    "unresolved": [],
+    "missingTerms": [
+      "대길2리경로당",
+      "초정구길",
+      "풍정교차로",
+      "서당리",
+      "대길리",
+      "부연리",
+      "호명리",
+      "현암리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "서당리",
+        "name": "서당1리경로당",
+        "address": "충북 청주시 청원구 북이면 서당길 39",
+        "distanceM": 408
+      },
+      {
+        "term": "서당리",
+        "name": "서당2리경로당",
+        "address": "충북 청주시 청원구 북이면 서당길 133-10",
+        "distanceM": 717
+      },
+      {
+        "term": "대길리",
+        "name": "대길1리경로당",
+        "address": "충북 청주시 청원구 북이면 대길길 28-1",
+        "distanceM": 14
+      },
+      {
+        "term": "대길리",
+        "name": "대길2리경로당",
+        "address": "충북 청주시 청원구 북이면 서당대길길 103-3",
+        "distanceM": 184
+      },
+      {
+        "term": "부연리",
+        "name": "부연1구경로회관",
+        "address": "충북 청주시 청원구 북이면 부연리 355-1",
+        "distanceM": 962
+      },
+      {
+        "term": "선암리",
+        "name": "선암1리경로당",
+        "address": "충북 청주시 청원구 북이면 선암영하로 67",
+        "distanceM": 18
+      },
+      {
+        "term": "신기리",
+        "name": "신기리마을회관",
+        "address": "충북 청주시 청원구 북이면 신기길 33",
+        "distanceM": 8
+      },
+      {
+        "term": "호명리",
+        "name": "호명리경로당",
+        "address": "충북 청주시 청원구 북이면 호명길 73",
+        "distanceM": 1029
+      },
+      {
+        "term": "석화리",
+        "name": "석화리노인회관",
+        "address": "충북 청주시 청원구 북이면 북이석화길 40-18",
+        "distanceM": 8
+      },
+      {
+        "term": "현암리",
+        "name": "현암1리경로당",
+        "address": "충북 청주시 청원구 북이면 현암길 51",
+        "distanceM": 14
+      },
+      {
+        "term": "현암리",
+        "name": "현암2리경로당",
+        "address": "충북 청주시 청원구 북이면 현암리 387-12",
+        "distanceM": 944
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "6138",
+    "day": "수",
+    "scope": "내수읍|북이면",
+    "ms": 17880,
+    "segments": 20,
+    "matchedVillages": 12,
+    "unresolved": [],
+    "missingTerms": [
+      "진성레미컨",
+      "신안리",
+      "신대리",
+      "장양2리",
+      "용계리",
+      "석성리",
+      "추학리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "은곡리",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      },
+      {
+        "term": "신안리",
+        "name": "신안리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+        "distanceM": 963
+      },
+      {
+        "term": "마산리",
+        "name": "마산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산1길 100",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산2길 13",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산3리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 4-33",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산4리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산5길 20",
+        "distanceM": 13
+      },
+      {
+        "term": "마산리",
+        "name": "마산5리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산길 72",
+        "distanceM": 14
+      },
+      {
+        "term": "마산리",
+        "name": "마산6리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 3",
+        "distanceM": 9
+      },
+      {
+        "term": "마산리",
+        "name": "마산7리경로당",
+        "address": "충북 청주시 청원구 내수읍 청암로 35",
+        "distanceM": 17
+      },
+      {
+        "term": "학평리",
+        "name": "학평2리경로당",
+        "address": "충북 청주시 청원구 내수읍 학평길 53",
+        "distanceM": 20
+      },
+      {
+        "term": "신대리",
+        "name": "신대1리경로당",
+        "address": "충북 청주시 청원구 북이면 신대길 22-10",
+        "distanceM": 179
+      },
+      {
+        "term": "신대리",
+        "name": "신대2리경로당",
+        "address": "충북 청주시 청원구 북이면 신대2길 18",
+        "distanceM": 11
+      },
+      {
+        "term": "장양2리",
+        "name": "장양2리경로당",
+        "address": "충북 청주시 청원구 북이면 장양2길 81-1",
+        "distanceM": 702
+      },
+      {
+        "term": "장양1리",
+        "name": "장양1리마을회관",
+        "address": "충북 청주시 청원구 북이면 장양1길 29-3",
+        "distanceM": 6
+      },
+      {
+        "term": "장양3리",
+        "name": "장양3구마을회관",
+        "address": "충북 청주시 청원구 북이면 장양3길 13",
+        "distanceM": 6
+      },
+      {
+        "term": "용계리",
+        "name": "용계1리경로당",
+        "address": "충북 청주시 청원구 북이면 용계1길 53",
+        "distanceM": 15
+      },
+      {
+        "term": "용계리",
+        "name": "용계2리경로당",
+        "address": "충북 청주시 청원구 북이면 용계내추로 26",
+        "distanceM": 13
+      },
+      {
+        "term": "용계리",
+        "name": "용계3리경로당",
+        "address": "충북 청주시 청원구 북이면 용계3길 2",
+        "distanceM": 338
+      },
+      {
+        "term": "석성리",
+        "name": "석성1리경로당",
+        "address": "충북 청주시 청원구 북이면 석성길 2-20",
+        "distanceM": 82
+      },
+      {
+        "term": "석성리",
+        "name": "석성2리경로당",
+        "address": "충북 청주시 청원구 북이면 석성한천길 43-1",
+        "distanceM": 607
+      },
+      {
+        "term": "석성리",
+        "name": "석성3리경로당",
+        "address": "충북 청주시 청원구 북이면 남한이길 28",
+        "distanceM": 893
+      },
+      {
+        "term": "화상리",
+        "name": "화상1리경로당",
+        "address": "충북 청주시 청원구 북이면 화상길 15",
+        "distanceM": 7
+      },
+      {
+        "term": "추학리",
+        "name": "추학1구노인회관",
+        "address": "충북 청주시 청원구 북이면 추학길 71",
+        "distanceM": 1184
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "6544",
+    "day": "월",
+    "scope": "내수읍",
+    "ms": 9591,
+    "segments": 25,
+    "matchedVillages": 14,
+    "unresolved": [],
+    "missingTerms": [
+      "신안리",
+      "덕암리",
+      "형동리",
+      "초정리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "은곡리",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산1길 100",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산2길 13",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산3리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 4-33",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산4리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산5길 20",
+        "distanceM": 13
+      },
+      {
+        "term": "마산리",
+        "name": "마산5리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산길 72",
+        "distanceM": 14
+      },
+      {
+        "term": "마산리",
+        "name": "마산6리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 3",
+        "distanceM": 9
+      },
+      {
+        "term": "마산리",
+        "name": "마산7리경로당",
+        "address": "충북 청주시 청원구 내수읍 청암로 35",
+        "distanceM": 17
+      },
+      {
+        "term": "신안리",
+        "name": "신안리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+        "distanceM": 464
+      },
+      {
+        "term": "신안리",
+        "name": "신안리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+        "distanceM": 464
+      },
+      {
+        "term": "내수리",
+        "name": "내수1리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 22",
+        "distanceM": 59
+      },
+      {
+        "term": "내수리",
+        "name": "내수2리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 36-3",
+        "distanceM": 9
+      },
+      {
+        "term": "내수리",
+        "name": "내수3리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수3길 22-2",
+        "distanceM": 11
+      },
+      {
+        "term": "내수리",
+        "name": "내수6리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 12",
+        "distanceM": 13
+      },
+      {
+        "term": "학평리",
+        "name": "학평2리경로당",
+        "address": "충북 청주시 청원구 내수읍 학평길 53",
+        "distanceM": 20
+      },
+      {
+        "term": "풍정리",
+        "name": "풍정2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 풍정2길 48-8",
+        "distanceM": 7
+      },
+      {
+        "term": "덕암리",
+        "name": "덕암1리경로당",
+        "address": "충북 청주시 청원구 내수읍 덕암1길 5",
+        "distanceM": 918
+      },
+      {
+        "term": "덕암리",
+        "name": "덕암2리경로당",
+        "address": "충북 청주시 청원구 내수읍 덕암2길 42-5",
+        "distanceM": 260
+      },
+      {
+        "term": "도원리",
+        "name": "도원1리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수도원길 17",
+        "distanceM": 12
+      },
+      {
+        "term": "도원리",
+        "name": "도원2리경로당",
+        "address": "충북 청주시 청원구 내수읍 도원세교로 67",
+        "distanceM": 14
+      },
+      {
+        "term": "도원리",
+        "name": "도원3리경로당",
+        "address": "충북 청주시 청원구 내수읍 도원세교로 63",
+        "distanceM": 13
+      },
+      {
+        "term": "도원리",
+        "name": "도원4리경로당",
+        "address": "충북 청주시 청원구 내수읍 도원세교로 85",
+        "distanceM": 18
+      },
+      {
+        "term": "세교리",
+        "name": "세교2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 세교2길 28-3",
+        "distanceM": 4
+      },
+      {
+        "term": "형동리",
+        "name": "형동1리마을회관",
+        "address": "충북 청주시 청원구 내수읍 형동1길 50",
+        "distanceM": 718
+      },
+      {
+        "term": "초정리",
+        "name": "초정리경로당",
+        "address": "충북 청주시 청원구 내수읍 초정1길 9-1",
+        "distanceM": 703
+      },
+      {
+        "term": "비상리",
+        "name": "비상리마을회관",
+        "address": "충북 청주시 청원구 내수읍 비상길 25-1",
+        "distanceM": 3
+      },
+      {
+        "term": "우산리",
+        "name": "우산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산1길 16",
+        "distanceM": 10
+      },
+      {
+        "term": "우산리",
+        "name": "우산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산2길 61",
+        "distanceM": 26
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "6544",
+    "day": "화",
+    "scope": "내수읍|북이면",
+    "ms": 10776,
+    "segments": 15,
+    "matchedVillages": 8,
+    "unresolved": [],
+    "missingTerms": [
+      "풍정교차로",
+      "영하보건소",
+      "영하리",
+      "수성초",
+      "신안리",
+      "내수성당"
+    ],
+    "facilityDistances": [
+      {
+        "term": "풍정리",
+        "name": "풍정2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 풍정2길 48-8",
+        "distanceM": 7
+      },
+      {
+        "term": "세교리",
+        "name": "세교2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 세교2길 28-3",
+        "distanceM": 4
+      },
+      {
+        "term": "저곡리",
+        "name": "저곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 저곡길 33-4",
+        "distanceM": 8
+      },
+      {
+        "term": "우산리",
+        "name": "우산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산1길 16",
+        "distanceM": 10
+      },
+      {
+        "term": "우산리",
+        "name": "우산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산2길 61",
+        "distanceM": 26
+      },
+      {
+        "term": "우산리",
+        "name": "우산3리경로당",
+        "address": "충북 청주시 청원구 내수읍 우산길 37",
+        "distanceM": 8
+      },
+      {
+        "term": "영하리",
+        "name": "영하1구마을회관",
+        "address": "충북 청주시 청원구 북이면 영하1길 10-1",
+        "distanceM": 506
+      },
+      {
+        "term": "은곡3구",
+        "name": "은곡3리경로당",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "신안리",
+        "name": "신안리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+        "distanceM": 963
+      },
+      {
+        "term": "도원리",
+        "name": "도원1리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수도원길 17",
+        "distanceM": 12
+      },
+      {
+        "term": "도원리",
+        "name": "도원2리경로당",
+        "address": "충북 청주시 청원구 내수읍 도원세교로 67",
+        "distanceM": 14
+      },
+      {
+        "term": "도원리",
+        "name": "도원3리경로당",
+        "address": "충북 청주시 청원구 내수읍 도원세교로 63",
+        "distanceM": 13
+      },
+      {
+        "term": "도원리",
+        "name": "도원4리경로당",
+        "address": "충북 청주시 청원구 내수읍 도원세교로 85",
+        "distanceM": 18
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "6544",
+    "day": "목",
+    "scope": "내수읍|북이면",
+    "ms": 2470,
+    "segments": 8,
+    "matchedVillages": 9,
+    "unresolved": [],
+    "missingTerms": [
+      "초정구길",
+      "서당리",
+      "대길리",
+      "부연리",
+      "호명리",
+      "현암리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "학평리",
+        "name": "학평2리경로당",
+        "address": "충북 청주시 청원구 내수읍 학평길 53",
+        "distanceM": 20
+      },
+      {
+        "term": "서당리",
+        "name": "서당1리경로당",
+        "address": "충북 청주시 청원구 북이면 서당길 39",
+        "distanceM": 408
+      },
+      {
+        "term": "서당리",
+        "name": "서당2리경로당",
+        "address": "충북 청주시 청원구 북이면 서당길 133-10",
+        "distanceM": 717
+      },
+      {
+        "term": "대길리",
+        "name": "대길1리경로당",
+        "address": "충북 청주시 청원구 북이면 대길길 28-1",
+        "distanceM": 14
+      },
+      {
+        "term": "대길리",
+        "name": "대길2리경로당",
+        "address": "충북 청주시 청원구 북이면 서당대길길 103-3",
+        "distanceM": 184
+      },
+      {
+        "term": "부연리",
+        "name": "부연1구경로회관",
+        "address": "충북 청주시 청원구 북이면 부연리 355-1",
+        "distanceM": 962
+      },
+      {
+        "term": "선암리",
+        "name": "선암1리경로당",
+        "address": "충북 청주시 청원구 북이면 선암영하로 67",
+        "distanceM": 18
+      },
+      {
+        "term": "신기리",
+        "name": "신기리마을회관",
+        "address": "충북 청주시 청원구 북이면 신기길 33",
+        "distanceM": 8
+      },
+      {
+        "term": "호명리",
+        "name": "호명리경로당",
+        "address": "충북 청주시 청원구 북이면 호명길 73",
+        "distanceM": 1029
+      },
+      {
+        "term": "석화리",
+        "name": "석화리노인회관",
+        "address": "충북 청주시 청원구 북이면 북이석화길 40-18",
+        "distanceM": 8
+      },
+      {
+        "term": "현암리",
+        "name": "현암1리경로당",
+        "address": "충북 청주시 청원구 북이면 현암길 51",
+        "distanceM": 14
+      },
+      {
+        "term": "현암리",
+        "name": "현암2리경로당",
+        "address": "충북 청주시 청원구 북이면 현암리 387-12",
+        "distanceM": 944
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "6544",
+    "day": "수",
+    "scope": "내수읍|북이면",
+    "ms": 5896,
+    "segments": 17,
+    "matchedVillages": 12,
+    "unresolved": [],
+    "missingTerms": [
+      "내수로",
+      "신대리",
+      "장양2리",
+      "용계리",
+      "석성리",
+      "추학리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "신대리",
+        "name": "신대1리경로당",
+        "address": "충북 청주시 청원구 북이면 신대길 22-10",
+        "distanceM": 179
+      },
+      {
+        "term": "신대리",
+        "name": "신대2리경로당",
+        "address": "충북 청주시 청원구 북이면 신대2길 18",
+        "distanceM": 11
+      },
+      {
+        "term": "대율리",
+        "name": "대율2리경로당",
+        "address": "충북 청주시 청원구 북이면 대율다락말길 43",
+        "distanceM": 7
+      },
+      {
+        "term": "내추리",
+        "name": "내추1리경로당",
+        "address": "충북 청주시 청원구 북이면 내추옥수길 31-6",
+        "distanceM": 25
+      },
+      {
+        "term": "내추리",
+        "name": "내추2리경로당",
+        "address": "충북 청주시 청원구 북이면 내추길 61-2",
+        "distanceM": 9
+      },
+      {
+        "term": "장양2리",
+        "name": "장양2리경로당",
+        "address": "충북 청주시 청원구 북이면 장양2길 81-1",
+        "distanceM": 702
+      },
+      {
+        "term": "장양1리",
+        "name": "장양1리마을회관",
+        "address": "충북 청주시 청원구 북이면 장양1길 29-3",
+        "distanceM": 6
+      },
+      {
+        "term": "장양3리",
+        "name": "장양3구마을회관",
+        "address": "충북 청주시 청원구 북이면 장양3길 13",
+        "distanceM": 6
+      },
+      {
+        "term": "용계리",
+        "name": "용계1리경로당",
+        "address": "충북 청주시 청원구 북이면 용계1길 53",
+        "distanceM": 15
+      },
+      {
+        "term": "용계리",
+        "name": "용계2리경로당",
+        "address": "충북 청주시 청원구 북이면 용계내추로 26",
+        "distanceM": 13
+      },
+      {
+        "term": "용계리",
+        "name": "용계3리경로당",
+        "address": "충북 청주시 청원구 북이면 용계3길 2",
+        "distanceM": 338
+      },
+      {
+        "term": "석성리",
+        "name": "석성1리경로당",
+        "address": "충북 청주시 청원구 북이면 석성길 2-20",
+        "distanceM": 82
+      },
+      {
+        "term": "석성리",
+        "name": "석성2리경로당",
+        "address": "충북 청주시 청원구 북이면 석성한천길 43-1",
+        "distanceM": 607
+      },
+      {
+        "term": "석성리",
+        "name": "석성3리경로당",
+        "address": "충북 청주시 청원구 북이면 남한이길 28",
+        "distanceM": 893
+      },
+      {
+        "term": "화상리",
+        "name": "화상1리경로당",
+        "address": "충북 청주시 청원구 북이면 화상길 15",
+        "distanceM": 7
+      },
+      {
+        "term": "추학리",
+        "name": "추학1구노인회관",
+        "address": "충북 청주시 청원구 북이면 추학길 71",
+        "distanceM": 436
+      },
+      {
+        "term": "옥수리",
+        "name": "옥수리경로당",
+        "address": "충북 청주시 청원구 북이면 옥수길 38",
+        "distanceM": 12
+      },
+      {
+        "term": "내추리",
+        "name": "내추1리경로당",
+        "address": "충북 청주시 청원구 북이면 내추옥수길 31-6",
+        "distanceM": 25
+      },
+      {
+        "term": "내추리",
+        "name": "내추2리경로당",
+        "address": "충북 청주시 청원구 북이면 내추길 61-2",
+        "distanceM": 9
+      }
+    ]
+  },
+  {
+    "type": "general",
+    "vehicle": "6138",
+    "day": "금",
+    "scope": "내수읍|북이면",
+    "ms": 17806,
+    "segments": 26,
+    "matchedVillages": 11,
+    "unresolved": [],
+    "missingTerms": [
+      "장재문화마을",
+      "진성레미컨",
+      "장재교차로",
+      "토성리",
+      "금암리",
+      "금대리",
+      "송정리",
+      "다모아패키지"
+    ],
+    "facilityDistances": [
+      {
+        "term": "은곡리",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산1길 100",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산2길 13",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산3리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 4-33",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산4리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산5길 20",
+        "distanceM": 13
+      },
+      {
+        "term": "마산리",
+        "name": "마산5리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산길 72",
+        "distanceM": 14
+      },
+      {
+        "term": "마산리",
+        "name": "마산6리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 3",
+        "distanceM": 9
+      },
+      {
+        "term": "마산리",
+        "name": "마산7리경로당",
+        "address": "충북 청주시 청원구 내수읍 청암로 35",
+        "distanceM": 17
+      },
+      {
+        "term": "학평리",
+        "name": "학평2리경로당",
+        "address": "충북 청주시 청원구 내수읍 학평길 53",
+        "distanceM": 20
+      },
+      {
+        "term": "내수리",
+        "name": "내수1리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 22",
+        "distanceM": 59
+      },
+      {
+        "term": "내수리",
+        "name": "내수2리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 36-3",
+        "distanceM": 9
+      },
+      {
+        "term": "내수리",
+        "name": "내수3리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수3길 22-2",
+        "distanceM": 11
+      },
+      {
+        "term": "내수리",
+        "name": "내수6리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 12",
+        "distanceM": 13
+      },
+      {
+        "term": "장재리",
+        "name": "장재마을회관",
+        "address": "충북 청주시 청원구 북이면 장재토성길 6",
+        "distanceM": 10
+      },
+      {
+        "term": "토성리",
+        "name": "토성2구마을회관",
+        "address": "충북 청주시 청원구 북이면 토성1길 10",
+        "distanceM": 682
+      },
+      {
+        "term": "금암리",
+        "name": "금암1리경로당",
+        "address": "충북 청주시 청원구 북이면 금암1길 51",
+        "distanceM": 477
+      },
+      {
+        "term": "금암리",
+        "name": "금암2리경로당",
+        "address": "충북 청주시 청원구 북이면 금암길 17",
+        "distanceM": 8
+      },
+      {
+        "term": "금대리",
+        "name": "금대1리경로당",
+        "address": "충북 청주시 청원구 북이면 금대길 30-8",
+        "distanceM": 245
+      },
+      {
+        "term": "금대리",
+        "name": "금대2리경로당",
+        "address": "충북 청주시 청원구 북이면 금대2길 28",
+        "distanceM": 8
+      },
+      {
+        "term": "송정리",
+        "name": "송정1리경로당",
+        "address": "충북 청주시 청원구 북이면 송정1길 1",
+        "distanceM": 611
+      },
+      {
+        "term": "송정리",
+        "name": "송정2리경로당",
+        "address": "충북 청주시 청원구 북이면 송정새터말길 20",
+        "distanceM": 886
+      },
+      {
+        "term": "옥수리",
+        "name": "옥수리경로당",
+        "address": "충북 청주시 청원구 북이면 옥수길 38",
+        "distanceM": 12
+      },
+      {
+        "term": "내추리",
+        "name": "내추1리경로당",
+        "address": "충북 청주시 청원구 북이면 내추옥수길 31-6",
+        "distanceM": 25
+      },
+      {
+        "term": "내추리",
+        "name": "내추2리경로당",
+        "address": "충북 청주시 청원구 북이면 내추길 61-2",
+        "distanceM": 9
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0262",
+    "day": "화",
+    "scope": "오창읍",
+    "ms": 2813,
+    "segments": 8,
+    "matchedVillages": 6,
+    "unresolved": [],
+    "missingTerms": [
+      "증평IC",
+      "여천리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "모정리",
+        "name": "모정1리경로당",
+        "address": "충북 청주시 청원구 오창읍 모정2길 3",
+        "distanceM": 12
+      },
+      {
+        "term": "모정리",
+        "name": "모정2리경로당",
+        "address": "충북 청주시 청원구 오창읍 모정1길 6",
+        "distanceM": 9
+      },
+      {
+        "term": "학소리",
+        "name": "학소리(할머니)경로당",
+        "address": "충북 청주시 청원구 오창읍 학소길 38",
+        "distanceM": 12
+      },
+      {
+        "term": "학소리",
+        "name": "학소리(할아버지)경로당",
+        "address": "충북 청주시 청원구 오창읍 학소길 42",
+        "distanceM": 8
+      },
+      {
+        "term": "일신리",
+        "name": "일신리경로당",
+        "address": "충북 청주시 청원구 오창읍 일신길 23",
+        "distanceM": 9
+      },
+      {
+        "term": "유리",
+        "name": "유리경로당",
+        "address": "충북 청주시 청원구 오창읍 유리길 50",
+        "distanceM": 10
+      },
+      {
+        "term": "유리",
+        "name": "유리학구경로당",
+        "address": "충북 청주시 청원구 오창읍 두릉유리로 1372-3",
+        "distanceM": 10
+      },
+      {
+        "term": "빛화산리",
+        "name": "華山(화산)경로당",
+        "address": "충북 청주시 청원구 오창읍 빛화산길 23",
+        "distanceM": 6
+      },
+      {
+        "term": "여천리",
+        "name": "여천1리경로당",
+        "address": "충북 청주시 청원구 오창읍 여천1길 16-5",
+        "distanceM": 1734
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "6544",
+    "day": "금",
+    "scope": "내수읍|북이면",
+    "ms": 5498,
+    "segments": 25,
+    "matchedVillages": 11,
+    "unresolved": [],
+    "missingTerms": [
+      "신안리",
+      "토성리",
+      "금암리",
+      "금대리",
+      "송정리",
+      "다모아패키지"
+    ],
+    "facilityDistances": [
+      {
+        "term": "은곡리",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산1리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산1길 100",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산2리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산2길 13",
+        "distanceM": 7
+      },
+      {
+        "term": "마산리",
+        "name": "마산3리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 4-33",
+        "distanceM": 12
+      },
+      {
+        "term": "마산리",
+        "name": "마산4리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산5길 20",
+        "distanceM": 13
+      },
+      {
+        "term": "마산리",
+        "name": "마산5리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산길 72",
+        "distanceM": 14
+      },
+      {
+        "term": "마산리",
+        "name": "마산6리경로당",
+        "address": "충북 청주시 청원구 내수읍 마산3길 3",
+        "distanceM": 9
+      },
+      {
+        "term": "마산리",
+        "name": "마산7리경로당",
+        "address": "충북 청주시 청원구 내수읍 청암로 35",
+        "distanceM": 17
+      },
+      {
+        "term": "신안리",
+        "name": "신안리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 106",
+        "distanceM": 464
+      },
+      {
+        "term": "내수리",
+        "name": "내수1리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 22",
+        "distanceM": 59
+      },
+      {
+        "term": "내수리",
+        "name": "내수2리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수신안길 36-3",
+        "distanceM": 9
+      },
+      {
+        "term": "내수리",
+        "name": "내수3리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수3길 22-2",
+        "distanceM": 11
+      },
+      {
+        "term": "내수리",
+        "name": "내수6리경로당",
+        "address": "충북 청주시 청원구 내수읍 내수본길 12",
+        "distanceM": 13
+      },
+      {
+        "term": "학평리",
+        "name": "학평2리경로당",
+        "address": "충북 청주시 청원구 내수읍 학평길 53",
+        "distanceM": 20
+      },
+      {
+        "term": "토성리",
+        "name": "토성2구마을회관",
+        "address": "충북 청주시 청원구 북이면 토성1길 10",
+        "distanceM": 682
+      },
+      {
+        "term": "장재리",
+        "name": "장재마을회관",
+        "address": "충북 청주시 청원구 북이면 장재토성길 6",
+        "distanceM": 10
+      },
+      {
+        "term": "금암리",
+        "name": "금암1리경로당",
+        "address": "충북 청주시 청원구 북이면 금암1길 51",
+        "distanceM": 502
+      },
+      {
+        "term": "금암리",
+        "name": "금암2리경로당",
+        "address": "충북 청주시 청원구 북이면 금암길 17",
+        "distanceM": 8
+      },
+      {
+        "term": "금대리",
+        "name": "금대1리경로당",
+        "address": "충북 청주시 청원구 북이면 금대길 30-8",
+        "distanceM": 245
+      },
+      {
+        "term": "금대리",
+        "name": "금대2리경로당",
+        "address": "충북 청주시 청원구 북이면 금대2길 28",
+        "distanceM": 8
+      },
+      {
+        "term": "송정리",
+        "name": "송정1리경로당",
+        "address": "충북 청주시 청원구 북이면 송정1길 1",
+        "distanceM": 611
+      },
+      {
+        "term": "송정리",
+        "name": "송정2리경로당",
+        "address": "충북 청주시 청원구 북이면 송정새터말길 20",
+        "distanceM": 886
+      },
+      {
+        "term": "옥수리",
+        "name": "옥수리경로당",
+        "address": "충북 청주시 청원구 북이면 옥수길 38",
+        "distanceM": 12
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0262",
+    "day": "월",
+    "scope": "오창읍",
+    "ms": 5462,
+    "segments": 7,
+    "matchedVillages": 4,
+    "unresolved": [
+      "양지리"
+    ],
+    "missingTerms": [
+      "해든전원마을",
+      "양지리",
+      "창리사거리",
+      "창리",
+      "오창초",
+      "팔결교",
+      "가곡길181-53"
+    ],
+    "facilityDistances": [
+      {
+        "term": "창리",
+        "name": "창1리(할머니)경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 1026-6",
+        "distanceM": 97
+      },
+      {
+        "term": "창리",
+        "name": "창2리경로당",
+        "address": "충북 청주시 청원구 오창읍 팔결로 691",
+        "distanceM": 176
+      },
+      {
+        "term": "창리",
+        "name": "창4리경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 988",
+        "distanceM": 215
+      },
+      {
+        "term": "창리",
+        "name": "창5리경로당",
+        "address": "충북 청주시 청원구 오창읍 창리1길 13",
+        "distanceM": 3
+      },
+      {
+        "term": "장대리",
+        "name": "장대2리경로당",
+        "address": "충북 청주시 청원구 오창읍 장대길 8-5",
+        "distanceM": 8
+      },
+      {
+        "term": "장대리",
+        "name": "장대리경로당",
+        "address": "충북 청주시 청원구 오창읍 오창시내1길 49",
+        "distanceM": 12
+      },
+      {
+        "term": "원리",
+        "name": "원리 경로당",
+        "address": "충북 청주시 청원구 오창읍 원리1길 13",
+        "distanceM": 17
+      },
+      {
+        "term": "복현리",
+        "name": "복현2리경로당",
+        "address": "충북 청주시 청원구 오창읍 화복로 799",
+        "distanceM": 22
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0262",
+    "day": "금",
+    "scope": "오창읍",
+    "ms": 2242,
+    "segments": 11,
+    "matchedVillages": 8,
+    "unresolved": [],
+    "missingTerms": [
+      "가좌리",
+      "3산업단지",
+      "백현리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "꽃화산리",
+        "name": "화산리마을회관(꽃화산)",
+        "address": "충북 청주시 청원구 오창읍 꽃화산1길 13",
+        "distanceM": 11
+      },
+      {
+        "term": "용두리",
+        "name": "용두리경로당",
+        "address": "충북 청주시 청원구 오창읍 용두길 77-5",
+        "distanceM": 6
+      },
+      {
+        "term": "가좌리",
+        "name": "가좌2리마을회관",
+        "address": "충북 청주시 청원구 오창읍 오창가좌4길 77-6",
+        "distanceM": 686
+      },
+      {
+        "term": "후기리",
+        "name": "후기1리 경로당",
+        "address": "충북 청주시 청원구 오창읍 후기길 185-19",
+        "distanceM": 14
+      },
+      {
+        "term": "후기리",
+        "name": "후기2리경로당",
+        "address": "충북 청주시 청원구 오창읍 후기길 537",
+        "distanceM": 6
+      },
+      {
+        "term": "성산리",
+        "name": "성산1리경로당",
+        "address": "충북 청주시 청원구 오창읍 성산길 4",
+        "distanceM": 9
+      },
+      {
+        "term": "두릉리",
+        "name": "두릉리마을회관",
+        "address": "충북 청주시 청원구 오창읍 두릉1길 59-36",
+        "distanceM": 11
+      },
+      {
+        "term": "성재리",
+        "name": "성재2리신자포 경로당",
+        "address": "충북 청주시 청원구 오창읍 성재2길 39-3",
+        "distanceM": 9
+      },
+      {
+        "term": "성재리",
+        "name": "성재3리경로당",
+        "address": "충북 청주시 청원구 오창읍 성재사정로 66",
+        "distanceM": 12
+      },
+      {
+        "term": "성재리",
+        "name": "성재4리노인정",
+        "address": "충북 청주시 청원구 오창읍 성재방화동길 47",
+        "distanceM": 12
+      },
+      {
+        "term": "백현리",
+        "name": "백현노인정",
+        "address": "충북 청주시 청원구 오창읍 백현2길 11-9",
+        "distanceM": 7
+      },
+      {
+        "term": "백현리",
+        "name": "백현리반계노인정",
+        "address": "충북 청주시 청원구 오창읍 백현1길 44-3",
+        "distanceM": 934
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "9090",
+    "day": "목",
+    "scope": "내수읍",
+    "ms": 3246,
+    "segments": 7,
+    "matchedVillages": 4,
+    "unresolved": [],
+    "missingTerms": [
+      "내수로"
+    ],
+    "facilityDistances": [
+      {
+        "term": "구성리",
+        "name": "구성1리마을회관",
+        "address": "충북 청주시 청원구 내수읍 구성길 43",
+        "distanceM": 9
+      },
+      {
+        "term": "묵방리",
+        "name": "묵방1구 마을회관",
+        "address": "충북 청주시 청원구 내수읍 묵방길 39-3",
+        "distanceM": 8
+      },
+      {
+        "term": "국동리",
+        "name": "국동리경로당",
+        "address": "충북 청주시 청원구 내수읍 국동길 79",
+        "distanceM": 13
+      },
+      {
+        "term": "은곡리 일부",
+        "name": "은곡3구경로회관",
+        "address": "충북 청주시 청원구 내수읍 은곡3길 11",
+        "distanceM": 17
+      },
+      {
+        "term": "은곡리 일부",
+        "name": "은곡리마을회관",
+        "address": "충북 청주시 청원구 내수읍 은곡1길 20",
+        "distanceM": 7
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0262",
+    "day": "목",
+    "scope": "북이면|오창읍",
+    "ms": 7426,
+    "segments": 12,
+    "matchedVillages": 7,
+    "unresolved": [
+      "화죽리"
+    ],
+    "missingTerms": [
+      "화죽리",
+      "창리사거리",
+      "창리",
+      "구룡에너지",
+      "내둔리",
+      "신대리",
+      "석성리"
+    ],
+    "facilityDistances": [
+      {
+        "term": "창리",
+        "name": "창1리(할머니)경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 1026-6",
+        "distanceM": 75
+      },
+      {
+        "term": "창리",
+        "name": "창2리경로당",
+        "address": "충북 청주시 청원구 오창읍 팔결로 691",
+        "distanceM": 176
+      },
+      {
+        "term": "창리",
+        "name": "창4리경로당",
+        "address": "충북 청주시 청원구 오창읍 공항로 988",
+        "distanceM": 215
+      },
+      {
+        "term": "창리",
+        "name": "창5리경로당",
+        "address": "충북 청주시 청원구 오창읍 창리1길 13",
+        "distanceM": 3
+      },
+      {
+        "term": "장대리",
+        "name": "장대2리경로당",
+        "address": "충북 청주시 청원구 오창읍 장대길 8-5",
+        "distanceM": 8
+      },
+      {
+        "term": "장대리",
+        "name": "장대리경로당",
+        "address": "충북 청주시 청원구 오창읍 오창시내1길 49",
+        "distanceM": 12
+      },
+      {
+        "term": "화상리",
+        "name": "화상1리경로당",
+        "address": "충북 청주시 청원구 북이면 화상길 15",
+        "distanceM": 7
+      },
+      {
+        "term": "내둔리",
+        "name": "내둔리경로당",
+        "address": "충북 청주시 청원구 북이면 내둔길 69-1",
+        "distanceM": 402
+      },
+      {
+        "term": "대율리",
+        "name": "대율2리경로당",
+        "address": "충북 청주시 청원구 북이면 대율다락말길 43",
+        "distanceM": 7
+      },
+      {
+        "term": "신대리",
+        "name": "신대1리경로당",
+        "address": "충북 청주시 청원구 북이면 신대길 22-10",
+        "distanceM": 722
+      },
+      {
+        "term": "신대리",
+        "name": "신대2리경로당",
+        "address": "충북 청주시 청원구 북이면 신대2길 18",
+        "distanceM": 11
+      },
+      {
+        "term": "석성리",
+        "name": "석성1리경로당",
+        "address": "충북 청주시 청원구 북이면 석성길 2-20",
+        "distanceM": 971
+      },
+      {
+        "term": "석성리",
+        "name": "석성2리경로당",
+        "address": "충북 청주시 청원구 북이면 석성한천길 43-1",
+        "distanceM": 1375
+      },
+      {
+        "term": "석성리",
+        "name": "석성3리경로당",
+        "address": "충북 청주시 청원구 북이면 남한이길 28",
+        "distanceM": 1051
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0262",
+    "day": "수",
+    "scope": "오창읍",
+    "ms": 9629,
+    "segments": 14,
+    "matchedVillages": 8,
+    "unresolved": [
+      "각리"
+    ],
+    "missingTerms": [
+      "각리",
+      "기암리",
+      "오창중"
+    ],
+    "facilityDistances": [
+      {
+        "term": "신평리",
+        "name": "신평2리노인정",
+        "address": "충북 청주시 청원구 오창읍 지게바위길 2-3",
+        "distanceM": 9
+      },
+      {
+        "term": "중신리",
+        "name": "중신리경로당",
+        "address": "충북 청주시 청원구 오창읍 중신1길 93",
+        "distanceM": 19
+      },
+      {
+        "term": "농소리",
+        "name": "농소리경로당",
+        "address": "충북 청주시 청원구 오창읍 농소길 18-2",
+        "distanceM": 6
+      },
+      {
+        "term": "탑리",
+        "name": "탑리마을회관",
+        "address": "충북 청주시 청원구 오창읍 탑리길 21-4",
+        "distanceM": 12
+      },
+      {
+        "term": "기암리",
+        "name": "기암리경로당",
+        "address": "충북 청주시 청원구 오창읍 탑기암길 47",
+        "distanceM": 337
+      },
+      {
+        "term": "석우리",
+        "name": "석우리경로당",
+        "address": "충북 청주시 청원구 오창읍 석우길 19-32",
+        "distanceM": 18
+      },
+      {
+        "term": "가곡리",
+        "name": "가곡1리마을회관",
+        "address": "충북 청주시 청원구 오창읍 가곡2길 2",
+        "distanceM": 5
+      },
+      {
+        "term": "괴정리",
+        "name": "괴정리 노인정",
+        "address": "충북 청주시 청원구 오창읍 괴정1길 72",
+        "distanceM": 6
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0264",
+    "day": "금",
+    "scope": "내수읍",
+    "ms": 9005,
+    "segments": 1,
+    "matchedVillages": 3,
+    "unresolved": [
+      "입동리"
+    ],
+    "missingTerms": [
+      "팔결로342번길",
+      "입동리",
+      "은곡천일빌리지",
+      "입상리",
+      "원통1구",
+      "원통2리",
+      "묵방골정원"
+    ],
+    "facilityDistances": [
+      {
+        "term": "입상리",
+        "name": "입상2리경로당",
+        "address": "충북 청주시 청원구 내수읍 입상2길 22",
+        "distanceM": 3232
+      },
+      {
+        "term": "원통1구",
+        "name": "원통1리경로당",
+        "address": "충북 청주시 청원구 내수읍 원통길 13-2",
+        "distanceM": 622
+      },
+      {
+        "term": "원통2리",
+        "name": "원통2리마을회관",
+        "address": "충북 청주시 청원구 내수읍 원통숲안1길 78-15",
+        "distanceM": 2122
+      }
+    ]
+  },
+  {
+    "type": "recycle",
+    "vehicle": "0264",
+    "day": "화",
+    "scope": "내수읍",
+    "ms": 11231,
+    "segments": 0,
+    "matchedVillages": 0,
+    "unresolved": [
+      "발산리"
+    ],
+    "missingTerms": [
+      "정상8.9통경로당",
+      "오동2동노인정",
+      "발산리",
+      "내수로",
+      "내수로199"
+    ],
+    "facilityDistances": []
+  }
+]

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T07:42:29.075Z",
+  "generatedAt": "2026-09-24T07:45:16.072Z",
   "source": "Kakao facility search + Cheongju public standard facility data, geocoded and district checked",
   "matches": [
     {
@@ -2140,8 +2140,21 @@
           "rawTerm": "꽃화산리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "화산리마을회관(꽃화산)",
+          "address": "충북 청주시 청원구 오창읍 꽃화산1길 13",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 화산리(花山) 86",
+          "sourceUrl": "https://www.e-gen.or.kr/egen/search_aed.do?searchType=general&currentPageNum=4266",
+          "sourceProvider": "중앙응급의료센터 E-GEN 청원보건소 설치정보",
+          "lat": 36.7214585632664,
+          "lng": 127.390739169486,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:45:15.999Z"
+        }
+      ],
       "candidates": []
     },
     {
