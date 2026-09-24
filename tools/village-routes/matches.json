@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T07:37:17.420Z",
+  "generatedAt": "2026-09-24T07:42:29.075Z",
   "source": "Kakao facility search + Cheongju public standard facility data, geocoded and district checked",
   "matches": [
     {
@@ -3596,8 +3596,37 @@
           "rawTerm": "모정리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "모정1리경로당",
+          "address": "충북 청주시 청원구 오창읍 모정2길 3",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 모정리 113-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13602",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7497170196889,
+          "lng": 127.468011595863,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:14.573Z"
+        },
+        {
+          "name": "모정2리경로당",
+          "address": "충북 청주시 청원구 오창읍 모정1길 6",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 모정리 323",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13603",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7469239295792,
+          "lng": 127.464216527454,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:14.976Z"
+        }
+      ],
       "candidates": [
         {
           "name": "유리학구경로당",
@@ -3770,8 +3799,37 @@
           "rawTerm": "학소리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "학소리(할머니)경로당",
+          "address": "충북 청주시 청원구 오창읍 학소길 38",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 학소리 271-8",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13537",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "경로당",
+          "lat": 36.7448202472369,
+          "lng": 127.470124642244,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:15.727Z"
+        },
+        {
+          "name": "학소리(할아버지)경로당",
+          "address": "충북 청주시 청원구 오창읍 학소길 42",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 학소리 270-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13538",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7450637725276,
+          "lng": 127.47056930899,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:15.353Z"
+        }
+      ],
       "candidates": [
         {
           "name": "가곡1리마을회관",
@@ -3944,8 +4002,23 @@
           "rawTerm": "일신리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "일신리경로당",
+          "address": "충북 청주시 청원구 오창읍 일신길 23",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 일신리 281-5",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13580",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7544966981051,
+          "lng": 127.471844077536,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:16.115Z"
+        }
+      ],
       "candidates": [
         {
           "name": "도룡마을회관",
@@ -4136,8 +4209,37 @@
           "rawTerm": "유리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "유리경로당",
+          "address": "충북 청주시 청원구 오창읍 유리길 50",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 유리 469-3",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13577",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7575947477498,
+          "lng": 127.477909909531,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:16.490Z"
+        },
+        {
+          "name": "유리학구경로당",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 1372-3",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 일신리 311",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13578",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "경로당",
+          "lat": 36.7531480271796,
+          "lng": 127.476339316629,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:16.875Z"
+        }
+      ],
       "candidates": [
         {
           "name": "돌패기쉼터",
@@ -4211,8 +4313,23 @@
           "rawTerm": "빛화산리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "華山(화산)경로당",
+          "address": "충북 청주시 청원구 오창읍 빛화산길 23",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 화산리(華山) 420-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13545",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7573406339759,
+          "lng": 127.479477968479,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:17.261Z"
+        }
+      ],
       "candidates": []
     },
     {
@@ -5151,8 +5268,23 @@
           "rawTerm": "화상리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "화상1리경로당",
+          "address": "충북 청주시 청원구 북이면 화상길 15",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 화상리 190-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13619",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7483450914653,
+          "lng": 127.502715624512,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:17.636Z"
+        }
+      ],
       "candidates": [
         {
           "name": "신안리마을회관",
@@ -5652,8 +5784,22 @@
           "rawTerm": "내둔리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "내둔리경로당",
+          "address": "충북 청주시 청원구 북이면 내둔길 69-1",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13691",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13622",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7391094906381,
+          "lng": 127.514819298321,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:18.021Z"
+        }
+      ],
       "candidates": [
         {
           "name": "신안리마을회관",
@@ -6076,8 +6222,23 @@
           "rawTerm": "용두리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "용두리경로당",
+          "address": "충북 청주시 청원구 오창읍 용두길 77-5",
+          "jibunAddress": "충청북도 청주시 청원구 오창읍 용두리 137-21",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36708",
+          "dataDate": "",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7297187970451,
+          "lng": 127.389846132372,
+          "source": "public-facility-address",
+          "district": "오창읍",
+          "geocodedAt": "2026-09-24T07:42:18.412Z"
+        }
+      ],
       "candidates": [
         {
           "name": "가좌2리마을회관",
@@ -10916,8 +11077,35 @@
           "rawTerm": "신대리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "신대1리경로당",
+          "address": "충북 청주시 청원구 북이면 신대길 22-10",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36718",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13617",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7402336714948,
+          "lng": 127.540160726116,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:18.799Z"
+        },
+        {
+          "name": "신대2리경로당",
+          "address": "충북 청주시 청원구 북이면 신대2길 18",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36719",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7390627487093,
+          "lng": 127.531196458532,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:19.172Z"
+        }
+      ],
       "candidates": [
         {
           "name": "미호동마을회관",
@@ -11172,8 +11360,23 @@
           "rawTerm": "장양2리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "장양2리경로당",
+          "address": "충북 청주시 청원구 북이면 장양2길 81-1",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 장양리 691",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13663",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7662955847451,
+          "lng": 127.526499176613,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:19.545Z"
+        }
+      ],
       "candidates": []
     },
     {
@@ -11344,8 +11547,51 @@
           "rawTerm": "용계리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "용계1리경로당",
+          "address": "충북 청주시 청원구 북이면 용계1길 53",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 용계리 427",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13659",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7523434026486,
+          "lng": 127.515937823433,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:20.306Z"
+        },
+        {
+          "name": "용계2리경로당",
+          "address": "충북 청주시 청원구 북이면 용계내추로 26",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 용계리 533",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13660",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7503636362297,
+          "lng": 127.517873553313,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:20.679Z"
+        },
+        {
+          "name": "용계3리경로당",
+          "address": "충북 청주시 청원구 북이면 용계3길 2",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 용계리 254",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13661",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7551660363953,
+          "lng": 127.518446610181,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:19.931Z"
+        }
+      ],
       "candidates": [
         {
           "name": "장양1리마을회관",
@@ -11618,8 +11864,51 @@
           "rawTerm": "석성리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "석성1리경로당",
+          "address": "충북 청주시 청원구 북이면 석성길 2-20",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 석성리 401-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13648",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7514596560503,
+          "lng": 127.513820185263,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:21.823Z"
+        },
+        {
+          "name": "석성2리경로당",
+          "address": "충북 청주시 청원구 북이면 석성한천길 43-1",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 석성리 249",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13649",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7585473220633,
+          "lng": 127.513091362692,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:21.437Z"
+        },
+        {
+          "name": "석성3리경로당",
+          "address": "충북 청주시 청원구 북이면 남한이길 28",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 석성리 472",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36716",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7579572781611,
+          "lng": 127.506973474157,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:21.066Z"
+        }
+      ],
       "candidates": [
         {
           "name": "돌패기쉼터",
@@ -11946,8 +12235,23 @@
           "rawTerm": "화상리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "화상1리경로당",
+          "address": "충북 청주시 청원구 북이면 화상길 15",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 화상리 190-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13619",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7483450914653,
+          "lng": 127.502715624512,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:21.824Z"
+        }
+      ],
       "candidates": [
         {
           "name": "신안리마을회관",
@@ -12552,8 +12856,35 @@
           "rawTerm": "서당리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "서당1리경로당",
+          "address": "충북 청주시 청원구 북이면 서당길 39",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13646",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7315270789755,
+          "lng": 127.554690412256,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:22.570Z"
+        },
+        {
+          "name": "서당2리경로당",
+          "address": "충북 청주시 청원구 북이면 서당길 133-10",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13647",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13641",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7248559039924,
+          "lng": 127.556249235732,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:22.196Z"
+        }
+      ],
       "candidates": [
         {
           "name": "신기리마을회관",
@@ -12934,8 +13265,35 @@
           "rawTerm": "대길리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "대길1리경로당",
+          "address": "충북 청주시 청원구 북이면 대길길 28-1",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13694",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7322041615769,
+          "lng": 127.560061361639,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:22.944Z"
+        },
+        {
+          "name": "대길2리경로당",
+          "address": "충북 청주시 청원구 북이면 서당대길길 103-3",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13641",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13647",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7319514189255,
+          "lng": 127.563322352779,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:23.330Z"
+        }
+      ],
       "candidates": [
         {
           "name": "영하1구마을회관",
@@ -13567,8 +13925,22 @@
           "rawTerm": "선암리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "선암1리경로당",
+          "address": "충북 청주시 청원구 북이면 선암영하로 67",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13652",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13668",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.730481058593,
+          "lng": 127.587500273299,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:23.706Z"
+        }
+      ],
       "candidates": [
         {
           "name": "영하1구마을회관",
@@ -14110,8 +14482,22 @@
           "rawTerm": "호명리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "호명리경로당",
+          "address": "충북 청주시 청원구 북이면 호명길 73",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13618",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13668",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.732485784547,
+          "lng": 127.600512179599,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:24.094Z"
+        }
+      ],
       "candidates": [
         {
           "name": "삼색마을공동체회관",
@@ -14896,8 +15282,36 @@
           "rawTerm": "현암리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "현암1리경로당",
+          "address": "충북 청주시 청원구 북이면 현암길 51",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13616",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7430129094011,
+          "lng": 127.540014266258,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:25.247Z"
+        },
+        {
+          "name": "현암2리경로당",
+          "address": "충북 청주시 청원구 북이면 현암리 387-12",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 현암리 387-12",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13617",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7487702244491,
+          "lng": 127.531197411974,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:24.858Z"
+        }
+      ],
       "candidates": [
         {
           "name": "현암리 경로당",
@@ -16354,8 +16768,37 @@
           "rawTerm": "금암리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "금암1리경로당",
+          "address": "충북 청주시 청원구 북이면 금암1길 51",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 금암리 14-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/2864",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7529641930815,
+          "lng": 127.562428574887,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:25.995Z"
+        },
+        {
+          "name": "금암2리경로당",
+          "address": "충북 청주시 청원구 북이면 금암길 17",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 금암리 172-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36720",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7521218506708,
+          "lng": 127.556291699839,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:25.621Z"
+        }
+      ],
       "candidates": [
         {
           "name": "장재마을회관",
@@ -16682,8 +17125,35 @@
           "rawTerm": "금대리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "금대1리경로당",
+          "address": "충북 청주시 청원구 북이면 금대길 30-8",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13689",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13658",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7647489994015,
+          "lng": 127.572508083574,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:26.764Z"
+        },
+        {
+          "name": "금대2리경로당",
+          "address": "충북 청주시 청원구 북이면 금대2길 28",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13690",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13658",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7674721310764,
+          "lng": 127.57207885926,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:26.379Z"
+        }
+      ],
       "candidates": [
         {
           "name": "광암리마을회관",
@@ -17280,8 +17750,35 @@
           "rawTerm": "송정리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "송정1리경로당",
+          "address": "충북 청주시 청원구 북이면 송정1길 1",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36717",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13658",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7615022931946,
+          "lng": 127.573448446496,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:27.147Z"
+        },
+        {
+          "name": "송정2리경로당",
+          "address": "충북 청주시 청원구 북이면 송정새터말길 20",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/9696",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/2864",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7587192370099,
+          "lng": 127.572005002918,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:27.535Z"
+        }
+      ],
       "candidates": [
         {
           "name": "광암리마을회관",
@@ -18119,8 +18616,23 @@
           "rawTerm": "옥수리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "옥수리경로당",
+          "address": "충북 청주시 청원구 북이면 옥수길 38",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 옥수리 191-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13658",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7662526619246,
+          "lng": 127.56388776742,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:27.911Z"
+        }
+      ],
       "candidates": [
         {
           "name": "용대마을회관",
@@ -18751,8 +19263,37 @@
           "rawTerm": "내추리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "내추1리경로당",
+          "address": "충북 청주시 청원구 북이면 내추옥수길 31-6",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 내추리 7-8",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13692",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7625449842224,
+          "lng": 127.554393825532,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.657Z"
+        },
+        {
+          "name": "내추2리경로당",
+          "address": "충북 청주시 청원구 북이면 내추길 61-2",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 내추리 348",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13693",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7612831752249,
+          "lng": 127.54611061228,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.285Z"
+        }
+      ],
       "candidates": [
         {
           "name": "장양1리마을회관",
@@ -21434,8 +21975,35 @@
           "rawTerm": "신대리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "신대1리경로당",
+          "address": "충북 청주시 청원구 북이면 신대길 22-10",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36718",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13617",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7402336714948,
+          "lng": 127.540160726116,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.657Z"
+        },
+        {
+          "name": "신대2리경로당",
+          "address": "충북 청주시 청원구 북이면 신대2길 18",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36719",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13664",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7390627487093,
+          "lng": 127.531196458532,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.657Z"
+        }
+      ],
       "candidates": [
         {
           "name": "신기리마을회관",
@@ -21683,8 +22251,51 @@
           "rawTerm": "석성리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "석성1리경로당",
+          "address": "충북 청주시 청원구 북이면 석성길 2-20",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 석성리 401-1",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13648",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7514596560503,
+          "lng": 127.513820185263,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.657Z"
+        },
+        {
+          "name": "석성2리경로당",
+          "address": "충북 청주시 청원구 북이면 석성한천길 43-1",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 석성리 249",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13649",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7585473220633,
+          "lng": 127.513091362692,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.657Z"
+        },
+        {
+          "name": "석성3리경로당",
+          "address": "충북 청주시 청원구 북이면 남한이길 28",
+          "jibunAddress": "충청북도 청주시 청원구 북이면 석성리 472",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/36716",
+          "dataDate": "2023-07-13",
+          "sourceProvider": "충청북도 청주시",
+          "facilityType": "마을회관및경로당",
+          "lat": 36.7579572781611,
+          "lng": 127.506973474157,
+          "source": "public-facility-address",
+          "district": "북이면",
+          "geocodedAt": "2026-09-24T07:42:28.657Z"
+        }
+      ],
       "candidates": [
         {
           "name": "돌패기쉼터",
@@ -22341,8 +22952,22 @@
           "rawTerm": "입상리"
         }
       ],
-      "status": "unresolved",
-      "facilities": [],
+      "status": "matched",
+      "facilities": [
+        {
+          "name": "입상2리경로당",
+          "address": "충북 청주시 청원구 내수읍 입상2길 22",
+          "jibunAddress": "",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13678",
+          "sourceListing": "https://fshh.purpleo.co.kr/view/13622",
+          "sourceProvider": "충청북도 청주시 공개시설자료 목록",
+          "lat": 36.7286625345541,
+          "lng": 127.494567177335,
+          "source": "public-facility-address",
+          "district": "내수읍",
+          "geocodedAt": "2026-09-24T07:42:29.032Z"
+        }
+      ],
       "candidates": [
         {
           "name": "원통2리마을회관",
