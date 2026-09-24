@@ -15,12 +15,12 @@ jobs:
         run: |
           npm install --no-save --package-lock=false puppeteer-core@24.16.0
           export CHROME_BIN=$(command -v google-chrome || command -v chromium)
-          node tools/village-routes/generate.cjs
+          node tools/village-routes/augment.cjs
       - name: Store generation results
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add tools/village-routes/matches.json
-          git commit -m 'Record verified village facility matches for test routes'
+          git diff --cached --quiet || git commit -m 'Supplement village facility addresses from public records'
           git pull --rebase origin main
           git push origin HEAD:main

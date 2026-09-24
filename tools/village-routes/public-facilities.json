@@ -1,0 +1,695 @@
+[
+  {
+    "name": "신평1리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 신평길 11",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 신평리 566-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36706",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "여천1리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 여천1길 16-5",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 여천리 488",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13566",
+    "dataDate": "",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "구성3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 구성새동네길 79-6",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 구성리 286-30",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13742",
+    "dataDate": "",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "중신리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 중신1길 93",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 중신리 163-5",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13531",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "신평2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 지게바위길 2-3",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 신평리 22-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36707",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "농소리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 농소길 18-2",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 농소리 119-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13598",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "탑리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 탑리길 21-5",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 탑리 264",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13536",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "구성2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 구성신화동길 88",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 구성리 308",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13741",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "묵방1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 묵방길 39-3",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 묵방리 300-5",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13712",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "구성1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 구성길 43",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 구성리 141-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13740",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "청원농원경로당",
+    "address": "충청북도 청주시 청원구 내수읍 원통숲안길 63",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 원통리 317-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13680",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "묵방2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 묵방2길 82",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 묵방리 202-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13713",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "원통2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 원통숲안1길 78-15",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 원통리 388-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13670",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "국동리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 국동길 79",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 국동리 67",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13743",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "기암리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 탑기암길 47",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 기암리 108-7",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13597",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "석우리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 석우길 19-32",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 석우리 94-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13558",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "상평리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 송대상평길 191-15",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 상평리 49",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36705",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "은곡1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 은곡1길 20",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 은곡리 90-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13671",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "은곡2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 은곡길 102",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 은곡리 170-3",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13672",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "덕암1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 덕암1길 5",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 덕암리 349-6",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13701",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "풍정1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 풍정길 36-5",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 풍정리 241-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13682",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "가곡1리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 가곡2길 6",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 가곡리 355",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36709",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "가곡2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 가곡1길 17-10",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 가곡리 405",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36710",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "괴정2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 괴정1길 74",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 괴정리 657-5",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36712",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "괴정1리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 괴정길 42",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 괴정리 502",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36711",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "괴정3리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 괴정길 18-9 덕성A내",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 괴정리 507-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13594",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "은곡4리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 은곡묵방길 28",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 은곡리 310",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13674",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "은곡5리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 은곡묵방길 52-10",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 은곡리 302",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13675",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "도원4리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 도원세교로 85",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 도원리 23",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13706",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "도원1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수도원길 17",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 도원리 146-5",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13703",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "도원2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 도원세교로 67 104동 105호",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 도원리 56",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36721",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "도원3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 도원세교로 63",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 도원리 57",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13705",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "덕암2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 덕암2길 42-5",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 덕암리 158-6",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13702",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "풍정2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 풍정2길 48-8",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 풍정리 73-7",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13683",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "괴정4리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 괴정2길 41- 6",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 괴정리 575-26",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13595",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "창4리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 공항로 988, 경희A 102동 101호",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 창리 9-3",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13534",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "창2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 팔결로 691 진양아파트",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 창리 4-17",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13533",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "은곡3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 은곡3길 11",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 은곡리 251-22",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13673",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "원통1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 원통길 13-2",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 원통리 62-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13669",
+    "dataDate": "",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "은곡6리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 은곡4길 6",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 은곡리 246-3",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13676",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "내수2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수신안길 36-3",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 내수리 306-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13696",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "내수4·5리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수로 639",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 내수리 231",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13698",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산2길 13",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 94-20",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13708",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "형동2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 형동2길 90",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 형동리 407",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13687",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "형동1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 형동1길 50",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 형동리 90-8",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13686",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "세교2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 세교2길 28-3",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 세교리 68-5",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13717",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "세교1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 세교1길 332-4",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 세교리 201-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13716",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "학평2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 학평길 53",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 학평리 211-3",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13685",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "창5리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 창리1길 13, 금정아파트",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 창리 115",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13535",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "창1리(할머니)경로당",
+    "address": "충청북도 청주시 청원구 오창읍 공항로 1026-6",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 창리 48",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13532",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "오창경로당",
+    "address": "충청북도 청주시 청원구 오창읍 공항로 1026-6",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 창리 48",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13568",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "장대2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 장대길 8-5",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 장대리 322-8",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13582",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "장대1,3리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 오창시내1길 49",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 장대리 65-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13581",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "장대4리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 복현3길 16 재원A 101동 102호",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 장대리 337",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13530",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "복현4리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 복현3길 27 수정아파트내",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 복현리 98-8",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13609",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "내수3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수3길 22-2",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 내수리 310-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13697",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "신안리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수신안길 106",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 신안리 4-13",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/36723",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산5리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산길 72(진흥아파트, 아이림 어린이집 옆)",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 125-7",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13709",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산7리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 청암로 35",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 210",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13711",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "내수읍분회경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산3길 55",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 197-123",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13700",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산6리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산3길 3",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 8-5",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13710",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산3길 4-33",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 4-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/2909",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산4리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산5길 20",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 163-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/2910",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "마산1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 마산1길 100",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 마산리 산 6-3",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13707",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "비상리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 비상길 34",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 비상리 221-6",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13714",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "비중리문화마을경로당",
+    "address": "충청북도 청주시 청원구 내수읍 비중길 9 비중길 12",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 비중리 96-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13715",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "복현3리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 복현2길 19",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 복현리 183-4",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13608",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "복현1리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 복현4길 26-8",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 복현리 175-2",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13606",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "내수6리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수본길 12 상가동 101호",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 내수리 37",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13699",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "내수1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수본길 22",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 내수리 45-54",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13695",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "학평1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 내수학평길 45",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 학평리 140-24",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13684",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "저곡리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 저곡길 33-4",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 저곡리 134-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13679",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "우산3리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 우산길 37 105동 104,105호",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 우산리 504-8",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13668",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "우산1리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 우산1길 16",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 우산리 429-3",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13719",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "원2리경로당",
+    "address": "충청북도 청주시 청원구 오창읍 원리1길 13",
+    "jibunAddress": "충청북도 청주시 청원구 오창읍 원리 207-8",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13576",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "경로당"
+  },
+  {
+    "name": "우산2리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 우산2길 61",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 우산리 95-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13720",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  },
+  {
+    "name": "초정리경로당",
+    "address": "충청북도 청주시 청원구 내수읍 초정1길 9-1",
+    "jibunAddress": "충청북도 청주시 청원구 내수읍 초정리 306-1",
+    "sourceUrl": "https://fshh.purpleo.co.kr/view/13681",
+    "dataDate": "2023-07-13",
+    "sourceProvider": "충청북도 청주시",
+    "facilityType": "마을회관및경로당"
+  }
+]
