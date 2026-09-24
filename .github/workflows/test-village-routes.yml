@@ -15,14 +15,13 @@ jobs:
         run: |
           npm install --no-save --package-lock=false puppeteer-core@24.16.0
           export CHROME_BIN=$(command -v google-chrome || command -v chromium)
-          node tools/village-routes/augment.cjs
-          node tools/village-routes/build-routes.cjs
+          node tools/village-routes/connect-routes.cjs
       - name: Store generation results
         if: always()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tools/village-routes/matches.json
+          if [ -f tools/village-routes/connection-report.json ]; then git add tools/village-routes/connection-report.json cjwaste-test/data/precomputed-village-connected-v2.json; fi
           if [ -f tools/village-routes/route-report.json ]; then git add tools/village-routes/route-report.json cjwaste-test/data/precomputed-village-facility-routes-v1.json; fi
           git diff --cached --quiet || git commit -m 'Generate test routes from verified village facility addresses'
           git pull --rebase origin main
