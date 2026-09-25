@@ -50,11 +50,10 @@
     "vehicle": "3344",
     "day": "수",
     "type": "general",
-    "waypoints": 15,
+    "waypoints": 16,
     "parts": 1,
     "missing": [
-      "도암리",
-      "양지리"
+      "도암리"
     ],
     "distances": [
       {
@@ -86,6 +85,11 @@
         "name": "괴정리 노인정",
         "term": "괴정리",
         "distanceM": 6
+      },
+      {
+        "name": "양지리 버스정류장",
+        "term": "양지리",
+        "distanceM": 7
       },
       {
         "name": "모정1리경로당",
@@ -220,11 +224,10 @@
     "vehicle": "3344",
     "day": "월",
     "type": "general",
-    "waypoints": 17,
+    "waypoints": 18,
     "parts": 1,
     "missing": [
-      "체리부로",
-      "각리"
+      "체리부로"
     ],
     "distances": [
       {
@@ -286,6 +289,11 @@
         "name": "여천1리경로당",
         "term": "여천리",
         "distanceM": 17
+      },
+      {
+        "name": "각리 버스정류장",
+        "term": "각리",
+        "distanceM": 8
       },
       {
         "name": "중신리경로당",
@@ -1848,11 +1856,10 @@
     "vehicle": "0262",
     "day": "월",
     "type": "recycle",
-    "waypoints": 14,
+    "waypoints": 15,
     "parts": 1,
     "missing": [
-      "해든전원마을",
-      "양지리"
+      "해든전원마을"
     ],
     "distances": [
       {
@@ -1919,6 +1926,11 @@
         "name": "오창농협하나로마트 본점",
         "term": "하나로마트",
         "distanceM": 23
+      },
+      {
+        "name": "양지리 버스정류장",
+        "term": "양지리",
+        "distanceM": 8
       },
       {
         "name": "복현2리경로당",
@@ -2062,13 +2074,17 @@
     "vehicle": "0262",
     "day": "수",
     "type": "recycle",
-    "waypoints": 14,
+    "waypoints": 15,
     "parts": 1,
     "missing": [
-      "각리",
       "혜성약품"
     ],
     "distances": [
+      {
+        "name": "각리 버스정류장",
+        "term": "각리",
+        "distanceM": 8
+      },
       {
         "name": "각리2길",
         "term": "각리2길",
