@@ -9,20 +9,18 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
   await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?connect='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
   await page.waitForFunction(()=>typeof geocoder!=='undefined'&&!!geocoder);
   await page.evaluate(()=>ensureTestAdminBoundaryLoad());
-  const result=await page.evaluate(async bundle=>{
+  const publicStops=JSON.parse(fs.readFileSync('tools/village-routes/bus-stops-public.json'));
+  const result=await page.evaluate(async({bundle,publicStops})=>{
    const keyword=q=>new Promise(resolve=>places.keywordSearch(q,(r,s)=>resolve(s===kakao.maps.services.Status.OK?r:[]),{size:15}));
    for(const row of bundle.matches){
     if(row.status==='matched')continue;
     const found=[];
-    for(const district of row.districts){
-     for(const q of ['청주 '+district+' '+row.village+' 버스정류장','청주 '+row.village+' 버스정류장','청주 '+row.village+' 정류장']){
-      for(const r of await keyword(q)){
-       const p={lat:+r.y,lng:+r.x},stem=row.village.replace(/리$/,'');
-       if(!/버스|정류장/.test(r.category_name+' '+r.place_name)||!r.place_name.includes(stem)||!pointInsideRouteDistricts(p,[district]))continue;
-       if(found.some(f=>f.placeId===r.id))continue;
-       found.push({...p,name:r.place_name,address:r.road_address_name||r.address_name,jibunAddress:r.address_name,district,source:'village-bus-stop',sourceUrl:r.place_url||'https://place.map.kakao.com/'+r.id,placeId:r.id,query:q});
-      }
-     }
+    for(const r of publicStops.records.filter(r=>r.village===row.village)){
+      const p={lat:+r['위도'],lng:+r['경도']};
+      if(!pointInsideRouteDistricts(p,row.districts))continue;
+      const addressRows=await new Promise(resolve=>geocoder.coord2Address(p.lng,p.lat,(data,status)=>resolve(status===kakao.maps.services.Status.OK?data:[])));
+      const address=addressRows[0]?.road_address?.address_name||addressRows[0]?.address?.address_name||('정류장 '+r['모바일단축번호']);
+      found.push({...p,name:r['정류장명']+' 버스정류장',address,district:routePointAnyDistrict(p),source:'village-bus-stop',sourceUrl:publicStops.sourceUrl,stopId:r['정류장번호'],stopNumber:r['모바일단축번호'],dataDate:r['정보수집일']});
     }
     row.busCandidates=found;row.facilities=found.length?[found[0]]:[];
     if(found.length){row.status='matched';row.matchKind='bus-stop';}
@@ -65,7 +63,7 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
    }
    bundle.travelVersion='village-connected-v2';bundle.connectedAt=new Date().toISOString();
    return {bundle,report};
-  },bundle);
+  },{bundle,publicStops});
   fs.writeFileSync('cjwaste-test/data/precomputed-village-connected-v2.json',JSON.stringify(result.bundle));
   fs.writeFileSync('tools/village-routes/connection-report.json',JSON.stringify(result.report,null,2));
  }finally{await browser.close();}
