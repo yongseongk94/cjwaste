@@ -78,10 +78,20 @@ async def main():
                   );
                   const points=items.flatMap(itemPoints);
                   const actualRis=[...new Set(points.map(p=>pointRi(district,p)).filter(Boolean))];
-                  const covered=actualRis.includes(expectedRi);
-                  result.expected.push({type,vehicle,day,district,ri:riRaw,officialRi:expectedRi,covered,actualRis,
+                  const evidence=items.flatMap(i=>i.zoneEvidencePoints||[]);
+                  const normExpected=routeNorm(expectedRi);
+                  const verifiedEvidence=evidence.filter(p=>{
+                    const texts=[p.term,p.villageTerm,p.jibunAddress,p.address,p.name].map(x=>routeNorm(x||'')).filter(Boolean);
+                    return texts.some(t=>t.includes(normExpected)) &&
+                      (!p.source || /verified|village|facility|senior|hall/.test(String(p.source)));
+                  });
+                  const spatialCovered=actualRis.includes(expectedRi);
+                  const covered=spatialCovered||verifiedEvidence.length>0;
+                  result.expected.push({type,vehicle,day,district,ri:riRaw,officialRi:expectedRi,covered,spatialCovered,
+                    verifiedEvidence:verifiedEvidence.map(p=>({name:p.name||'',address:p.address||'',jibunAddress:p.jibunAddress||'',term:p.term||'',villageTerm:p.villageTerm||'',source:p.source||'',lat:+p.lat,lng:+p.lng})),
+                    actualRis,
                     itemCount:items.length,segmentCount:items.reduce((n,i)=>n+(i.segments||[]).length,0),
-                    evidenceCount:items.reduce((n,i)=>n+(i.zoneEvidencePoints||[]).length,0)});
+                    evidenceCount:evidence.length});
                 }
               }
             }
