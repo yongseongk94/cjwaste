@@ -1280,7 +1280,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v8-rural-complete';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v9-rural-full-audit';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1881,7 +1881,7 @@ async function ensureVisibleServiceZoneChunks(type){
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
-const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v2'];
+const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v3'];
 function bundledPrecomputedData(){
   try{
     if(bundledPrecomputedExternal)return bundledPrecomputedExternal;
@@ -3421,9 +3421,35 @@ function test2VillageDistrictCandidates(village,term=''){
   }
   return out;
 }
+const TEST2_VERIFIED_VILLAGE_FACILITIES={
+  '내수읍|비중리':{
+    name:'비중 문화마을 경로당',
+    address:'충북 청주시 청원구 내수읍 비중길 12',
+    jibunAddress:'충북 청주시 청원구 내수읍 비중리 392',
+    lat:36.71149125948629,lng:127.58053134952354,
+    source:'verified-village-facility',villageTerm:'비중리'
+  },
+  '오창읍|유리':{
+    name:'유리경로당',
+    address:'충북 청주시 청원구 오창읍 유리길 50',
+    jibunAddress:'충북 청주시 청원구 오창읍 유리 469-3',
+    lat:36.7575947477498,lng:127.477909909531,
+    source:'verified-village-facility',villageTerm:'유리'
+  }
+};
+function test2VerifiedVillageFacilities(village,term=''){
+  const out=[];
+  for(const district of test2VillageDistrictCandidates(village,term)){
+    const p=TEST2_VERIFIED_VILLAGE_FACILITIES[district+'|'+normalizeRi(village)];
+    if(p)out.push({...p,district});
+  }
+  return out;
+}
 function test2VillageFacilitySearch(term){
   const village=test2VillageNameFromRouteTerm(term);
   if(!village)return Promise.resolve([]);
+  const verified=test2VerifiedVillageFacilities(village,term);
+  if(verified.length)return Promise.resolve(verified);
   const official=test2VillageOfficialName(village);
   const compact=routeNorm(village);
   const officialCompact=routeNorm(official);
@@ -4182,7 +4208,7 @@ function sanitizeRouteDataToScope(spec,data){
   const zoneEvidencePoints=(data?.zoneEvidencePoints||[]).filter(p=>{
     const d=routePointAnyDistrict(p);
     return d&&allowed.includes(d)&&routePointInsideCheongwon(p);
-  }).map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:routePointAnyDistrict(p)}));
+  }).map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',jibunAddress:p.jibunAddress||'',term:p.term||'',villageTerm:p.villageTerm||'',source:p.source||'',district:routePointAnyDistrict(p)}));
   return {...data,segments,servicePoints:[],zoneEvidencePoints};
 }
 function existingDongRouteOverlay(spec){
@@ -4484,7 +4510,7 @@ async function buildDongRouteOverlay(spec,options={}){
       const baseDistrict=canonicalDistrict(base?.district||routePointAnyDistrict(base));
       const zoneOnlyEvidence=!!base&&SERVICE_ZONE_PRECOMPUTE_ONLY;
       if(base && (!entry.isRoad||zoneOnlyEvidence)){
-        zoneEvidencePoints.push({lat:+base.lat,lng:+base.lng,name:base.name||entry.term,address:base.address||'',term:entry.term,district:baseDistrict||''});
+        zoneEvidencePoints.push({lat:+base.lat,lng:+base.lng,name:base.name||entry.term,address:base.address||'',jibunAddress:base.jibunAddress||'',term:entry.term,villageTerm:base.villageTerm||'',source:base.source||'',district:baseDistrict||''});
       }
       if(zoneOnlyEvidence){
         serviceTermCount++;
