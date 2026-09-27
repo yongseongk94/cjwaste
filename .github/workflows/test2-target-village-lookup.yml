@@ -1,0 +1,35 @@
+name: Lookup TEST2 target village facilities
+on:
+  push:
+    paths:
+      - 'tools/test2-target-village-lookup.trigger'
+permissions:
+  contents: write
+jobs:
+  lookup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Lookup village facilities
+        run: python tools/test2_target_village_lookup.py
+      - name: Commit lookup report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/test2-target-village-lookup.trigger
+          test -f tools/test2-target-village-lookup.json || echo '{"fatal":"no report"}' > tools/test2-target-village-lookup.json
+          git add tools/test2-target-village-lookup.json tools/test2-target-village-lookup.trigger
+          git commit -m "Record target village facility lookup" || true
+          git pull --rebase origin main
+          git push
