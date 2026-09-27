@@ -9,6 +9,8 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
    const nodes=new Map(),edges=new Map(),adj=new Map();
    for(const w of network.ways){
     const t=w.tags;
+    // These five main roads are separately listed on Mon/Wed/Fri in the source.
+    if(['향군로','내덕로','1순환로','공항로','상당로'].includes(t.name))continue;
     if(!['residential','living_street','unclassified'].includes(t.highway)&&!(t.highway==='service'&&t.service==='alley'))continue;
     if(['access','vehicle','motor_vehicle','motorcar'].some(k=>['no','private','customers','permit'].includes(t[k])))continue;
     for(let i=1;i<w.nodes.length;i++){
