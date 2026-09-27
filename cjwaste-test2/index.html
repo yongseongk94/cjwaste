@@ -2857,8 +2857,12 @@ async function ensureAddressRouteItems(type,ctx){
           routeAllowedDistricts(item).includes(canonicalDistrict(district))
         )||null;
       }
-      if(!SERVICE_ZONE_PRECOMPUTE_ONLY)return existing;
-      const forceRebuild=!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec);
+      // 현재 주소 후보의 농촌 직영 보정본에 리 지점 누락이 남아 있으면 일반 이용에서도
+      // 그 후보만 1개씩 최신 마을회관/경로당 기준으로 재계산해 IndexedDB에 저장합니다.
+      // 성공 시 다음 선택부터 즉시 복원되고, 실패하면 기존 정적 노선을 유지합니다.
+      const forceRebuild=test2BundledRouteNeedsRepair(existing,spec)||
+        (!!SERVICE_ZONE_PRECOMPUTE_ONLY&&!!existing?.fromBundle&&test2SpecNeedsVillageRebuild(spec));
+      if(!SERVICE_ZONE_PRECOMPUTE_ONLY&&!forceRebuild)return existing;
       return await buildDongRouteOverlay(spec,{forceRebuild});
     }
     catch(e){console.warn('TEST2 현재주소 노선 준비 실패 - 기존노선 유지',spec,e);return existingDongRouteOverlay(spec)}
@@ -4219,8 +4223,17 @@ function existingDongRouteOverlay(spec){
   const scope=routeScopeSignature(spec);
   return (dongRouteOverlays[spec.type]||[]).find(x=>x.vehicle===spec.vehicle&&x.day===spec.day&&routeScopeSignature(x)===scope)||null;
 }
+const TEST2_RURAL_DIRECT_VEHICLES=new Set(['3344','6138','6544','0262']);
 function test2SpecNeedsVillageRebuild(spec){
   return routeDescriptorsForMap(spec?.raw||'').some(d=>!!test2VillageNameFromRouteTerm(d?.term||''));
+}
+function test2BundledRouteNeedsRepair(item,spec){
+  if(!item?.fromBundle||!TEST2_RURAL_DIRECT_VEHICLES.has(String(spec?.vehicle||'')))return false;
+  const missing=[...(item.missingTerms||[])];
+  if(!missing.length)return false;
+  // 리 이름이 검색 누락된 경우 최신 마을회관→경로당 보조검색으로 다시 계산하면
+  // 기존 정적 보정본보다 실제 수거지점 복원이 개선될 수 있습니다.
+  return missing.some(term=>!!test2VillageNameFromRouteTerm(term))||test2SpecNeedsVillageRebuild(spec);
 }
 function removeDongRouteOverlayItem(item){
   if(!item)return false;
@@ -4714,6 +4727,19 @@ async function ensureDongRoutesForSelection(type,requestSeq=layerRequestSeq){
   if(!specs.length){if(isCurrent())syncDongRouteVisibility(type);return}
   await hydrateCachedRouteOverlays(specs);
   await hydrateExternalBundledPrecomputedData();
+
+  // 사용자가 차량 또는 특정 요일을 직접 선택한 경우에만, 정적 보정본에서 리 지점이 빠진
+  // 3344·6138·6544·0262 노선을 1개씩 최신 마을회관/경로당 기준으로 안전 재계산합니다.
+  // 전체보기에서는 렉을 막기 위해 재계산하지 않고 정적 번들을 즉시 표시합니다.
+  if(providerSnapshot!=='전체'||daySnapshot!=='전체'){
+    await mapWithConcurrency(specs,1,async spec=>{
+      const existing=existingDongRouteOverlay(spec);
+      if(!test2BundledRouteNeedsRepair(existing,spec))return existing;
+      try{return await buildDongRouteOverlay(spec,{forceRebuild:true})}
+      catch(e){console.warn('TEST2 농촌 직영 선택노선 보완 실패 - 기존 노선 유지',spec,e);return existing}
+    });
+  }
+
   if(isCurrent()){
     syncDongRouteVisibility(type);
     if(serviceLayerState.zone)scheduleVisibleServiceZoneMaterialization(type);
