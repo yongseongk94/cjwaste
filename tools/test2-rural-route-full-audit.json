@@ -1,6 +1,6 @@
 {
   "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
-  "startedAt": "2026-09-27T10:37:03Z",
+  "startedAt": "2026-09-27T13:49:28Z",
   "pageErrors": [],
   "consoleErrors": [],
   "httpErrors": [],
@@ -6710,21 +6710,6 @@
     }
   ],
   "summary": {
-    "북이면": {
-      "expected": 52,
-      "covered": 52,
-      "missing": [],
-      "byType": {
-        "general": {
-          "expected": 24,
-          "covered": 24
-        },
-        "recycle": {
-          "expected": 28,
-          "covered": 28
-        }
-      }
-    },
     "오창읍": {
       "expected": 65,
       "covered": 65,
@@ -6752,6 +6737,21 @@
         "recycle": {
           "expected": 25,
           "covered": 25
+        }
+      }
+    },
+    "북이면": {
+      "expected": 52,
+      "covered": 52,
+      "missing": [],
+      "byType": {
+        "general": {
+          "expected": 24,
+          "covered": 24
+        },
+        "recycle": {
+          "expected": 28,
+          "covered": 28
         }
       }
     }
