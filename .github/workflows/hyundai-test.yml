@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'tools/hyundai-routes/**'
+permissions:
+  contents: write
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -12,4 +14,12 @@ jobs:
       - run: |
           npm install --no-save --package-lock=false puppeteer-core@24.16.0
           export CHROME_BIN=$(command -v google-chrome || command -v chromium)
-          node tools/hyundai-routes/diagnose.cjs
+          node tools/hyundai-routes/build.cjs
+      - name: Save verified routes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add cjwaste-test/data/precomputed-hyundai-v1.json
+          git diff --cached --quiet || git commit -m 'Generate Hyundai Tuesday Thursday landmark routes'
+          git pull --rebase origin main
+          git push origin HEAD:main
