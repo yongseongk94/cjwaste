@@ -1,6 +1,6 @@
 {
   "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
-  "startedAt": "2026-09-27T09:05:18Z",
+  "startedAt": "2026-09-27T10:37:03Z",
   "pageErrors": [],
   "consoleErrors": [],
   "httpErrors": [],
@@ -506,6 +506,7 @@
       "officialRi": "내수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신안리마을회관",
@@ -545,6 +546,7 @@
       "officialRi": "덕암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "덕암리",
@@ -584,6 +586,7 @@
       "officialRi": "마산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "마산리",
@@ -623,6 +626,7 @@
       "officialRi": "비상리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "비상리마을회관",
@@ -661,7 +665,8 @@
       "ri": "비중리",
       "officialRi": "비중리",
       "covered": true,
-      "spatialCovered": false,
+      "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "비중 문화마을 경로당",
@@ -701,6 +706,7 @@
       "officialRi": "세교리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "세교2리마을회관",
@@ -740,6 +746,7 @@
       "officialRi": "우산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "우산리",
@@ -779,6 +786,7 @@
       "officialRi": "은곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "은곡리마을회관",
@@ -818,6 +826,7 @@
       "officialRi": "초정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "초정리",
@@ -857,6 +866,7 @@
       "officialRi": "풍정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "풍정2리마을회관",
@@ -896,6 +906,7 @@
       "officialRi": "학평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "학평2리경로당",
@@ -935,6 +946,7 @@
       "officialRi": "형동리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "형동1리마을회관",
@@ -974,6 +986,7 @@
       "officialRi": "각리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "각리",
@@ -1014,6 +1027,7 @@
       "officialRi": "농소리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "농소리경로당",
@@ -1054,6 +1068,7 @@
       "officialRi": "복현리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "복현2리경로당",
@@ -1094,6 +1109,7 @@
       "officialRi": "신평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "신평리",
@@ -1134,6 +1150,7 @@
       "officialRi": "여천리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "여천리",
@@ -1174,6 +1191,7 @@
       "officialRi": "원리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "원리 경로당",
@@ -1214,6 +1232,7 @@
       "officialRi": "장대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "장대리경로당",
@@ -1254,6 +1273,7 @@
       "officialRi": "중신리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "중신리",
@@ -1294,6 +1314,7 @@
       "officialRi": "창리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "창리",
@@ -1334,6 +1355,7 @@
       "officialRi": "탑리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "탑리마을회관",
@@ -1374,6 +1396,7 @@
       "officialRi": "저곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "저곡리마을회관",
@@ -1408,6 +1431,7 @@
       "officialRi": "영하리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "비중사거리",
@@ -1438,6 +1462,7 @@
       "officialRi": "화산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "화산리경로당",
@@ -1471,6 +1496,7 @@
       "officialRi": "상평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "상평리",
@@ -1504,6 +1530,7 @@
       "officialRi": "후기리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "후기1리 경로당",
@@ -1537,6 +1564,7 @@
       "officialRi": "마산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "마산리",
@@ -1569,6 +1597,7 @@
       "officialRi": "신안리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신안리마을회관",
@@ -1601,6 +1630,7 @@
       "officialRi": "은곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "은곡리마을회관",
@@ -1633,6 +1663,7 @@
       "officialRi": "학평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "학평2리경로당",
@@ -1665,6 +1696,7 @@
       "officialRi": "석성리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석성리",
@@ -1702,6 +1734,7 @@
       "officialRi": "신대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "신대리",
@@ -1739,6 +1772,7 @@
       "officialRi": "용계리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "용계리",
@@ -1776,6 +1810,7 @@
       "officialRi": "장양리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [],
       "actualRis": [
         "신대리",
@@ -1802,6 +1837,7 @@
       "officialRi": "추학리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "추학리",
@@ -1839,6 +1875,7 @@
       "officialRi": "화상리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "화상리",
@@ -1876,6 +1913,7 @@
       "officialRi": "가곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "가곡1리마을회관",
@@ -1917,6 +1955,7 @@
       "officialRi": "괴정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "괴정리",
@@ -1958,6 +1997,7 @@
       "officialRi": "기암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "기암리",
@@ -1999,6 +2039,7 @@
       "officialRi": "도암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "도암리",
@@ -2040,6 +2081,7 @@
       "officialRi": "모정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "모정리",
@@ -2081,6 +2123,7 @@
       "officialRi": "화산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "화산리경로당",
@@ -2122,6 +2165,7 @@
       "officialRi": "석우리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석우리",
@@ -2163,6 +2207,7 @@
       "officialRi": "양지리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "양지리",
@@ -2204,6 +2249,7 @@
       "officialRi": "여천리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "여천리",
@@ -2245,6 +2291,7 @@
       "officialRi": "유리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "유리경로당",
@@ -2286,6 +2333,7 @@
       "officialRi": "일신리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "일신리",
@@ -2327,6 +2375,7 @@
       "officialRi": "탑리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "탑리마을회관",
@@ -2368,6 +2417,7 @@
       "officialRi": "학소리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "학소리",
@@ -2409,6 +2459,7 @@
       "officialRi": "대길리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "대길리",
@@ -2445,6 +2496,7 @@
       "officialRi": "대율리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "대율2리경로당",
@@ -2475,6 +2527,7 @@
       "officialRi": "부연리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "부연리",
@@ -2511,6 +2564,7 @@
       "officialRi": "서당리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "서당리",
@@ -2547,6 +2601,7 @@
       "officialRi": "석화리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석화리",
@@ -2583,6 +2638,7 @@
       "officialRi": "선암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "선암리",
@@ -2619,6 +2675,7 @@
       "officialRi": "신기리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신기리마을회관",
@@ -2655,6 +2712,7 @@
       "officialRi": "현암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "현암리",
@@ -2691,6 +2749,7 @@
       "officialRi": "호명리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "호명리",
@@ -2727,6 +2786,7 @@
       "officialRi": "화상리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "북이면 화상리",
@@ -2757,6 +2817,7 @@
       "officialRi": "복현리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "복현2리경로당",
@@ -2790,6 +2851,7 @@
       "officialRi": "성산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "성산1리경로당",
@@ -2823,6 +2885,7 @@
       "officialRi": "창리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "창리",
@@ -2856,6 +2919,7 @@
       "officialRi": "내수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신안리마을회관",
@@ -2888,6 +2952,7 @@
       "officialRi": "마산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "마산리",
@@ -2920,6 +2985,7 @@
       "officialRi": "은곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "은곡리마을회관",
@@ -2952,6 +3018,7 @@
       "officialRi": "학평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "학평2리경로당",
@@ -2984,6 +3051,7 @@
       "officialRi": "금대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "금대리",
@@ -3023,6 +3091,7 @@
       "officialRi": "금암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "금암리",
@@ -3062,6 +3131,7 @@
       "officialRi": "내추리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "내추리",
@@ -3101,6 +3171,7 @@
       "officialRi": "송정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "송정리",
@@ -3140,6 +3211,7 @@
       "officialRi": "옥수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "옥수리",
@@ -3179,6 +3251,7 @@
       "officialRi": "장재리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "장재교차로",
@@ -3228,6 +3301,7 @@
       "officialRi": "토성리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "토성2구마을회관",
@@ -3267,6 +3341,7 @@
       "officialRi": "가좌리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "가좌2리마을회관",
@@ -3302,6 +3377,7 @@
       "officialRi": "두릉리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "두릉리마을회관",
@@ -3337,6 +3413,7 @@
       "officialRi": "백현리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "백현리",
@@ -3372,6 +3449,7 @@
       "officialRi": "성산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "성산1리경로당",
@@ -3407,6 +3485,7 @@
       "officialRi": "성재리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "성재3리경로당",
@@ -3452,6 +3531,7 @@
       "officialRi": "용두리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "용두리",
@@ -3487,6 +3567,7 @@
       "officialRi": "내수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [],
       "actualRis": [
         "은곡리",
@@ -3516,6 +3597,7 @@
       "officialRi": "덕암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "덕암리",
@@ -3556,6 +3638,7 @@
       "officialRi": "도원리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "우창진주2차아파트 경로당",
@@ -3596,6 +3679,7 @@
       "officialRi": "마산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "마산리",
@@ -3636,6 +3720,7 @@
       "officialRi": "비상리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "비상리마을회관",
@@ -3676,6 +3761,7 @@
       "officialRi": "세교리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "세교2리마을회관",
@@ -3716,6 +3802,7 @@
       "officialRi": "신안리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신안리마을회관",
@@ -3756,6 +3843,7 @@
       "officialRi": "우산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "우산리",
@@ -3796,6 +3884,7 @@
       "officialRi": "은곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "은곡리마을회관",
@@ -3836,6 +3925,7 @@
       "officialRi": "초정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "초정리",
@@ -3876,6 +3966,7 @@
       "officialRi": "풍정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "풍정2리마을회관",
@@ -3916,6 +4007,7 @@
       "officialRi": "학평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "학평2리경로당",
@@ -3956,6 +4048,7 @@
       "officialRi": "형동리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "형동1리마을회관",
@@ -3996,6 +4089,7 @@
       "officialRi": "복현리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "복현2리경로당",
@@ -4032,6 +4126,7 @@
       "officialRi": "양지리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "양지리",
@@ -4068,6 +4163,7 @@
       "officialRi": "원리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "원리 경로당",
@@ -4104,6 +4200,7 @@
       "officialRi": "장대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "장대리경로당",
@@ -4140,6 +4237,7 @@
       "officialRi": "창리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "창리사거리",
@@ -4186,6 +4284,7 @@
       "officialRi": "도원리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "우창진주2차아파트 경로당",
@@ -4224,6 +4323,7 @@
       "officialRi": "세교리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "세교2리마을회관",
@@ -4262,6 +4362,7 @@
       "officialRi": "신안리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신안리마을회관",
@@ -4300,6 +4401,7 @@
       "officialRi": "우산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "우산리",
@@ -4338,6 +4440,7 @@
       "officialRi": "저곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "저곡리마을회관",
@@ -4376,6 +4479,7 @@
       "officialRi": "풍정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "풍정2리마을회관",
@@ -4414,6 +4518,7 @@
       "officialRi": "영하리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "영하1구마을회관",
@@ -4442,6 +4547,7 @@
       "officialRi": "모정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "모정리",
@@ -4475,6 +4581,7 @@
       "officialRi": "화산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "화산리경로당",
@@ -4508,6 +4615,7 @@
       "officialRi": "여천리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "증평IC",
@@ -4551,6 +4659,7 @@
       "officialRi": "유리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "유리경로당",
@@ -4584,6 +4693,7 @@
       "officialRi": "일신리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "일신리",
@@ -4617,6 +4727,7 @@
       "officialRi": "학소리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "학소리",
@@ -4650,6 +4761,7 @@
       "officialRi": "내추리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "내추리",
@@ -4688,6 +4800,7 @@
       "officialRi": "대율리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "대율2리경로당",
@@ -4726,6 +4839,7 @@
       "officialRi": "석성리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석성리",
@@ -4764,6 +4878,7 @@
       "officialRi": "신대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "신대리",
@@ -4802,6 +4917,7 @@
       "officialRi": "옥수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "옥수리",
@@ -4840,6 +4956,7 @@
       "officialRi": "용계리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "용계리",
@@ -4878,6 +4995,7 @@
       "officialRi": "장양리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [],
       "actualRis": [
         "석화리",
@@ -4905,6 +5023,7 @@
       "officialRi": "추학리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "추학리",
@@ -4943,6 +5062,7 @@
       "officialRi": "화상리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "화상리",
@@ -4981,6 +5101,7 @@
       "officialRi": "가곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "가곡1리마을회관",
@@ -5020,6 +5141,7 @@
       "officialRi": "각리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "각리",
@@ -5059,6 +5181,7 @@
       "officialRi": "괴정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "괴정리",
@@ -5098,6 +5221,7 @@
       "officialRi": "기암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "기암리",
@@ -5137,6 +5261,7 @@
       "officialRi": "농소리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "농소리경로당",
@@ -5176,6 +5301,7 @@
       "officialRi": "석우리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석우리",
@@ -5215,6 +5341,7 @@
       "officialRi": "신평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "신평리",
@@ -5254,6 +5381,7 @@
       "officialRi": "중신리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "중신리",
@@ -5293,6 +5421,7 @@
       "officialRi": "탑리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "탑리마을회관",
@@ -5332,6 +5461,7 @@
       "officialRi": "학평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "학평2리경로당",
@@ -5361,6 +5491,7 @@
       "officialRi": "대길리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "대길리",
@@ -5397,6 +5528,7 @@
       "officialRi": "대율리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "대율2리경로당",
@@ -5429,6 +5561,7 @@
       "officialRi": "부연리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "부연리",
@@ -5465,6 +5598,7 @@
       "officialRi": "서당리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "서당리",
@@ -5501,6 +5635,7 @@
       "officialRi": "석성리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석성리",
@@ -5533,6 +5668,7 @@
       "officialRi": "석화리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "석화리",
@@ -5569,6 +5705,7 @@
       "officialRi": "선암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "선암리",
@@ -5605,6 +5742,7 @@
       "officialRi": "신기리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신기리마을회관",
@@ -5641,6 +5779,7 @@
       "officialRi": "신대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "신대리",
@@ -5673,6 +5812,7 @@
       "officialRi": "현암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "현암리",
@@ -5709,6 +5849,7 @@
       "officialRi": "호명리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "호명리",
@@ -5745,6 +5886,7 @@
       "officialRi": "화상리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "화상리",
@@ -5777,6 +5919,7 @@
       "officialRi": "장대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "장대리경로당",
@@ -5824,6 +5967,7 @@
       "officialRi": "창리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "창리사거리",
@@ -5881,6 +6025,7 @@
       "officialRi": "내수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [],
       "actualRis": [
         "은곡리",
@@ -5902,6 +6047,7 @@
       "officialRi": "마산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "마산리",
@@ -5934,6 +6080,7 @@
       "officialRi": "신안리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "신안리마을회관",
@@ -5966,6 +6113,7 @@
       "officialRi": "은곡리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "은곡리마을회관",
@@ -5998,6 +6146,7 @@
       "officialRi": "학평리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "학평2리경로당",
@@ -6030,6 +6179,7 @@
       "officialRi": "금대리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "금대리",
@@ -6069,6 +6219,7 @@
       "officialRi": "금암리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "금암리",
@@ -6108,6 +6259,7 @@
       "officialRi": "송정리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "송정리",
@@ -6147,6 +6299,7 @@
       "officialRi": "옥수리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "옥수리",
@@ -6186,6 +6339,7 @@
       "officialRi": "장재리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "장재마을회관",
@@ -6225,6 +6379,7 @@
       "officialRi": "토성리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "토성2구마을회관",
@@ -6264,6 +6419,7 @@
       "officialRi": "가좌리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "가좌2리마을회관",
@@ -6299,6 +6455,7 @@
       "officialRi": "화산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "화산리경로당",
@@ -6334,6 +6491,7 @@
       "officialRi": "두릉리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "두릉리마을회관",
@@ -6369,6 +6527,7 @@
       "officialRi": "백현리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "백현리",
@@ -6404,6 +6563,7 @@
       "officialRi": "성산리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "성산1리경로당",
@@ -6439,6 +6599,7 @@
       "officialRi": "성재리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "오창제3산업단지",
@@ -6484,6 +6645,7 @@
       "officialRi": "용두리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": false,
       "verifiedEvidence": [
         {
           "name": "용두리",
@@ -6519,6 +6681,7 @@
       "officialRi": "후기리",
       "covered": true,
       "spatialCovered": true,
+      "routeNearVerifiedEvidence": true,
       "verifiedEvidence": [
         {
           "name": "후기1리 경로당",
@@ -6547,6 +6710,21 @@
     }
   ],
   "summary": {
+    "북이면": {
+      "expected": 52,
+      "covered": 52,
+      "missing": [],
+      "byType": {
+        "general": {
+          "expected": 24,
+          "covered": 24
+        },
+        "recycle": {
+          "expected": 28,
+          "covered": 28
+        }
+      }
+    },
     "오창읍": {
       "expected": 65,
       "covered": 65,
@@ -6574,21 +6752,6 @@
         "recycle": {
           "expected": 25,
           "covered": 25
-        }
-      }
-    },
-    "북이면": {
-      "expected": 52,
-      "covered": 52,
-      "missing": [],
-      "byType": {
-        "general": {
-          "expected": 24,
-          "covered": 24
-        },
-        "recycle": {
-          "expected": 28,
-          "covered": 28
         }
       }
     }
