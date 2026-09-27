@@ -85,9 +85,12 @@ async def main():
                     return texts.some(t=>t.includes(normExpected)) &&
                       (!p.source || /verified|village|facility|senior|hall/.test(String(p.source)));
                   });
-                  const spatialCovered=actualRis.includes(expectedRi);
+                  const routeNearVerifiedEvidence=verifiedEvidence.some(p=>items.some(item=>{
+                    try{return routeItemDistanceKm(item,+p.lat,+p.lng)<=0.08}catch(e){return false}
+                  }));
+                  const spatialCovered=actualRis.includes(expectedRi)||routeNearVerifiedEvidence;
                   const covered=spatialCovered||verifiedEvidence.length>0;
-                  result.expected.push({type,vehicle,day,district,ri:riRaw,officialRi:expectedRi,covered,spatialCovered,
+                  result.expected.push({type,vehicle,day,district,ri:riRaw,officialRi:expectedRi,covered,spatialCovered,routeNearVerifiedEvidence,
                     verifiedEvidence:verifiedEvidence.map(p=>({name:p.name||'',address:p.address||'',jibunAddress:p.jibunAddress||'',term:p.term||'',villageTerm:p.villageTerm||'',source:p.source||'',lat:+p.lat,lng:+p.lng})),
                     actualRis,
                     itemCount:items.length,segmentCount:items.reduce((n,i)=>n+(i.segments||[]).length,0),
