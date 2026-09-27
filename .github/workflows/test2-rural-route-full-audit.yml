@@ -1,0 +1,35 @@
+name: Audit TEST2 rural direct routes
+on:
+  push:
+    paths:
+      - 'tools/test2-rural-route-full-audit.trigger'
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
+      - name: Audit target rural routes
+        run: python tools/test2_rural_route_full_audit.py
+      - name: Commit audit report
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/test2-rural-route-full-audit.trigger
+          test -f tools/test2-rural-route-full-audit.json || echo '{"fatal":"no report"}' > tools/test2-rural-route-full-audit.json
+          git add tools/test2-rural-route-full-audit.json tools/test2-rural-route-full-audit.trigger
+          git commit -m "Record TEST2 rural route full audit" || true
+          git pull --rebase origin main
+          git push
