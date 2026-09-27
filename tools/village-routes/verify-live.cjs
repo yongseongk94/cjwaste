@@ -2,7 +2,7 @@ const fs=require('fs'),assert=require('assert'),puppeteer=require('puppeteer-cor
 (async()=>{
  const browser=await puppeteer.launch({headless:true,executablePath:process.env.CHROME_BIN,args:['--no-sandbox','--disable-dev-shm-usage']});
  try{
-  const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const page=await browser.newPage(),errors=[];page.on('console',m=>{if(m.text().startsWith('HYUNDAI_'))console.log(m.text())});page.on('pageerror',e=>errors.push(e.message));
   await page.goto('https://yongseongk94.github.io/cjwaste/cjwaste-test/?village-verify='+Date.now(),{waitUntil:'domcontentloaded',timeout:120000});
   await page.waitForFunction(()=>typeof geocoder!=='undefined'&&!!geocoder);
   const result=await page.evaluate(async()=>{
@@ -22,6 +22,19 @@ const fs=require('fs'),assert=require('assert'),puppeteer=require('puppeteer-cor
     if(routeItemPolylines(item).length!==1)throw Error('fragmented display');
     if(!finalRouteCoordinateAudit(spec,item).ok)throw Error('live geometry outside assigned districts');
    }
+   const hyundaiSpecs=allDongRouteSpecs().filter(hyundaiRouteAffected);
+   if(hyundaiSpecs.length!==4)throw Error('Hyundai slot count');
+   for(const spec of hyundaiSpecs){
+    const item=await buildDongRouteOverlay(spec);
+    const record=hyundaiRouteBundle.routes.find(r=>r.type===spec.type&&r.day===spec.day);
+    if(!item||item.travelSegments?.length!==1||routeItemPolylines(item).length!==1)throw Error('Hyundai display missing');
+    if(!finalRouteCoordinateAudit(spec,item).ok)throw Error('Hyundai service geometry outside scope');
+    if(item.zoneEvidencePoints.length!==(spec.day==='화'?4:6))throw Error('Hyundai landmark missing');
+    if(item.zoneEvidencePoints.some(p=>['형제빌라','풀하우스','오성빌리지','위너스빌'].includes(p.name)))throw Error('unrelated housing retained');
+    if(record.data.travelMissingTerms.length)throw Error('Hyundai missing local road');
+    for(const p of record.data.travelWaypoints)if(routeItemDistanceKm({segments:item.travelSegments},p.lat,p.lng)>.15)throw Error('Hyundai route misses landmark');
+   }
+   console.log('HYUNDAI_LIVE_PASS',JSON.stringify({routes:hyundaiSpecs.length,landmarks:[4,6],roadRequests}));
    window.fetch=oldFetch;
    if(roadRequests)throw Error('live route recalculation '+roadRequests);
    const first=villageRouteBundle.matches.find(r=>r.key==='오창읍|창리').facilities[0];

@@ -1244,11 +1244,12 @@ function routeScopeCacheSuffix(spec){
   const scope=routeAllowedDistricts(spec).slice().sort();
   return base.join('|')===scope.join('|')?'':`|scope-${routeTextHash(scope.join('|'))}`;
 }
+function hyundaiRouteAffected(spec){return (spec?.provider||routeCompany(spec?.vehicle))==='현대환경'&&routeHousing(spec.vehicle)==='single'&&['화','목'].includes(spec.day)}
 function contractorRouteGeometryKey(spec){
   const provider=spec?.provider||routeCompany(spec?.vehicle);
   if(!provider)return '';
   const rawKey=routeNorm(expandRouteShorthand(spec?.raw||''));
-  return DONG_ROUTE_CACHE_VERSION+'|contract-geometry|'+spec.type+'|'+spec.vehicle+'|'+routeScopeSignature(spec)+'|'+routeTextHash(rawKey);
+  return DONG_ROUTE_CACHE_VERSION+'|contract-geometry|'+spec.type+'|'+spec.vehicle+'|'+routeScopeSignature(spec)+'|'+routeTextHash(rawKey)+(hyundaiRouteAffected(spec)?'|hyundai-landmarks-v1':'');
 }
 function routeGeometryKey(spec){
   return contractorRouteGeometryKey(spec)||(DONG_ROUTE_CACHE_VERSION+'|route-geometry|'+spec?.type+'|'+spec?.vehicle+'|'+spec?.day+'|'+routeScopeSignature(spec)+'|'+routeTextHash(spec?.raw||''));
@@ -1798,6 +1799,7 @@ let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
 let villageRouteBundle=null;
+let hyundaiRouteBundle=null;
 function villageRouteTerm(term){
   const t=String(term||'').trim().replace(/\s*(?:일대|일부|일원)$/,'').trim();
   const m=t.match(/^(?:(?:청주시\s*)?(?:청원구\s*)?(?:내수읍|오창읍|북이면)\s+)?([가-힣]+\d*(?:리|구))$/);
@@ -1858,6 +1860,16 @@ async function loadExternalBundledPrecomputedData(){
         }
         mergedRoutes.push(...bundle.routes);
       }catch(e){console.warn('마을회관 기준 사전계산 노선 로드 실패',e)}
+      // Replace only Hyundai Tuesday/Thursday; stale landmark matches must not return.
+      const hyundaiSpecs=allDongRouteSpecs();
+      for(let i=mergedRoutes.length-1;i>=0;i--){const spec=bundleRouteRecordSpec(mergedRoutes[i],hyundaiSpecs);if(spec&&hyundaiRouteAffected(spec))mergedRoutes.splice(i,1);}
+      try{
+        const response=await fetch('cjwaste-test/data/precomputed-hyundai-v1.json',{cache:'force-cache'});
+        if(!response.ok)throw Error('Hyundai bundle HTTP '+response.status);
+        const bundle=await response.json();
+        if(bundle.hyundaiVersion!=='hyundai-landmarks-v1'||bundle.routes?.length!==4)throw Error('incomplete Hyundai bundle');
+        hyundaiRouteBundle=bundle;mergedRoutes.push(...bundle.routes);
+      }catch(e){console.warn('현대환경 보정노선 로드 실패',e)}
       bundledPrecomputedExternal={...data,routes:mergedRoutes};
       return bundledPrecomputedExternal;
     }catch(e){
@@ -1916,7 +1928,7 @@ function hydrateBundledPrecomputedData(dataOverride=null){
         const spec=bundleRouteRecordSpec(r,specs);
         if(!spec||existingDongRouteOverlay(spec))continue;
         // 화죽리 보강 및 오창 산단 제한 대상은 구형 사전계산 좌표를 복원하지 않고 새로 계산합니다.
-        if((routeNeedsPatchedGeometry(spec)&&r.villageVersion!=='village-facility-v1')||isOchangScienceContractSpec(spec)||(villageSpecAffected(spec)&&r.villageVersion!=='village-facility-v1'))continue;
+        if((hyundaiRouteAffected(spec)&&r.hyundaiVersion!=='hyundai-landmarks-v1')||(routeNeedsPatchedGeometry(spec)&&r.villageVersion!=='village-facility-v1')||isOchangScienceContractSpec(spec)||(villageSpecAffected(spec)&&r.villageVersion!=='village-facility-v1'))continue;
         const bundleRouteData={...(r.data||{})};
         const audit=finalRouteCoordinateAudit(spec,bundleRouteData);
         if(!audit.ok){
@@ -2239,7 +2251,7 @@ function buildLocalScheduleIndex(type,data){
   for(const record of data?.routes||[]){
     if(record.type!==type||!scheduleRouteAllowed(type,record.vehicle,record.day))continue;
     const spec=record.liveSpec||bundleRouteRecordSpec(record,specs);if(!spec||spec.housing==='apartment'||spec.zoneEligible===false)continue;
-    if(!record.liveSpec&&((routeNeedsPatchedGeometry(spec)&&record.villageVersion!=='village-facility-v1')||isOchangScienceContractSpec(spec)||(villageSpecAffected(spec)&&record.villageVersion!=='village-facility-v1')))continue;
+    if(!record.liveSpec&&((hyundaiRouteAffected(spec)&&record.hyundaiVersion!=='hyundai-landmarks-v1')||(routeNeedsPatchedGeometry(spec)&&record.villageVersion!=='village-facility-v1')||isOchangScienceContractSpec(spec)||(villageSpecAffected(spec)&&record.villageVersion!=='village-facility-v1')))continue;
     const route=record.data||{};
     for(const seg of route.segments||[])for(let i=1;i<seg.length;i++)add(seg[i-1],seg[i],spec,'line');
     for(const p of route.zoneEvidencePoints||[])add(p,p,spec,'point',p.term||p.address||'');
@@ -4134,7 +4146,7 @@ function createDongRouteOverlay(spec,data){
     const outsideRoadNote=outsideRoadTerms.length?` · 읍·면 면레이어 처리 도로: ${escapeHtml(outsideRoadTerms.join(', '))}`:'';
     const addressRangeNote=addressRangeTerms.length?` · 도로주소형 구간: ${escapeHtml(addressRangeTerms.join(', '))}`:'';
     const missingRoadNote=missingRoadTerms.length?` · 미표시 도로: ${escapeHtml(missingRoadTerms.join(', '))}`:'';
-    const villageEvidence=zoneEvidencePoints.filter(p=>villageSpecAffected(spec)&&villageRouteTerm(p.term));
+    const villageEvidence=zoneEvidencePoints.filter(p=>hyundaiRouteAffected(spec)||(villageSpecAffected(spec)&&villageRouteTerm(p.term)));
     const villageNote=villageEvidence.length?`<details><summary>시설·버스정류장 기준점 ${villageEvidence.length}곳 · 도로망 기준 추정노선</summary>${villageEvidence.map(p=>`${escapeHtml(p.term)} → ${escapeHtml(p.name)} · ${escapeHtml(p.address)}`).join('<br>')}</details>`:'';
     const shownMissing=connected?(data.travelMissingTerms||[]):missingTerms;
     const missingNote=shownMissing.length?` · 미확인 경유항목: ${escapeHtml(shownMissing.join(', '))}`:'';
@@ -4211,6 +4223,13 @@ async function buildDongRouteOverlay(spec){
   if(dongRouteBuildPromises.has(buildKey))return dongRouteBuildPromises.get(buildKey);
 
   const task=(async()=>{
+    if(hyundaiRouteAffected(spec)){
+      await loadExternalBundledPrecomputedData();
+      const r=hyundaiRouteBundle?.routes?.find(r=>r.type===spec.type&&r.vehicle===spec.vehicle&&r.day===spec.day);
+      if(!r)return null;
+      putCachedDongRoute(spec,r.data).catch(e=>console.warn('현대환경 노선 캐시 저장 실패',e));
+      return createDongRouteOverlay(spec,{...r.data,fromCache:true,fromBundle:true});
+    }
     if(villageSpecAffected(spec)){
       await loadExternalBundledPrecomputedData();
       const record=villagePrecomputedRecord(spec);

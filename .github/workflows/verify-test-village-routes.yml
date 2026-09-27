@@ -13,6 +13,7 @@ jobs:
       - name: Verify route data and existing schedule rules
         run: |
           node tools/test_village_facility_routes.cjs
+          node tools/test_hyundai_routes.cjs
           node tools/test_ochang_boundary_2023.cjs
           node tools/test_reviewed_schedule.cjs
       - name: Wait for this test page deployment
