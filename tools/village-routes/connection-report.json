@@ -2309,14 +2309,13 @@
     "vehicle": "0264",
     "day": "금",
     "type": "recycle",
-    "waypoints": 5,
+    "waypoints": 6,
     "parts": 1,
     "missing": [
       "팔결로",
       "팔결로188",
       "외남새마을경로당",
       "팔결로342번길",
-      "입동리",
       "은곡천일빌리지"
     ],
     "distances": [
@@ -2324,6 +2323,11 @@
         "name": "입상2리경로당",
         "term": "입상리",
         "distanceM": 13
+      },
+      {
+        "name": "입동리 버스정류장",
+        "term": "입동리",
+        "distanceM": 7
       },
       {
         "name": "원통1리경로당",
