@@ -17,10 +17,11 @@ const fs=require('fs'),puppeteer=require('puppeteer-core');
     const found=[];
     for(const r of publicStops.records.filter(r=>r.village===row.village)){
       const p={lat:+r['위도'],lng:+r['경도']};
-      if(!pointInsideRouteDistricts(p,row.districts))continue;
+      const legalDistrict=row.districts.find(d=>{const f=riFeatureMap.get(d+'|'+row.village);return f&&pointInGeoFeature([p.lng,p.lat],f)});
+      if(!legalDistrict&&!pointInsideRouteDistricts(p,row.districts))continue;
       const addressRows=await new Promise(resolve=>geocoder.coord2Address(p.lng,p.lat,(data,status)=>resolve(status===kakao.maps.services.Status.OK?data:[])));
       const address=addressRows[0]?.road_address?.address_name||addressRows[0]?.address?.address_name||('정류장 '+r['모바일단축번호']);
-      found.push({...p,name:r['정류장명']+' 버스정류장',address,district:routePointAnyDistrict(p),source:'village-bus-stop',sourceUrl:publicStops.sourceUrl,stopId:r['정류장번호'],stopNumber:r['모바일단축번호'],dataDate:r['정보수집일']});
+      found.push({...p,name:r['정류장명']+' 버스정류장',address,district:legalDistrict||routePointAnyDistrict(p),source:'village-bus-stop',sourceUrl:publicStops.sourceUrl,stopId:r['정류장번호'],stopNumber:r['모바일단축번호'],dataDate:r['정보수집일']});
     }
     row.busCandidates=found;row.facilities=found.length?[found[0]]:[];
     if(found.length){row.status='matched';row.matchKind='bus-stop';}

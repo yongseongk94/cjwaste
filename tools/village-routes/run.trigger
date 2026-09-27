@@ -1,1 +1,1 @@
-connect-public-bus-fallback-v3-20260925
+2026-09-27 verify bus stop against exact legal village boundary
