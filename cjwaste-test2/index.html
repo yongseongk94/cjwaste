@@ -1280,7 +1280,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v7-no-motorway';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v8-rural-complete';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1881,7 +1881,7 @@ async function ensureVisibleServiceZoneChunks(type){
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
-const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v1'];
+const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v2'];
 function bundledPrecomputedData(){
   try{
     if(bundledPrecomputedExternal)return bundledPrecomputedExternal;
@@ -3404,15 +3404,45 @@ function test2VillageNameFromRouteTerm(term){
   if(/(?:사거리|스토리)$/.test(name))return '';
   return name;
 }
+function test2VillageOfficialName(village){
+  const v=normalizeRi(village);
+  if(v==='빛화산리'||v==='꽃화산리')return '화산리';
+  if(/^장양[123]리$/.test(v))return '장양리';
+  if(/^영하\d+리$/.test(v))return '영하리';
+  return v;
+}
+function test2VillageDistrictCandidates(village,term=''){
+  const official=test2VillageOfficialName(village);
+  const out=[];
+  const explicit=String(term||'').match(/(내수읍|오창읍|북이면)/)?.[1]||'';
+  if(explicit)out.push(explicit);
+  for(const [district,set] of Object.entries(OFFICIAL_RIS||{})){
+    if(set?.has?.(official)&&!out.includes(district))out.push(district);
+  }
+  return out;
+}
 function test2VillageFacilitySearch(term){
   const village=test2VillageNameFromRouteTerm(term);
   if(!village)return Promise.resolve([]);
+  const official=test2VillageOfficialName(village);
   const compact=routeNorm(village);
-  const base=routeNorm(village.replace(/리$/,''));
-  const searches=[
-    {query:'청주시 청원구 '+village+' 마을회관',source:'village-hall',kind:'마을회관'},
-    {query:'청주시 청원구 '+village+' 경로당',source:'village-senior-center',kind:'경로당'}
-  ];
+  const officialCompact=routeNorm(official);
+  const base=routeNorm(official.replace(/리$/,''));
+  const districts=test2VillageDistrictCandidates(village,term);
+  const searches=[];
+  const addSearch=(query,source,kind)=>{if(query&&!searches.some(x=>x.query===query&&x.kind===kind))searches.push({query,source,kind})};
+  // 읍·면을 명시한 검색을 우선합니다. 동명이리·타지역 오탐을 막고 카카오 검색 성공률도 높입니다.
+  for(const district of districts){
+    addSearch('청주시 청원구 '+district+' '+village+' 마을회관','village-hall','마을회관');
+    if(official!==village)addSearch('청주시 청원구 '+district+' '+official+' 마을회관','village-hall','마을회관');
+    addSearch('청주시 청원구 '+district+' '+village+' 경로당','village-senior-center','경로당');
+    if(official!==village)addSearch('청주시 청원구 '+district+' '+official+' 경로당','village-senior-center','경로당');
+  }
+  addSearch('청주시 청원구 '+village+' 마을회관','village-hall','마을회관');
+  if(official!==village)addSearch('청주시 청원구 '+official+' 마을회관','village-hall','마을회관');
+  addSearch('청주시 청원구 '+village+' 경로당','village-senior-center','경로당');
+  if(official!==village)addSearch('청주시 청원구 '+official+' 경로당','village-senior-center','경로당');
+
   return new Promise(resolve=>{
     const run=(idx)=>{
       if(idx>=searches.length){resolve([]);return}
@@ -3422,16 +3452,20 @@ function test2VillageFacilitySearch(term){
           const matched=(rows||[]).filter(r=>{
             const name=routeNorm(r.place_name||'');
             const addr=routeNorm(r.road_address_name||r.address_name||'');
-            const locality=name.includes(compact)||addr.includes(compact)||(base.length>=2&&(name.includes(base)||addr.includes(base)));
+            const locality=name.includes(compact)||addr.includes(compact)||
+              name.includes(officialCompact)||addr.includes(officialCompact)||
+              (base.length>=2&&(name.includes(base)||addr.includes(base)));
+            const districtOk=!districts.length||districts.some(d=>String(r.address_name||r.road_address_name||'').includes(d));
             const facility=spec.kind==='마을회관'?/(마을회관|회관)/.test(String(r.place_name||'')):/경로당/.test(String(r.place_name||''));
-            return locality&&facility&&String(r.address_name||r.road_address_name||'').includes('청원구');
+            return locality&&districtOk&&facility&&String(r.address_name||r.road_address_name||'').includes('청원구');
           }).sort((a,b)=>{
             const score=x=>{
               const n=routeNorm(x.place_name||''),a2=routeNorm(x.road_address_name||x.address_name||'');
               if(n.includes(compact))return 0;
-              if(base.length>=2&&n.includes(base))return 1;
-              if(a2.includes(compact))return 2;
-              return 3;
+              if(n.includes(officialCompact))return 1;
+              if(base.length>=2&&n.includes(base))return 2;
+              if(a2.includes(compact)||a2.includes(officialCompact))return 3;
+              return 4;
             };
             return score(a)-score(b);
           });
