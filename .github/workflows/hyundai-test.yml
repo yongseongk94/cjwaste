@@ -1,0 +1,15 @@
+name: Check Hyundai test routes
+on:
+  push:
+    paths:
+      - 'tools/hyundai-routes/**'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          npm install --no-save --package-lock=false puppeteer-core@24.16.0
+          export CHROME_BIN=$(command -v google-chrome || command -v chromium)
+          node tools/hyundai-routes/diagnose.cjs
