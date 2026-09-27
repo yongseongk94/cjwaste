@@ -9,7 +9,7 @@ const fs=require('fs'),assert=require('assert'),puppeteer=require('puppeteer-cor
    await ensureTestAdminBoundaryLoad();
    const bundle=await loadExternalBundledPrecomputedData();
    const specs=allDongRouteSpecs().filter(villageSpecAffected);
-   if(!villageRouteBundle||villageRouteBundle.routes.length!==specs.length)throw Error('incomplete live village bundle');
+   if(!villageRouteBundle||villageRouteBundle.travelVersion!=='village-connected-v2'||villageRouteBundle.routes.length!==specs.length)throw Error('incomplete live village bundle');
    const bad=specs.filter(s=>bundle.routes.filter(r=>r.type===s.type&&r.vehicle===s.vehicle&&r.day===s.day&&r.scopeSignature===routeScopeSignature(s)).length!==1);
    if(bad.length)throw Error('duplicate or missing merged route');
    let roadRequests=0;const oldFetch=window.fetch;
@@ -18,7 +18,8 @@ const fs=require('fs'),assert=require('assert'),puppeteer=require('puppeteer-cor
    for(const spec of specs){
     const item=await buildDongRouteOverlay(spec);
     if(!item)throw Error('no live route data');
-    if(!item.segments.length&&routeDescriptorsForMap(spec.raw).some(d=>villageFacilityCandidates(d.term,spec).length))throw Error('no live road segments for matched facility');
+    if(item.travelSegments?.length!==1)throw Error('live route disconnected');
+    if(routeItemPolylines(item).length!==1)throw Error('fragmented display');
     if(!finalRouteCoordinateAudit(spec,item).ok)throw Error('live geometry outside assigned districts');
    }
    window.fetch=oldFetch;

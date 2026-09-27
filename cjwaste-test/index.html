@@ -1227,7 +1227,7 @@ const DONG_ROUTE_CACHE_VERSION='v76-layer-visibility-refresh';
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
 function routeCachePatchKey(spec){return `${spec?.type||''}|${spec?.vehicle||''}|${spec?.day||''}`}
 function routeNeedsPatchedGeometry(spec){return ROUTE_CACHE_PATCH_KEYS.has(routeCachePatchKey(spec))}
-function routeCachePatchSuffix(spec){return (routeNeedsPatchedGeometry(spec)?'|hwajuk-v1':'')+(villageSpecAffected(spec)?'|village-facility-v1':'')}
+function routeCachePatchSuffix(spec){return (routeNeedsPatchedGeometry(spec)?'|hwajuk-v1':'')+(villageSpecAffected(spec)?'|village-connected-v2':'')}
 const dongRouteBuildPromises=new Map();
 let dongRoutePreloadStarted=false;
 
@@ -1846,10 +1846,10 @@ async function loadExternalBundledPrecomputedData(){
         }catch(e){console.warn('테스트 추가 근거노선 묶음 로드 실패',extraSrc,e)}
       }
       try{
-        const vr=await fetch('cjwaste-test/data/precomputed-village-facility-routes-v1.json',{cache:'force-cache'});
+        const vr=await fetch('cjwaste-test/data/precomputed-village-connected-v2.json',{cache:'force-cache'});
         if(!vr.ok)throw Error('village routes HTTP '+vr.status);
         const bundle=await vr.json();
-        if(bundle.villageVersion!=='village-facility-v1'||!bundle.routes?.length)throw Error('invalid village routes');
+        if(bundle.villageVersion!=='village-facility-v1'||bundle.travelVersion!=='village-connected-v2'||!bundle.routes?.length)throw Error('invalid village routes');
         villageRouteBundle=bundle;
         const specs=allDongRouteSpecs();
         for(let i=mergedRoutes.length-1;i>=0;i--){
@@ -3961,6 +3961,14 @@ async function serviceAnchorsForEntry(entry,spec){
   return [];
 }
 
+function villageEvidenceDistrict(point,spec){
+  const village=villageRouteTerm(point?.term||'');
+  if(!village)return '';
+  return routeAllowedDistricts(spec).find(d=>{
+    const f=riFeatureMap.get(`${d}|${village}`);
+    return f&&pointInGeoFeature([+point.lng,+point.lat],f);
+  })||'';
+}
 function finalRouteCoordinateAudit(spec,data){
   const allowed=routeAllowedDistricts(spec);
   const invalid=[];
@@ -3970,7 +3978,7 @@ function finalRouteCoordinateAudit(spec,data){
       return false;
     }
     const pt={lat:+p.lat,lng:+p.lng,address:p.address||''};
-    const district=routePointAnyDistrict(pt);
+    const district=(where.startsWith('evidence:')?villageEvidenceDistrict(p,spec):'')||routePointAnyDistrict(pt);
     if(!district||!CHEONGWON_ROUTE_DISTRICTS.has(district)){
       invalid.push({where,reason:'outside-cheongwon',district:district||'',lat:pt.lat,lng:pt.lng});
       return false;
@@ -3995,7 +4003,7 @@ function sanitizeRouteDataToScope(spec,data){
     }
   }
   const zoneEvidencePoints=(data?.zoneEvidencePoints||[]).filter(p=>{
-    const d=routePointAnyDistrict(p);
+    const d=villageEvidenceDistrict(p,spec)||routePointAnyDistrict(p);
     return d&&allowed.includes(d)&&routePointInsideCheongwon(p);
   }).map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:routePointAnyDistrict(p)}));
   return {...data,segments,servicePoints:[],zoneEvidencePoints};
@@ -4063,7 +4071,7 @@ function createDongRouteOverlay(spec,data){
   const roadMatchedCount=Number(data.roadMatchedCount)||0;
   const roadRequestedCount=Number(data.roadRequestedCount)||0;
   const inferredMovementCount=Number(data.inferredMovementCount)||0;
-  const distance=Number(data.distance)||0;
+  const distance=Number(data.travelDistance||data.distance)||0;
   const fromCache=!!data.fromCache;
   const color=DAY_COLORS[spec.day]||'#334155';
 
@@ -4084,7 +4092,8 @@ function createDongRouteOverlay(spec,data){
 
   // ② 근거노선 레이어에서는 읍·면·동 모두 원본 코스에서 계산된 실제 도로구간을 표시합니다.
   // 대행업체의 동일 코스 요일은 같은 Polyline 객체를 공유합니다.
-  const displaySegments=segments;
+  const connected=Array.isArray(data.travelSegments)&&data.travelSegments.length>0;
+  const displaySegments=connected?data.travelSegments:segments;
   const polylines=displaySegments.map(seg=>new kakao.maps.Polyline({
     path:seg.map(p=>new kakao.maps.LatLng(+p.lat,+p.lng)),
     strokeWeight:5,strokeColor:color,strokeOpacity:.9,strokeStyle:'solid'
@@ -4106,6 +4115,7 @@ function createDongRouteOverlay(spec,data){
     const roadHandled=coveredRoadTerms.length+outsideRoadTerms.length;
     const roads=requiredRoadTerms.length?` · 원본 명시도로 ${roadHandled}/${requiredRoadTerms.length} (동선 ${coveredRoadTerms.length}·읍면 ${outsideRoadTerms.length})`:'';
     const evidence=zoneEvidencePoints.length?` · 권역근거점 ${zoneEvidencePoints.length}개`:'';
+    if(connected)return `원본 코스 순서 · 시설/정류장 ${(data.travelWaypoints||[]).length}곳 경유 · 도로망 이동 포함 추정노선`;
     return `원본 ${termsCount}개 항목 · 표시 수거구간 ${segments.length}개${evidence}${inferredMovementCount?` · 내수·북이 차량이동 추정 ${inferredMovementCount}구간`:''}${roads}${api}${outside}${blocked} · 미해결 ${missingTerms.length}개`;
   };
   const mouseover=e=>{
@@ -4118,18 +4128,19 @@ function createDongRouteOverlay(spec,data){
   const mouseout=()=>{normalize();hideZoneTooltip()};
   const click=()=>{
     const original=String(spec.raw||'').replace(/\s+/g,' ').trim();
-    const apiNote=roadRequestedCount?` · 실제 도로망 확인 ${roadMatchedCount}/${roadRequestedCount}항목`:'';
+    const apiNote=!connected&&roadRequestedCount?` · 실제 도로망 확인 ${roadMatchedCount}/${roadRequestedCount}항목`:'';
     const outsideNote=outsideTerms.length?` · 읍·면/다른 권역 처리: ${escapeHtml(outsideTerms.join(', '))}`:'';
     const blockedNote=outOfCheongwonTerms.length?` · 청원구 밖 검색결과 차단: ${escapeHtml(outOfCheongwonTerms.join(', '))}`:'';
     const outsideRoadNote=outsideRoadTerms.length?` · 읍·면 면레이어 처리 도로: ${escapeHtml(outsideRoadTerms.join(', '))}`:'';
     const addressRangeNote=addressRangeTerms.length?` · 도로주소형 구간: ${escapeHtml(addressRangeTerms.join(', '))}`:'';
     const missingRoadNote=missingRoadTerms.length?` · 미표시 도로: ${escapeHtml(missingRoadTerms.join(', '))}`:'';
     const villageEvidence=zoneEvidencePoints.filter(p=>villageSpecAffected(spec)&&villageRouteTerm(p.term));
-    const villageNote=villageEvidence.length?`<details><summary>마을회관·경로당 기준시설 ${villageEvidence.length}곳 · 주소 기준 추정노선</summary>${villageEvidence.map(p=>`${escapeHtml(p.term)} → ${escapeHtml(p.name)} · ${escapeHtml(p.address)}`).join('<br>')}</details>`:'';
-    const missingNote=missingTerms.length?` · 미해결 항목: ${escapeHtml(missingTerms.join(', '))}`:'';
+    const villageNote=villageEvidence.length?`<details><summary>시설·버스정류장 기준점 ${villageEvidence.length}곳 · 도로망 기준 추정노선</summary>${villageEvidence.map(p=>`${escapeHtml(p.term)} → ${escapeHtml(p.name)} · ${escapeHtml(p.address)}`).join('<br>')}</details>`:'';
+    const shownMissing=connected?(data.travelMissingTerms||[]):missingTerms;
+    const missingNote=shownMissing.length?` · 미확인 경유항목: ${escapeHtml(shownMissing.join(', '))}`:'';
     const rangeNote=rangeTerms.length?` · 범위표현: ${escapeHtml(rangeTerms.join(', '))}`:'';
     const secondaryNote=secondaryText?` · ${secondaryKind}: ${escapeHtml(secondaryText)} ※ ${secondaryKind}은 주 수거구간과 별도 작업정보입니다.`:'';
-    updateMapBadge(`${districtLabel} · ${escapeHtml(routeDisplayLabel(spec.vehicle))} · ${spec.day}요일 · 실제 수거구간 ${segments.length}개 · ${inferredMovementCount?`내수·북이 차량이동 추정 ${inferredMovementCount}구간 포함`:`구간 사이 이동선 제외`}${apiNote}${distance?` · 표시구간 약 ${(distance/1000).toFixed(1)}km`:''}${outsideNote}${blockedNote}${rangeNote}${outsideRoadNote}${addressRangeNote}${missingRoadNote}${missingNote}${secondaryNote} · 원본 주 수거코스: ${escapeHtml(original)}${villageNote}`);
+    updateMapBadge(`${districtLabel} · ${escapeHtml(routeDisplayLabel(spec.vehicle))} · ${spec.day}요일 · ${connected?'연결 추정노선 '+displaySegments.length+'개 · 시설 사이 도로 이동 포함':'표시 수거구간 '+segments.length+'개'} · ${connected?'코스표 순서로 연결':inferredMovementCount?`내수·북이 차량이동 추정 ${inferredMovementCount}구간 포함`:`구간 사이 이동선 제외`}${apiNote}${distance?` · 표시구간 약 ${(distance/1000).toFixed(1)}km`:''}${outsideNote}${blockedNote}${rangeNote}${outsideRoadNote}${addressRangeNote}${missingRoadNote}${missingNote}${secondaryNote} · 원본 주 수거코스: ${escapeHtml(original)}${villageNote}`);
   };
 
   polylines.forEach(shape=>{
@@ -4144,6 +4155,7 @@ function createDongRouteOverlay(spec,data){
     missingTerms,outsideTerms,outOfCheongwonTerms,rangeTerms,requiredRoadTerms,coveredRoadTerms,outsideRoadTerms,missingRoadTerms,addressRangeTerms,secondaryText,secondaryKind,
     roadMatchedCount,roadRequestedCount,inferredMovementCount,roadResult:{distance},cached:fromCache,
     segments:segments.map(seg=>seg.map(p=>({lat:+p.lat,lng:+p.lng}))),
+    travelSegments:connected?displaySegments:[],travelWaypoints:data.travelWaypoints||[],travelVersion:data.travelVersion||'',
     servicePoints:[],
     zoneEvidencePoints:zoneEvidencePoints.map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:p.district||routePointAnyDistrict(p)||''})),
     polylines,circles,polyline:polylines[0]||null,
