@@ -2,8 +2,8 @@
   {
     "type": "general",
     "day": "화",
-    "segments": 108,
-    "uniqueRoadM": 9081,
+    "segments": 106,
+    "uniqueRoadM": 8976,
     "coverage": [
       {
         "term": "새동내 인근 주택",
@@ -21,7 +21,7 @@
         "term": "학생수영장 인근 주택",
         "name": "충청북도학생수영장 출입구1",
         "seedDistanceM": 5,
-        "edges": 35
+        "edges": 32
       },
       {
         "term": "세원아파트 인근 주택",
@@ -31,7 +31,6 @@
       }
     ],
     "roads": [
-      "1순환로",
       "1순환로247번길",
       "1순환로270번길",
       "1순환로282번길",
@@ -75,8 +74,8 @@
   {
     "type": "general",
     "day": "목",
-    "segments": 190,
-    "uniqueRoadM": 13912,
+    "segments": 188,
+    "uniqueRoadM": 13807,
     "coverage": [
       {
         "term": "내덕우체국 인근 주택",
@@ -100,7 +99,7 @@
         "term": "학생수영장 인근 주택",
         "name": "충청북도학생수영장 출입구1",
         "seedDistanceM": 5,
-        "edges": 35
+        "edges": 32
       },
       {
         "term": "덕암성당 인근 주택",
@@ -116,7 +115,6 @@
       }
     ],
     "roads": [
-      "1순환로",
       "1순환로247번길",
       "1순환로270번길",
       "1순환로282번길",
@@ -176,8 +174,8 @@
   {
     "type": "recycle",
     "day": "화",
-    "segments": 108,
-    "uniqueRoadM": 9081,
+    "segments": 106,
+    "uniqueRoadM": 8976,
     "coverage": [
       {
         "term": "새동내 인근 주택",
@@ -195,7 +193,7 @@
         "term": "학생수영장 인근 주택",
         "name": "충청북도학생수영장 출입구1",
         "seedDistanceM": 5,
-        "edges": 35
+        "edges": 32
       },
       {
         "term": "세원아파트 인근 주택",
@@ -205,7 +203,6 @@
       }
     ],
     "roads": [
-      "1순환로",
       "1순환로247번길",
       "1순환로270번길",
       "1순환로282번길",
@@ -249,8 +246,8 @@
   {
     "type": "recycle",
     "day": "목",
-    "segments": 190,
-    "uniqueRoadM": 13912,
+    "segments": 188,
+    "uniqueRoadM": 13807,
     "coverage": [
       {
         "term": "내덕우체국 인근 주택",
@@ -274,7 +271,7 @@
         "term": "학생수영장 인근 주택",
         "name": "충청북도학생수영장 출입구1",
         "seedDistanceM": 5,
-        "edges": 35
+        "edges": 32
       },
       {
         "term": "덕암성당 인근 주택",
@@ -290,7 +287,6 @@
       }
     ],
     "roads": [
-      "1순환로",
       "1순환로247번길",
       "1순환로270번길",
       "1순환로282번길",
