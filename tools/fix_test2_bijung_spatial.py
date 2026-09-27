@@ -32,14 +32,13 @@ async def main():
           let road=await fetchRoadFollowingPath(anchors);
           let segments=[];
           for(const seg of (road?.segments||[]))segments.push(...clipRoutePathToDistricts(seg,['내수읍']));
-          const riSegs=segments.filter(seg=>(seg||[]).some(q=>{
-            try{return normalizeRi(localRiAtPoint('내수읍',+q.lat,+q.lng)?.riName||'')==='비중리'}catch(e){return false}
-          }));
-          if(!riSegs.length)return {ok:false,reason:'no-bijung-road-segment',anchors,segmentCount:segments.length,failedLegs:road?.failedLegs||[]};
+          // 행정리 폴리곤이 비중길 일부를 잘못 분류하는 경우가 있어, 검증된 비중리 시설점과의 실제 거리로 채택합니다.
+          const nearSegs=segments.filter(seg=>(seg||[]).some(q=>routePointDistance(base,q)<=0.08));
+          if(!nearSegs.length)return {ok:false,reason:'no-bijung-road-segment-near-verified-facility',anchors,segmentCount:segments.length,failedLegs:road?.failedLegs||[]};
           return {
             ok:true,
             anchors:anchors.map(a=>({name:a.name||'',address:a.address||'',lat:+a.lat,lng:+a.lng})),
-            segments:riSegs.map(seg=>seg.map(q=>({lat:+q.lat,lng:+q.lng}))),
+            segments:nearSegs.map(seg=>seg.map(q=>({lat:+q.lat,lng:+q.lng}))),
             distance:+road?.distance||0,
             failedLegs:road?.failedLegs||[]
           };
