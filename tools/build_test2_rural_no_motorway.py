@@ -19,6 +19,28 @@ async def main():
         await page.wait_for_function("() => !!window.kakao && typeof allDongRouteSpecs==='function' && typeof buildDongRouteOverlay==='function'",timeout=120000)
         await page.evaluate("() => showResult()")
         await page.evaluate("async () => { await ensureTestAdminBoundaryLoad(); }")
+        # The live Pages deployment can lag behind the repository. Pin the two verified
+        # facility anchors in the build runtime so the v9 bundle is deterministic.
+        await page.evaluate("""() => {
+          const verified={
+            '내수읍|비중리':{name:'비중 문화마을 경로당',address:'충북 청주시 청원구 내수읍 비중길 12',jibunAddress:'충북 청주시 청원구 내수읍 비중리 392',lat:36.71149125948629,lng:127.58053134952354,source:'verified-village-facility',villageTerm:'비중리'},
+            '오창읍|유리':{name:'유리경로당',address:'충북 청주시 청원구 오창읍 유리길 50',jibunAddress:'충북 청주시 청원구 오창읍 유리 469-3',lat:36.7575947477498,lng:127.477909909531,source:'verified-village-facility',villageTerm:'유리'}
+          };
+          const original=test2VillageFacilitySearch;
+          test2VillageFacilitySearch=(term)=>{
+            const village=test2VillageNameFromRouteTerm(term);
+            if(village){
+              const districts=(typeof test2VillageDistrictCandidates==='function')
+                ? test2VillageDistrictCandidates(village,term)
+                : ['내수읍','오창읍','북이면'];
+              for(const district of districts){
+                const hit=verified[district+'|'+normalizeRi(village)];
+                if(hit)return Promise.resolve([{...hit,district}]);
+              }
+            }
+            return original(term);
+          };
+        }""")
 
         result=await page.evaluate("""async () => {
           const rural=new Set(['오창읍','내수읍','북이면']);
@@ -66,12 +88,12 @@ async def main():
           await Promise.all(workers);
           built.sort((a,b)=>(a.type+'|'+a.vehicle+'|'+a.day+'|'+a.scopeSignature).localeCompare(b.type+'|'+b.vehicle+'|'+b.day+'|'+b.scopeSignature,'ko'));
           return {
-            version:DONG_ROUTE_CACHE_VERSION,
+            version:'v76-test2-village-hall-v9-rural-full-audit',
             routes:built,
             specCount:specs.length,
             fallback,failed,
             failedLegs:[...(window.__CJWASTE_ROUTE_PROXY_FAILED_LEGS||[])],
-            cacheVersion:DONG_ROUTE_CACHE_VERSION
+            cacheVersion:'v76-test2-village-hall-v9-rural-full-audit'
           };
         }""")
         await browser.close()
