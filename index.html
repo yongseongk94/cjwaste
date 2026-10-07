@@ -797,7 +797,7 @@ function renderOchangScienceContract(type,ctx){
   if(type==='general'){
     document.getElementById('generalDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>수거일:</strong> ${days.join(' · ')}<br><strong>배출시간:</strong> 수거일 전날 일몰 후부터 자정 전<br><span style="color:#6b7280">※ 오창산업단지 제일환경 대행구역(${riLabel})에 적용합니다.</span></div>`;
   }else{
-    document.getElementById('recycleDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>단독주택·상가·50세대 미만 수거일:</strong> ${days.join(' · ')}<br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 자체 위탁계약에 따라 처리합니다.<br><span style="color:#6b7280">※ 오창산업단지 제일환경 대행구역(${riLabel})에 적용합니다.</span></div>`;
+    document.getElementById('recycleDetail').innerHTML=`<div class="verified"><strong>수거방식:</strong> 대행수거<br><strong>수거업체:</strong> ${OCHANG_SCIENCE_OPERATOR.name} · ${OCHANG_SCIENCE_OPERATOR.phone}<br><strong>단독주택·상가·50세대 미만 수거일:</strong> ${days.join(' · ')}<br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 자체 위탁계약에 따라 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span><br><span style="color:#6b7280">※ 오창산업단지 제일환경 대행구역(${riLabel})에 적용합니다.</span></div>`;
   }
 }
 
@@ -1055,7 +1055,7 @@ function renderDirectSchedule(type,matches,ctx){
   const sec=applicableSecondaryDays(matches,ctx);
   if(sec.length) secondary=`<br><strong>${isGeneral?'불연성':'대형폐기물'}:</strong> ${sec.join(' · ')}`;
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
   const inheritNote=ctx?.scheduleInheritedFrom
     ? `<br><span style="color:#6b7280">※ ${escapeHtml(ctx.originalLegalRi||'해당 리')}는 사용자 지정 기준에 따라 ${escapeHtml(ctx.scheduleInheritedFrom)}와 동일한 수거일정을 적용했습니다.</span>`
@@ -1090,7 +1090,7 @@ function renderForcedRiSchedule(type,row,ctx){
   document.getElementById(type+'Badge').textContent=`보정 · ${days.join('·')}`;
   renderDays(type+'Days',days);
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
   document.getElementById(type+'Detail').innerHTML=
     `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(row.vehicle)}호:</strong> ${days.join(' · ')}<br><span style="color:#6b7280">※ ${escapeHtml(row.note||'리 단위 보정 일정을 우선 적용했습니다.')}</span>${apartmentNotice}</div>`;
@@ -1128,7 +1128,7 @@ function renderConfirmedAddressSchedule(type,row,ctx){
   document.getElementById(type+'Badge').textContent=`직영 · ${days.join('·')}`;
   renderDays(type+'Days',days);
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
   document.getElementById(type+'Detail').innerHTML=
     `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br><strong>${escapeHtml(row.vehicle)}호:</strong> ${days.join(' · ')}<br><span style="color:#6b7280">※ 주소별로 확인된 수거일정을 우선 적용했습니다. 주변의 다른 차량·요일 노선이나 추정권역은 이 주소 일정에 합산하지 않습니다.</span>${apartmentNotice}</div>`;
@@ -1650,7 +1650,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
     selectedVehicle.recycle='전체';
     document.getElementById('recycleBadge').textContent='수거정보 미확인';
     renderDays('recycleDays',[]);
-    document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+    document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>현재 확정된 수거자료가 없어 지도 레이어에서도 제외한 지역입니다. 추후 확인자료 반영 전까지 수거요일을 안내하지 않습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span></div>`;
   }else{
     const directRecycleCtx=inheritedScheduleContext(ctx);
     const inheritedRecycle=!!directRecycleCtx.scheduleInheritedFrom;
@@ -1661,7 +1661,7 @@ function renderSchedule(district,legalEmd='',legalRi=''){
       if(!renderRestoredRuralRiSchedule('recycle',ctx)){
         document.getElementById('recycleBadge').textContent='수거노선 확인 중';
         renderDays('recycleDays',[]);
-        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 제공된 코스표 일정과 주소 인접 수거노선을 함께 확인합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>${escapeHtml([legalEmd||district,legalRi].filter(Boolean).join(' '))}</strong><br>오창은 법정리(리) 단위로 묶어 표시합니다. 내수·북이는 제공된 코스표 일정과 주소 인접 수거노선을 함께 확인합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span></div>`;
       }
     }else{
       const directRecycle=findDirectMatches('recycle',directRecycleCtx);
@@ -1672,16 +1672,16 @@ function renderSchedule(district,legalEmd='',legalRi=''){
       }else if(districtHasDirectCoverage('recycle',district)){
         document.getElementById('recycleBadge').textContent='수거일정 확인 중';
         renderDays('recycleDays',[]);
-        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>검색주소의 재활용품 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+        document.getElementById('recycleDetail').innerHTML=`<div class="pending"><strong>검색주소의 재활용품 수거일정을 확인하고 있습니다.</strong><br>실제 표시 수거노선 20m 이내를 먼저 확인하고, 해당하지 않으면 ① 추정 수거권역으로 판정합니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span></div>`;
       }else{
         const recycles=findRegionEntries('recycle',district);
         if(recycles.length){
           document.getElementById('recycleBadge').textContent='요일 확인 필요';renderDays('recycleDays',[]);
           const rows=recycles.map(x=>`<strong>${x.housing==='apartment'?'공동주택':'단독주택'} 대행:</strong> ${x.operator}${x.phone?' · '+x.phone:''}`).join('<br>');
-          document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>제공된 노선표에서 이 주소와 일치하는 세부 코스를 확인하지 못했습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+          document.getElementById('recycleDetail').innerHTML=`<div class="pending">${rows}<br>제공된 노선표에서 이 주소와 일치하는 세부 코스를 확인하지 못했습니다.<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span></div>`;
         }else{
           setPending('recycle','현재 확정된 자료만으로는 이 지역의 재활용쓰레기 수거정보를 안내할 수 없습니다.');
-          document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.</div>`;
+          document.getElementById('recycleDetail').innerHTML += `<div class="pending" style="margin-top:8px"><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span></div>`;
         }
       }
     }
@@ -2831,7 +2831,7 @@ function renderNearbyRouteSchedule(type,matches,ctx){
   const sec=applicableSecondaryDays(matches,ctx);
   const secondary=sec.length?`<br><strong>${isGeneral?'불연성':'대형폐기물'}:</strong> ${sec.join(' · ')}`:'';
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
 
   const ownerLine=company
@@ -2874,7 +2874,7 @@ function renderRestoredRuralRiSchedule(type,ctx){
   renderDays(type+'Days',schedule.days);
   const rows=schedule.days.map(day=>`<strong>${day}요일:</strong> ${(schedule.byDay[day]||[]).map(v=>escapeHtml(v+'호')).join(' · ')}`).join('<br>');
   const inherited=schedule.inheritedFrom?`<br><span style="color:#6b7280">※ 북이면 ${escapeHtml(schedule.originalRi)}는 기존 지정 규칙에 따라 ${escapeHtml(schedule.inheritedFrom)} 일정을 적용합니다.</span>`:'';
-  const apartment=type==='recycle'?'<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.':'';
+  const apartment=type==='recycle'?'<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>':'';
   document.getElementById(type+'Detail').innerHTML=`<div class="verified"><strong>${escapeHtml(schedule.district+' '+schedule.originalRi)}</strong><br><strong>2026년 6월 직영 코스표 기준 수거일:</strong><br>${rows}${inherited}<br><span style="color:#6b7280">※ 주소가 표시 수거노선 20m 이내로 매칭되면 해당 노선의 더 세부적인 결과를 우선 적용합니다.</span>${apartment}</div>`;
   return true;
 }
@@ -2884,7 +2884,7 @@ function renderNoNearbyRouteSchedule(type,district){
   document.getElementById(type+'Badge').textContent='권역 미확정';
   renderDays(type+'Days',[]);
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
   document.getElementById(type+'Detail').innerHTML=
     `<div class="pending"><strong>${escapeHtml(district)} 주소 위치 기준</strong><br>`+
@@ -3083,7 +3083,7 @@ function renderRuralSubzoneNoMatch(type,ctx,candidateCount){
   renderDays(type+'Days',[]);
   const label=type==='general'?'생활':'재활용';
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
   document.getElementById(type+'Detail').innerHTML=
     `<div class="pending"><strong>${escapeHtml([ctx.legalEmd||ctx.district,ctx.legalRi].filter(Boolean).join(' '))}</strong><br>`+
@@ -3101,7 +3101,7 @@ function renderRuralSubzoneMatch(type,ctx,profile,distanceKm){
   const meters=Math.max(0,Math.round(distanceKm*1000));
   const termText=(profile.terms||[]).slice(0,4).map(escapeHtml).join(', ');
   const apartmentNotice=type==='recycle'
-    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.'
+    ? '<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>'
     : '';
   document.getElementById(type+'Detail').innerHTML=
     `<div class="verified"><strong>수거방식:</strong> 청원구 직영<br>`+
@@ -5133,7 +5133,7 @@ function renderServiceZoneSchedule(type,match,ctx,options={}){
   renderDays(type+'Days',days);
   const ratioPct=estimated&&Number.isFinite(+match.neighborRatio)&&+match.neighborRatio>0?Math.round(+match.neighborRatio*100):0;
   const status=match.zoneStatus==='manual'?'관리자가 직접 지정한 수거권역':(estimated?`확정 수거노선 밖 자동 추정권역 (추정)${ratioPct?` · 경계 우세비율 약 ${ratioPct}%`:''}`:(match.routeBuffer?'법정리 안 수거노선 20m 권역':(match.riGrouped?'법정리 전체를 하나로 묶은 수거권역':(match.zoneStatus==='boundary'?'자동 수거권역 경계부 — 담당자 확인 권장':'화면에 표시된 ① 수거권역 내부'))));
-  const place=[ctx?.legalEmd||ctx?.district,ctx?.legalRi].filter(Boolean).join(' ');const apartmentNotice=type==='recycle'?'<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.':'';
+  const place=[ctx?.legalEmd||ctx?.district,ctx?.legalRi].filter(Boolean).join(' ');const apartmentNotice=type==='recycle'?'<br><br><strong>공동주택 안내:</strong> 의무관리대상 공동주택은 재활용품 수거에 대해 자체 위탁계약을 체결하여 처리합니다.<br><span style="color:#6b7280">※ 의무관리대상 기준: 300세대 이상 또는 150세대 이상이면서 승강기·중앙(지역)난방이 설치된 공동주택, 150세대 이상 주상복합 등</span>':'';
   const phone=company?(CONTRACT_OPERATOR_INFO[company]?.phone||''):'';
   const vehicleText=vehicles.length>1?vehicles.map(routeDisplayLabel).join(' / '):(vehicles.length?routeDisplayLabel(vehicles[0]):'담당 확인');
   const body=company
