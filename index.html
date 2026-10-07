@@ -1723,6 +1723,29 @@ function openPlaceSearchResult(a,keyword){
   setLandingStatus('');
   moveTo(lat,lng,address,keyword,a.address_name||'');
 }
+const PLACE_ADDRESS_FALLBACKS={
+  '헤이븐헤어':'충청북도 청주시 청원구 내덕동 295-4'
+};
+function normalizedPlaceKey(s){
+  return String(s||'').toLowerCase().replace(/\s+/g,'').replace(/[()\[\]{}·._-]/g,'');
+}
+function searchKnownBusinessFallback(keyword,onFound,onMiss){
+  const key=normalizedPlaceKey(keyword);
+  const matchedKey=Object.keys(PLACE_ADDRESS_FALLBACKS).find(k=>normalizedPlaceKey(k)===key);
+  if(!matchedKey){onMiss();return}
+  const address=PLACE_ADDRESS_FALLBACKS[matchedKey];
+  geocoder.addressSearch(address,(r,s)=>{
+    if(s===kakao.maps.services.Status.OK&&r.length){
+      const a=r[0];
+      onFound({
+        x:a.x,y:a.y,
+        address_name:a.address_name||address,
+        road_address_name:a.road_address?.address_name||'',
+        place_name:matchedKey
+      });
+    }else onMiss();
+  });
+}
 function searchCheongjuBusiness(keyword,onFound,onMiss){
   const cheongjuCenter=new kakao.maps.LatLng(36.6424341,127.4890319);
   const cheongjuBounds=new kakao.maps.LatLngBounds(
@@ -1738,7 +1761,7 @@ function searchCheongjuBusiness(keyword,onFound,onMiss){
   ];
   let attemptIndex=0;
   const runAttempt=()=>{
-    if(attemptIndex>=attempts.length){onMiss();return}
+    if(attemptIndex>=attempts.length){searchKnownBusinessFallback(keyword,onFound,onMiss);return}
     const attempt=attempts[attemptIndex++];
     let seenPages=0;
     const cb=(rr,ss,pagination)=>{
