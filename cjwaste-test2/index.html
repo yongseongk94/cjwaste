@@ -1280,7 +1280,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-village-hall-v9-rural-full-audit';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-verified-facility-v10';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1881,7 +1881,7 @@ async function ensureVisibleServiceZoneChunks(type){
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
-const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v4'];
+const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v5'];
 function bundledPrecomputedData(){
   try{
     if(bundledPrecomputedExternal)return bundledPrecomputedExternal;
@@ -4382,7 +4382,7 @@ function createDongRouteOverlay(spec,data){
     roadMatchedCount,roadRequestedCount,inferredMovementCount,roadResult:{distance},cached:fromCache,
     segments:segments.map(seg=>seg.map(p=>({lat:+p.lat,lng:+p.lng}))),
     servicePoints:[],
-    zoneEvidencePoints:zoneEvidencePoints.map(p=>({lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:p.district||routePointAnyDistrict(p)||''})),
+    zoneEvidencePoints:zoneEvidencePoints.map(p=>({...p,lat:+p.lat,lng:+p.lng,name:p.name||'',address:p.address||'',term:p.term||'',district:p.district||routePointAnyDistrict(p)||''})),
     polylines,circles,polyline:polylines[0]||null,
     geometryKey,sharedGeometry:false,fromBundle:!!data.fromBundle
   };
@@ -4425,6 +4425,28 @@ async function inferredRuralMovementSegments(anchorMap){
     }
   }
   return {segments,inferredMovementCount};
+}
+
+function test2RouteReplacementPreservesCoverage(existing,candidate){
+  if(!existing)return true;
+  if(!(candidate?.segments||[]).length)return false;
+  const previousMissing=new Set(existing.missingTerms||[]);
+  if((candidate.missingTerms||[]).some(term=>!previousMissing.has(term)))return false;
+  const previousRoadMissing=new Set(existing.missingRoadTerms||[]);
+  if((candidate.missingRoadTerms||[]).some(term=>!previousRoadMissing.has(term)))return false;
+  // Recalculation must retain the old road geometry, not merely one successful segment.
+  // This check runs only during explicit rebuilds, never during normal map selection.
+  for(const segment of existing.segments||[]){
+    for(let i=0;i<segment.length;i++){
+      const point=segment[i];
+      if(routeItemDistanceKm(candidate,+point.lat,+point.lng)>.02)return false;
+      if(i){
+        const prev=segment[i-1];
+        if(routeItemDistanceKm(candidate,(+prev.lat + +point.lat)/2,(+prev.lng + +point.lng)/2)>.02)return false;
+      }
+    }
+  }
+  return true;
 }
 
 async function buildDongRouteOverlay(spec,options={}){
@@ -4606,6 +4628,12 @@ async function buildDongRouteOverlay(spec,options={}){
     const safeData=preAudit.ok?data:sanitizeRouteDataToScope(spec,data);
     const postAudit=finalRouteCoordinateAudit(spec,safeData);
     safeData.finalAuditInvalidCount=preAudit.invalidCount||0;
+
+    // Reject a partial rebuild before it can overwrite IndexedDB or displayed geometry.
+    if(forceRebuild&&existing&&(!postAudit.ok||!test2RouteReplacementPreservesCoverage(existing,safeData))){
+      console.warn('TEST2 재계산 노선 축소 방지: 기존 노선 및 캐시 유지',spec);
+      return existing;
+    }
 
     if(roadRequestedCount===roadMatchedCount && missingRoadTerms.length===0 && postAudit.ok){
       await putCachedDongRoute(spec,safeData);

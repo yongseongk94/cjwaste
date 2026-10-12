@@ -5,7 +5,7 @@ from playwright.async_api import async_playwright
 URL="https://yongseongk94.github.io/cjwaste/cjwaste-test2/"
 BUNDLE=Path("cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json")
 REPORT=Path("tools/test2-rural-v9-patch-report.json")
-VERSION="v76-test2-village-hall-v9-rural-full-audit"
+VERSION="v76-test2-verified-facility-v10"
 TARGETS=[
   ("general","6138","월"),
   ("general","3344","수"),
@@ -23,7 +23,7 @@ async def main():
       page.on("console",lambda m: out["consoleErrors"].append(m.text) if m.type=="error" else None)
       await page.goto(URL+"?v9patch="+str(int(time.time())),wait_until="domcontentloaded",timeout=90000)
       await page.wait_for_function("() => !!window.kakao && typeof map!=='undefined' && !!map && typeof allDongRouteSpecs==='function'",timeout=90000)
-      await page.evaluate("async()=>{await ensureTestAdminBoundaryLoad();}")
+      await page.evaluate("async()=>{await ensureTestAdminBoundaryLoad();await hydrateExternalBundledPrecomputedData();}")
       # Ensure exact anchors even if CDN/browser serves a briefly stale script.
       await page.evaluate("""() => {
         const pins={
@@ -49,7 +49,7 @@ async def main():
           const item=await buildDongRouteOverlay(spec,{forceRebuild:true});
           if(!item)return {ok:false,reason:'no-item',scope:routeScopeSignature(spec)};
           const data={...reusableRouteData(item),inferredMovementCount:0,motorwayExcluded:true};
-          return {ok:true,type:typ,vehicle:veh,day,scopeSignature:routeScopeSignature(spec),districts:routeAllowedDistricts(spec),data,
+          return {ok:true,reusedExisting:!!item.fromBundle,type:typ,vehicle:veh,day,scopeSignature:routeScopeSignature(spec),districts:routeAllowedDistricts(spec),data,
             segs:(data.segments||[]).length,evidence:(data.zoneEvidencePoints||[]).length,
             missing:data.missingTerms||[],missingRoad:data.missingRoadTerms||[]};
         }""",{"typ":typ,"veh":veh,"day":day})
@@ -79,7 +79,7 @@ async def main():
     out["version"]=VERSION
     out["routeCount"]=len(merged)
     out["patchedCount"]=len(patched)
-    out["success"]=len(patched)==len(TARGETS) and all((r.get("segs") or 0)>0 for r in patched)
+    out["success"]=len(patched)==len(TARGETS) and all((r.get("segs") or 0)>0 and not r.get("reusedExisting") and not r.get("missing") and not r.get("missingRoad") for r in patched)
     REPORT.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps(out,ensure_ascii=False,indent=2))
 

@@ -1,0 +1,397 @@
+{
+  "source": "cjwaste-test/data/precomputed-village-facility-routes-v1.json",
+  "sourceSha256": "8d2a636f8f71de821a6d3a88f5c4065a288e29d5b4b9374cecf4a564b9b095d9",
+  "routeCount": 20,
+  "addedServiceSegments": 375,
+  "resolvedTermOccurrences": 84,
+  "remainingTermOccurrences": 43,
+  "baselinePreserved": true,
+  "travelSegmentsImported": false,
+  "routes": [
+    {
+      "type": "general",
+      "vehicle": "3344",
+      "day": "금",
+      "scope": "오창읍",
+      "beforeSegments": 5,
+      "afterSegments": 19,
+      "addedServiceSegments": 14,
+      "resolvedTerms": [
+        "용두리",
+        "백현리",
+        "가좌리"
+      ],
+      "remainingTerms": [
+        "오창농협급식지원센터",
+        "3산업단지"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "3344",
+      "day": "목",
+      "scope": "북이면|오창읍",
+      "beforeSegments": 7,
+      "afterSegments": 21,
+      "addedServiceSegments": 14,
+      "resolvedTerms": [
+        "창리",
+        "북이면 화상리",
+        "내둔리"
+      ],
+      "remainingTerms": [
+        "오창초"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "3344",
+      "day": "수",
+      "scope": "오창읍",
+      "beforeSegments": 5,
+      "afterSegments": 25,
+      "addedServiceSegments": 20,
+      "resolvedTerms": [
+        "기암리",
+        "석우리",
+        "괴정리",
+        "모정리",
+        "학소리",
+        "일신리",
+        "여천리"
+      ],
+      "remainingTerms": [
+        "도암리",
+        "양지리"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "3344",
+      "day": "월",
+      "scope": "오창읍",
+      "beforeSegments": 8,
+      "afterSegments": 28,
+      "addedServiceSegments": 20,
+      "resolvedTerms": [
+        "창리",
+        "여천리",
+        "중신리",
+        "신평리"
+      ],
+      "remainingTerms": [
+        "체리부로",
+        "오창초",
+        "각리"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "3344",
+      "day": "화",
+      "scope": "오창읍",
+      "beforeSegments": 4,
+      "afterSegments": 10,
+      "addedServiceSegments": 6,
+      "resolvedTerms": [
+        "상평리"
+      ],
+      "remainingTerms": [
+        "팔결교"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "6138",
+      "day": "금",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 10,
+      "afterSegments": 43,
+      "addedServiceSegments": 33,
+      "resolvedTerms": [
+        "마산리",
+        "금암리",
+        "금대리",
+        "송정리",
+        "옥수리",
+        "내추리"
+      ],
+      "remainingTerms": [
+        "장재문화마을",
+        "진성레미컨",
+        "장재교차로",
+        "다모아패키지"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "6138",
+      "day": "목",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 3,
+      "afterSegments": 16,
+      "addedServiceSegments": 13,
+      "resolvedTerms": [
+        "서당리",
+        "대길리",
+        "부연리",
+        "선암리",
+        "호명리",
+        "석화리",
+        "현암리"
+      ],
+      "remainingTerms": [
+        "대길2리경로당",
+        "초정구길",
+        "풍정교차로"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "6138",
+      "day": "수",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 10,
+      "afterSegments": 39,
+      "addedServiceSegments": 29,
+      "resolvedTerms": [
+        "마산리",
+        "신대리",
+        "용계리",
+        "석성리",
+        "화상리",
+        "추학리"
+      ],
+      "remainingTerms": [
+        "진성레미컨"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "6138",
+      "day": "월",
+      "scope": "내수읍",
+      "beforeSegments": 11,
+      "afterSegments": 40,
+      "addedServiceSegments": 29,
+      "resolvedTerms": [
+        "마산리",
+        "덕암리",
+        "우산리",
+        "초정리"
+      ],
+      "remainingTerms": [
+        "진성레미컨"
+      ]
+    },
+    {
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 7,
+      "afterSegments": 9,
+      "addedServiceSegments": 2,
+      "resolvedTerms": [],
+      "remainingTerms": [
+        "정도안전산업",
+        "영하1리버스정류장",
+        "세교사거리",
+        "비중사거리",
+        "초정어린이집",
+        "영하보건소"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "금",
+      "scope": "오창읍",
+      "beforeSegments": 6,
+      "afterSegments": 25,
+      "addedServiceSegments": 19,
+      "resolvedTerms": [
+        "용두리",
+        "가좌리",
+        "백현리"
+      ],
+      "remainingTerms": [
+        "3산업단지"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "목",
+      "scope": "북이면|오창읍",
+      "beforeSegments": 8,
+      "afterSegments": 29,
+      "addedServiceSegments": 21,
+      "resolvedTerms": [
+        "창리",
+        "화상리",
+        "내둔리",
+        "신대리",
+        "석성리"
+      ],
+      "remainingTerms": [
+        "창리사거리",
+        "구룡에너지"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "수",
+      "scope": "오창읍",
+      "beforeSegments": 10,
+      "afterSegments": 20,
+      "addedServiceSegments": 10,
+      "resolvedTerms": [
+        "신평리",
+        "중신리",
+        "기암리",
+        "석우리",
+        "괴정리"
+      ],
+      "remainingTerms": [
+        "각리",
+        "오창중"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "scope": "오창읍",
+      "beforeSegments": 5,
+      "afterSegments": 19,
+      "addedServiceSegments": 14,
+      "resolvedTerms": [
+        "창리"
+      ],
+      "remainingTerms": [
+        "해든전원마을",
+        "창리사거리",
+        "오창초",
+        "팔결교",
+        "가곡길181-53",
+        "양지리"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "화",
+      "scope": "오창읍",
+      "beforeSegments": 2,
+      "afterSegments": 16,
+      "addedServiceSegments": 14,
+      "resolvedTerms": [
+        "모정리",
+        "학소리",
+        "일신리",
+        "여천리"
+      ],
+      "remainingTerms": [
+        "증평IC"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "금",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 12,
+      "afterSegments": 42,
+      "addedServiceSegments": 30,
+      "resolvedTerms": [
+        "마산리",
+        "금암리",
+        "금대리",
+        "송정리",
+        "옥수리"
+      ],
+      "remainingTerms": [
+        "다모아패키지"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "목",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 4,
+      "afterSegments": 19,
+      "addedServiceSegments": 15,
+      "resolvedTerms": [
+        "서당리",
+        "대길리",
+        "부연리",
+        "선암리",
+        "호명리",
+        "석화리",
+        "현암리"
+      ],
+      "remainingTerms": [
+        "초정구길"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "수",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 9,
+      "afterSegments": 32,
+      "addedServiceSegments": 23,
+      "resolvedTerms": [
+        "신대리",
+        "내추리",
+        "용계리",
+        "석성리",
+        "화상리",
+        "추학리",
+        "옥수리"
+      ],
+      "remainingTerms": [
+        "내수로"
+      ]
+    },
+    {
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "월",
+      "scope": "내수읍",
+      "beforeSegments": 12,
+      "afterSegments": 46,
+      "addedServiceSegments": 34,
+      "resolvedTerms": [
+        "마산리",
+        "덕암리",
+        "초정리",
+        "우산리"
+      ],
+      "remainingTerms": []
+    },
+    {
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "화",
+      "scope": "내수읍|북이면",
+      "beforeSegments": 10,
+      "afterSegments": 25,
+      "addedServiceSegments": 15,
+      "resolvedTerms": [
+        "우산리",
+        "영하리"
+      ],
+      "remainingTerms": [
+        "풍정교차로",
+        "영하보건소",
+        "수성초",
+        "내수성당"
+      ]
+    }
+  ]
+}

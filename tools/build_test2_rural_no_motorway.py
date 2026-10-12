@@ -18,7 +18,7 @@ async def main():
         await page.goto(URL+"?rural_motorway_rebuild="+str(int(time.time())),wait_until="domcontentloaded",timeout=120000)
         await page.wait_for_function("() => !!window.kakao && typeof allDongRouteSpecs==='function' && typeof buildDongRouteOverlay==='function'",timeout=120000)
         await page.evaluate("() => showResult()")
-        await page.evaluate("async () => { await ensureTestAdminBoundaryLoad(); }")
+        await page.evaluate("async () => { await ensureTestAdminBoundaryLoad(); await hydrateExternalBundledPrecomputedData(); }")
         # The live Pages deployment can lag behind the repository. Pin the two verified
         # facility anchors in the build runtime so the v9 bundle is deterministic.
         await page.evaluate("""() => {
@@ -88,12 +88,12 @@ async def main():
           await Promise.all(workers);
           built.sort((a,b)=>(a.type+'|'+a.vehicle+'|'+a.day+'|'+a.scopeSignature).localeCompare(b.type+'|'+b.vehicle+'|'+b.day+'|'+b.scopeSignature,'ko'));
           return {
-            version:'v76-test2-village-hall-v9-rural-full-audit',
+            version:'v76-test2-verified-facility-v10',
             routes:built,
             specCount:specs.length,
             fallback,failed,
             failedLegs:[...(window.__CJWASTE_ROUTE_PROXY_FAILED_LEGS||[])],
-            cacheVersion:'v76-test2-village-hall-v9-rural-full-audit'
+            cacheVersion:'v76-test2-verified-facility-v10'
           };
         }""")
         await browser.close()
@@ -103,7 +103,8 @@ async def main():
       "specCount":result.get("specCount"),
       "routeCount":len(result.get("routes") or []),
       "expectedRouteCount":20,
-      "complete":len(result.get("routes") or [])==20 and len(result.get("failed") or [])==0,
+      "complete":len(result.get("routes") or [])==20 and not result.get("failed") and not result.get("fallback") and not any(r["data"].get("missingTerms") or r["data"].get("missingRoadTerms") for r in result.get("routes",[])),
+      "remainingTermOccurrences":sum(len(r["data"].get("missingTerms",[])) for r in result.get("routes",[])),
       "fallbackCount":len(result.get("fallback") or []),
       "fallback":result.get("fallback") or [],
       "failedCount":len(result.get("failed") or []),

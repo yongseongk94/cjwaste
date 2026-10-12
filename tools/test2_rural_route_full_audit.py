@@ -1,17 +1,30 @@
-import asyncio, json, time
+import asyncio, json, time, os
+from urllib.parse import urlsplit
 from pathlib import Path
 from playwright.async_api import async_playwright
 
 URL="https://yongseongk94.github.io/cjwaste/cjwaste-test2/"
-OUT=Path("tools/test2-rural-route-full-audit.json")
+OUT=Path(os.environ.get("TEST2_AUDIT_OUT","tools/test2-rural-route-full-audit.json"))
 TARGET={"general":["3344","6138"],"recycle":["6544","0262"]}
 RURAL={"오창읍","내수읍","북이면"}
 
 async def main():
-    out={"url":URL,"startedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"pageErrors":[],"consoleErrors":[],"httpErrors":[]}
+    out={"url":URL,"localAssets":bool(os.environ.get("TEST2_LOCAL")),"startedAt":time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime()),"pageErrors":[],"consoleErrors":[],"httpErrors":[]}
     async with async_playwright() as p:
-        browser=await p.chromium.launch(headless=True)
-        page=await browser.new_page(viewport={"width":1440,"height":1000})
+        proxy_url=os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy')
+        proxy={'server':proxy_url} if proxy_url else None
+        browser=await p.chromium.launch(headless=True,proxy=proxy)
+        page=await browser.new_page(viewport={"width":1440,"height":1000},ignore_https_errors=True)
+        if os.environ.get("TEST2_LOCAL"):
+            root=Path(__file__).resolve().parents[1]
+            async def local_asset(route):
+                path=urlsplit(route.request.url).path.removeprefix("/cjwaste/")
+                asset=root / (path+"index.html" if path.endswith("/") else path)
+                if asset.is_file():
+                    await route.fulfill(path=str(asset))
+                else:
+                    await route.continue_()
+            await page.route("https://yongseongk94.github.io/cjwaste/**",local_asset)
         page.set_default_timeout(120000)
         page.on("pageerror",lambda e: out["pageErrors"].append(str(e)))
         page.on("console",lambda m: out["consoleErrors"].append(m.text) if m.type=="error" else None)
@@ -23,7 +36,7 @@ async def main():
         await page.evaluate("async()=>{await ensureTestAdminBoundaryLoad(); await hydrateExternalBundledPrecomputedData();}")
         await page.wait_for_timeout(1500)
 
-        result=await page.evaluate("""({TARGET,RURAL})=>{
+        result=await page.evaluate(r"""({TARGET,RURAL})=>{
           const rural=new Set(RURAL);
           const officialName=(ri)=>{
             const v=normalizeRi(ri||'');
@@ -76,20 +89,20 @@ async def main():
                   const items=(dongRouteOverlays[type]||[]).filter(i=>
                     String(i.vehicle)===vehicle&&i.day===day&&routeAllowedDistricts(i).includes(district)
                   );
-                  const points=items.flatMap(itemPoints);
+                  const points=items.flatMap(i=>(i.segments||[]).flat());
                   const actualRis=[...new Set(points.map(p=>pointRi(district,p)).filter(Boolean))];
                   const evidence=items.flatMap(i=>i.zoneEvidencePoints||[]);
                   const normExpected=routeNorm(expectedRi);
                   const verifiedEvidence=evidence.filter(p=>{
                     const texts=[p.term,p.villageTerm,p.jibunAddress,p.address,p.name].map(x=>routeNorm(x||'')).filter(Boolean);
                     return texts.some(t=>t.includes(normExpected)) &&
-                      (!p.source || /verified|village|facility|senior|hall/.test(String(p.source)));
+                      (/verified|village|facility|senior|hall/.test(String(p.source||'')));
                   });
                   const routeNearVerifiedEvidence=verifiedEvidence.some(p=>items.some(item=>{
                     try{return routeItemDistanceKm(item,+p.lat,+p.lng)<=0.08}catch(e){return false}
                   }));
                   const spatialCovered=actualRis.includes(expectedRi)||routeNearVerifiedEvidence;
-                  const covered=spatialCovered||verifiedEvidence.length>0;
+                  const covered=spatialCovered;
                   result.expected.push({type,vehicle,day,district,ri:riRaw,officialRi:expectedRi,covered,spatialCovered,routeNearVerifiedEvidence,
                     verifiedEvidence:verifiedEvidence.map(p=>({name:p.name||'',address:p.address||'',jibunAddress:p.jibunAddress||'',term:p.term||'',villageTerm:p.villageTerm||'',source:p.source||'',lat:+p.lat,lng:+p.lng})),
                     actualRis,
@@ -118,6 +131,27 @@ async def main():
           result.totalCovered=result.expected.filter(x=>x.covered).length;
           return result;
         }""",{"TARGET":TARGET,"RURAL":list(RURAL)})
+        out["selectionChecks"]=await page.evaluate("""async()=>{
+          const checks=[];
+          for(const type of ['general','recycle'])for(const vehicle of (type==='general'?['3344','6138']:['6544','0262']))for(const day of ['월','화','수','목','금']){
+            setLayer(type);setVehicle(vehicle);setDay(day);
+            await new Promise(resolve=>setTimeout(resolve,120));
+            const items=(dongRouteOverlays[type]||[]).filter(i=>String(i.vehicle)===vehicle&&i.day===day);
+            const visible=items.flatMap(routeItemPolylines).filter(p=>p.getMap()===map).length;
+            checks.push({type,vehicle,day,visible,ok:visible>0});
+          }
+          for(let i=0;i<12;i++){setLayer(i%2?'general':'recycle');setVehicle(i%2?'3344':'0262');setDay(['월','화','수'][i%3]);}
+          setLayer('recycle');setVehicle('0262');setDay('화');
+          await new Promise(resolve=>setTimeout(resolve,1200));
+          const visible=Object.values(dongRouteOverlays).flat().filter(i=>routeItemPolylines(i).some(p=>p.getMap()===map));
+          checks.push({rapidSwitch:true,ok:visible.length>0&&visible.every(i=>i.type==='recycle'&&String(i.vehicle)==='0262'&&i.day==='화')});
+          return checks;
+        }""")
+        out["coordinateAudits"]=await page.evaluate("""()=>allDongRouteSpecs().filter(s=>['3344','6138','6544','0262'].includes(String(s.vehicle))&&routeAllowedDistricts(s).some(d=>['오창읍','내수읍','북이면'].includes(d))).map(s=>({vehicle:s.vehicle,day:s.day,...finalRouteCoordinateAudit(s,existingDongRouteOverlay(s))}))""")
+        if os.environ.get('TEST2_SCREENSHOT'):
+            await page.evaluate("()=>{const b=new kakao.maps.LatLngBounds();for(const i of dongRouteOverlays.recycle.filter(i=>String(i.vehicle)==='0262'&&i.day==='화'))for(const s of i.segments)for(const p of s)b.extend(new kakao.maps.LatLng(p.lat,p.lng));map.setBounds(b)}")
+            await page.wait_for_timeout(1200)
+            await page.screenshot(path=os.environ['TEST2_SCREENSHOT'])
         await browser.close()
 
     out.update(result)
@@ -125,7 +159,9 @@ async def main():
       "http200":out.get("httpStatus")==200,
       "allTargetDaysPresent":result.get("allTargetDaysPresent",False),
       "allRiCovered":result.get("allRiCovered",False),
-      "noPageErrors":len(out["pageErrors"])==0
+      "noPageErrors":len(out["pageErrors"])==0,
+      "allSelectionsVisible":all(r["ok"] for r in out["selectionChecks"]),
+      "allCoordinatesInScope":len(out["coordinateAudits"])==20 and all(r["ok"] for r in out["coordinateAudits"])
     }
     OUT.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps({"checks":out["checks"],"summary":out.get("summary"),"totalExpected":out.get("totalExpected"),"totalCovered":out.get("totalCovered")},ensure_ascii=False,indent=2))
