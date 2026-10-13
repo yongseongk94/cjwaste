@@ -1,0 +1,1871 @@
+{
+  "beforeRemaining": 41,
+  "afterRemaining": 7,
+  "results": [
+    {
+      "term": "오창농협급식지원센터",
+      "type": "general",
+      "vehicle": "3344",
+      "day": "금",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "오창농협 청원친환경농산물유통센터",
+          "address": "충북 청주시 청원구 오창읍 오창대로 139",
+          "jibunAddress": "충북 청주시 청원구 오창읍 구룡리 134-6",
+          "lat": 36.7196561162154,
+          "lng": 127.414821908659,
+          "sourceUrl": "http://place.map.kakao.com/8026400",
+          "query": "청주시 청원구 오창농협 친환경농산물유통센터",
+          "id": "8026400",
+          "district": "오창읍",
+          "category": "서비스,산업 > 보관,저장",
+          "term": "오창농협급식지원센터",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 36.470060175407895,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "3산업단지",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ]
+    },
+    {
+      "term": "오창초",
+      "type": "general",
+      "vehicle": "3344",
+      "day": "목",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "scopeSignature": "북이면|오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "오창초등학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 238",
+          "lat": 36.7409018302058,
+          "lng": 127.457809896994,
+          "sourceUrl": "http://place.map.kakao.com/8019281",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "8019281",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교",
+          "term": "오창초",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "북이면",
+          "오창읍"
+        ]
+      },
+      "nearestM": 36.161609719887466,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "오창초",
+      "type": "general",
+      "vehicle": "3344",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "오창초등학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 238",
+          "lat": 36.7409018302058,
+          "lng": 127.457809896994,
+          "sourceUrl": "http://place.map.kakao.com/8019281",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "8019281",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교",
+          "term": "오창초",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 36.161609719887466,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "오창초",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "오창초등학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 238",
+          "lat": 36.7409018302058,
+          "lng": 127.457809896994,
+          "sourceUrl": "http://place.map.kakao.com/8019281",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "8019281",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교",
+          "term": "오창초",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 36.161609719887466,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "도암리",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ]
+    },
+    {
+      "term": "체리부로",
+      "type": "general",
+      "vehicle": "3344",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "체리부로 중앙연구소",
+          "address": "충북 청주시 청원구 오창읍 중부로 1555",
+          "jibunAddress": "충북 청주시 청원구 오창읍 화산리 278-8",
+          "lat": 36.7647517868132,
+          "lng": 127.492281750055,
+          "sourceUrl": "http://place.map.kakao.com/17772709",
+          "query": "청주시 청원구 체리부로 오창",
+          "id": "17772709",
+          "district": "오창읍",
+          "category": "서비스,산업 > 식품 > 식품가공,제조",
+          "term": "체리부로",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 30.891039423679498,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "팔결교",
+      "type": "general",
+      "vehicle": "3344",
+      "day": "화",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "팔결교",
+          "address": "충북 청주시 청원구 외평동 968",
+          "jibunAddress": "충북 청주시 청원구 외평동 968",
+          "lat": 36.71246356258794,
+          "lng": 127.47142116715555,
+          "sourceUrl": "http://place.map.kakao.com/10884349",
+          "query": "청주시 청원구 팔결교",
+          "id": "10884349",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교량,다리 > 대교",
+          "term": "팔결교",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 0.1851537586639437,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "팔결교",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "팔결교",
+          "address": "충북 청주시 청원구 외평동 968",
+          "jibunAddress": "충북 청주시 청원구 외평동 968",
+          "lat": 36.71246356258794,
+          "lng": 127.47142116715555,
+          "sourceUrl": "http://place.map.kakao.com/10884349",
+          "query": "청주시 청원구 팔결교",
+          "id": "10884349",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교량,다리 > 대교",
+          "term": "팔결교",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 0.1851537586639437,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "장재문화마을",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ]
+    },
+    {
+      "term": "진성레미컨",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "금",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "진성레미컨",
+          "address": "충북 청주시 청원구 내수읍 원내길 51",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 252-4",
+          "lat": 36.71559275071287,
+          "lng": 127.52225116927181,
+          "sourceUrl": "http://place.map.kakao.com/26080540",
+          "query": "청주시 청원구 진성레미컨",
+          "id": "26080540",
+          "district": "내수읍",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 건설기계",
+          "term": "진성레미컨",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 25.81102957621842,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "진성레미컨",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "수",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "진성레미컨",
+          "address": "충북 청주시 청원구 내수읍 원내길 51",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 252-4",
+          "lat": 36.71559275071287,
+          "lng": 127.52225116927181,
+          "sourceUrl": "http://place.map.kakao.com/26080540",
+          "query": "청주시 청원구 진성레미컨",
+          "id": "26080540",
+          "district": "내수읍",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 건설기계",
+          "term": "진성레미컨",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 25.81102957621842,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "진성레미컨",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "월",
+      "districts": [
+        "내수읍"
+      ],
+      "scopeSignature": "내수읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "진성레미컨",
+          "address": "충북 청주시 청원구 내수읍 원내길 51",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 252-4",
+          "lat": 36.71559275071287,
+          "lng": 127.52225116927181,
+          "sourceUrl": "http://place.map.kakao.com/26080540",
+          "query": "청주시 청원구 진성레미컨",
+          "id": "26080540",
+          "district": "내수읍",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 건설기계",
+          "term": "진성레미컨",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍"
+        ]
+      },
+      "nearestM": 25.81102957621842,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "장재교차로",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "금",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "장재교차로",
+          "address": "충북 청주시 청원구 북이면 장재리 136-14",
+          "jibunAddress": "충북 청주시 청원구 북이면 장재리 136-14",
+          "lat": 36.7453517189834,
+          "lng": 127.555542451056,
+          "sourceUrl": "http://place.map.kakao.com/25626523",
+          "query": "청주시 청원구 장재교차로",
+          "id": "25626523",
+          "district": "북이면",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "장재교차로",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 4.751911992970521,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "다모아패키지",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "금",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "다모아패키지",
+          "address": "충북 청주시 청원구 북이면 충청대로 1257-22",
+          "jibunAddress": "충북 청주시 청원구 북이면 내추리 274",
+          "lat": 36.75361097836592,
+          "lng": 127.54626485173047,
+          "sourceUrl": "http://place.map.kakao.com/892195736",
+          "query": "청주시 청원구 다모아패키지",
+          "id": "892195736",
+          "district": "북이면",
+          "category": "서비스,산업 > 제조업 > 생활용품제조",
+          "term": "다모아패키지",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 35.91250711645657,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "다모아패키지",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "금",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "다모아패키지",
+          "address": "충북 청주시 청원구 북이면 충청대로 1257-22",
+          "jibunAddress": "충북 청주시 청원구 북이면 내추리 274",
+          "lat": 36.75361097836592,
+          "lng": 127.54626485173047,
+          "sourceUrl": "http://place.map.kakao.com/892195736",
+          "query": "청주시 청원구 다모아패키지",
+          "id": "892195736",
+          "district": "북이면",
+          "category": "서비스,산업 > 제조업 > 생활용품제조",
+          "term": "다모아패키지",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 35.91250711645657,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "대길2리경로당",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "목",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "대길2리경로당",
+          "address": "충북 청주시 청원구 북이면 서당대길길 103-3",
+          "sourceUrl": "https://fshh.purpleo.co.kr/view/13641",
+          "lat": 36.7319559545254,
+          "lng": 127.563316004678,
+          "jibunAddress": "충북 청주시 청원구 북이면 대길리 179-13",
+          "district": "북이면",
+          "term": "대길2리경로당",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 10.925430484328768,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "초정구길",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "목",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "road-unresolved",
+      "ok": false,
+      "reason": "not-enough-road-addresses",
+      "anchors": []
+    },
+    {
+      "term": "초정구길",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "목",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "road-unresolved",
+      "ok": false,
+      "reason": "not-enough-road-addresses",
+      "anchors": []
+    },
+    {
+      "term": "풍정교차로",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "목",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "풍정교차로",
+          "address": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "jibunAddress": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "lat": 36.7147398315297,
+          "lng": 127.54957565095216,
+          "sourceUrl": "http://place.map.kakao.com/25625160",
+          "query": "청주시 청원구 풍정교차로",
+          "id": "25625160",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "풍정교차로",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 5.15917590997997,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "풍정교차로",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "풍정교차로",
+          "address": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "jibunAddress": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "lat": 36.7147398315297,
+          "lng": 127.54957565095216,
+          "sourceUrl": "http://place.map.kakao.com/25625160",
+          "query": "청주시 청원구 풍정교차로",
+          "id": "25625160",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "풍정교차로",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 5.15917590997997,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "정도안전산업",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "정도안전산업",
+          "address": "충북 청주시 청원구 내수읍 풍정3길 38",
+          "sourceUrl": "https://www.saramin.co.kr/zf_user/company-info/view/csn/SGFKb0E0ZVdDTGp4VEVHYTNTa2RMQT09/company_nm/%28%EC%A3%BC%29%EC%A0%95%EB%8F%84%EC%95%88%EC%A0%84%EC%82%B0%EC%97%85",
+          "lat": 36.7082857862065,
+          "lng": 127.55501295987,
+          "jibunAddress": "충북 청주시 청원구 내수읍 풍정리 357",
+          "district": "내수읍",
+          "term": "정도안전산업",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 70.59392310125516,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "영하1리버스정류장",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ]
+    },
+    {
+      "term": "세교사거리",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "세교사거리",
+          "address": "충북 청주시 청원구 내수읍 세교리",
+          "jibunAddress": "충북 청주시 청원구 내수읍 세교리",
+          "lat": 36.7132563051942,
+          "lng": 127.566552970122,
+          "sourceUrl": "http://place.map.kakao.com/7950697",
+          "query": "청주시 청원구 세교사거리",
+          "id": "7950697",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "세교사거리",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 0.24870897766591404,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "비중사거리",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "비중사거리",
+          "address": "충북 청주시 청원구 북이면 영하리",
+          "jibunAddress": "충북 청주시 청원구 북이면 영하리",
+          "lat": 36.7168681660264,
+          "lng": 127.576272592937,
+          "sourceUrl": "http://place.map.kakao.com/15139449",
+          "query": "청주시 청원구 비중사거리",
+          "id": "15139449",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "비중사거리",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 0.12883359802134284,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "초정어린이집",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "초정어린이집",
+          "address": "충북 청주시 청원구 내수읍 초정3길 30-9",
+          "jibunAddress": "충북 청주시 청원구 내수읍 초정리 148",
+          "lat": 36.7182037046216,
+          "lng": 127.605657843844,
+          "sourceUrl": "http://place.map.kakao.com/8912767",
+          "query": "청주시 청원구 초정어린이집",
+          "id": "8912767",
+          "district": "내수읍",
+          "category": "교육,학문 > 유아교육 > 어린이집",
+          "term": "초정어린이집",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 25.757738768734857,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "영하보건소",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "영하보건진료소",
+          "address": "충북 청주시 청원구 북이면 영하길 5",
+          "jibunAddress": "충북 청주시 청원구 북이면 영하리 288-1",
+          "lat": 36.7194686525122,
+          "lng": 127.578897825648,
+          "sourceUrl": "http://place.map.kakao.com/9320509",
+          "query": "청주시 청원구 영하보건진료소",
+          "id": "9320509",
+          "district": "내수읍",
+          "category": "의료,건강 > 보건소 > 보건진료소",
+          "term": "영하보건소",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 19.574663441549664,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "영하보건소",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "영하보건진료소",
+          "address": "충북 청주시 청원구 북이면 영하길 5",
+          "jibunAddress": "충북 청주시 청원구 북이면 영하리 288-1",
+          "lat": 36.7194686525122,
+          "lng": 127.578897825648,
+          "sourceUrl": "http://place.map.kakao.com/9320509",
+          "query": "청주시 청원구 영하보건진료소",
+          "id": "9320509",
+          "district": "내수읍",
+          "category": "의료,건강 > 보건소 > 보건진료소",
+          "term": "영하보건소",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 19.574663441549664,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "창리사거리",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "목",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "scopeSignature": "북이면|오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "창리사거리",
+          "address": "충북 청주시 청원구 오창읍 창리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 창리",
+          "lat": 36.737602846988,
+          "lng": 127.45804557501,
+          "sourceUrl": "http://place.map.kakao.com/15141446",
+          "query": "청주시 청원구 창리사거리",
+          "id": "15141446",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "창리사거리",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "북이면",
+          "오창읍"
+        ]
+      },
+      "nearestM": 0.335796728460244,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "창리사거리",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "창리사거리",
+          "address": "충북 청주시 청원구 오창읍 창리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 창리",
+          "lat": 36.737602846988,
+          "lng": 127.45804557501,
+          "sourceUrl": "http://place.map.kakao.com/15141446",
+          "query": "청주시 청원구 창리사거리",
+          "id": "15141446",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교차로",
+          "term": "창리사거리",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 0.335796728460244,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "구룡에너지",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "목",
+      "districts": [
+        "북이면",
+        "오창읍"
+      ],
+      "scopeSignature": "북이면|오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "구룡에너지주유소",
+          "address": "충북 청주시 청원구 오창읍 오창대로 149",
+          "jibunAddress": "충북 청주시 청원구 오창읍 구룡리 132",
+          "lat": 36.71814450028342,
+          "lng": 127.41443097263647,
+          "sourceUrl": "http://place.map.kakao.com/17912505",
+          "query": "청주시 청원구 구룡에너지주유소",
+          "id": "17912505",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 주유,가스 > 주유소 > SK주유소",
+          "term": "구룡에너지",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "북이면",
+          "오창읍"
+        ]
+      },
+      "nearestM": 5.491202027977401,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "각리",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "수",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "lat": 36.69854272961008,
+          "lng": 127.42407254105963,
+          "address": "충북 청주시 청원구 오창읍 각리2길 9-10",
+          "source": "verified-road-address",
+          "sampleNo": 9.01,
+          "name": "각리2길",
+          "term": "각리",
+          "villageTerm": "각리"
+        },
+        {
+          "lat": 36.6983619465465,
+          "lng": 127.42397643010749,
+          "address": "충북 청주시 청원구 오창읍 각리2길 9-11",
+          "source": "verified-road-address",
+          "sampleNo": 9.011,
+          "name": "각리2길",
+          "term": "각리",
+          "villageTerm": "각리"
+        },
+        {
+          "lat": 36.696526909175,
+          "lng": 127.424531116542,
+          "address": "충북 청주시 청원구 오창읍 각리2길 25",
+          "source": "verified-road-address",
+          "sampleNo": 25,
+          "name": "각리2길",
+          "term": "각리",
+          "villageTerm": "각리"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": null,
+      "complete": true,
+      "roadTerm": "각리2길"
+    },
+    {
+      "term": "오창중",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "수",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "오창중학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 619",
+          "jibunAddress": "충북 청주시 청원구 오창읍 창리 151-4",
+          "lat": 36.7353404315821,
+          "lng": 127.461471451165,
+          "sourceUrl": "http://place.map.kakao.com/10618649",
+          "query": "청주시 청원구 오창중학교",
+          "id": "10618649",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 중학교",
+          "term": "오창중",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 26.02626855132791,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "해든전원마을",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "해든전원마을 원본 코스표 주소",
+          "address": "충북 청주시 청원구 오창읍 가곡길 181-53",
+          "sourceUrl": "repository:DIRECT_ROUTES.recycle.0262.월",
+          "lat": 36.7279799359911,
+          "lng": 127.453928571203,
+          "jibunAddress": "충북 청주시 청원구 오창읍 가곡리 276-20",
+          "district": "오창읍",
+          "term": "해든전원마을",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 8.347943073477147,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "가곡길181-53",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "가곡길 181-53",
+          "address": "충북 청주시 청원구 오창읍 가곡길 181-53",
+          "sourceUrl": "repository:DIRECT_ROUTES.recycle.0262.월",
+          "lat": 36.7279799359911,
+          "lng": 127.453928571203,
+          "jibunAddress": "충북 청주시 청원구 오창읍 가곡리 276-20",
+          "district": "오창읍",
+          "term": "가곡길181-53",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 8.347943073477147,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "양지리",
+      "type": "recycle",
+      "vehicle": "0262",
+      "day": "월",
+      "districts": [
+        "오창읍"
+      ],
+      "scopeSignature": "오창읍",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "lat": 36.74054962,
+          "lng": 127.4441546,
+          "name": "양지리 버스정류장",
+          "address": "충북 청주시 청원구 오창읍 양지리 31-4",
+          "district": "오창읍",
+          "source": "verified-source-location",
+          "sourceUrl": "https://www.data.go.kr/data/15067528/fileData.do",
+          "stopId": "CJB284000307",
+          "stopNumber": "3095",
+          "dataDate": "2025-10-31",
+          "term": "양지리",
+          "villageTerm": "양지리"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "오창읍"
+        ]
+      },
+      "nearestM": 7.543870110940188,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "증평IC",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ]
+    },
+    {
+      "term": "내수로",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "수",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "road-unresolved",
+      "ok": false,
+      "reason": "not-enough-road-addresses",
+      "anchors": [
+        {
+          "lat": 36.690108865440145,
+          "lng": 127.49878305608489,
+          "address": "충북 청주시 청원구 내수로 117-27",
+          "source": "road-keyword",
+          "sampleNo": 117.027,
+          "name": "내수로"
+        }
+      ]
+    },
+    {
+      "term": "수성초",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "수성초등학교",
+          "address": "충북 청주시 청원구 내수읍 내수로 601",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 263-1",
+          "lat": 36.7188778557553,
+          "lng": 127.526831308451,
+          "sourceUrl": "http://place.map.kakao.com/7971482",
+          "query": "청주시 청원구 수성초등학교",
+          "id": "7971482",
+          "district": "내수읍",
+          "category": "교육,학문 > 학교 > 초등학교",
+          "term": "수성초",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 71.27705337663184,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "내수성당",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "내수성당",
+          "address": "충북 청주시 청원구 내수읍 내수로 657",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 202-1",
+          "lat": 36.722950558386785,
+          "lng": 127.5313657728127,
+          "sourceUrl": "http://place.map.kakao.com/14527772",
+          "query": "청주시 청원구 내수성당",
+          "id": "14527772",
+          "district": "내수읍",
+          "category": "문화,예술 > 종교 > 천주교 > 성당",
+          "term": "내수성당",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 35.764712084265504,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "3산업단지",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ]
+    },
+    {
+      "term": "도암리",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ]
+    },
+    {
+      "term": "장재문화마을",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ]
+    },
+    {
+      "term": "초정구길",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "목",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "road-unresolved",
+      "ok": false,
+      "reason": "not-enough-road-addresses",
+      "anchors": []
+    },
+    {
+      "term": "초정구길",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "목",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "road-unresolved",
+      "ok": false,
+      "reason": "not-enough-road-addresses",
+      "anchors": []
+    },
+    {
+      "term": "영하1리버스정류장",
+      "type": "general",
+      "vehicle": "6138",
+      "day": "화",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "name": "영하1리 버스정류장",
+          "address": "청주시 청원구 북이면 초정약수로",
+          "lat": 36.72142,
+          "lng": 127.58577,
+          "sourceUrl": "https://busmaps.com/ko/south-korea/public_transit-stop-%EC%98%81%ED%95%981%EB%A6%AC-7614972175860400161",
+          "dataProvider": "KTDB GTFS",
+          "term": "영하1리버스정류장",
+          "villageTerm": "",
+          "source": "verified-source-location"
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": 7.389758402554646,
+      "complete": true,
+      "roadTerm": ""
+    },
+    {
+      "term": "증평IC",
+      "status": "needs-source-location",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ]
+    },
+    {
+      "term": "내수로",
+      "type": "recycle",
+      "vehicle": "6544",
+      "day": "수",
+      "districts": [
+        "내수읍",
+        "북이면"
+      ],
+      "scopeSignature": "내수읍|북이면",
+      "status": "repaired",
+      "ok": true,
+      "evidence": [
+        {
+          "lat": 36.6895468029089,
+          "lng": 127.500659183529,
+          "address": "충북 청주시 청원구 내수읍 내수로 178",
+          "source": "verified-road-address",
+          "sampleNo": 178,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.691369838986326,
+          "lng": 127.50214015708146,
+          "address": "충북 청주시 청원구 내수읍 내수로 193",
+          "source": "verified-road-address",
+          "sampleNo": 193,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.6966952390897,
+          "lng": 127.506233426881,
+          "address": "충북 청주시 청원구 내수읍 내수로 267-4",
+          "source": "verified-road-address",
+          "sampleNo": 267.004,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.696592985409225,
+          "lng": 127.5088702513002,
+          "address": "충북 청주시 청원구 내수읍 내수로 284",
+          "source": "verified-road-address",
+          "sampleNo": 284,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.6971421381798,
+          "lng": 127.509415472975,
+          "address": "충북 청주시 청원구 내수읍 내수로 284-2",
+          "source": "verified-road-address",
+          "sampleNo": 284.002,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.69916873835679,
+          "lng": 127.5068852619727,
+          "address": "충북 청주시 청원구 내수읍 내수로 317-23",
+          "source": "verified-road-address",
+          "sampleNo": 317.023,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7050840729701,
+          "lng": 127.508903843848,
+          "address": "충북 청주시 청원구 내수읍 내수로 385",
+          "source": "verified-road-address",
+          "sampleNo": 385,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7114020458919,
+          "lng": 127.521958670275,
+          "address": "충북 청주시 청원구 내수읍 내수로 520-29",
+          "source": "verified-road-address",
+          "sampleNo": 520.029,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7174704868696,
+          "lng": 127.526588881996,
+          "address": "충북 청주시 청원구 내수읍 내수로 585",
+          "source": "verified-road-address",
+          "sampleNo": 585,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.71825732303868,
+          "lng": 127.52491975251877,
+          "address": "충북 청주시 청원구 내수읍 내수로 593",
+          "source": "verified-road-address",
+          "sampleNo": 593,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7184773238589,
+          "lng": 127.528353088961,
+          "address": "충북 청주시 청원구 내수읍 내수로 612",
+          "source": "verified-road-address",
+          "sampleNo": 612,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7203501189756,
+          "lng": 127.529911735949,
+          "address": "충북 청주시 청원구 내수읍 내수로 635",
+          "source": "verified-road-address",
+          "sampleNo": 635,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.71957662699814,
+          "lng": 127.53018961498876,
+          "address": "충북 청주시 청원구 내수읍 내수로 636",
+          "source": "verified-road-address",
+          "sampleNo": 636,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.71961077515105,
+          "lng": 127.53061519799876,
+          "address": "충북 청주시 청원구 내수읍 내수로 636-1",
+          "source": "verified-road-address",
+          "sampleNo": 636.001,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.722950558386785,
+          "lng": 127.5313657728127,
+          "address": "충북 청주시 청원구 내수읍 내수로 657",
+          "source": "verified-road-address",
+          "sampleNo": 657,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7245096490503,
+          "lng": 127.534548917669,
+          "address": "충북 청주시 청원구 내수읍 내수로 704",
+          "source": "verified-road-address",
+          "sampleNo": 704,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.72554990312729,
+          "lng": 127.5344665734479,
+          "address": "충북 청주시 청원구 내수읍 내수로 707-2",
+          "source": "verified-road-address",
+          "sampleNo": 707.002,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7257740015893,
+          "lng": 127.533926323754,
+          "address": "충북 청주시 청원구 내수읍 내수로 707-7",
+          "source": "verified-road-address",
+          "sampleNo": 707.007,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7260770503785,
+          "lng": 127.535269500418,
+          "address": "충북 청주시 청원구 내수읍 내수로 719",
+          "source": "verified-road-address",
+          "sampleNo": 719,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.72639678856011,
+          "lng": 127.53570494119398,
+          "address": "충북 청주시 청원구 내수읍 내수로 725",
+          "source": "verified-road-address",
+          "sampleNo": 725,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.726323825889324,
+          "lng": 127.5356988372208,
+          "address": "충북 청주시 청원구 내수읍 내수로 725",
+          "source": "verified-road-address",
+          "sampleNo": 725,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.7269310773419,
+          "lng": 127.536320988069,
+          "address": "충북 청주시 청원구 내수읍 내수로 733-1",
+          "source": "verified-road-address",
+          "sampleNo": 733.001,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.72724249481248,
+          "lng": 127.53680227751235,
+          "address": "충북 청주시 청원구 내수읍 내수로 737",
+          "source": "verified-road-address",
+          "sampleNo": 737,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        },
+        {
+          "lat": 36.728142635067,
+          "lng": 127.537816058046,
+          "address": "충북 청주시 청원구 내수읍 내수로 751",
+          "source": "verified-road-address",
+          "sampleNo": 751,
+          "name": "내수로",
+          "term": "내수로",
+          "villageTerm": ""
+        }
+      ],
+      "audit": {
+        "ok": true,
+        "invalidCount": 0,
+        "invalid": [],
+        "allowed": [
+          "내수읍",
+          "북이면"
+        ]
+      },
+      "nearestM": null,
+      "complete": true,
+      "roadTerm": "내수로"
+    }
+  ]
+}

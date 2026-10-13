@@ -88,12 +88,12 @@ async def main():
           await Promise.all(workers);
           built.sort((a,b)=>(a.type+'|'+a.vehicle+'|'+a.day+'|'+a.scopeSignature).localeCompare(b.type+'|'+b.vehicle+'|'+b.day+'|'+b.scopeSignature,'ko'));
           return {
-            version:'v76-test2-verified-facility-v10',
+            version:'v76-test2-verified-facility-v11',
             routes:built,
             specCount:specs.length,
             fallback,failed,
             failedLegs:[...(window.__CJWASTE_ROUTE_PROXY_FAILED_LEGS||[])],
-            cacheVersion:'v76-test2-verified-facility-v10'
+            cacheVersion:'v76-test2-verified-facility-v11'
           };
         }""")
         await browser.close()

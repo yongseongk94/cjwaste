@@ -1280,7 +1280,7 @@ const routePlaceSearchCache=new Map();
 // 이후 같은 브라우저에서는 저장된 도로망 좌표를 즉시 사용하므로 차량/요일 전환이 빠릅니다.
 const DONG_ROUTE_CACHE_DB='cjwaste-dong-route-cache-test2-village-hall';
 const DONG_ROUTE_CACHE_STORE='routes';
-const DONG_ROUTE_CACHE_VERSION='v76-test2-verified-facility-v10';
+const DONG_ROUTE_CACHE_VERSION='v76-test2-verified-facility-v11';
 // 화죽리 경유를 새로 반영한 두 목요일 노선만 기존 번들/캐시 좌표를 재사용하지 않습니다.
 // 전체 노선 캐시는 유지하고, 아래 두 노선은 새 키로 한 번 재계산한 뒤 다시 IndexedDB에서 즉시 복원합니다.
 const ROUTE_CACHE_PATCH_KEYS=new Set(['general|3344|목','recycle|0262|목']);
@@ -1881,7 +1881,7 @@ async function ensureVisibleServiceZoneChunks(type){
 let bundledPrecomputedExternal=null;
 let bundledPrecomputedExternalPromise=null;
 let bundledPrecomputedHydrated=false;
-const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v5'];
+const TEST_EXTRA_ROUTE_BUNDLES=['cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json?v=rural-direct-v6'];
 function bundledPrecomputedData(){
   try{
     if(bundledPrecomputedExternal)return bundledPrecomputedExternal;
@@ -3631,7 +3631,8 @@ async function searchRoadAnchorPlaces(term){
 
     // 2) 도로명 자체를 장소검색하여, 그 도로 주소를 가진 시설/상가 좌표를 최대 3페이지 수집합니다.
     // 건물번호가 '-4', '-15'처럼 부번만 존재하는 짧은 번길도 여기서 빠지지 않게 합니다.
-    const q=`청주시 청원구 ${key}`;
+    const roadDistrictPrefix=['내수로','초정구길'].includes(key)?'청주시 청원구 내수읍':'청주시 청원구';
+    const q=`${roadDistrictPrefix} ${key}`;
     const keywordPages=await Promise.all([1,2,3].map(p=>keywordSearchPagePromise(q,p)));
     for(const rows of keywordPages){
       for(const r of rows){
@@ -3650,7 +3651,7 @@ async function searchRoadAnchorPlaces(term){
       ? [1,5,10,20,30,50,80,120,180,250,350,500]
       : [1,10,25,50,100,150,250,400,650,1000,1500,2200,3000];
 
-    const batches=await Promise.all(numbers.map(n=>addressSearchPromise(`청주시 청원구 ${key} ${n}`)));
+    const batches=await Promise.all(numbers.map(n=>addressSearchPromise(`${roadDistrictPrefix} ${key} ${n}`)));
     batches.forEach((rows,i)=>(rows||[]).forEach(r=>addAddressResult(r,numbers[i])));
 
     // 번호순 정렬이 가능한 좌표는 도로 진행방향대로 정렬합니다.

@@ -1,0 +1,2432 @@
+{
+  "queriedAt": "2026-10-13T06:19:21Z",
+  "rows": [
+    {
+      "term": "오창농협급식지원센터",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "오창농협 청원친환경농산물유통센터",
+          "address": "충북 청주시 청원구 오창읍 오창대로 139",
+          "jibunAddress": "충북 청주시 청원구 오창읍 구룡리 134-6",
+          "lat": 36.7196561162154,
+          "lng": 127.414821908659,
+          "sourceUrl": "http://place.map.kakao.com/8026400",
+          "query": "청주시 청원구 오창농협 친환경농산물유통센터",
+          "id": "8026400",
+          "district": "오창읍",
+          "category": "서비스,산업 > 보관,저장"
+        }
+      ]
+    },
+    {
+      "term": "3산업단지",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "금",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7311879560589,
+          "lng": 127.341896199831,
+          "name": "오창제3산업단지",
+          "address": "충북 청주시 청원구 오창읍 성재리 산 28-1",
+          "term": "3산업단지",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "오창제3산업단지",
+          "address": "충북 청주시 청원구 오창읍 성재리 산 28-1",
+          "jibunAddress": "충북 청주시 청원구 오창읍 성재리 산 28-1",
+          "lat": 36.7311879560589,
+          "lng": 127.341896199831,
+          "sourceUrl": "http://place.map.kakao.com/27455429",
+          "query": "청주시 청원구 오창제3산업단지",
+          "id": "27455429",
+          "district": "오창읍",
+          "category": "서비스,산업 > 산업단지"
+        },
+        {
+          "name": "CU 오창3산업단지점",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 48-2",
+          "jibunAddress": "충북 청주시 청원구 오창읍 성재리 963",
+          "lat": 36.734058343963596,
+          "lng": 127.34769366987749,
+          "sourceUrl": "http://place.map.kakao.com/1549095145",
+          "query": "청주시 청원구 3산업단지",
+          "id": "1549095145",
+          "district": "오창읍",
+          "category": "가정,생활 > 편의점 > CU"
+        },
+        {
+          "name": "아이티켐",
+          "address": "충북 청주시 청원구 오창읍 양청송대길 231",
+          "jibunAddress": "충북 청주시 청원구 오창읍 송대리 343",
+          "lat": 36.7298785864541,
+          "lng": 127.451417087273,
+          "sourceUrl": "http://place.map.kakao.com/9091750",
+          "query": "청주시 청원구 오창제3산업단지",
+          "id": "9091750",
+          "district": "오창읍",
+          "category": "서비스,산업 > 제조업 > 화학"
+        },
+        {
+          "name": "이지푸드",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 51-1",
+          "jibunAddress": "충북 청주시 청원구 오창읍 성재리 950-1",
+          "lat": 36.7341976487757,
+          "lng": 127.350583875308,
+          "sourceUrl": "http://place.map.kakao.com/2052421943",
+          "query": "청주시 청원구 오창제3산업단지",
+          "id": "2052421943",
+          "district": "오창읍",
+          "category": "서비스,산업 > 식품 > 식품가공,제조"
+        },
+        {
+          "name": "하나정밀",
+          "address": "충북 청주시 흥덕구 죽천로79번길 25",
+          "jibunAddress": "충북 청주시 흥덕구 복대동 490",
+          "lat": 36.63897766190607,
+          "lng": 127.43128680951354,
+          "sourceUrl": "http://place.map.kakao.com/10027067",
+          "query": "청주시 청원구 3산업단지",
+          "id": "10027067",
+          "district": "",
+          "category": "서비스,산업 > 제조업 > 산업용품"
+        },
+        {
+          "name": "안성공구",
+          "address": "충북 청주시 흥덕구 진재로86번길 11",
+          "jibunAddress": "충북 청주시 흥덕구 복대동 490",
+          "lat": 36.639099640969405,
+          "lng": 127.43094756381205,
+          "sourceUrl": "http://place.map.kakao.com/12832653",
+          "query": "청주시 청원구 3산업단지",
+          "id": "12832653",
+          "district": "",
+          "category": "서비스,산업 > 제조업 > 산업용품 > 공구,공작기계"
+        },
+        {
+          "name": "동양공구",
+          "address": "충북 청주시 흥덕구 진재로86번길 11",
+          "jibunAddress": "충북 청주시 흥덕구 복대동 490",
+          "lat": 36.639099640969405,
+          "lng": 127.43094756381205,
+          "sourceUrl": "http://place.map.kakao.com/8334514",
+          "query": "청주시 청원구 3산업단지",
+          "id": "8334514",
+          "district": "",
+          "category": "서비스,산업 > 제조업 > 산업용품 > 공구,공작기계"
+        },
+        {
+          "name": "비젼테크",
+          "address": "충북 청주시 흥덕구 죽천로79번길 25",
+          "jibunAddress": "충북 청주시 흥덕구 복대동 490",
+          "lat": 36.6389517991687,
+          "lng": 127.43146110054,
+          "sourceUrl": "http://place.map.kakao.com/1351742832",
+          "query": "청주시 청원구 3산업단지",
+          "id": "1351742832",
+          "district": "",
+          "category": "서비스,산업 > 제조업 > 산업용품"
+        }
+      ]
+    },
+    {
+      "term": "오창초",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "목",
+          "districts": [
+            "북이면",
+            "오창읍"
+          ],
+          "scopeSignature": "북이면|오창읍"
+        },
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7409018302058,
+          "lng": 127.457809896994,
+          "name": "오창초등학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "term": "오창초",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "북이면",
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "오창초등학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 238",
+          "lat": 36.7409018302058,
+          "lng": 127.457809896994,
+          "sourceUrl": "http://place.map.kakao.com/8019281",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "8019281",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "오창초등학교 가좌분교장(폐교)",
+          "address": "충북 청주시 청원구 오창읍 오창가좌1길 15-5",
+          "jibunAddress": "충북 청주시 청원구 오창읍 가좌리 129",
+          "lat": 36.7359696712304,
+          "lng": 127.366593008077,
+          "sourceUrl": "http://place.map.kakao.com/25626700",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "25626700",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 폐교"
+        },
+        {
+          "name": "오창초등학교 강당",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 238",
+          "lat": 36.7407999029883,
+          "lng": 127.457133023735,
+          "sourceUrl": "http://place.map.kakao.com/24480846",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "24480846",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교부속시설"
+        },
+        {
+          "name": "오창초등학교 병설유치원",
+          "address": "충북 청주시 청원구 오창읍 팔결로 690",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 238",
+          "lat": 36.740912643320954,
+          "lng": 127.45780996121385,
+          "sourceUrl": "http://place.map.kakao.com/9283869",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "9283869",
+          "district": "오창읍",
+          "category": "교육,학문 > 유아교육 > 유치원"
+        },
+        {
+          "name": "비봉초등학교",
+          "address": "충북 청주시 청원구 오창읍 구룡2길 10",
+          "jibunAddress": "충북 청주시 청원구 오창읍 구룡리 395",
+          "lat": 36.7126832308435,
+          "lng": 127.41327568146,
+          "sourceUrl": "http://place.map.kakao.com/11472000",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "11472000",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "각리초등학교",
+          "address": "충북 청주시 청원구 오창읍 오창중앙로 47-8",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 646-2",
+          "lat": 36.7066446644035,
+          "lng": 127.423830549445,
+          "sourceUrl": "http://place.map.kakao.com/11472004",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "11472004",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "창리초등학교",
+          "address": "충북 청주시 청원구 오창읍 2산단2로 32",
+          "jibunAddress": "충북 청주시 청원구 오창읍 주성리 566",
+          "lat": 36.736609565126,
+          "lng": 127.449127751876,
+          "sourceUrl": "http://place.map.kakao.com/26520049",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "26520049",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "양청초등학교",
+          "address": "충북 청주시 청원구 오창읍 양청택지3길 15",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 702",
+          "lat": 36.71998508669174,
+          "lng": 127.42527391301908,
+          "sourceUrl": "http://place.map.kakao.com/798334698",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "798334698",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "청원초등학교",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 228",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 639-11",
+          "lat": 36.7095914648145,
+          "lng": 127.431318492946,
+          "sourceUrl": "http://place.map.kakao.com/19197344",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "19197344",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "생명초등학교 병설유치원",
+          "address": "충북 청주시 청원구 오창읍 중부로 772",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 810-9",
+          "lat": 36.7116370729674,
+          "lng": 127.438697794659,
+          "sourceUrl": "http://place.map.kakao.com/314825680",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "314825680",
+          "district": "오창읍",
+          "category": "교육,학문 > 유아교육 > 유치원"
+        },
+        {
+          "name": "청원초등학교 병설유치원",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 228",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 639-11",
+          "lat": 36.70956353066705,
+          "lng": 127.43131833681934,
+          "sourceUrl": "http://place.map.kakao.com/19278491",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "19278491",
+          "district": "오창읍",
+          "category": "교육,학문 > 유아교육 > 유치원"
+        },
+        {
+          "name": "비봉초등학교 행정실",
+          "address": "충북 청주시 청원구 오창읍 구룡2길 10",
+          "jibunAddress": "충북 청주시 청원구 오창읍 구룡리 395",
+          "lat": 36.71246709056,
+          "lng": 127.413238708198,
+          "sourceUrl": "http://place.map.kakao.com/9058956",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "9058956",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교부속시설"
+        },
+        {
+          "name": "양청초등학교 병설유치원",
+          "address": "충북 청주시 청원구 오창읍 양청택지3길 15",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 702",
+          "lat": 36.719564950638,
+          "lng": 127.424829456856,
+          "sourceUrl": "http://place.map.kakao.com/735863827",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "735863827",
+          "district": "오창읍",
+          "category": "교육,학문 > 유아교육 > 유치원"
+        },
+        {
+          "name": "창리초등학교병설유치원",
+          "address": "충북 청주시 청원구 오창읍 2산단2로 32",
+          "jibunAddress": "충북 청주시 청원구 오창읍 주성리 566",
+          "lat": 36.736465074312854,
+          "lng": 127.44873281577358,
+          "sourceUrl": "http://place.map.kakao.com/27514718",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "27514718",
+          "district": "오창읍",
+          "category": "교육,학문 > 유아교육 > 유치원"
+        },
+        {
+          "name": "각리초등학교 교무실",
+          "address": "충북 청주시 청원구 오창읍 오창중앙로 47-8",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 646-2",
+          "lat": 36.7066302308304,
+          "lng": 127.423834946803,
+          "sourceUrl": "http://place.map.kakao.com/11042881",
+          "query": "청주시 청원구 오창초등학교",
+          "id": "11042881",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교부속시설"
+        }
+      ]
+    },
+    {
+      "term": "도암리",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "수",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7353994424502,
+          "lng": 127.471247889715,
+          "name": "도암리",
+          "address": "충북 청주시 청원구 오창읍 도암리",
+          "term": "도암리",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "괴정들",
+          "address": "충북 청주시 청원구 오창읍 도암리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리",
+          "lat": 36.7306383147773,
+          "lng": 127.475687838443,
+          "sourceUrl": "http://place.map.kakao.com/25182332",
+          "query": "청주시 청원구 도암리",
+          "id": "25182332",
+          "district": "오창읍",
+          "category": "여행 > 관광,명소 > 계곡"
+        },
+        {
+          "name": "주경정미소",
+          "address": "충북 청주시 청원구 오창읍 도암길 64",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리 180",
+          "lat": 36.733602530306925,
+          "lng": 127.46944675670431,
+          "sourceUrl": "http://place.map.kakao.com/17204747",
+          "query": "청주시 청원구 도암리",
+          "id": "17204747",
+          "district": "오창읍",
+          "category": "서비스,산업 > 농업"
+        },
+        {
+          "name": "케이푸드트리밍",
+          "address": "충북 청주시 청원구 오창읍 도암길 49-2",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리 189-4",
+          "lat": 36.731907207292224,
+          "lng": 127.46907259155597,
+          "sourceUrl": "http://place.map.kakao.com/1670323011",
+          "query": "청주시 청원구 도암리",
+          "id": "1670323011",
+          "district": "오창읍",
+          "category": "서비스,산업 > 식품 > 식품가공,제조"
+        },
+        {
+          "name": "성암천교",
+          "address": "충북 청주시 청원구 오창읍 도암리 354-1",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리 354-1",
+          "lat": 36.743651008772524,
+          "lng": 127.46665610146157,
+          "sourceUrl": "http://place.map.kakao.com/15155106",
+          "query": "청주시 청원구 도암리",
+          "id": "15155106",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교량,다리"
+        },
+        {
+          "name": "오창JCTRAMP-D교",
+          "address": "충북 청주시 청원구 오창읍 도암리 354-1",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리 354-1",
+          "lat": 36.7437438023967,
+          "lng": 127.466431605345,
+          "sourceUrl": "http://place.map.kakao.com/1914595969",
+          "query": "청주시 청원구 도암리",
+          "id": "1914595969",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교량,다리 > 대교"
+        },
+        {
+          "name": "도말",
+          "address": "충북 청주시 청원구 오창읍 도암리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리",
+          "lat": 36.7318775933321,
+          "lng": 127.470411355795,
+          "sourceUrl": "http://place.map.kakao.com/25211027",
+          "query": "청주시 청원구 도암리",
+          "id": "25211027",
+          "district": "오창읍",
+          "category": "부동산 > 지명"
+        },
+        {
+          "name": "벌터",
+          "address": "충북 청주시 청원구 오창읍 도암리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 도암리",
+          "lat": 36.7354632860828,
+          "lng": 127.470598928919,
+          "sourceUrl": "http://place.map.kakao.com/25250893",
+          "query": "청주시 청원구 도암리",
+          "id": "25250893",
+          "district": "오창읍",
+          "category": "부동산 > 지명"
+        },
+        {
+          "name": "가곡1리마을회관",
+          "address": "충북 청주시 청원구 오창읍 가곡2길 2",
+          "jibunAddress": "충북 청주시 청원구 오창읍 가곡리 353-1",
+          "lat": 36.7224069440638,
+          "lng": 127.458850829076,
+          "sourceUrl": "http://place.map.kakao.com/23987348",
+          "query": "청주시 청원구 도암리 마을회관",
+          "id": "23987348",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 마을회관"
+        },
+        {
+          "name": "괴정리 노인정",
+          "address": "충북 청주시 청원구 오창읍 괴정1길 72",
+          "jibunAddress": "충북 청주시 청원구 오창읍 괴정리 657-6",
+          "lat": 36.7294017801489,
+          "lng": 127.460852660645,
+          "sourceUrl": "http://place.map.kakao.com/1282975810",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "1282975810",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "장대리경로당",
+          "address": "충북 청주시 청원구 오창읍 오창시내1길 49",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 65-2",
+          "lat": 36.7417724989088,
+          "lng": 127.459163142249,
+          "sourceUrl": "http://place.map.kakao.com/23985894",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "23985894",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "장대2리경로당",
+          "address": "충북 청주시 청원구 오창읍 장대길 8-5",
+          "jibunAddress": "충북 청주시 청원구 오창읍 장대리 322-8",
+          "lat": 36.7417237760484,
+          "lng": 127.454012405387,
+          "sourceUrl": "http://place.map.kakao.com/26337007",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "26337007",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "가곡리노인정",
+          "address": "충북 청주시 청원구 오창읍 가곡2길 6",
+          "jibunAddress": "충북 청주시 청원구 오창읍 가곡리 353-1",
+          "lat": 36.7220933800451,
+          "lng": 127.458844486326,
+          "sourceUrl": "http://place.map.kakao.com/23987137",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "23987137",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "유리학구경로당",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 1372-3",
+          "jibunAddress": "충북 청주시 청원구 오창읍 일신리 311",
+          "lat": 36.7531482060706,
+          "lng": 127.47633965368603,
+          "sourceUrl": "http://place.map.kakao.com/9963259",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "9963259",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "화산리경로당",
+          "address": "충북 청주시 청원구 오창읍 빛화산길 23",
+          "jibunAddress": "충북 청주시 청원구 오창읍 화산리 420-1",
+          "lat": 36.7573465325798,
+          "lng": 127.479467702222,
+          "sourceUrl": "http://place.map.kakao.com/25627001",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "25627001",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "원리 경로당",
+          "address": "충북 청주시 청원구 오창읍 원리1길 13",
+          "jibunAddress": "충북 청주시 청원구 오창읍 원리 207-8",
+          "lat": 36.7512507440373,
+          "lng": 127.451062986724,
+          "sourceUrl": "http://place.map.kakao.com/23985927",
+          "query": "청주시 청원구 도암리 노인정",
+          "id": "23985927",
+          "district": "오창읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "청주국제공항 시외버스정류장",
+          "address": "충북 청주시 청원구 내수읍 오창대로 980",
+          "jibunAddress": "충북 청주시 청원구 내수읍 입상리 88",
+          "lat": 36.72205821898387,
+          "lng": 127.49527212498634,
+          "sourceUrl": "http://place.map.kakao.com/20001917",
+          "query": "청주시 청원구 도암리 버스정류장",
+          "id": "20001917",
+          "district": "내수읍",
+          "category": "교통,수송 > 교통시설 > 고속,시외버스정류장"
+        }
+      ]
+    },
+    {
+      "term": "체리부로",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "체리부로 중앙연구소",
+          "address": "충북 청주시 청원구 오창읍 중부로 1555",
+          "jibunAddress": "충북 청주시 청원구 오창읍 화산리 278-8",
+          "lat": 36.7647517868132,
+          "lng": 127.492281750055,
+          "sourceUrl": "http://place.map.kakao.com/17772709",
+          "query": "청주시 청원구 체리부로 오창",
+          "id": "17772709",
+          "district": "오창읍",
+          "category": "서비스,산업 > 식품 > 식품가공,제조"
+        },
+        {
+          "name": "체리부로 충청북도급식센터",
+          "address": "충북 청주시 서원구 청남로 2081",
+          "jibunAddress": "충북 청주시 서원구 수곡동 95-2",
+          "lat": 36.6179223719689,
+          "lng": 127.486374361855,
+          "sourceUrl": "http://place.map.kakao.com/1427330698",
+          "query": "청주시 청원구 체리부로",
+          "id": "1427330698",
+          "district": "",
+          "category": "서비스,산업 > 식품 > 식품서비스업"
+        }
+      ]
+    },
+    {
+      "term": "팔결교",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "3344",
+          "day": "화",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.71246356258794,
+          "lng": 127.47142116715555,
+          "name": "팔결교",
+          "address": "충북 청주시 청원구 외평동 968",
+          "term": "팔결교",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "팔결교",
+          "address": "충북 청주시 청원구 외하동 532",
+          "jibunAddress": "충북 청주시 청원구 외하동 532",
+          "lat": 36.71476205491709,
+          "lng": 127.47533810516954,
+          "sourceUrl": "http://place.map.kakao.com/27481381",
+          "query": "청주시 청원구 팔결교",
+          "id": "27481381",
+          "district": "오근장동",
+          "category": "교통,수송 > 도로시설 > 교량,다리 > 대교"
+        },
+        {
+          "name": "팔결교",
+          "address": "충북 청주시 청원구 외평동 968",
+          "jibunAddress": "충북 청주시 청원구 외평동 968",
+          "lat": 36.71246356258794,
+          "lng": 127.47142116715555,
+          "sourceUrl": "http://place.map.kakao.com/10884349",
+          "query": "청주시 청원구 팔결교",
+          "id": "10884349",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교량,다리 > 대교"
+        },
+        {
+          "name": "팔결교삼거리",
+          "address": "충북 청주시 청원구 외하동",
+          "jibunAddress": "충북 청주시 청원구 외하동",
+          "lat": 36.7127389267476,
+          "lng": 127.476495248627,
+          "sourceUrl": "http://place.map.kakao.com/10888096",
+          "query": "청주시 청원구 팔결교",
+          "id": "10888096",
+          "district": "오근장동",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        },
+        {
+          "name": "외하동 팔결교 화장실",
+          "address": "충북 청주시 청원구 외하동 439-1",
+          "jibunAddress": "충북 청주시 청원구 외하동 439-1",
+          "lat": 36.71232218119674,
+          "lng": 127.47570137630909,
+          "sourceUrl": "http://place.map.kakao.com/1338120715",
+          "query": "청주시 청원구 팔결교",
+          "id": "1338120715",
+          "district": "오근장동",
+          "category": "가정,생활 > 화장실"
+        }
+      ]
+    },
+    {
+      "term": "장재문화마을",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "북이문화마을노인정",
+          "address": "충북 청주시 청원구 북이면 내추길 61-2",
+          "jibunAddress": "충북 청주시 청원구 북이면 내추리 348",
+          "lat": 36.7612836937867,
+          "lng": 127.546115431711,
+          "sourceUrl": "http://place.map.kakao.com/1002602143",
+          "query": "청주시 청원구 장재리 문화마을",
+          "id": "1002602143",
+          "district": "북이면",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        }
+      ]
+    },
+    {
+      "term": "진성레미컨",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "수",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        },
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "월",
+          "districts": [
+            "내수읍"
+          ],
+          "scopeSignature": "내수읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.71559275071287,
+          "lng": 127.52225116927181,
+          "name": "진성레미컨",
+          "address": "충북 청주시 청원구 내수읍 원내길 51",
+          "term": "진성레미컨",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "진성레미컨",
+          "address": "충북 청주시 청원구 내수읍 원내길 51",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 252-4",
+          "lat": 36.71559275071287,
+          "lng": 127.52225116927181,
+          "sourceUrl": "http://place.map.kakao.com/26080540",
+          "query": "청주시 청원구 진성레미컨",
+          "id": "26080540",
+          "district": "내수읍",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 건설기계"
+        }
+      ]
+    },
+    {
+      "term": "장재교차로",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7453517189834,
+          "lng": 127.555542451056,
+          "name": "장재교차로",
+          "address": "충북 청주시 청원구 북이면 장재리 136-14",
+          "term": "장재교차로",
+          "district": "북이면"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "장재교차로",
+          "address": "충북 청주시 청원구 북이면 장재리 136-14",
+          "jibunAddress": "충북 청주시 청원구 북이면 장재리 136-14",
+          "lat": 36.7453517189834,
+          "lng": 127.555542451056,
+          "sourceUrl": "http://place.map.kakao.com/25626523",
+          "query": "청주시 청원구 장재교차로",
+          "id": "25626523",
+          "district": "북이면",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        }
+      ]
+    },
+    {
+      "term": "다모아패키지",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "금",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.75361097836592,
+          "lng": 127.54626485173047,
+          "name": "다모아패키지",
+          "address": "충북 청주시 청원구 북이면 충청대로 1257-22",
+          "term": "다모아패키지",
+          "district": "북이면"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "다모아패키지",
+          "address": "충북 청주시 청원구 북이면 충청대로 1257-22",
+          "jibunAddress": "충북 청주시 청원구 북이면 내추리 274",
+          "lat": 36.75361097836592,
+          "lng": 127.54626485173047,
+          "sourceUrl": "http://place.map.kakao.com/892195736",
+          "query": "청주시 청원구 다모아패키지",
+          "id": "892195736",
+          "district": "북이면",
+          "category": "서비스,산업 > 제조업 > 생활용품제조"
+        }
+      ]
+    },
+    {
+      "term": "대길2리경로당",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "부연1구경로회관",
+          "address": "충북 청주시 청원구 북이면 부연리 355-1",
+          "jibunAddress": "충북 청주시 청원구 북이면 부연리 355-1",
+          "lat": 36.7389900875774,
+          "lng": 127.568475206685,
+          "sourceUrl": "http://place.map.kakao.com/23985941",
+          "query": "청주시 청원구 대길리 경로당",
+          "id": "23985941",
+          "district": "북이면",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "석화리노인회관",
+          "address": "충북 청주시 청원구 북이면 북이석화길 40-18",
+          "jibunAddress": "충북 청주시 청원구 북이면 석화리 117",
+          "lat": 36.7179557274951,
+          "lng": 127.567473974275,
+          "sourceUrl": "http://place.map.kakao.com/8377247",
+          "query": "청주시 청원구 대길리 경로당",
+          "id": "8377247",
+          "district": "북이면",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "학평2리경로당",
+          "address": "충북 청주시 청원구 내수읍 학평길 53",
+          "jibunAddress": "충북 청주시 청원구 내수읍 학평리 211-2",
+          "lat": 36.7209083481908,
+          "lng": 127.544588091184,
+          "sourceUrl": "http://place.map.kakao.com/1094338957",
+          "query": "청주시 청원구 대길리 경로당",
+          "id": "1094338957",
+          "district": "내수읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "비중 문화마을 경로당",
+          "address": "충북 청주시 청원구 내수읍 비중길 12",
+          "jibunAddress": "충북 청주시 청원구 내수읍 비중리 392",
+          "lat": 36.71149125948629,
+          "lng": 127.58053134952354,
+          "sourceUrl": "http://place.map.kakao.com/24066151",
+          "query": "청주시 청원구 대길리 경로당",
+          "id": "24066151",
+          "district": "내수읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        },
+        {
+          "name": "대한노인회 내수분회",
+          "address": "충북 청주시 청원구 내수읍 마산3길 55",
+          "jibunAddress": "충북 청주시 청원구 내수읍 마산리 197-75",
+          "lat": 36.7242300124645,
+          "lng": 127.535616010939,
+          "sourceUrl": "http://place.map.kakao.com/175841306",
+          "query": "청주시 청원구 대길리 경로당",
+          "id": "175841306",
+          "district": "내수읍",
+          "category": "가정,생활 > 친목 > 노인정,노인회"
+        }
+      ]
+    },
+    {
+      "term": "초정구길",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "목",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": []
+    },
+    {
+      "term": "풍정교차로",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "목",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7147398315297,
+          "lng": 127.54957565095216,
+          "name": "풍정교차로",
+          "address": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "term": "풍정교차로",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "풍정교차로",
+          "address": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "jibunAddress": "충북 청주시 청원구 내수읍 학평리 80-14",
+          "lat": 36.7147398315297,
+          "lng": 127.54957565095216,
+          "sourceUrl": "http://place.map.kakao.com/25625160",
+          "query": "청주시 청원구 풍정교차로",
+          "id": "25625160",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        }
+      ]
+    },
+    {
+      "term": "정도안전산업",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": []
+    },
+    {
+      "term": "영하1리버스정류장",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "영하1리사거리",
+          "address": "충북 청주시 청원구 내수읍 우산리",
+          "jibunAddress": "충북 청주시 청원구 내수읍 우산리",
+          "lat": 36.7213383490086,
+          "lng": 127.585735474877,
+          "sourceUrl": "http://place.map.kakao.com/20058166",
+          "query": "청주시 청원구 영하1리",
+          "id": "20058166",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        }
+      ]
+    },
+    {
+      "term": "세교사거리",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7132563051942,
+          "lng": 127.566552970122,
+          "name": "세교사거리",
+          "address": "충북 청주시 청원구 내수읍 세교리",
+          "term": "세교사거리",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "세교사거리",
+          "address": "충북 청주시 청원구 내수읍 세교리",
+          "jibunAddress": "충북 청주시 청원구 내수읍 세교리",
+          "lat": 36.7132563051942,
+          "lng": 127.566552970122,
+          "sourceUrl": "http://place.map.kakao.com/7950697",
+          "query": "청주시 청원구 세교사거리",
+          "id": "7950697",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        }
+      ]
+    },
+    {
+      "term": "비중사거리",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7168681660264,
+          "lng": 127.576272592937,
+          "name": "비중사거리",
+          "address": "충북 청주시 청원구 북이면 영하리",
+          "term": "비중사거리",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "비중사거리",
+          "address": "충북 청주시 청원구 북이면 영하리",
+          "jibunAddress": "충북 청주시 청원구 북이면 영하리",
+          "lat": 36.7168681660264,
+          "lng": 127.576272592937,
+          "sourceUrl": "http://place.map.kakao.com/15139449",
+          "query": "청주시 청원구 비중사거리",
+          "id": "15139449",
+          "district": "내수읍",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        }
+      ]
+    },
+    {
+      "term": "초정어린이집",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7182037046216,
+          "lng": 127.605657843844,
+          "name": "초정어린이집",
+          "address": "충북 청주시 청원구 내수읍 초정3길 30-9",
+          "term": "초정어린이집",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "초정어린이집",
+          "address": "충북 청주시 청원구 내수읍 초정3길 30-9",
+          "jibunAddress": "충북 청주시 청원구 내수읍 초정리 148",
+          "lat": 36.7182037046216,
+          "lng": 127.605657843844,
+          "sourceUrl": "http://place.map.kakao.com/8912767",
+          "query": "청주시 청원구 초정어린이집",
+          "id": "8912767",
+          "district": "내수읍",
+          "category": "교육,학문 > 유아교육 > 어린이집"
+        }
+      ]
+    },
+    {
+      "term": "영하보건소",
+      "uses": [
+        {
+          "type": "general",
+          "vehicle": "6138",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7194686525122,
+          "lng": 127.578897825648,
+          "name": "영하보건진료소",
+          "address": "충북 청주시 청원구 북이면 영하길 5",
+          "term": "영하보건소",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "영하보건진료소",
+          "address": "충북 청주시 청원구 북이면 영하길 5",
+          "jibunAddress": "충북 청주시 청원구 북이면 영하리 288-1",
+          "lat": 36.7194686525122,
+          "lng": 127.578897825648,
+          "sourceUrl": "http://place.map.kakao.com/9320509",
+          "query": "청주시 청원구 영하보건진료소",
+          "id": "9320509",
+          "district": "내수읍",
+          "category": "의료,건강 > 보건소 > 보건진료소"
+        }
+      ]
+    },
+    {
+      "term": "창리사거리",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "districts": [
+            "북이면",
+            "오창읍"
+          ],
+          "scopeSignature": "북이면|오창읍"
+        },
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.737602846988,
+          "lng": 127.45804557501,
+          "name": "창리사거리",
+          "address": "충북 청주시 청원구 오창읍 창리",
+          "term": "창리사거리",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "북이면",
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "창리사거리",
+          "address": "충북 청주시 청원구 오창읍 창리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 창리",
+          "lat": 36.737602846988,
+          "lng": 127.45804557501,
+          "sourceUrl": "http://place.map.kakao.com/15141446",
+          "query": "청주시 청원구 창리사거리",
+          "id": "15141446",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        },
+        {
+          "name": "오창사거리",
+          "address": "충북 청주시 청원구 오창읍 창리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 창리",
+          "lat": 36.7406880475746,
+          "lng": 127.452447755909,
+          "sourceUrl": "http://place.map.kakao.com/15138448",
+          "query": "청주시 청원구 창리사거리",
+          "id": "15138448",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교차로"
+        }
+      ]
+    },
+    {
+      "term": "구룡에너지",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "목",
+          "districts": [
+            "북이면",
+            "오창읍"
+          ],
+          "scopeSignature": "북이면|오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.71814450028342,
+          "lng": 127.41443097263647,
+          "name": "구룡에너지주유소",
+          "address": "충북 청주시 청원구 오창읍 오창대로 149",
+          "term": "구룡에너지",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "북이면",
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "구룡에너지주유소",
+          "address": "충북 청주시 청원구 오창읍 오창대로 149",
+          "jibunAddress": "충북 청주시 청원구 오창읍 구룡리 132",
+          "lat": 36.71814450028342,
+          "lng": 127.41443097263647,
+          "sourceUrl": "http://place.map.kakao.com/17912505",
+          "query": "청주시 청원구 구룡에너지주유소",
+          "id": "17912505",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 주유,가스 > 주유소 > SK주유소"
+        }
+      ]
+    },
+    {
+      "term": "각리",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7052908521151,
+          "lng": 127.426446367618,
+          "name": "각리",
+          "address": "충북 청주시 청원구 오창읍 각리",
+          "term": "각리",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "이마트에브리데이 충북오창점",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 202-3",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 640-5",
+          "lat": 36.7072277903015,
+          "lng": 127.429084864171,
+          "sourceUrl": "http://place.map.kakao.com/25850710",
+          "query": "청주시 청원구 각리",
+          "id": "25850710",
+          "district": "오창읍",
+          "category": "가정,생활 > 슈퍼마켓 > 대형슈퍼 > 이마트에브리데이"
+        },
+        {
+          "name": "기아오토큐 오창점",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 68-6",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 658-2",
+          "lat": 36.69739668439183,
+          "lng": 127.41995384545606,
+          "sourceUrl": "http://place.map.kakao.com/12417733",
+          "query": "청주시 청원구 각리",
+          "id": "12417733",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차정비 > 기아서비스센터 > 기아오토큐"
+        },
+        {
+          "name": "현대자동차블루핸즈 오창남부점",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 78-15",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 659-2",
+          "lat": 36.6973928277141,
+          "lng": 127.421555142942,
+          "sourceUrl": "http://place.map.kakao.com/1194589677",
+          "query": "청주시 청원구 각리",
+          "id": "1194589677",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차정비 > 현대자동차정비센터 > 블루핸즈"
+        },
+        {
+          "name": "GS칼텍스 바이오주유소",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 202-12",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 644-1",
+          "lat": 36.7064687158235,
+          "lng": 127.42917689117235,
+          "sourceUrl": "http://place.map.kakao.com/21850716",
+          "query": "청주시 청원구 각리",
+          "id": "21850716",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 주유,가스 > 주유소 > GS칼텍스"
+        },
+        {
+          "name": "NH농협은행 오창벤처프라자 출장소",
+          "address": "충북 청주시 청원구 오창읍 각리1길 7",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 641-1",
+          "lat": 36.70656636970851,
+          "lng": 127.43107999461682,
+          "sourceUrl": "http://place.map.kakao.com/8219748",
+          "query": "청주시 청원구 각리",
+          "id": "8219748",
+          "district": "오창읍",
+          "category": "금융,보험 > 금융서비스 > 은행 > NH농협은행"
+        },
+        {
+          "name": "컴인워시 청주오창점A",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 76",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 655-1",
+          "lat": 36.6982006916642,
+          "lng": 127.420660971085,
+          "sourceUrl": "http://place.map.kakao.com/1679363795",
+          "query": "청주시 청원구 각리",
+          "id": "1679363795",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 세차장 > 컴인워시"
+        },
+        {
+          "name": "오창IC만남셀프주유소",
+          "address": "충북 청주시 청원구 오창읍 오창대로 415",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 84-4",
+          "lat": 36.7068118337204,
+          "lng": 127.437404600286,
+          "sourceUrl": "http://place.map.kakao.com/9295579",
+          "query": "청주시 청원구 각리",
+          "id": "9295579",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 주유,가스 > 주유소 > SK주유소"
+        },
+        {
+          "name": "SK행복충전잉꼬 오창IC충전소",
+          "address": "충북 청주시 청원구 오창읍 오창대로 410",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 84-3",
+          "lat": 36.7069358794376,
+          "lng": 127.436997929689,
+          "sourceUrl": "http://place.map.kakao.com/1466161700",
+          "query": "청주시 청원구 각리",
+          "id": "1466161700",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 주유,가스 > LPG충전소 > SK LPG충전소"
+        },
+        {
+          "name": "기아 오창지점",
+          "address": "충북 청주시 청원구 오창읍 각리 644-1",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 644-1",
+          "lat": 36.707044416566305,
+          "lng": 127.42845823415261,
+          "sourceUrl": "http://place.map.kakao.com/18057329",
+          "query": "청주시 청원구 각리",
+          "id": "18057329",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차판매점 > 기아"
+        },
+        {
+          "name": "타이어뱅크 남오창점",
+          "address": "충북 청주시 청원구 오창읍 과학산업4로 8-4",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 659-8",
+          "lat": 36.6967433257554,
+          "lng": 127.420732480516,
+          "sourceUrl": "http://place.map.kakao.com/1365994282",
+          "query": "청주시 청원구 각리",
+          "id": "1365994282",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차정비 > 타이어뱅크"
+        },
+        {
+          "name": "컴인워시 청주오창점B",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 76",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 655-1",
+          "lat": 36.6981820689134,
+          "lng": 127.42057582318,
+          "sourceUrl": "http://place.map.kakao.com/1172460683",
+          "query": "청주시 청원구 각리",
+          "id": "1172460683",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 세차장 > 컴인워시"
+        },
+        {
+          "name": "현대자동차 오창제일대리점",
+          "address": "충북 청주시 청원구 오창읍 중부로 553",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 659-3",
+          "lat": 36.69729900793417,
+          "lng": 127.42132970782082,
+          "sourceUrl": "http://place.map.kakao.com/885405781",
+          "query": "청주시 청원구 각리",
+          "id": "885405781",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차판매점 > 현대자동차"
+        },
+        {
+          "name": "오창중앙병원",
+          "address": "충북 청주시 청원구 오창읍 중부로 683",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 639-9",
+          "lat": 36.7068040243119,
+          "lng": 127.429651039825,
+          "sourceUrl": "http://place.map.kakao.com/8019279",
+          "query": "청주시 청원구 각리",
+          "id": "8019279",
+          "district": "오창읍",
+          "category": "의료,건강 > 병원"
+        },
+        {
+          "name": "한라비발디아파트",
+          "address": "충북 청주시 청원구 오창읍 오창중앙로 94",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 637-1",
+          "lat": 36.70941060345251,
+          "lng": 127.41939134401589,
+          "sourceUrl": "http://place.map.kakao.com/11360779",
+          "query": "청주시 청원구 각리",
+          "id": "11360779",
+          "district": "오창읍",
+          "category": "부동산 > 주거시설 > 아파트"
+        },
+        {
+          "name": "오토오아시스 바이오1점",
+          "address": "충북 청주시 청원구 오창읍 과학산업3로 202-12",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 644-1",
+          "lat": 36.7065393325466,
+          "lng": 127.429085513312,
+          "sourceUrl": "http://place.map.kakao.com/11877816",
+          "query": "청주시 청원구 각리",
+          "id": "11877816",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차정비 > 오토오아시스"
+        }
+      ]
+    },
+    {
+      "term": "오창중",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "수",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7353404315821,
+          "lng": 127.461471451165,
+          "name": "오창중학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 619",
+          "term": "오창중",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "오창중학교",
+          "address": "충북 청주시 청원구 오창읍 팔결로 619",
+          "jibunAddress": "충북 청주시 청원구 오창읍 창리 151-4",
+          "lat": 36.7353404315821,
+          "lng": 127.461471451165,
+          "sourceUrl": "http://place.map.kakao.com/10618649",
+          "query": "청주시 청원구 오창중학교",
+          "id": "10618649",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 중학교"
+        },
+        {
+          "name": "투썸플레이스 청주오창중부점",
+          "address": "충북 청주시 청원구 오창읍 양청송대길 5",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 808-7",
+          "lat": 36.71354757644815,
+          "lng": 127.4381725337765,
+          "sourceUrl": "http://place.map.kakao.com/1114733936",
+          "query": "청주시 청원구 오창중학교",
+          "id": "1114733936",
+          "district": "오창읍",
+          "category": "음식점 > 카페 > 커피전문점 > 투썸플레이스"
+        },
+        {
+          "name": "YBM잉글루 청주오창중앙제1캠퍼스",
+          "address": "충북 청주시 청원구 오창읍 오창중앙로 12",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 637-6",
+          "lat": 36.7097875534419,
+          "lng": 127.42666595547,
+          "sourceUrl": "http://place.map.kakao.com/1016056238",
+          "query": "청주시 청원구 오창중학교",
+          "id": "1016056238",
+          "district": "오창읍",
+          "category": "교육,학문 > 학원 > 어학원 > 영어학원 > YBM잉글루"
+        },
+        {
+          "name": "이디야커피 오창중부점",
+          "address": "충북 청주시 청원구 오창읍 중부로 760",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 810-2",
+          "lat": 36.71153140975306,
+          "lng": 127.43729144752805,
+          "sourceUrl": "http://place.map.kakao.com/1413494650",
+          "query": "청주시 청원구 오창중학교",
+          "id": "1413494650",
+          "district": "오창읍",
+          "category": "음식점 > 카페 > 커피전문점 > 이디야커피"
+        },
+        {
+          "name": "양청중학교",
+          "address": "충북 청주시 청원구 오창읍 양청택지3길 5",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 704",
+          "lat": 36.7202003367462,
+          "lng": 127.424043813332,
+          "sourceUrl": "http://place.map.kakao.com/12794523",
+          "query": "청주시 청원구 오창중학교",
+          "id": "12794523",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 중학교"
+        },
+        {
+          "name": "각리중학교",
+          "address": "충북 청주시 청원구 오창읍 오창중앙로 48",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 637-4",
+          "lat": 36.7090091185262,
+          "lng": 127.421824517504,
+          "sourceUrl": "http://place.map.kakao.com/8127636",
+          "query": "청주시 청원구 오창중학교",
+          "id": "8127636",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교 > 중학교"
+        },
+        {
+          "name": "생명중학교 교무실",
+          "address": "충북 청주시 청원구 오창읍 중부로 772",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양청리 810-9",
+          "lat": 36.711928525999234,
+          "lng": 127.43883599772961,
+          "sourceUrl": "http://place.map.kakao.com/399653446",
+          "query": "청주시 청원구 오창중학교",
+          "id": "399653446",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교부속시설"
+        },
+        {
+          "name": "각리중학교 교무실",
+          "address": "충북 청주시 청원구 오창읍 오창중앙로 48",
+          "jibunAddress": "충북 청주시 청원구 오창읍 각리 637-4",
+          "lat": 36.708958422817226,
+          "lng": 127.42189027251375,
+          "sourceUrl": "http://place.map.kakao.com/10117633",
+          "query": "청주시 청원구 오창중학교",
+          "id": "10117633",
+          "district": "오창읍",
+          "category": "교육,학문 > 학교부속시설"
+        }
+      ]
+    },
+    {
+      "term": "해든전원마을",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": []
+    },
+    {
+      "term": "가곡길181-53",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7279799359911,
+          "lng": 127.453928571203,
+          "name": "가곡길181-53",
+          "address": "충북 청주시 청원구 오창읍 가곡길 181-53",
+          "term": "가곡길181-53",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": []
+    },
+    {
+      "term": "양지리",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "월",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7402559023399,
+          "lng": 127.437889880075,
+          "name": "양지리",
+          "address": "충북 청주시 청원구 오창읍 양지리",
+          "term": "양지리",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "송천서원",
+          "address": "충북 청주시 청원구 오창읍 오창양지길 22-3",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 117",
+          "lat": 36.7389178040022,
+          "lng": 127.443955110274,
+          "sourceUrl": "http://place.map.kakao.com/569866828",
+          "query": "청주시 청원구 양지리",
+          "id": "569866828",
+          "district": "오창읍",
+          "category": "여행 > 관광,명소 > 문화유적 > 서원"
+        },
+        {
+          "name": "양지리그곳",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 1023-4",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 53-1",
+          "lat": 36.7412042307709,
+          "lng": 127.442664999544,
+          "sourceUrl": "http://place.map.kakao.com/1218569683",
+          "query": "청주시 청원구 양지리",
+          "id": "1218569683",
+          "district": "오창읍",
+          "category": "음식점 > 카페"
+        },
+        {
+          "name": "대신택배 오창읍점",
+          "address": "충북 청주시 청원구 오창읍 오창양지길 19-3",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 77",
+          "lat": 36.73856922388131,
+          "lng": 127.44512086339917,
+          "sourceUrl": "http://place.map.kakao.com/347268459",
+          "query": "청주시 청원구 양지리",
+          "id": "347268459",
+          "district": "오창읍",
+          "category": "교통,수송 > 운송 > 택배"
+        },
+        {
+          "name": "신성당",
+          "address": "충북 청주시 청원구 오창읍 오창양지길 19-8",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 82-1",
+          "lat": 36.7382639525587,
+          "lng": 127.444824642679,
+          "sourceUrl": "http://place.map.kakao.com/1817353062",
+          "query": "청주시 청원구 양지리",
+          "id": "1817353062",
+          "district": "오창읍",
+          "category": "음식점 > 분식 > 떡볶이"
+        },
+        {
+          "name": "고창풍천민물장어",
+          "address": "충북 청주시 청원구 오창읍 오창양지길 19-3",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 77",
+          "lat": 36.73856922388131,
+          "lng": 127.44512086339917,
+          "sourceUrl": "http://place.map.kakao.com/1148927747",
+          "query": "청주시 청원구 양지리",
+          "id": "1148927747",
+          "district": "오창읍",
+          "category": "음식점 > 한식 > 해물,생선 > 장어"
+        },
+        {
+          "name": "밥심",
+          "address": "충북 청주시 청원구 오창읍 2산단1로 95",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 109-19",
+          "lat": 36.73604121159706,
+          "lng": 127.4423241104944,
+          "sourceUrl": "http://place.map.kakao.com/1960374886",
+          "query": "청주시 청원구 양지리",
+          "id": "1960374886",
+          "district": "오창읍",
+          "category": "음식점 > 한식"
+        },
+        {
+          "name": "is뽈리나어린이집",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 1043",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 30-1",
+          "lat": 36.740551045844214,
+          "lng": 127.44528905734994,
+          "sourceUrl": "http://place.map.kakao.com/16136115",
+          "query": "청주시 청원구 양지리",
+          "id": "16136115",
+          "district": "오창읍",
+          "category": "교육,학문 > 유아교육 > 어린이집"
+        },
+        {
+          "name": "양지리 송어횟집",
+          "address": "충북 청주시 청원구 오창읍 2산단1로 95-3",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 109-37",
+          "lat": 36.735877301105,
+          "lng": 127.442056710547,
+          "sourceUrl": "http://place.map.kakao.com/1327418273",
+          "query": "청주시 청원구 양지리",
+          "id": "1327418273",
+          "district": "오창읍",
+          "category": "음식점 > 한식 > 해물,생선 > 회"
+        },
+        {
+          "name": "데이메르 청주점",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 971",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 159",
+          "lat": 36.7422487147507,
+          "lng": 127.437032336323,
+          "sourceUrl": "http://place.map.kakao.com/1743315591",
+          "query": "청주시 청원구 양지리",
+          "id": "1743315591",
+          "district": "오창읍",
+          "category": "서비스,산업 > 전문대행 > 공간대여"
+        },
+        {
+          "name": "양지원두막촌",
+          "address": "충북 청주시 청원구 오창읍 오창양지길 15",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 77-7",
+          "lat": 36.7388871684255,
+          "lng": 127.445401484996,
+          "sourceUrl": "http://place.map.kakao.com/958372570",
+          "query": "청주시 청원구 양지리",
+          "id": "958372570",
+          "district": "오창읍",
+          "category": "음식점 > 한식 > 육류,고기"
+        },
+        {
+          "name": "신화전기공사",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 1041-5",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 33",
+          "lat": 36.74101554428592,
+          "lng": 127.44493457143166,
+          "sourceUrl": "http://place.map.kakao.com/10602677",
+          "query": "청주시 청원구 양지리",
+          "id": "10602677",
+          "district": "오창읍",
+          "category": "서비스,산업 > 건설,건축 > 시공업체 > 전기시공"
+        },
+        {
+          "name": "대영이엔지",
+          "address": "충북 청주시 청원구 오창읍 오창양지길 46-8",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 117-27",
+          "lat": 36.7380194964941,
+          "lng": 127.443202038242,
+          "sourceUrl": "http://place.map.kakao.com/642373748",
+          "query": "청주시 청원구 양지리",
+          "id": "642373748",
+          "district": "오창읍",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 건설기계"
+        },
+        {
+          "name": "드림종합가스",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 962",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 167",
+          "lat": 36.741423239148794,
+          "lng": 127.43606474954576,
+          "sourceUrl": "http://place.map.kakao.com/699897523",
+          "query": "청주시 청원구 양지리",
+          "id": "699897523",
+          "district": "오창읍",
+          "category": "서비스,산업 > 에너지 > 가스"
+        },
+        {
+          "name": "용화선원",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 939-19",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 183",
+          "lat": 36.7427219718673,
+          "lng": 127.433783475485,
+          "sourceUrl": "http://place.map.kakao.com/10711583",
+          "query": "청주시 청원구 양지리",
+          "id": "10711583",
+          "district": "오창읍",
+          "category": "문화,예술 > 종교 > 불교 > 절,사찰"
+        },
+        {
+          "name": "작은세상",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 935-17",
+          "jibunAddress": "충북 청주시 청원구 오창읍 양지리 180",
+          "lat": 36.7419952083123,
+          "lng": 127.433416613322,
+          "sourceUrl": "http://place.map.kakao.com/27563410",
+          "query": "청주시 청원구 양지리",
+          "id": "27563410",
+          "district": "오창읍",
+          "category": "교육,학문 > 교육단체 > 체험학습장"
+        }
+      ]
+    },
+    {
+      "term": "증평IC",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "0262",
+          "day": "화",
+          "districts": [
+            "오창읍"
+          ],
+          "scopeSignature": "오창읍"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7716639227652,
+          "lng": 127.502048369448,
+          "name": "증평IC",
+          "address": "충북 청주시 청원구 오창읍 여천리",
+          "term": "증평IC",
+          "district": "오창읍"
+        }
+      ],
+      "allowed": [
+        "오창읍"
+      ],
+      "results": [
+        {
+          "name": "증평IC",
+          "address": "충북 청주시 청원구 오창읍 여천리",
+          "jibunAddress": "충북 청주시 청원구 오창읍 여천리",
+          "lat": 36.7716639227652,
+          "lng": 127.502048369448,
+          "sourceUrl": "http://place.map.kakao.com/10781507",
+          "query": "청주시 청원구 증평IC",
+          "id": "10781507",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > IC > 고속도로IC"
+        },
+        {
+          "name": "증평IC교",
+          "address": "충북 청주시 청원구 오창읍 여천리 171",
+          "jibunAddress": "충북 청주시 청원구 오창읍 여천리 171",
+          "lat": 36.7716592897292,
+          "lng": 127.502078581814,
+          "sourceUrl": "http://place.map.kakao.com/741757704",
+          "query": "청주시 청원구 증평IC",
+          "id": "741757704",
+          "district": "오창읍",
+          "category": "교통,수송 > 도로시설 > 교량,다리"
+        },
+        {
+          "name": "이마트24 증평IC점",
+          "address": "충북 청주시 청원구 오창읍 중부로 1642",
+          "jibunAddress": "충북 청주시 청원구 오창읍 여천리 211-5",
+          "lat": 36.76723989779876,
+          "lng": 127.50216401052508,
+          "sourceUrl": "http://place.map.kakao.com/27260555",
+          "query": "청주시 청원구 증평IC",
+          "id": "27260555",
+          "district": "오창읍",
+          "category": "가정,생활 > 편의점 > 이마트24"
+        },
+        {
+          "name": "TBX 증평IC점",
+          "address": "충북 청주시 청원구 오창읍 두릉유리로 1327",
+          "jibunAddress": "충북 청주시 청원구 오창읍 모정리 193-2",
+          "lat": 36.7531007052685,
+          "lng": 127.470841010188,
+          "sourceUrl": "http://place.map.kakao.com/1232478340",
+          "query": "청주시 청원구 증평IC",
+          "id": "1232478340",
+          "district": "오창읍",
+          "category": "교통,수송 > 자동차 > 자동차정비 > 한국타이어 > TBX"
+        }
+      ]
+    },
+    {
+      "term": "내수로",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "수",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "청주새활용시민센터",
+          "address": "충북 청주시 청원구 내수로 28",
+          "jibunAddress": "충북 청주시 청원구 주성동 297-19",
+          "lat": 36.6825008404695,
+          "lng": 127.499181448282,
+          "sourceUrl": "http://place.map.kakao.com/763055513",
+          "query": "청주시 청원구 내수로",
+          "id": "763055513",
+          "district": "오근장동",
+          "category": "교육,학문 > 교육단체 > 체험학습장"
+        },
+        {
+          "name": "스마일안전",
+          "address": "충북 청주시 청원구 내수로 19-1",
+          "jibunAddress": "충북 청주시 청원구 주중동 97-4",
+          "lat": 36.6815555420039,
+          "lng": 127.497895446877,
+          "sourceUrl": "http://place.map.kakao.com/11102398",
+          "query": "청주시 청원구 내수로",
+          "id": "11102398",
+          "district": "오근장동",
+          "category": "서비스,산업 > 제조업 > 전기,전자 > 전기자재,부품"
+        },
+        {
+          "name": "백년손님서서갈비 청원구점",
+          "address": "충북 청주시 청원구 내수로 48",
+          "jibunAddress": "충북 청주시 청원구 주성동 327",
+          "lat": 36.6841295471324,
+          "lng": 127.498875345988,
+          "sourceUrl": "http://place.map.kakao.com/1388914601",
+          "query": "청주시 청원구 내수로",
+          "id": "1388914601",
+          "district": "오근장동",
+          "category": "음식점 > 한식 > 육류,고기 > 갈비"
+        },
+        {
+          "name": "카페글로리",
+          "address": "충북 청주시 청원구 내수로 3",
+          "jibunAddress": "충북 청주시 청원구 주중동 93-1",
+          "lat": 36.68030229401319,
+          "lng": 127.4987063090171,
+          "sourceUrl": "http://place.map.kakao.com/62314325",
+          "query": "청주시 청원구 내수로",
+          "id": "62314325",
+          "district": "오근장동",
+          "category": "음식점 > 카페"
+        },
+        {
+          "name": "해유세라믹",
+          "address": "충북 청주시 청원구 내수로 63",
+          "jibunAddress": "충북 청주시 청원구 주중동 50-1",
+          "lat": 36.6857492806993,
+          "lng": 127.498775041365,
+          "sourceUrl": "http://place.map.kakao.com/1414218784",
+          "query": "청주시 청원구 내수로",
+          "id": "1414218784",
+          "district": "오근장동",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 내,외장재"
+        },
+        {
+          "name": "카페뚭",
+          "address": "충북 청주시 청원구 내수로 8",
+          "jibunAddress": "충북 청주시 청원구 주성동 293-2",
+          "lat": 36.680677519240504,
+          "lng": 127.49948068589718,
+          "sourceUrl": "http://place.map.kakao.com/1471607012",
+          "query": "청주시 청원구 내수로",
+          "id": "1471607012",
+          "district": "오근장동",
+          "category": "음식점 > 카페 > 테마카페 > 디저트카페"
+        },
+        {
+          "name": "청주재활용센터",
+          "address": "충북 청주시 청원구 내수로 28",
+          "jibunAddress": "충북 청주시 청원구 주성동 297-19",
+          "lat": 36.68256346630523,
+          "lng": 127.49907444796327,
+          "sourceUrl": "http://place.map.kakao.com/11656332",
+          "query": "청주시 청원구 내수로",
+          "id": "11656332",
+          "district": "오근장동",
+          "category": "가정,생활 > 중고용품"
+        },
+        {
+          "name": "신영방재",
+          "address": "충북 청주시 청원구 내수로 23",
+          "jibunAddress": "충북 청주시 청원구 주중동 94-1",
+          "lat": 36.681882081184966,
+          "lng": 127.49824661469987,
+          "sourceUrl": "http://place.map.kakao.com/9117170",
+          "query": "청주시 청원구 내수로",
+          "id": "9117170",
+          "district": "오근장동",
+          "category": "서비스,산업 > 건설,건축 > 시공업체"
+        },
+        {
+          "name": "청주체험형박물관 도림",
+          "address": "충북 청주시 청원구 내수로 14",
+          "jibunAddress": "충북 청주시 청원구 주성동 295",
+          "lat": 36.6815414361637,
+          "lng": 127.499542211002,
+          "sourceUrl": "http://place.map.kakao.com/23986234",
+          "query": "청주시 청원구 내수로",
+          "id": "23986234",
+          "district": "오근장동",
+          "category": "문화,예술 > 문화시설 > 박물관"
+        },
+        {
+          "name": "정원커머스",
+          "address": "충북 청주시 청원구 내수로 46",
+          "jibunAddress": "충북 청주시 청원구 주성동 297-1",
+          "lat": 36.68377493352237,
+          "lng": 127.49898829419526,
+          "sourceUrl": "http://place.map.kakao.com/27578901",
+          "query": "청주시 청원구 내수로",
+          "id": "27578901",
+          "district": "오근장동",
+          "category": "서비스,산업 > 건설,건축 > 종합건설사"
+        },
+        {
+          "name": "제일광고",
+          "address": "충북 청주시 청원구 내수로 69",
+          "jibunAddress": "충북 청주시 청원구 주중동 44-1",
+          "lat": 36.686524330101,
+          "lng": 127.497462029748,
+          "sourceUrl": "http://place.map.kakao.com/9443135",
+          "query": "청주시 청원구 내수로",
+          "id": "9443135",
+          "district": "오근장동",
+          "category": "서비스,산업 > 마케팅 > 간판"
+        },
+        {
+          "name": "미화종합중기",
+          "address": "충북 청주시 청원구 내수로 52",
+          "jibunAddress": "충북 청주시 청원구 주성동 297-14",
+          "lat": 36.68333061881383,
+          "lng": 127.49921813720134,
+          "sourceUrl": "http://place.map.kakao.com/9775844",
+          "query": "청주시 청원구 내수로",
+          "id": "9775844",
+          "district": "오근장동",
+          "category": "서비스,산업 > 건설,건축 > 건설자재 > 건설기계"
+        },
+        {
+          "name": "돈드림",
+          "address": "충북 청주시 청원구 내수로 50",
+          "jibunAddress": "충북 청주시 청원구 주성동 326",
+          "lat": 36.6842141807928,
+          "lng": 127.499107489594,
+          "sourceUrl": "http://place.map.kakao.com/145703033",
+          "query": "청주시 청원구 내수로",
+          "id": "145703033",
+          "district": "오근장동",
+          "category": "서비스,산업 > 식품 > 식품가공,제조"
+        },
+        {
+          "name": "한빛컴퍼니",
+          "address": "충북 청주시 청원구 내수로 19-2",
+          "jibunAddress": "충북 청주시 청원구 주중동 97",
+          "lat": 36.6819117442295,
+          "lng": 127.497402117457,
+          "sourceUrl": "http://place.map.kakao.com/573836201",
+          "query": "청주시 청원구 내수로",
+          "id": "573836201",
+          "district": "오근장동",
+          "category": "가정,생활 > 전자제품 > 전자제품판매"
+        },
+        {
+          "name": "나산스틸",
+          "address": "충북 청주시 청원구 내수로 25-2",
+          "jibunAddress": "충북 청주시 청원구 주중동 91-3",
+          "lat": 36.6823578976,
+          "lng": 127.498240733245,
+          "sourceUrl": "http://place.map.kakao.com/8818120",
+          "query": "청주시 청원구 내수로",
+          "id": "8818120",
+          "district": "오근장동",
+          "category": "서비스,산업 > 건설,건축 > 건설자재"
+        }
+      ]
+    },
+    {
+      "term": "수성초",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.7188778557553,
+          "lng": 127.526831308451,
+          "name": "수성초등학교",
+          "address": "충북 청주시 청원구 내수읍 내수로 601",
+          "term": "수성초",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "수성초등학교",
+          "address": "충북 청주시 청원구 내수읍 내수로 601",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 263-1",
+          "lat": 36.7188778557553,
+          "lng": 127.526831308451,
+          "sourceUrl": "http://place.map.kakao.com/7971482",
+          "query": "청주시 청원구 수성초등학교",
+          "id": "7971482",
+          "district": "내수읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "수성초등학교 구성분교장",
+          "address": "충북 청주시 청원구 내수읍 충청대로 452",
+          "jibunAddress": "충북 청주시 청원구 내수읍 구성리 266",
+          "lat": 36.6895435945844,
+          "lng": 127.514726009588,
+          "sourceUrl": "http://place.map.kakao.com/10556196",
+          "query": "청주시 청원구 수성초등학교",
+          "id": "10556196",
+          "district": "내수읍",
+          "category": "교육,학문 > 학교 > 초등학교"
+        },
+        {
+          "name": "수성초등학교 병설유치원",
+          "address": "충북 청주시 청원구 내수읍 내수로 601",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 263-1",
+          "lat": 36.7191586976098,
+          "lng": 127.526900386222,
+          "sourceUrl": "http://place.map.kakao.com/9864528",
+          "query": "청주시 청원구 수성초등학교",
+          "id": "9864528",
+          "district": "내수읍",
+          "category": "교육,학문 > 유아교육 > 유치원"
+        }
+      ]
+    },
+    {
+      "term": "내수성당",
+      "uses": [
+        {
+          "type": "recycle",
+          "vehicle": "6544",
+          "day": "화",
+          "districts": [
+            "내수읍",
+            "북이면"
+          ],
+          "scopeSignature": "내수읍|북이면"
+        }
+      ],
+      "evidence": [
+        {
+          "lat": 36.722950558386785,
+          "lng": 127.5313657728127,
+          "name": "내수성당",
+          "address": "충북 청주시 청원구 내수읍 내수로 657",
+          "term": "내수성당",
+          "district": "내수읍"
+        }
+      ],
+      "allowed": [
+        "내수읍",
+        "북이면"
+      ],
+      "results": [
+        {
+          "name": "내수성당",
+          "address": "충북 청주시 청원구 내수읍 내수로 657",
+          "jibunAddress": "충북 청주시 청원구 내수읍 내수리 202-1",
+          "lat": 36.722950558386785,
+          "lng": 127.5313657728127,
+          "sourceUrl": "http://place.map.kakao.com/14527772",
+          "query": "청주시 청원구 내수성당",
+          "id": "14527772",
+          "district": "내수읍",
+          "category": "문화,예술 > 종교 > 천주교 > 성당"
+        }
+      ]
+    }
+  ]
+}

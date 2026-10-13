@@ -148,15 +148,29 @@ async def main():
           return checks;
         }""")
         out["coordinateAudits"]=await page.evaluate("""()=>allDongRouteSpecs().filter(s=>['3344','6138','6544','0262'].includes(String(s.vehicle))&&routeAllowedDistricts(s).some(d=>['오창읍','내수읍','북이면'].includes(d))).map(s=>({vehicle:s.vehicle,day:s.day,...finalRouteCoordinateAudit(s,existingDongRouteOverlay(s))}))""")
+        cache_check="""async()=>{
+          const specs=allDongRouteSpecs().filter(s=>['3344','6138','6544','0262'].includes(String(s.vehicle))&&routeAllowedDistricts(s).some(d=>['오창읍','내수읍','북이면'].includes(d)));
+          const rows=[];
+          const geometry=s=>JSON.stringify((s||[]).map(segment=>segment.map(p=>[p.lat,p.lng])));
+          for(const spec of specs){const cached=await getCachedDongRoute(spec);const shown=existingDongRouteOverlay(spec);rows.push({vehicle:spec.vehicle,day:spec.day,segments:cached?.segments?.length||0,ok:!!cached&&geometry(cached.segments)===geometry(shown?.segments)});}
+          return {version:DONG_ROUTE_CACHE_VERSION,rows};
+        }"""
+        out['cacheBeforeReload']=await page.evaluate(cache_check)
         if os.environ.get('TEST2_SCREENSHOT'):
             await page.evaluate("()=>{const b=new kakao.maps.LatLngBounds();for(const i of dongRouteOverlays.recycle.filter(i=>String(i.vehicle)==='0262'&&i.day==='화'))for(const s of i.segments)for(const p of s)b.extend(new kakao.maps.LatLng(p.lat,p.lng));map.setBounds(b)}")
             await page.wait_for_timeout(1200)
             await page.screenshot(path=os.environ['TEST2_SCREENSHOT'])
+        await page.reload(wait_until='domcontentloaded',timeout=90000)
+        await page.wait_for_function("typeof map!=='undefined'&&!!map&&typeof ensureTestAdminBoundaryLoad==='function'",timeout=90000)
+        await page.evaluate("async()=>{await ensureTestAdminBoundaryLoad();await hydrateExternalBundledPrecomputedData();}")
+        await page.wait_for_timeout(1500)
+        out['cacheAfterReload']=await page.evaluate(cache_check)
         await browser.close()
 
     out.update(result)
     out["checks"]={
       "http200":out.get("httpStatus")==200,
+      "cache20BeforeAndAfterReload":all(len(out[k]['rows'])==20 and all(r['ok'] for r in out[k]['rows']) for k in ['cacheBeforeReload','cacheAfterReload']),
       "allTargetDaysPresent":result.get("allTargetDaysPresent",False),
       "allRiCovered":result.get("allRiCovered",False),
       "noPageErrors":len(out["pageErrors"])==0,
