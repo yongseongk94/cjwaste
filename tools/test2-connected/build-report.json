@@ -1,0 +1,3640 @@
+[
+  {
+    "vehicle": "3344",
+    "day": "금",
+    "type": "general",
+    "estimatedTerms": [
+      {
+        "term": "3산업단지",
+        "status": "estimated",
+        "basis": "오창제3산업단지 위치 주변 일반 진입도로와 공개 도로망 내부도로",
+        "sourceUrl": "http://place.map.kakao.com/27455429",
+        "radiusM": 650,
+        "lat": 36.7313815,
+        "lng": 127.3423788,
+        "segmentCount": 14,
+        "source": "user-authorized-estimate",
+        "villageTerm": ""
+      }
+    ],
+    "connections": 101,
+    "distanceM": 33907,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 20,
+      "allServiceSegments": 20,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "3344",
+    "day": "목",
+    "type": "general",
+    "estimatedTerms": [],
+    "connections": 58,
+    "distanceM": 29866,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 27,
+      "allServiceSegments": 27,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 1111,
+    "removedExpresswayWays": [
+      419463219,
+      771653391,
+      771653401,
+      1104205766,
+      1104205767,
+      1104205768,
+      1464278015,
+      1464282155,
+      1464282156,
+      1464282158
+    ]
+  },
+  {
+    "vehicle": "3344",
+    "day": "수",
+    "type": "general",
+    "estimatedTerms": [
+      {
+        "term": "도암리",
+        "status": "estimated",
+        "basis": "도암길 49-2~64와 도암리 취락 주변 일반도로",
+        "sourceUrl": "http://place.map.kakao.com/17204747",
+        "radiusM": 380,
+        "lat": 36.73263962,
+        "lng": 127.46956813,
+        "segmentCount": 8,
+        "source": "user-authorized-estimate",
+        "villageTerm": "도암리"
+      }
+    ],
+    "connections": 43,
+    "distanceM": 17840,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 26,
+      "allServiceSegments": 26,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "3344",
+    "day": "월",
+    "type": "general",
+    "estimatedTerms": [],
+    "connections": 54,
+    "distanceM": 34109,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 38,
+      "allServiceSegments": 38,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 1111,
+    "removedExpresswayWays": [
+      419463219,
+      771653391,
+      771653401,
+      1104205766,
+      1104205767,
+      1104205768,
+      1464278015,
+      1464282155,
+      1464282156,
+      1464282158
+    ]
+  },
+  {
+    "vehicle": "3344",
+    "day": "화",
+    "type": "general",
+    "estimatedTerms": [],
+    "connections": 22,
+    "distanceM": 20225,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 10,
+      "allServiceSegments": 10,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 180,
+    "removedExpresswayWays": [
+      183944880
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "금",
+    "type": "general",
+    "estimatedTerms": [
+      {
+        "term": "장재문화마을",
+        "status": "estimated",
+        "basis": "장재마을회관·장재토성길 주변 취락도로를 문화마을 대체 범위로 추정",
+        "sourceUrl": "http://place.map.kakao.com/27428509",
+        "radiusM": 350,
+        "lat": 36.7483325,
+        "lng": 127.5628249,
+        "segmentCount": 10,
+        "source": "user-authorized-estimate",
+        "villageTerm": ""
+      }
+    ],
+    "connections": 94,
+    "distanceM": 29755,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 46,
+      "allServiceSegments": 46,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 230,
+    "removedExpresswayWays": [
+      554023921,
+      659501973
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "목",
+    "type": "general",
+    "estimatedTerms": [
+      {
+        "term": "초정구길",
+        "status": "estimated",
+        "basis": "초정길·초정리 취락도로를 원본 초정구길의 대체 구간으로 추정",
+        "sourceUrl": "https://www.openstreetmap.org/way/658976440",
+        "radiusM": 500,
+        "lat": 36.7202957,
+        "lng": 127.604215,
+        "segmentCount": 34,
+        "source": "user-authorized-estimate",
+        "villageTerm": ""
+      }
+    ],
+    "connections": 110,
+    "distanceM": 35881,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 19,
+      "allServiceSegments": 19,
+      "maxAlignmentM": 29.8,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 29.8,
+        "maxSeamM": 29.8
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 885,
+    "removedExpresswayWays": [
+      554023921,
+      659501967,
+      659501972,
+      659501973,
+      790417694,
+      790417695,
+      790417696
+    ]
+  },
+  {
+    "vehicle": "6138",
+    "day": "수",
+    "type": "general",
+    "estimatedTerms": [],
+    "connections": 60,
+    "distanceM": 27089,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 40,
+      "allServiceSegments": 40,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "6138",
+    "day": "월",
+    "type": "general",
+    "estimatedTerms": [],
+    "connections": 63,
+    "distanceM": 26436,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 42,
+      "allServiceSegments": 42,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "6138",
+    "day": "화",
+    "type": "general",
+    "estimatedTerms": [],
+    "connections": 30,
+    "distanceM": 16577,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 20,
+      "allServiceSegments": 20,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "0262",
+    "day": "금",
+    "type": "recycle",
+    "estimatedTerms": [
+      {
+        "term": "3산업단지",
+        "status": "estimated",
+        "basis": "오창제3산업단지 위치 주변 일반 진입도로와 공개 도로망 내부도로",
+        "sourceUrl": "http://place.map.kakao.com/27455429",
+        "radiusM": 650,
+        "lat": 36.7313815,
+        "lng": 127.3423788,
+        "segmentCount": 14,
+        "source": "user-authorized-estimate",
+        "villageTerm": ""
+      }
+    ],
+    "connections": 98,
+    "distanceM": 38713,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 25,
+      "allServiceSegments": 25,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "0262",
+    "day": "목",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 53,
+    "distanceM": 37494,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 37,
+      "allServiceSegments": 37,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 24824,
+    "removedExpresswayWays": [
+      37376442,
+      43446257,
+      53191925,
+      53191939,
+      53191941,
+      53191942,
+      53191943,
+      53191945,
+      217520907,
+      324210287,
+      392697680,
+      392697682,
+      392697683,
+      771653390,
+      1104205766,
+      1104205767,
+      1104205768,
+      1104205769,
+      1259025537,
+      1259025539,
+      1259025541,
+      1259025542,
+      1259025543,
+      1259025545,
+      1259025546,
+      1259025547,
+      1259029298,
+      1259029300,
+      1259029301,
+      1259029302,
+      1259029303,
+      1259029305,
+      1259029306,
+      1259029309,
+      1259029310,
+      1259029313,
+      1259029314,
+      1259040544,
+      1259040545,
+      1259040547,
+      1259040559,
+      1259040560,
+      1259053166,
+      1259053167,
+      1259053168,
+      1259053169,
+      1259053170,
+      1259053171,
+      1259053173,
+      1259053174,
+      1259053175,
+      1259053176,
+      1259053179,
+      1259053181,
+      1259053182,
+      1259053183,
+      1259053184,
+      1259053185,
+      1259053186,
+      1259053188,
+      1259053189,
+      1259053190,
+      1335807716,
+      1464282155,
+      1464282156,
+      1497548910,
+      1497548911
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "수",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 27,
+    "distanceM": 13609,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 27,
+      "allServiceSegments": 27,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 128,
+    "removedExpresswayWays": [
+      54225422,
+      54225426
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "월",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 41,
+    "distanceM": 12144,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 29,
+      "allServiceSegments": 29,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 1586,
+    "removedExpresswayWays": [
+      183944880,
+      217520907,
+      419463219,
+      771653391,
+      771653401,
+      1104205766,
+      1104205767,
+      1104205768,
+      1104205769,
+      1464278015,
+      1464282155,
+      1464282156,
+      1464282158
+    ]
+  },
+  {
+    "vehicle": "0262",
+    "day": "화",
+    "type": "recycle",
+    "estimatedTerms": [
+      {
+        "term": "증평IC",
+        "status": "estimated",
+        "basis": "증평IC 바깥 여천3길·주변 사업장 접근도로. 고속도로와 진출입 램프 제외",
+        "sourceUrl": "http://place.map.kakao.com/10781507",
+        "radiusM": 400,
+        "lat": 36.7712142,
+        "lng": 127.5061241,
+        "segmentCount": 11,
+        "source": "user-authorized-estimate",
+        "villageTerm": ""
+      }
+    ],
+    "connections": 33,
+    "distanceM": 9124,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 16,
+      "allServiceSegments": 16,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "6544",
+    "day": "금",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 66,
+    "distanceM": 27251,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 43,
+      "allServiceSegments": 43,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "6544",
+    "day": "목",
+    "type": "recycle",
+    "estimatedTerms": [
+      {
+        "term": "초정구길",
+        "status": "estimated",
+        "basis": "초정길·초정리 취락도로를 원본 초정구길의 대체 구간으로 추정",
+        "sourceUrl": "https://www.openstreetmap.org/way/658976440",
+        "radiusM": 500,
+        "lat": 36.7202957,
+        "lng": 127.604215,
+        "segmentCount": 34,
+        "source": "user-authorized-estimate",
+        "villageTerm": ""
+      }
+    ],
+    "connections": 114,
+    "distanceM": 35723,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 20,
+      "allServiceSegments": 20,
+      "maxAlignmentM": 29.8,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 29.8,
+        "maxSeamM": 29.8
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 885,
+    "removedExpresswayWays": [
+      554023921,
+      659501967,
+      659501972,
+      659501973,
+      790417694,
+      790417695,
+      790417696
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "수",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 65,
+    "distanceM": 32964,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 38,
+      "allServiceSegments": 38,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 2210,
+    "removedExpresswayWays": [
+      552615924,
+      1304859830,
+      1304969466
+    ]
+  },
+  {
+    "vehicle": "6544",
+    "day": "월",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 69,
+    "distanceM": 28536,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 46,
+      "allServiceSegments": 46,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  },
+  {
+    "vehicle": "6544",
+    "day": "화",
+    "type": "recycle",
+    "estimatedTerms": [],
+    "connections": 48,
+    "distanceM": 24984,
+    "audit": {
+      "connected": true,
+      "serviceSegmentsAttached": 30,
+      "allServiceSegments": 30,
+      "maxAlignmentM": 0.0,
+      "navigationAccessSegments": 0,
+      "motorwayEdges": 0,
+      "graphComponents": 1
+    },
+    "attachments": [
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      },
+      {
+        "kind": "map-alignment",
+        "gapM": 0.0,
+        "maxSeamM": 0.0
+      }
+    ],
+    "removedExpresswayMeters": 0,
+    "removedExpresswayWays": []
+  }
+]

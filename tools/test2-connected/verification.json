@@ -1,0 +1,22 @@
+{
+  "url": "https://yongseongk94.github.io/cjwaste/cjwaste-test2/",
+  "localAssets": true,
+  "startedAt": "2026-10-15T13:15:10Z",
+  "checks": {
+    "http200": true,
+    "all20Connected": true,
+    "all7ExplicitEstimates": true,
+    "transitNotCertifiedCollection": true,
+    "cache20BeforeAndAfterReload": true,
+    "allTargetDaysPresent": true,
+    "allRiCovered": false,
+    "noPageErrors": true,
+    "allSelectionsVisible": true,
+    "allCoordinatesInScope": true
+  },
+  "totalCovered": 162,
+  "totalExpected": 163,
+  "pageErrors": [],
+  "permittedOSMWays": 752,
+  "note": "Verified village coverage remains 162/163; Doam-ri is explicitly estimated. Short alignment seams may cross or run beside grade-separated roads; connection paths use permitted road geometry, not turn-by-turn directions."
+}

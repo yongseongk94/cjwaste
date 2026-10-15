@@ -5,7 +5,7 @@ from playwright.async_api import async_playwright
 URL="https://yongseongk94.github.io/cjwaste/cjwaste-test2/"
 BUNDLE=Path("cjwaste-test2/data/precomputed-rural-routes-no-motorway-v1.json")
 REPORT=Path("tools/test2-rural-v9-patch-report.json")
-VERSION="v76-test2-verified-facility-v11"
+VERSION="v76-test2-connected-v12"
 TARGETS=[
   ("general","6138","월"),
   ("general","3344","수"),

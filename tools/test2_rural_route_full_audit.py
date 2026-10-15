@@ -25,6 +25,8 @@ async def main():
                 else:
                     await route.continue_()
             await page.route("https://yongseongk94.github.io/cjwaste/**",local_asset)
+        # Route build validation uses saved geometry only; never transmit route coordinates.
+        await page.route('https://cjwaste-route.yseong22.workers.dev/**',lambda route:route.abort())
         page.set_default_timeout(120000)
         page.on("pageerror",lambda e: out["pageErrors"].append(str(e)))
         page.on("console",lambda m: out["consoleErrors"].append(m.text) if m.type=="error" else None)
@@ -147,12 +149,19 @@ async def main():
           checks.push({rapidSwitch:true,ok:visible.length>0&&visible.every(i=>i.type==='recycle'&&String(i.vehicle)==='0262'&&i.day==='화')});
           return checks;
         }""")
+        out['connectionChecks']=await page.evaluate("""()=>{
+          const items=Object.values(dongRouteOverlays).flat().filter(i=>['3344','6138','6544','0262'].includes(String(i.vehicle)));
+          return items.map(i=>{
+            const mid=(i.connectionSegments||[]).flatMap(s=>s.slice(1).map((p,k)=>({lat:(p.lat+s[k].lat)/2,lng:(p.lng+s[k].lng)/2}))).find(p=>routeItemDistanceKm({segments:i.segments},p.lat,p.lng)>.05);
+            return {vehicle:i.vehicle,day:i.day,connections:i.connectionSegments?.length||0,estimatedTerms:(i.estimatedTerms||[]).map(t=>t.term),unresolved:i.missingTerms||[],connected:i.connectionAudit?.connected===true,attached:i.connectionAudit?.serviceSegmentsAttached===i.segments.length,transitNotCollection:!!mid&&routeItemDistanceKm(i,mid.lat,mid.lng)>.05,visiblePolylines:routeItemPolylines(i).length,ok:i.connectionVersion==='road-network-v1'&&i.connectionAudit?.connected===true&&!!i.connectionSegments?.length};
+          });
+        }""")
         out["coordinateAudits"]=await page.evaluate("""()=>allDongRouteSpecs().filter(s=>['3344','6138','6544','0262'].includes(String(s.vehicle))&&routeAllowedDistricts(s).some(d=>['오창읍','내수읍','북이면'].includes(d))).map(s=>({vehicle:s.vehicle,day:s.day,...finalRouteCoordinateAudit(s,existingDongRouteOverlay(s))}))""")
         cache_check="""async()=>{
           const specs=allDongRouteSpecs().filter(s=>['3344','6138','6544','0262'].includes(String(s.vehicle))&&routeAllowedDistricts(s).some(d=>['오창읍','내수읍','북이면'].includes(d)));
           const rows=[];
           const geometry=s=>JSON.stringify((s||[]).map(segment=>segment.map(p=>[p.lat,p.lng])));
-          for(const spec of specs){const cached=await getCachedDongRoute(spec);const shown=existingDongRouteOverlay(spec);rows.push({vehicle:spec.vehicle,day:spec.day,segments:cached?.segments?.length||0,ok:!!cached&&geometry(cached.segments)===geometry(shown?.segments)});}
+          for(const spec of specs){const cached=await getCachedDongRoute(spec);const shown=existingDongRouteOverlay(spec);rows.push({vehicle:spec.vehicle,day:spec.day,segments:cached?.segments?.length||0,ok:!!cached&&['segments','estimatedServiceSegments','connectionSegments'].every(k=>geometry(cached[k])===geometry(shown?.[k]))});}
           return {version:DONG_ROUTE_CACHE_VERSION,rows};
         }"""
         out['cacheBeforeReload']=await page.evaluate(cache_check)
@@ -170,6 +179,9 @@ async def main():
     out.update(result)
     out["checks"]={
       "http200":out.get("httpStatus")==200,
+      "all20Connected":len(out['connectionChecks'])==20 and all(r['ok'] and r['attached'] for r in out['connectionChecks']),
+      "all7ExplicitEstimates":sum(len(r['estimatedTerms']) for r in out['connectionChecks'])==7 and all(not r['unresolved'] for r in out['connectionChecks']),
+      "transitNotCertifiedCollection":all(r['transitNotCollection'] for r in out['connectionChecks']),
       "cache20BeforeAndAfterReload":all(len(out[k]['rows'])==20 and all(r['ok'] for r in out[k]['rows']) for k in ['cacheBeforeReload','cacheAfterReload']),
       "allTargetDaysPresent":result.get("allTargetDaysPresent",False),
       "allRiCovered":result.get("allRiCovered",False),

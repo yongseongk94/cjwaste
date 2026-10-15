@@ -1,0 +1,166 @@
+{
+  "toleranceM": 0.5,
+  "all20Connected": true,
+  "rows": [
+    {
+      "vehicle": "3344",
+      "day": "금",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 2467,
+      "ok": true
+    },
+    {
+      "vehicle": "3344",
+      "day": "목",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "3344",
+      "day": "수",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 1531,
+      "ok": true
+    },
+    {
+      "vehicle": "3344",
+      "day": "월",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "3344",
+      "day": "화",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "6138",
+      "day": "금",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 1142,
+      "ok": true
+    },
+    {
+      "vehicle": "6138",
+      "day": "목",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 4873,
+      "ok": true
+    },
+    {
+      "vehicle": "6138",
+      "day": "수",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "6138",
+      "day": "월",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "6138",
+      "day": "화",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "0262",
+      "day": "금",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 2467,
+      "ok": true
+    },
+    {
+      "vehicle": "0262",
+      "day": "목",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "0262",
+      "day": "수",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "0262",
+      "day": "월",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "0262",
+      "day": "화",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 1412,
+      "ok": true
+    },
+    {
+      "vehicle": "6544",
+      "day": "금",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "6544",
+      "day": "목",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.0,
+      "estimatedServiceMeters": 4873,
+      "ok": true
+    },
+    {
+      "vehicle": "6544",
+      "day": "수",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "6544",
+      "day": "월",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    },
+    {
+      "vehicle": "6544",
+      "day": "화",
+      "geometryComponents": 1,
+      "maxServiceToConnectionGapM": 0.001,
+      "estimatedServiceMeters": 0,
+      "ok": true
+    }
+  ]
+}
