@@ -1918,6 +1918,132 @@ const TEST_SERVICE_ZONE_MANIFEST='cjwaste-test2/data/service-zones-gapfill-v3-ma
 const loadedServiceZoneDistricts={general:new Set(),recycle:new Set()};
 const serviceZoneChunkPromises=new Map();
 
+// Display geometry follows the main page; schedule evidence remains TEST2's corrected routes.
+const LEGACY_DISPLAY_ZONE_MANIFEST='cjwaste-test/data/service-zones-test-manifest.json';
+let legacyDisplayZoneManifest=null,legacyDisplayZoneManifestPromise=null;
+const legacyDisplayZones={general:new Map(),recycle:new Map()};
+const legacyDisplayZonePromises=new Map();
+const mainDisplayRefinements={general:new WeakMap(),recycle:new WeakMap()};
+function normalizeMainDisplaySchedule(type,input){
+  const z=normalizeProductionZoneSchedule(type,input);
+  const meta=contractRouteMeta(z.vehicle);
+  if(!meta||z.noSchedule)return {...z,mainDisplay:true,estimated:true};
+  const route=CONTRACT_ROUTES[type].find(r=>r.vehicle===z.vehicle);
+  const available=route?Object.keys(route.days||{}):[];
+  const days=new Set(z.days||[]);
+  for(const group of [['월','수','금'],['화','목']]){
+    if(group.some(d=>days.has(d)))for(const d of group)if(available.includes(d))days.add(d);
+  }
+  return {...z,days:DAYS.filter(d=>days.has(d)),mainDisplay:true,estimated:true};
+}
+function refineMainDisplayZone(type,z){
+  const index=localScheduleIndexes[type];
+  const cached=mainDisplayRefinements[type].get(z);
+  if(cached?.index===index&&cached.riCount===riFeatureMap.size)return cached.zone;
+  let zone={...z,automatic:true,fromBundle:true,mainDisplay:true,estimated:true,
+    rural:!!z.rural||RI_LAYER_DISTRICTS.has(canonicalDistrict(z.district)),
+    refinementBasis:'main-baseline'};
+  if(index&&!z.noSchedule&&!z.productionOverride){
+    const b=rawZoneBounds(z),samples=[];
+    if(b)for(const [x,y] of [[.5,.5],[.25,.25],[.25,.75],[.75,.25],[.75,.75]]){
+      const lat=b.minLat+(b.maxLat-b.minLat)*y,lng=b.minLng+(b.maxLng-b.minLng)*x;
+      if(!pointInZonePolygon(lat,lng,z))continue;
+      const hit=serviceZoneOverlayMatch(type,{district:z.district,legalRi:z.riName||'',riCode:z.riCode||'',lat,lng});
+      if(hit?.days?.length)samples.push(hit);
+    }
+    const signatures=new Set(samples.map(h=>h.vehicle+'|'+h.days.join(',')));
+    // A whole polygon changes schedule only when multiple interior samples agree.
+    if(samples.length>=3&&signatures.size===1&&samples.every(h=>!h.ambiguous)){
+      const h=samples[0];
+      zone={...zone,vehicle:h.vehicle,vehicles:h.vehicles||[h.vehicle],provider:h.provider||'',days:h.days,
+        ambiguous:false,refinementBasis:'route-consensus',evidenceSamples:samples.length};
+    }else if(signatures.size>1||samples.some(h=>h.ambiguous)){
+      zone={...zone,ambiguous:true,refinementBasis:'mixed-evidence',evidenceSamples:samples.length};
+    }
+  }
+  mainDisplayRefinements[type].set(z,{index,riCount:riFeatureMap.size,zone});
+  return zone;
+}
+const mainDisplayPartsCache={general:new WeakMap(),recycle:new WeakMap()};
+function mainDisplayZoneParts(type,z){
+  const refined=refineMainDisplayZone(type,z);
+  if(refined.refinementBasis!=='mixed-evidence'||!contractRouteMeta(z.vehicle))return [refined];
+  const cached=mainDisplayPartsCache[type].get(z);
+  if(cached?.refined===refined)return cached.parts;
+  const b=rawZoneBounds(z),parts=[];
+  // Split only conflicting contractor cells, clipped to the original main-page footprint.
+  // No buffering of connection routes and no expansion into neighbouring land.
+  for(let x=0;x<2;x++)for(let y=0;y<2;y++){
+    const l=b.minLng+(b.maxLng-b.minLng)*x/2,r=b.minLng+(b.maxLng-b.minLng)*(x+1)/2;
+    const bottom=b.minLat+(b.maxLat-b.minLat)*y/2,top=b.minLat+(b.maxLat-b.minLat)*(y+1)/2;
+    const clipped=polygonClipping.intersection(zoneMultiPolygon(z),[[[[l,bottom],[r,bottom],[r,top],[l,top],[l,bottom]]]]);
+    for(const part of displayGeometryZones(z,clipped)){
+      // Keep the exact main-page boundary even for narrow/irregular fragments.
+      part.points=part.hitRings[0];part.rings=part.hitRings;
+      parts.push(refineMainDisplayZone(type,part));
+    }
+  }
+  mainDisplayPartsCache[type].set(z,{refined,parts});
+  return parts;
+}
+async function loadLegacyDisplayZoneManifest(){
+  if(legacyDisplayZoneManifest)return legacyDisplayZoneManifest;
+  if(legacyDisplayZoneManifestPromise)return legacyDisplayZoneManifestPromise;
+  legacyDisplayZoneManifestPromise=(async()=>{
+    try{
+      const res=await fetch(LEGACY_DISPLAY_ZONE_MANIFEST,{cache:'force-cache'});
+      if(!res.ok)throw new Error('legacy display manifest '+res.status);
+      legacyDisplayZoneManifest=await res.json();
+      return legacyDisplayZoneManifest;
+    }catch(err){
+      console.warn('과거 추정권역 표시 manifest 로드 실패',err);
+      return null;
+    }finally{
+      legacyDisplayZoneManifestPromise=null;
+    }
+  })();
+  return legacyDisplayZoneManifestPromise;
+}
+async function ensureLegacyDisplayZoneDistricts(type,districts=null){
+  if(type!=='general'&&type!=='recycle')return false;
+  const manifest=await loadLegacyDisplayZoneManifest();
+  if(!manifest)return false;
+  const entries=(Array.isArray(districts)&&districts.length ? desiredServiceZoneEntries(manifest,type,districts) : (manifest.types?.[type]||[]).filter(e=>manifestEntryIntersectsBox(e,currentMapBoundsBox(.18))));
+  await Promise.all(entries.map(entry=>{
+    const district=canonicalDistrict(entry?.district||'');
+    if(!district||legacyDisplayZones[type].has(district))return Promise.resolve();
+    const key=type+'|'+district;
+    if(legacyDisplayZonePromises.has(key))return legacyDisplayZonePromises.get(key);
+    const task=(async()=>{
+      try{
+        const res=await fetch(entry.path,{cache:'force-cache'});
+        if(!res.ok)throw new Error('legacy display chunk '+res.status);
+        const data=await res.json();
+        const zones=Array.isArray(data?.zones)?data.zones.map(z=>normalizeMainDisplaySchedule(type,z)):[];
+        legacyDisplayZones[type].set(district,zones);
+      }catch(err){
+        console.warn(type+' '+district+' 과거 추정권역 표시 청크 로드 실패',err);
+      }finally{
+        legacyDisplayZonePromises.delete(key);
+      }
+    })();
+    legacyDisplayZonePromises.set(key,task);
+    return task;
+  }));
+  return true;
+}
+function legacyDisplayZonesForView(type){
+  const box=currentMapBoundsBox(.18);
+  const out=[];
+  for(const zones of legacyDisplayZones[type].values()){
+    for(const z of (zones||[])){
+      if(box&&!rawZoneIntersectsBox(z,box))continue;
+      out.push(...mainDisplayZoneParts(type,z));
+    }
+  }
+  return out;
+}
+
 async function loadServiceZoneManifest(){
   if(bundledServiceZoneManifest)return bundledServiceZoneManifest;
   if(bundledServiceZoneManifestPromise)return bundledServiceZoneManifestPromise;
@@ -2013,7 +2139,7 @@ async function hydrateExternalBundledServiceZones(type,districts=null){
 }
 async function ensureVisibleServiceZoneChunks(type){
   if(type!=='general'&&type!=='recycle')return false;
-  const ok=await hydrateExternalBundledServiceZones(type);
+  const [ok]=await Promise.all([hydrateExternalBundledServiceZones(type),ensureLegacyDisplayZoneDistricts(type)]);
   // 저장된 추정권역은 제일환경 실시간 노선 계산을 기다리지 않고 즉시 표시합니다.
   scheduleVisibleServiceZoneMaterialization(type);
   // 일반 이용에서는 저장된 오창산단 권역/노선을 그대로 사용합니다.
@@ -2860,14 +2986,14 @@ function materializeVisibleRawServiceZones(type){
       .catch(e=>console.warn('표시용 기본권역 경계 준비 실패',e));
   }
 
-  // 정밀 raw 권역은 일정 판정에만 사용하고 지도에는 큰 대표권역만 표시합니다.
+  // 본페이지의 세부 도형을 유지하고 최신 수거노선 근거로 일정만 보완합니다.
   const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
   for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
   serviceZoneOverlays[type]=manual;
 
   // 바탕 면을 중복해서 깔지 않고, 실제 경계로 자른 추정권역만 한 번 표시합니다.
   rebuildManualZoneOverlays(type,false);
-  const zones=coarseDisplayZones(type);
+  const zones=partitionOchang2023Display(type,legacyDisplayZonesForView(type));
   for(const z of zones)addServiceZonePolygon(type,z.points,z);
   syncServiceZoneVisibility(type);
   // 과거 레이어가 로드된 뒤 근거노선 색도 동일 일정색으로 다시 맞춥니다.
@@ -5121,14 +5247,14 @@ function addServiceZonePolygon(type,points,meta={}){
     if(meta.displaySchedule){reviewPolygonTooltip(type,meta,e);return;}
     polygon.setOptions({fillOpacity:meta.manual?.38:(meta.ambiguous?.26:(contract?.48:(rural?.40:.34)))});
     const ratioText=meta.estimated&&Number.isFinite(+meta.neighborRatio)&&+meta.neighborRatio>0?` · 인접권역 ${Math.round(+meta.neighborRatio*100)}% 우세`:'';
-    const detail=meta.noSchedule?'근거 부족 · 일정 확인 필요':meta.displayBase
+    const detail=meta.mainDisplay?(serviceZoneLabel(zone)+(meta.ambiguous?' · 경계 확인 필요':' · 추정권역')):meta.noSchedule?'근거 부족 · 일정 확인 필요':meta.displayBase
       ?'수거일정 표시의 빈틈을 막기 위한 읍면동 기본 추정권역'
       :(meta.displayOnly
       ?(meta.displaySchedule
         ?((meta.provider?meta.provider+' · ':'')+routeDisplayLabel(meta.vehicle||'담당')+' · '+scheduleDisplaySignature(meta))
         :'큰 범위로 단순화한 대표 추정권역')
       :(meta.estimated?`${serviceZoneLabel(zone)} · 확정 수거노선 밖 추정권역 (추정)${ratioText}`:(meta.ambiguous?'자동 권역 경계부 · 담당자 확인 권장':`${serviceZoneLabel(zone)}${contract?' · 제일환경 대행업체 구간':(meta.riGrouped?' · 리 단위 통합권역':(meta.manual?' · 관리자 수동권역':' · 자동 추정권역'))}`)));
-    const basis=meta.displayBase
+    const basis=meta.mainDisplay?(meta.refinementBasis==='route-consensus'?'본페이지 경계 · 내부 여러 지점의 최신 수거노선 일정 일치':meta.refinementBasis==='mixed-evidence'?'본페이지 경계 · 내부 노선 일정이 달라 주소별 확인 필요':'본페이지 권역 기준 · 공통 요일 반영 · 공식 확정 경계 아님'):meta.displayBase
       ?'읍면동 행정경계 전체 기본표시 · 일정 판정에는 사용하지 않음'
       :(meta.displayOnly
       ?`같은 위치의 코스표 노선·차량·요일 근거로 계산한 추정 표시 · 공식 확정 수거경계가 아닙니다`
@@ -5138,6 +5264,13 @@ function addServiceZonePolygon(type,points,meta={}){
   kakao.maps.event.addListener(polygon,'mousemove',e=>moveZoneTooltip(e.latLng));
   kakao.maps.event.addListener(polygon,'mouseout',()=>{polygon.setOptions({fillOpacity:baseFill});hideZoneTooltip()});
   kakao.maps.event.addListener(polygon,'click',e=>{
+    if(meta.mainDisplay){
+      const ctx={district:meta.district,legalRi:meta.riName||'',lat:e.latLng.getLat(),lng:e.latLng.getLng()};
+      const hit=serviceZoneOverlayMatch(type,ctx);
+      updateMapBadge(hit?meta.district+' · '+routeDisplayLabel(hit.vehicle)+' · '+hit.days.join('·')+' · '+(hit.ambiguous?'경계 확인 필요':hit.estimated?'추정 일정':'확인된 일정'):'세부 근거 부족 · 주소 검색으로 일정 확인');
+      if(hit&&activeLayer===type)renderServiceZoneSchedule(type,hit,ctx,{fromMap:true});
+      return;
+    }
     if(meta.displaySchedule){const p=e.latLng;const ctx={district:meta.district,lat:p.getLat(),lng:p.getLng()};const hit=serviceZoneOverlayMatch(type,ctx);updateMapBadge(hit?(meta.district+' · '+routeDisplayLabel(hit.vehicle)+' · '+hit.days.join('·')+' · '+(hit.estimated?'추정':'확인')):'일정 확인 필요 · 세부 근거 부족');return;}
     if(meta.displayBase){
       updateMapBadge((meta.district||'')+' · 기본 추정권역 · 실제 일정은 주소 검색 결과 기준');
@@ -5787,7 +5920,7 @@ function updateMapBadge(custom){
   const focus=addressLayerFocus[activeLayer];
   const focusText=focus?`검색주소 · ${focus.days.join('·')}`:'';
   const text=custom||(focus
-    ?`검색주소 일정은 <strong>${focus.days.join('·')}</strong>입니다. 지도 전체는 실제 정밀권역을 약 130m 단위로 단순화한 업체·차량·요일별 추정권역이며, 검색주소 권역은 진하게 표시합니다.`
+    ?`검색주소 일정은 <strong>${focus.days.join('·')}</strong>입니다. 지도는 본페이지의 세부 권역을 바탕으로 최신 노선·공통 요일을 반영한 추정권역입니다. 회색 경계는 근거가 엇갈리는 구간이며 주소별 결과를 확인하세요.`
     :`표시: <strong>${state||'없음'}</strong> · 색상은 수거요일을 나타내고, 얇은 경계선은 업체·차량 담당권역의 변화도 구분합니다. 실제 주소 판정은 수거노선 20m 이내를 우선 적용합니다.`);
   el.innerHTML=`<strong>${labels[activeLayer]} · ${focusText||providerLabel+' · '+dayLabel}</strong><span>${text}</span>${scheduleLegendHtml(activeLayer)}`;
 }

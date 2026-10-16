@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "mainGeometryPreserved": true,
+  "transitExcluded": true,
+  "general": {
+    "total": 2797,
+    "parts": 2833,
+    "consensus": 1104,
+    "mixed": 209,
+    "weekdayCorrected": 224
+  },
+  "recycle": {
+    "total": 2686,
+    "parts": 2722,
+    "consensus": 1126,
+    "mixed": 209,
+    "weekdayCorrected": 205
+  }
+}
