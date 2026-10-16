@@ -1,0 +1,399 @@
+{
+  "beforeBytes": 3617020,
+  "afterBytes": 2708771,
+  "weekdaySlots": 54,
+  "geometryGroups": 28,
+  "storedGeometries": 20,
+  "routes": [
+    {
+      "type": "general",
+      "vehicle": "제일환경|88어1536|우암동|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 1,
+      "distanceM": 473,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 1
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88저7478|오창읍|단독",
+      "days": [
+        "수",
+        "월",
+        "금"
+      ],
+      "group": "월수금",
+      "segments": 20,
+      "distanceM": 37143,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 23
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88어1536|우암동|단독",
+      "days": [
+        "금",
+        "수",
+        "월"
+      ],
+      "group": "월수금",
+      "segments": 35,
+      "distanceM": 25159,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 25
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88어1536|우암동|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 1,
+      "distanceM": 473,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 1
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88저7478|오창읍|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 18,
+      "distanceM": 26572,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 36
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88저7478|오창읍|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 18,
+      "distanceM": 26572,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 36
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|94고3991|오창읍|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 1,
+      "distanceM": 3434,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 1
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|94고3991|오창읍|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 1,
+      "distanceM": 3434,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 1
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|95오0147|오창읍|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 3,
+      "distanceM": 1788,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 1
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|95오0147|오창읍|단독",
+      "days": [
+        "수",
+        "금",
+        "월"
+      ],
+      "group": "월수금",
+      "segments": 4,
+      "distanceM": 3961,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 5
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|95오0147|오창읍|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 3,
+      "distanceM": 1788,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 1
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88저7556|우암동|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 23,
+      "distanceM": 13588,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 4
+    },
+    {
+      "type": "general",
+      "vehicle": "제일환경|88저7556|우암동|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 23,
+      "distanceM": 13588,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 4
+    },
+    {
+      "type": "general",
+      "vehicle": "현대환경|95오0125|내덕1동|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 10,
+      "distanceM": 7250,
+      "estimatedSegments": 226,
+      "connectionSegments": 2,
+      "evidencePoints": 7
+    },
+    {
+      "type": "general",
+      "vehicle": "현대환경|95오0125|내덕1동|단독",
+      "days": [
+        "수",
+        "월",
+        "금"
+      ],
+      "group": "월수금",
+      "segments": 21,
+      "distanceM": 17003,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 4
+    },
+    {
+      "type": "general",
+      "vehicle": "현대환경|95오0125|내덕1동|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 2,
+      "distanceM": 990,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 2
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|88어1535|오창읍|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 6,
+      "distanceM": 8754,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 7
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|88어1535|오창읍|단독",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "group": "월수금",
+      "segments": 25,
+      "distanceM": 25281,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 25
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|88어1535|오창읍|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 6,
+      "distanceM": 8754,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 7
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|95오0187|오창읍|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 5,
+      "distanceM": 6309,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 6
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|95오0187|오창읍|단독",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "group": "월수금",
+      "segments": 6,
+      "distanceM": 4930,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 8
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|95오0187|오창읍|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 5,
+      "distanceM": 6309,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 6
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|81주3418|우암동|단독",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 11,
+      "distanceM": 8495,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 9
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|81주3418|우암동|단독",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "group": "월수금",
+      "segments": 26,
+      "distanceM": 20413,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 22
+    },
+    {
+      "type": "recycle",
+      "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+      "days": [
+        "화",
+        "목"
+      ],
+      "group": "화목",
+      "segments": 10,
+      "distanceM": 7250,
+      "estimatedSegments": 226,
+      "connectionSegments": 2,
+      "evidencePoints": 7
+    },
+    {
+      "type": "recycle",
+      "vehicle": "제일환경|81주3418|우암동|단독",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 11,
+      "distanceM": 8495,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 9
+    },
+    {
+      "type": "recycle",
+      "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "group": "월수금",
+      "segments": 21,
+      "distanceM": 17003,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 4
+    },
+    {
+      "type": "recycle",
+      "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+      "days": [
+        "토"
+      ],
+      "group": "토",
+      "segments": 2,
+      "distanceM": 990,
+      "estimatedSegments": 0,
+      "connectionSegments": 0,
+      "evidencePoints": 2
+    }
+  ]
+}

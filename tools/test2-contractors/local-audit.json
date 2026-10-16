@@ -1,0 +1,447 @@
+{
+  "slots": 54,
+  "groups": 21,
+  "rows": [
+    {
+      "vehicle": "제일환경|88저7478|오창읍|단독",
+      "type": "general",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88저7478|오창읍|단독",
+      "type": "general",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|94고3991|오창읍|단독",
+      "type": "general",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|95오0147|오창읍|단독",
+      "type": "general",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|95오0147|오창읍|단독",
+      "type": "general",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88어1536|우암동|단독",
+      "type": "general",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88어1536|우암동|단독",
+      "type": "general",
+      "days": [
+        "화",
+        "목"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88어1536|우암동|단독",
+      "type": "general",
+      "days": [
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88저7556|우암동|단독",
+      "type": "general",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "현대환경|95오0125|내덕1동|단독",
+      "type": "general",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "현대환경|95오0125|내덕1동|단독",
+      "type": "general",
+      "days": [
+        "화",
+        "목"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "현대환경|95오0125|내덕1동|단독",
+      "type": "general",
+      "days": [
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88어1535|오창읍|단독",
+      "type": "recycle",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|88어1535|오창읍|단독",
+      "type": "recycle",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|95오0187|오창읍|단독",
+      "type": "recycle",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|95오0187|오창읍|단독",
+      "type": "recycle",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|81주3418|우암동|단독",
+      "type": "recycle",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "제일환경|81주3418|우암동|단독",
+      "type": "recycle",
+      "days": [
+        "화",
+        "목",
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+      "type": "recycle",
+      "days": [
+        "월",
+        "수",
+        "금"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+      "type": "recycle",
+      "days": [
+        "화",
+        "목"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    },
+    {
+      "vehicle": "현대환경|95오0125|내덕1동|단독|2",
+      "type": "recycle",
+      "days": [
+        "토"
+      ],
+      "present": true,
+      "shared": true,
+      "cacheOK": true,
+      "scopeOK": true
+    }
+  ],
+  "hyundai": [
+    {
+      "type": "general",
+      "day": "화",
+      "anchors": 7,
+      "segments": 10,
+      "estimated": 226,
+      "connections": 2,
+      "version": "hyundai-connected-weekday-v3",
+      "estimatedNotCertified": true,
+      "connected": true
+    },
+    {
+      "type": "general",
+      "day": "목",
+      "anchors": 7,
+      "segments": 10,
+      "estimated": 226,
+      "connections": 2,
+      "version": "hyundai-connected-weekday-v3",
+      "estimatedNotCertified": true,
+      "connected": true
+    },
+    {
+      "type": "recycle",
+      "day": "화",
+      "anchors": 7,
+      "segments": 10,
+      "estimated": 226,
+      "connections": 2,
+      "version": "hyundai-connected-weekday-v3",
+      "estimatedNotCertified": true,
+      "connected": true
+    },
+    {
+      "type": "recycle",
+      "day": "목",
+      "anchors": 7,
+      "segments": 10,
+      "estimated": 226,
+      "connections": 2,
+      "version": "hyundai-connected-weekday-v3",
+      "estimatedNotCertified": true,
+      "connected": true
+    }
+  ],
+  "visibility": [
+    {
+      "type": "general",
+      "provider": "제일환경",
+      "day": "월",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "제일환경",
+      "day": "수",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "제일환경",
+      "day": "금",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "제일환경",
+      "day": "화",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "제일환경",
+      "day": "목",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "현대환경",
+      "day": "월",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "현대환경",
+      "day": "수",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "현대환경",
+      "day": "금",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "현대환경",
+      "day": "화",
+      "ok": true
+    },
+    {
+      "type": "general",
+      "provider": "현대환경",
+      "day": "목",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "제일환경",
+      "day": "월",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "제일환경",
+      "day": "수",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "제일환경",
+      "day": "금",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "제일환경",
+      "day": "화",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "제일환경",
+      "day": "목",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "현대환경",
+      "day": "월",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "현대환경",
+      "day": "수",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "현대환경",
+      "day": "금",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "현대환경",
+      "day": "화",
+      "ok": true
+    },
+    {
+      "type": "recycle",
+      "provider": "현대환경",
+      "day": "목",
+      "ok": true
+    }
+  ],
+  "sameGeometrySwitchMapCalls": 0,
+  "reload": {
+    "slots": 54,
+    "ok": true
+  },
+  "pageErrors": [],
+  "local": true,
+  "checkedAt": "2026-10-16T03:58:34Z",
+  "ok": true
+}
