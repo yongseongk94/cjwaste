@@ -1,0 +1,11 @@
+{
+  "records": 113,
+  "chunks": 19,
+  "totalBytes": 4812814,
+  "byType": {
+    "general": 2623825,
+    "recycle": 2188989
+  },
+  "ruralLatest": 20,
+  "uamLatest": 15
+}
