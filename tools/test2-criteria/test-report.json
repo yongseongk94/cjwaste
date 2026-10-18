@@ -1,0 +1,7 @@
+{
+  "mainDecisionPipelineIdentical": true,
+  "mainZoneSourceIdentical": true,
+  "distanceThresholdAndVehicleIsolation": true,
+  "roadNamePriority": true,
+  "polygonFallbackAndDowon": true
+}
