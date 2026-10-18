@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "initialOchang": {
+    "created": 969,
+    "attached": 969,
+    "detached": 0,
+    "styles": 969,
+    "frames": 37,
+    "ms": 319
+  },
+  "repeatedViewport": {
+    "created": 0,
+    "detached": 0,
+    "styleUpdates": 0
+  },
+  "sameDayRedraw": 0,
+  "layerSwitchRecreation": 0,
+  "renderRouteFetches": 0,
+  "renderIndexBuilds": 0,
+  "precomputedPartsVerified": 5555,
+  "mainRawZonesLoaded": 6482
+}

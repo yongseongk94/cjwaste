@@ -2051,7 +2051,21 @@ async function ensureLegacyDisplayZoneDistricts(type,districts=null){
         const res=await fetch(entry.path,{cache:'force-cache'});
         if(!res.ok)throw new Error('legacy display chunk '+res.status);
         const data=await res.json();
-        const zones=Array.isArray(data?.zones)?data.zones.map(z=>normalizeMainDisplaySchedule(type,z)):[];
+        const base=Array.isArray(data?.zones)?data.zones.map(z=>normalizeMainDisplaySchedule(type,z)):[];
+        let zones=base;
+        try{
+          const path=entry.path.replace('cjwaste-test/data/zones/','cjwaste-test2/data/display-zones-v1/');
+          const response=await fetch(path,{cache:'force-cache'});
+          if(!response.ok)throw Error('display patch '+response.status);
+          const patches=await response.json();
+          if(patches.version!==1||!Array.isArray(patches.parts))throw Error('display patch version');
+          zones=patches.parts.map(([i,patch])=>{
+            if(!base[i])throw Error('display patch index');
+            const z={...base[i],...patch};
+            if(patch.hitRings){z.rings=patch.hitRings;z.points=patch.hitRings[0];}
+            return z;
+          });
+        }catch(error){console.warn('보정권역 읽기 실패, 본페이지 기본권역 사용',error);}
         legacyDisplayZones[type].set(district,zones);
       }catch(err){
         console.warn(type+' '+district+' 과거 추정권역 표시 청크 로드 실패',err);
@@ -2070,7 +2084,7 @@ function legacyDisplayZonesForView(type){
   for(const zones of legacyDisplayZones[type].values()){
     for(const z of (zones||[])){
       if(box&&!rawZoneIntersectsBox(z,box))continue;
-      out.push(...mainDisplayZoneParts(type,z));
+      out.push(z);
     }
   }
   return out;
@@ -2130,7 +2144,7 @@ async function fetchServiceZoneChunk(type,entry){
   if(serviceZoneChunkPromises.has(key))return serviceZoneChunkPromises.get(key);
   const promise=(async()=>{
     try{
-      const chunkPath=entry.path.startsWith('data/')?'cjwaste-test2/'+entry.path:entry.path;
+      const chunkPath=entry.path; // Manifest paths are relative to the shared <base href="../">.
       const res=await fetch(chunkPath+(chunkPath.includes('?')?'&':'?')+'v=test2-pathfix-1',{cache:'no-cache'});
       if(!res.ok)throw new Error('service zone district chunk '+res.status);
       const chunk=await res.json();
@@ -2995,43 +3009,27 @@ rep={...rep,vehicle:focus.vehicles[0]||'',vehicles:focus.vehicles,provider:focus
   }));
 }
 const test2OchangWarmStarted={general:false,recycle:false};
+// Stable source objects own reusable map polygons. Clear only on explicit cache replacement.
+const retainedDisplayZones={general:new WeakMap(),recycle:new WeakMap()};
+const manualDisplaySignatures={general:null,recycle:null};
 function materializeVisibleRawServiceZones(type){
   if(type!=='general'&&type!=='recycle')return false;
   if(!resultMapVisible()||activeLayer!==type||!serviceLayerState.zone)return false;
-
-  if(!localScheduleIndexes[type]||localScheduleIndexes[type].liveCount!==(dongRouteOverlays[type]||[]).length)ensureLocalScheduleIndex(type).catch(e=>console.warn('세부 일정 근거 준비 실패',e));
-  if(SERVICE_ZONE_PRECOMPUTE_ONLY&&!test2OchangWarmStarted[type]){
-    test2OchangWarmStarted[type]=true;
-    ensureOchangContractRouteItems(type).then(()=>{
-      localScheduleIndexes[type]=null;
-      ensureLocalScheduleIndex(type).finally(()=>{
-        if(activeLayer===type&&resultMapVisible())scheduleVisibleServiceZoneMaterialization(type);
-        if(serviceLayerState.route)syncDongRouteVisibility(type);
-      });
-    }).catch(e=>console.warn('TEST2 오창산단 노선 준비 실패',e));
+  const signature=JSON.stringify(allAdminZones().filter(z=>z.type===type));
+  if(manualDisplaySignatures[type]!==signature){manualDisplaySignatures[type]=signature;rebuildManualZoneOverlays(type,false);}
+  const started=performance.now();
+  let remaining=false;
+  for(const z of legacyDisplayZonesForView(type)){
+    if(retainedDisplayZones[type].has(z))continue;
+    // Keep first render responsive; resume the remaining new polygons next frame.
+    if(performance.now()-started>8){remaining=true;break;}
+    const parts=partitionOchang2023Display(type,[z]);
+    const overlays=parts.map(part=>addServiceZonePolygon(type,part.points,part)).filter(Boolean);
+    retainedDisplayZones[type].set(z,overlays);
   }
-  // 행정경계는 주소 판정을 막지 않고 백그라운드로 준비합니다.
-  // 준비되면 행정경계로 자른 단일 추정권역을 다시 표시합니다.
-  if(!testAdminBoundaryLoadStarted){
-    ensureTestAdminBoundaryLoad()
-      .then(()=>{if(activeLayer===type&&resultMapVisible())scheduleVisibleServiceZoneMaterialization(type)})
-      .catch(e=>console.warn('표시용 기본권역 경계 준비 실패',e));
-  }
-
-  // 본페이지의 세부 도형을 유지하고 최신 수거노선 근거로 일정만 보완합니다.
-  const manual=(serviceZoneOverlays[type]||[]).filter(z=>z.manual);
-  for(const z of (serviceZoneOverlays[type]||[]))if(!z.manual)z.polygon?.setMap(null);
-  serviceZoneOverlays[type]=manual;
-
-  // 바탕 면을 중복해서 깔지 않고, 실제 경계로 자른 추정권역만 한 번 표시합니다.
-  rebuildManualZoneOverlays(type,false);
-  const zones=partitionOchang2023Display(type,legacyDisplayZonesForView(type));
-  for(const z of zones)addServiceZonePolygon(type,z.points,z);
   syncServiceZoneVisibility(type);
-  // 과거 레이어가 로드된 뒤 근거노선 색도 동일 일정색으로 다시 맞춥니다.
-  if(serviceLayerState.route)syncDongRouteVisibility(type);
   updateMapBadge();
-  return false;
+  return remaining;
 }
 function scheduleVisibleServiceZoneMaterialization(type){
   if(type!=='general'&&type!=='recycle')return;
@@ -3047,7 +3045,7 @@ async function hydrateServiceZoneArray(type,zones,meta={}){
   if(!Array.isArray(zones)||!zones.length)return false;
   zones=zones.map(z=>normalizeProductionZoneSchedule(type,z));
   const started=performance.now();
-  if(!meta.append)clearServiceZoneOverlays(type);
+  if(!meta.append&&!meta.partial)clearServiceZoneOverlays(type);
   const added=registerRawServiceZones(type,zones);
   const {visible}=prioritizeServiceZones(zones);
   const perf=window.__CJWASTE_ZONE_PERF[type]={
@@ -5314,6 +5312,7 @@ function serviceZoneColor(days,type='general'){
 }
 function serviceZoneLabel(zone){return `${routeDisplayLabel(zone.vehicle||'담당')} · ${(zone.days||[]).join('·')||'요일 미정'}`}
 function clearServiceZoneOverlays(type){
+  retainedDisplayZones[type]=new WeakMap();manualDisplaySignatures[type]=null;
   (serviceZoneOverlays[type]||[]).forEach(z=>z.polygon?.setMap(null));serviceZoneOverlays[type]=[];
   for(const zones of (rawServiceZones[type]?.values?.()||[]))for(const z of zones){
     if(z&&z._testMaterialized)try{z._testMaterialized=false}catch(e){}
@@ -5743,14 +5742,15 @@ function syncServiceZoneVisibility(type,forceRedraw=false){
       const contract=!!z.contractLayer;
       const color=z.manual?'#0f172a':(z.ambiguous?'#94a3b8':(contract?OCHANG_CONTRACT_COLOR:(day!=='전체'?(DAY_COLORS[day]||'#64748b'):serviceZoneColor(z.days,type))));
       const rural=!!z.rural||RI_LAYER_DISTRICTS.has(z.district||'');
-      z.polygon.setOptions({
+      const styleKey=[color,!!z.manual,!!z.ambiguous,contract,rural,!!z.gridMerged].join('|');
+      if(z._styleKey!==styleKey){z._styleKey=styleKey;z.polygon.setOptions({
         fillColor:color,
         fillOpacity:z.manual?.28:(z.ambiguous?.18:(contract?.36:(rural?.30:.22))),
         strokeWeight:z.gridMerged?0:(z.manual?2:(contract?2:(rural?1:0))),
         strokeColor:z.manual?'#111827':color,
         strokeOpacity:z.gridMerged?0:(z.manual?.95:(contract?.86:(rural?.42:0)))
-      });
-      if(forceRedraw&&z.polygon.getMap()===map)z.polygon.setMap(null);
+      });}
+      // Existing polygons stay attached during day/provider changes.
       if(z.polygon.getMap()!==map)z.polygon.setMap(map);
     }
   }
@@ -5982,7 +5982,7 @@ function setDay(day){
 function forceActiveServiceLayerVisibility(layer){
   if(layer!=='general'&&layer!=='recycle')return;
   try{
-    if(serviceLayerState.zone)syncServiceZoneVisibility(layer,true);
+    if(serviceLayerState.zone)syncServiceZoneVisibility(layer);
     if(serviceLayerState.route)syncDongRouteVisibility(layer);
   }catch(e){console.warn('레이어 강제 재표시 실패',e)}
 }
@@ -5998,7 +5998,8 @@ function setLayer(layer){
   renderVehicleFilter();
   if(service&&serviceLayerState.route&&(SERVICE_ZONE_PRECOMPUTE_ONLY||resultMapVisible()))syncDongRouteVisibility(layer);
   else hideDongRouteOverlays();
-  for(const t of ['general','recycle'])(serviceZoneOverlays[t]||[]).forEach(z=>z.polygon?.setMap(null));
+  if(service)syncServiceZoneVisibility(layer);
+  if(!service)for(const t of ['general','recycle'])(serviceZoneOverlays[t]||[]).forEach(z=>{if(z.polygon?.getMap())z.polygon.setMap(null)});
   const seen=new Set();Object.values(zonePolygons).flat().forEach(item=>{if(!item?.polygon||seen.has(item.polygon))return;seen.add(item.polygon);item.polygon.setMap(null)});
   const allowHeavyMapWork=SERVICE_ZONE_PRECOMPUTE_ONLY||resultMapVisible();
   if(layer==='food'){
@@ -6021,8 +6022,6 @@ function setLayer(layer){
   updateMapBadge();
   if(service&&allowHeavyMapWork){
     forceActiveServiceLayerVisibility(layer);
-    setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},120);
-    setTimeout(()=>{if(isCurrent())forceActiveServiceLayerVisibility(layer)},700);
   }
 }
 function scheduleLegendHtml(type){
